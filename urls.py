@@ -1,5 +1,7 @@
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls import patterns, url
+from . import views
 
-urlpatterns = [
-    
-]
+urlpatterns = patterns(
+  'sewi.views',
+  url(r'^$', views.main_page, name='main_page'),
+)
