@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/jquery-ui-1.10.3.custom.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/tab.css" %}" />
 
     <script type="text/javascript" src="{% static "sewi/js/lodash.min.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/jquery-1.10.2.js" %}"></script>
@@ -15,6 +16,7 @@
     <script type="text/javascript" src="{% static "sewi/js/jquery-ui.min.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/Chart.min.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/app.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/tab.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/tests/runner.js" %}"></script>
   </head>
   <body>
@@ -29,5 +31,11 @@
         right
       </div>
     </div>
+	<script>$(document).ready(function() {
+		temp = new sewi.TabContainer();
+		element = temp.display();
+		element.appendTo(".col-sm-8");
+	});
+	</script>
   </body>
 </html>
