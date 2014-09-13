@@ -4,18 +4,19 @@
   <head>
     <title>Sana Single Encounter Web Interface</title>
     <meta charset="utf-8" />
-
+    {# CSS #}
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/jquery-ui-1.10.3.custom.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
-
-    <script type="text/javascript" src="{% static "sewi/js/lodash.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/jquery-1.10.2.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/jquery-ui.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/require.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/Chart.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/app.js" %}"></script>
+    {# JavaScript libraries #}
+    <script type="text/javascript" src="{% static "sewi/js/lib/require.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/lodash.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/jquery-1.10.2.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/Chart.min.js" %}"></script>
+    {# SEWI JavaScript files #}
+    <script type="text/javascript" src="{% static "sewi/js/app/main.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/tests/runner.js" %}"></script>
   </head>
   <body>
