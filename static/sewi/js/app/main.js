@@ -3,6 +3,8 @@ $(function() {
     var configurator = new sewi.Configurator({
         basicInfoView: '#beiView',
         resViewerView: '#mainView',
-        resExplorerView: '#resView'
+        resExplorerView: '#resView',
+        
+        isResourceViewerHidden: false
     });
 });

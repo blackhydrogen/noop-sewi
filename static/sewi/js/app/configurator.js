@@ -7,8 +7,8 @@ sewi.Configurator = function(options) {
     var selfRef = this;
     var defaults = {
         animated: true,
-        isBasicInfoHidden: false,
-        isResourceViewerHidden: false
+        isBasicInfoMinimized: false,
+        isResourceViewerHidden: true
     };
 
     options = options || {};
@@ -45,7 +45,8 @@ sewi.Configurator = function(options) {
         selfRef.tabContainer = new sewi.TabContainer();
         var element = selfRef.tabContainer.getDOM();
         element.on("NoTabs", function() {
-            // TODO: Resize elements.
+            selfRef.isResourceViewerHidden = true;
+            updateViewSizes();
         });
         selfRef.resViewerView.append(element);
     }
@@ -57,6 +58,38 @@ sewi.Configurator = function(options) {
     function openResource(resourceId) {
         // TODO: Open resource in tabContainer
         // TODO: Pass entire resouce to tabContainer
+    }
+
+    function updateViewSizes() {
+        var totalWidth = 12;
+        var basicInfoWidth = 3;
+        var minBasicInfoWidth = 1;
+        var resExplorerWidth = 1;
+        var resViewerWidth = 8;
+
+        selfRef.basicInfoView
+            .add(selfRef.resViewerView)
+            .add(selfRef.resExplorerView)
+            .removeClass(function(index, cssClass) {
+                return ( cssClass.match(/(^|\s)col-sm-\S+/g) || [] ).join(' ');
+            });
+
+        if (selfRef.isBasicInfoMinimized) {
+            resViewerWidth += basicInfoWidth - minBasicInfoWidth;
+            selfRef.basicInfoView
+                   .addClass('col-sm-' + minBasicInfoWidth);
+        } else {
+            selfRef.basicInfoView
+                   .addClass('col-sm-' + basicInfoWidth);
+        }
+        if (selfRef.isResourceViewerHidden) {
+            resExplorerWidth += resViewerWidth;
+            resViewerWidth = 0;
+        }
+        selfRef.resViewerView
+               .addClass('col-sm-' + resViewerWidth);
+        selfRef.resExplorerView
+               .addClass('col-sm-' + resExplorerWidth);
     }
 
 }
