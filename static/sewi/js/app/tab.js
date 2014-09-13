@@ -1,15 +1,17 @@
 var sewi = sewi || {}; 
 sewi.TabContainer = function(){
 	var selfRef = this;
-	var currentActiveTab;
-	var currentActiveTabButton;
 	var counter= 1;
+	
+	selfRef.currentActiveTab;
+	selfRef.currentActiveTabButton;
+	selfRef.tabButtons=[];
+	selfRef.tabContentPanels=[];	
+	
 	selfRef.container = $('<div class="tab-container"></div>');
 	selfRef.tabButtonGroup = $('<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>');
 	selfRef.tabContent = $('<div class="tab-content"></div>');
 	
-	selfRef.tabButtons=[];
-	selfRef.tabContentPanels=[];	
 	
 	var addTabButton = $('<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>');
 	addTabButton.on('click', function(){
@@ -22,59 +24,93 @@ sewi.TabContainer = function(){
 	
 	selfRef.addNewTab("tab"+counter, "Tab "+counter, true);
 	counter++;
-	
-	// Set the first panel as the current active panel
-	//selfRef.currentActiveTab = selfRef.tabContentPanels[0];
-	
+		
 	selfRef.container.append(selfRef.tabButtonGroup);
 	selfRef.container.append(selfRef.tabContent);
 }
 
 sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active){
 	var selfRef = this;
-	var buttonDom=$('<li><a href="#'+tabName+'" role="tab" data-toggle="tab">'+tabText+'<span class="glyphicon glyphicon-remove"></span></a></li>');
-	var panelDom=$('<div class="tab-pane" id="'+tabName+'">'+tabText+'</div>');
-	
+	var buttonDOM=$('<li><a href="#'+tabName+'" role="tab" data-toggle="tab">'+tabText+'</a></li>');
+	var panelDOM=$('<div class="tab-pane" id="'+tabName+'">'+tabText+'</div>');
+	var removeButton={ tabButton : buttonDOM,
+						tabPanel : panelDOM,
+						  	 DOM : $('<span class="glyphicon glyphicon-remove"></span>')};
 	if(active){
-		selfRef.setCurrentActiveTab(panelDom); 
-		selfRef.setCurrentActiveTabButton(buttonDom);
+		selfRef.setCurrentActiveTab(panelDOM); 
+		selfRef.setCurrentActiveTabButton(buttonDOM);
 	}
+	
+	buttonDOM.children('a').append(removeButton.DOM);
+	
+	removeButton.DOM.on('click', function(){
+		var buttonIndex = selfRef.tabButtons.indexOf(removeButton.tabButton);
+		var panelIndex = selfRef.tabContentPanels.indexOf(removeButton.tabPanel);
+		
+		removeButton.tabPanel.remove();
+		removeButton.tabButton.remove();
 
-	buttonDom.on('click', function(){
-		selfRef.setCurrentActiveTab(panelDom);
-		selfRef.setCurrentActiveTabButton(buttonDom);
+		selfRef.tabButtons.splice(buttonIndex, 1);
+		selfRef.tabContentPanels.splice(panelIndex, 1);
+	
+		if(selfRef.currentActiveTabButton == removeButton.tabButton){
+			if(buttonIndex==selfRef.tabButtons.length-1){
+				selfRef.setCurrentActiveTab(selfRef.tabContentPanels[panelIndex-1]);
+				selfRef.setCurrentActiveTabButton(selfRef.tabButtons[buttonIndex-1]);
+			} else {
+				selfRef.setCurrentActiveTab(selfRef.tabContentPanels[panelIndex]);
+				selfRef.setCurrentActiveTabButton(selfRef.tabButtons[buttonIndex]);
+			}
+		} 
+
+		if(selfRef.tabButtons.length == 1){
+			selfRef.container.trigger("NoTabs");
+		}
+	});
+
+	buttonDOM.on('click', function(){
+		selfRef.setCurrentActiveTab(panelDOM);
+		selfRef.setCurrentActiveTabButton(buttonDOM);
 	});
 	
 	var lastIndex = selfRef.tabButtons.length-1;
-	buttonDom.insertBefore(selfRef.tabButtons[lastIndex]);
-	selfRef.tabButtons.splice(lastIndex, 0, buttonDom);
-	selfRef.tabContentPanels.push(panelDom);
-	selfRef.tabContent.append(panelDom);
+	buttonDOM.insertBefore(selfRef.tabButtons[lastIndex]);
+	selfRef.tabButtons.splice(lastIndex, 0, buttonDOM);
+	selfRef.tabContentPanels.push(panelDOM);
+	selfRef.tabContent.append(panelDOM);
 }
 
-sewi.TabContainer.prototype.setCurrentActiveTab = function(DomObject){
+sewi.TabContainer.prototype.setCurrentActiveTab = function(DOMObject){
 	var selfRef = this;
 	if(selfRef.currentActiveTab){
 		selfRef.currentActiveTab.removeClass('active');
 	}
-	selfRef.currentActiveTab = DomObject;
-	selfRef.currentActiveTab.addClass('active');
+	selfRef.currentActiveTab = DOMObject;
+	if(DOMObject){
+		selfRef.currentActiveTab.addClass('active');
+	}
 }
 
-sewi.TabContainer.prototype.setCurrentActiveTabButton = function(DomObject){
+sewi.TabContainer.prototype.setCurrentActiveTabButton = function(DOMObject){
 	var selfRef = this;
 	if(selfRef.currentActiveTabButton){
 		selfRef.currentActiveTabButton.removeClass('active');
-		//console.log("remove active from button");
 	}
-	selfRef.currentActiveTabButton = DomObject;
-	selfRef.currentActiveTabButton.addClass('active');
+	selfRef.currentActiveTabButton = DOMObject;
+	if(DOMObject){
+		selfRef.currentActiveTabButton.addClass('active');
+	}
+}
+
+sewi.TabContainer.prototype.addResource = function(DOMObject){
+	var selfRef = this;
+	selfRef.currentActiveTab.append(DOMObject);
 }
 
 sewi.TabContainer.prototype.update = function(){
 	var selfRef = this;
 }
 
-sewi.TabContainer.prototype.getDom = function(){
+sewi.TabContainer.prototype.getDOM = function(){
 	return this.container;
 }

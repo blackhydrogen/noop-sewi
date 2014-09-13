@@ -12,7 +12,7 @@
 	height: 100%;
 }
 
-a.add-tab-button{
+.nav-tabs>li>a.add-tab-button{
 	background-color: #FFF;
 	border-width: 1px;
 	border-style: solid;
