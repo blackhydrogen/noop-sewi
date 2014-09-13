@@ -23,21 +23,20 @@
   </head>
   <body>
     <div class="container">
-      <div class="col-sm-2">
-        sidebar
+      <div class="row">
+        <h1>Roger Williams <small>Encounter #456</small></h1>
       </div>
-      <div class="col-sm-8">
-        center
-      </div>
-      <div class="col-sm-2">
-        right
+      <div id="sewiContainer" class="row">
+        <div id="beiView" class="col-sm-3 animated">
+
+        </div>
+        <div id="mainView" class="col-sm-8 animated">
+
+        </div>
+        <div id="resView" class="col-sm-1 animated">
+
+        </div>
       </div>
     </div>
-	<script>$(document).ready(function() {
-		temp = new sewi.TabContainer();
-		element = temp.display();
-		element.appendTo(".col-sm-8");
-	});
-	</script>
   </body>
 </html>
