@@ -1,4 +1,24 @@
 /* Put your CSS here */
-.ember-application {
-    margin: 20px;
+
+#sewiContainer {
+  min-height: 600px;
+  height: 0;
+}
+
+#beiView, #mainView, #resView {
+  height: 100%;
+  padding: 0;
+}
+
+.col-sm-0 {
+  width: 0px;
+  float: left;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  min-height: 1px;
+}
+
+.animated {
+  transition: all 200ms ease-in-out 0s;
 }
