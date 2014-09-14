@@ -4,7 +4,7 @@ sewi.ResourceGallery = function(){
 	var selfRef = this;
 	
 	selfRef.resources = [];
-	selfRef.resources.push("Sample Resources/images.jpg", "Sample Resources/ecg.jpg", "Sample Resources/video.jpg");
+	selfRef.resources.push("Sample Resources/hands.jpg", "Sample Resources/ecg.jpg", "Sample Resources/video.jpg");
 	selfRef .resourceHeaders = [];
 	selfRef.resourceHeaders.push("X-Ray-Stub", "ECG-Stub", "Video-Stub");
 
