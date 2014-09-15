@@ -42,13 +42,15 @@ sewi.Configurator = function(options) {
     }
 
     function initResViewer() {
-        selfRef.tabs = new sewi.TabContainer();
-        var element = selfRef.tabs.getDOM();
-        element.on("NoTabs", function() {
-            selfRef.isResourceViewerHidden = true;
-            updateViewSizes();
-        });
-        selfRef.resViewerView.append(element);
+        if (_.isFunction(sewi.TabContainer)) {
+            selfRef.tabs = new sewi.TabContainer();
+            var element = selfRef.tabs.getDOM();
+            element.on("NoTabs", function() {
+                selfRef.isResourceViewerHidden = true;
+                updateViewSizes();
+            });
+            selfRef.resViewerView.append(element);
+        }
     }
 
     function initResGallery() {
