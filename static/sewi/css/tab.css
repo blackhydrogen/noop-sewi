@@ -18,3 +18,27 @@
 	border-style: solid;
 	border-color: #DDD #DDD transparent;
 }
+
+.tab-content >.tab-pane{
+	width: 100%;
+	height: 100%;
+}
+
+.panel-content{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index: 0;
+}
+.panel-drop-area{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background-color: blue;
+	opacity: 0;
+	z-index: 100;
+}
+
+.panel-drop-area-visible{
+	opacity: 0.3;
+}
