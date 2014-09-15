@@ -17,14 +17,14 @@ sewi.Configurator = function(options) {
     validateArguments();
     initBasicInfo();
     initResViewer();
-    initResExplorer();
+    initResGallery();
 
     return this;
 
     function validateArguments() {
         selfRef.basicInfoView = $(selfRef.basicInfoView);
         selfRef.resViewerView = $(selfRef.resViewerView);
-        selfRef.resExplorerView = $(selfRef.resExplorerView);
+        selfRef.resGalleryView = $(selfRef.resGalleryView);
 
         if (selfRef.basicInfoView.length != 1) {
             throw new Error('options: One beiView selector/element must be provided.')
@@ -32,7 +32,7 @@ sewi.Configurator = function(options) {
         if (selfRef.resViewerView.length != 1) {
             throw new Error('options: One mainView selector/element must be provided.')
         }
-        if (selfRef.resExplorerView.length != 1) {
+        if (selfRef.resGalleryView.length != 1) {
             throw new Error('options: One resView selector/element must be provided.')
         }
     }
@@ -42,8 +42,8 @@ sewi.Configurator = function(options) {
     }
 
     function initResViewer() {
-        selfRef.tabContainer = new sewi.TabContainer();
-        var element = selfRef.tabContainer.getDOM();
+        selfRef.tabs = new sewi.TabContainer();
+        var element = selfRef.tabs.getDOM();
         element.on("NoTabs", function() {
             selfRef.isResourceViewerHidden = true;
             updateViewSizes();
@@ -51,25 +51,24 @@ sewi.Configurator = function(options) {
         selfRef.resViewerView.append(element);
     }
 
-    function initResExplorer() {
+    function initResGallery() {
         // TODO
     }
 
-    function openResource(resourceId) {
-        // TODO: Open resource in tabContainer
-        // TODO: Pass entire resouce to tabContainer
+    function openResource(galleryElement) {
+        // TODO: Pass entire gallery element to tabs as jQuery object
     }
 
     function updateViewSizes() {
         var totalWidth = 12;
         var basicInfoWidth = 3;
         var minBasicInfoWidth = 1;
-        var resExplorerWidth = 1;
+        var resGalleryWidth = 1;
         var resViewerWidth = 8;
 
         selfRef.basicInfoView
             .add(selfRef.resViewerView)
-            .add(selfRef.resExplorerView)
+            .add(selfRef.resGalleryView)
             .removeClass(function(index, cssClass) {
                 return ( cssClass.match(/(^|\s)col-sm-\S+/g) || [] ).join(' ');
             });
@@ -83,13 +82,13 @@ sewi.Configurator = function(options) {
                    .addClass('col-sm-' + basicInfoWidth);
         }
         if (selfRef.isResourceViewerHidden) {
-            resExplorerWidth += resViewerWidth;
+            resGalleryWidth += resViewerWidth;
             resViewerWidth = 0;
         }
         selfRef.resViewerView
                .addClass('col-sm-' + resViewerWidth);
-        selfRef.resExplorerView
-               .addClass('col-sm-' + resExplorerWidth);
+        selfRef.resGalleryView
+               .addClass('col-sm-' + resGalleryWidth);
     }
 
 }
