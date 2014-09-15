@@ -27,13 +27,13 @@ sewi.Configurator = function(options) {
         selfRef.resGalleryView = $(selfRef.resGalleryView);
 
         if (selfRef.basicInfoView.length != 1) {
-            throw new Error('options: One beiView selector/element must be provided.')
+            throw new Error('options: One basicInfoView selector/element must be provided.')
         }
         if (selfRef.resViewerView.length != 1) {
-            throw new Error('options: One mainView selector/element must be provided.')
+            throw new Error('options: One resViewerView selector/element must be provided.')
         }
         if (selfRef.resGalleryView.length != 1) {
-            throw new Error('options: One resView selector/element must be provided.')
+            throw new Error('options: One resGalleryView selector/element must be provided.')
         }
     }
 
