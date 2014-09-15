@@ -117,6 +117,12 @@ sewi.Configurator = function(options) {
                .addClass('col-sm-' + resGalleryWidth);
     }
 
+    function setEncounterTitle(id, name) {
+        var title = name;
+        var subtitle = "Encounter ID: " + id;
+        selfRef.setTitle(title, subtitle);
+    }
+
 }
 
 sewi.Configurator.prototype.setTitle = function(title, subtitle) {
