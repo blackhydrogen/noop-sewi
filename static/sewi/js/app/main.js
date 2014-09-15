@@ -1,6 +1,10 @@
 // Main program logic goes here.
 $(function() {
-  var tabContainer = new sewi.TabContainer()
-  var tabElem = tabContainer.getDom();
-  $('#mainView').append(tabElem);
+    var configurator = new sewi.Configurator({
+        basicInfoView: '#beiView',
+        resViewerView: '#mainView',
+        resExplorerView: '#resView',
+        
+        isResourceViewerHidden: false
+    });
 });
