@@ -16,7 +16,20 @@ sewi.ResourceGallery.prototype.loadResources = function(){
 		var selfRef = this;
 		for(var i=0;i<selfRef.resources.length;i++){
 			var path = selfRef.resources[i];
-		    var resourceElement = $('<div class="media resource"><img class="media-thumbnail" src="'+ path + '" ><div class="media-body"><p class="media-heading">' + selfRef.resourceHeaders[i] + '</p></div></div>');
+		    var resourceElement = $('<div>')
+			.addClass('resource')
+			.attr("data-resId" ,i);			
+			//.draggable({ helper: 'clone'});
+			
+			resourceElement.on('dblclick', getResourceDom);
+
+		resourceElement.append(
+			$('<img>').attr('src', path)
+		).append(
+			$('<p>').text(selfRef.resourceHeaders[i])
+		);
+
+		    
 		    selfRef.container.append(resourceElement);
 		}
 
@@ -26,6 +39,6 @@ sewi.ResourceGallery.prototype.update = function(){
 	var selfRef = this;
 }
 
-sewi.ResourceGallery.prototype.getDom = function(){
-	return this.container;
-}
+sewi.ResourceGallery.prototype.getResourceDom = function(){
+	return($(this).attr('data-resId'));
+	}
