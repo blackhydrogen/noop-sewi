@@ -8,13 +8,25 @@ sewi.Configurator = function(options) {
     var defaults = {
         animated: true,
         isBasicInfoMinimized: false,
-        isResourceViewerHidden: true
+        isResourceViewerHidden: true,
+        title: 'Loading',
+        subtitle: 'Please wait'
     };
 
     options = options || {};
-    _.assign(selfRef, defaults, options);
+    _.defaults(options, defaults);
+    _.assign(selfRef, _.pick(options, [
+        'animated',
+        'isBasicInfoMinimized',
+        'isResourceViewerHidden',
+        'titleView',
+        'basicInfoView',
+        'resViewerView',
+        'resGalleryView'
+    ]));
 
     validateArguments();
+    initTitle();
     initBasicInfo();
     initResViewer();
     initResGallery();
@@ -22,10 +34,14 @@ sewi.Configurator = function(options) {
     return this;
 
     function validateArguments() {
+        selfRef.titleView = $(selfRef.titleView);
         selfRef.basicInfoView = $(selfRef.basicInfoView);
         selfRef.resViewerView = $(selfRef.resViewerView);
         selfRef.resGalleryView = $(selfRef.resGalleryView);
 
+        if (selfRef.titleView.length != 1) {
+            throw new Error('options: One titleView selector/element must be provided.')
+        }
         if (selfRef.basicInfoView.length != 1) {
             throw new Error('options: One basicInfoView selector/element must be provided.')
         }
@@ -35,6 +51,14 @@ sewi.Configurator = function(options) {
         if (selfRef.resGalleryView.length != 1) {
             throw new Error('options: One resGalleryView selector/element must be provided.')
         }
+    }
+
+    function initTitle() {
+        selfRef.titleDOM = $('<h1>');
+        selfRef.subtitleDOM = $('<small>');
+        selfRef.titleView.append(selfRef.titleDOM);
+
+        selfRef.setTitle(options.title, options.subtitle);
     }
 
     function initBasicInfo() {
@@ -93,4 +117,12 @@ sewi.Configurator = function(options) {
                .addClass('col-sm-' + resGalleryWidth);
     }
 
+}
+
+sewi.Configurator.prototype.setTitle = function(title, subtitle) {
+    var selfRef = this;
+
+    selfRef.subtitleDOM.text(subtitle);
+    selfRef.titleDOM.text(title + ' ')
+                    .append(selfRef.subtitleDOM);
 }
