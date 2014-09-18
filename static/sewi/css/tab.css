@@ -5,11 +5,12 @@
 }
 
 .tab-content{
+	position: relative;
 	background-color: #FFF;
 	border-left: 1px #DDD solid;
 	border-right: 1px #DDD solid;
 	border-bottom: 1px #DDD solid;
-	height: 100%;
+	height: calc(100% - 42px);
 }
 
 .nav-tabs>li>a.add-tab-button{
@@ -30,15 +31,38 @@
 	width: 100%;
 	z-index: 0;
 }
+
 .panel-drop-area{
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	background-color: blue;
+	background-color: #50D0E1;
 	opacity: 0;
-	z-index: 100;
+}
+
+.panel-drop-area-top{
+	top: 0;
+	height: 50%;
+}
+
+.panel-drop-area-bottom{
+	bottom: 0;
+	height: 50%
+}
+
+.panel-drop-area-left{
+	left: 0;
+	width: 50%;
+}
+
+.panel-drop-area-right{
+	right: 0;
+	width: 50%;
 }
 
 .panel-drop-area-visible{
-	opacity: 0.3;
+	opacity: 0.2;
+}
+.panel-drop-area-hover{
+	opacity: 0.4;
 }
