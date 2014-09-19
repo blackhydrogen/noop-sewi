@@ -3,9 +3,8 @@ $(function() {
   var configurator = new sewi.Configurator({
       basicInfoView: '#beiView',
       resViewerView: '#mainView',
-      resExplorerView: '#resView',
-        
-      isResourceViewerHidden: false
+      resGalleryView: '#resView',
+      titleView: '#titleView'
   });
 
   var tempDrag = $('<div id="draggable"></div>');
