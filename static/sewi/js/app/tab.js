@@ -3,18 +3,25 @@ var sewi = sewi || {};
 // Tab class
 sewi.Tab = function(tabContainer, id, name){
 	var selfRef = this;
-	selfRef.DROP_AREA_HOVER = 'panel-drop-area-hover';
-	
-	var dropAreaDOM = {
-			Top : $('<div class="panel-drop-area panel-drop-area-top"></div>'),
-			Bottom : $('<div class="panel-drop-area panel-drop-area-bottom"></div>'),
-			Left : $('<div class="panel-drop-area panel-drop-area-left"></div>'),
-			Right : $('<div class="panel-drop-area panel-drop-area-right"></div>')
-		};
-
 	selfRef.tabContainer = tabContainer;
+	selfRef.panelList=[];
 	selfRef.tabButton = $('<li><a href="#'+id+'" role="tab" data-toggle="tab">'+name+'</a></li>');
 	selfRef.tabPanel = $('<div class="tab-pane" id="'+id+'"><div class="panel-content">'+name+'</div></div>');
+	
+	// constant variables
+	selfRef.DROP_AREA_HOVER_STR = 'panel-drop-area-hover';
+	selfRef.DROP_AREA_TOP_STR = '<div class="panel-drop-area panel-drop-area-top"></div>';
+	selfRef.DROP_AREA_BOTTOM_STR = '<div class="panel-drop-area panel-drop-area-bottom"></div>';
+	selfRef.DROP_AREA_LEFT_STR = '<div class="panel-drop-area panel-drop-area-left"></div>';
+	selfRef.DROP_AREA_RIGHT_STR = '<div class="panel-drop-area panel-drop-area-right"></div>'
+	
+	var dropAreaDOM = {
+			Top : $(selfRef.DROP_AREA_TOP_STR),
+			Bottom : $(selfRef.DROP_AREA_BOTTOM_STR),
+			Left : $(selfRef.DROP_AREA_LEFT_STR),
+			Right : $(selfRef.DROP_AREA_RIGHT_STR)
+		};
+
 	
 	var removeButton={  	tabRef : selfRef,
 				containerRef : tabContainer,
@@ -26,10 +33,11 @@ sewi.Tab = function(tabContainer, id, name){
 		selfRef.tabContainer.setCurrentActiveTab(selfRef);
 	}	
 
-	selfRef.tabPanel.append(dropAreaDOM.Top);
-        selfRef.tabPanel.append(dropAreaDOM.Bottom);
 	selfRef.tabPanel.append(dropAreaDOM.Left);
 	selfRef.tabPanel.append(dropAreaDOM.Right);
+	selfRef.tabPanel.append(dropAreaDOM.Top);
+        selfRef.tabPanel.append(dropAreaDOM.Bottom);
+	
 	
 	selfRef.setDroppable(dropAreaDOM.Top);
 	selfRef.setDroppable(dropAreaDOM.Bottom);
@@ -53,7 +61,6 @@ sewi.Tab.prototype.removeEvent = function(event){
 	containerRef.tabs.splice(tabIndex, 1);
 
 	if(containerRef.currentActiveTab == selfRef){
-		console.log("active");
 		if(tabIndex == containerRef.tabs.length){
 			containerRef.setCurrentActiveTab(containerRef.tabs[tabIndex-1]);
 		} else {
@@ -66,40 +73,86 @@ sewi.Tab.prototype.removeEvent = function(event){
 	}
 }
 
-sewi.Tab.prototype.append = function(DOMObject){
+sewi.Tab.prototype.append = function(DOMObject, dropArea){
 	var selfRef = this;
-	if(selfRef.isHover('.panel-drop-area-left')){
-		console.log('left is active');
-		if(selfRef.isHover('.panel-drop-area-top')){
-			console.log('top is active');
-		} else if(selfRef.isHover('.panel-drop-area-bottom')){
-			console.log('bottom is active');
+	var panel;
+	console.log(dropArea);
+	if(dropArea.hasClass('panel-drop-area-left')){
+		console.log('dropped at left');
+		if(selfRef.panelList.length == 0){
+			panel = $('<div class="panel"></div>');
+			panel.append(DOMObject);			
+			selfRef.tabPanel.append(panel);
+		} else if (selfRef.panelList.length == 1){
+			selfRef.set2Panels('panel-right', 'panel-left', DOMObject);	
+
+		}  else if (selfRef.panelList.length == 2){
+		
+		}  else if (selfRef.panelList.length == 3){
+		
+		} else {
+			selfRef.container.trigger("TabFull");		
+		}
+	} else if(dropArea.hasClass('panel-drop-area-top')){
+		console.log('dropped at top');
+		if(selfRef.panelList.length == 0){
+			panel = $('<div class="panel"></div>');
+			panel.append(DOMObject);			
+			selfRef.tabPanel.append(panel);
+		} else if (selfRef.panelList.length == 1){
+			selfRef.set2Panels('panel-bottom', 'panel-top', DOMObject);
+
+		}  else if (selfRef.panelList.length == 2){
+		
+		}  else if (selfRef.panelList.length == 3){
+		
+		} else {
+			selfRef.container.trigger("TabFull");		
+		}
+	} else if(dropArea.hasClass('panel-drop-area-bottom')){
+		console.log('dropped at bottom');
+		if(selfRef.panelList.length == 0){
+			panel = $('<div class="panel"></div>');
+			panel.append(DOMObject);			
+			selfRef.tabPanel.append(panelTop);
+		} else if (selfRef.panelList.length == 1){
+			selfRef.set2Panels('panel-top', 'panel-bottom', DOMObject);
+
+		}  else if (selfRef.panelList.length == 2){
+		
+		}  else if (selfRef.panelList.length == 3){
+		
+		} else {
+			selfRef.container.trigger("TabFull");		
+		}	
+	} else if(dropArea.hasClass('panel-drop-area-right')){
+		console.log('dropped at right');
+		if(selfRef.panelList.length == 0){
+			panel = $('<div class="panel"></div>');
+			panel.append(DOMObject);			
+			selfRef.tabPanel.append(panel);
+		} else if (selfRef.panelList.length == 1){
+			selfRef.set2Panels('panel-left', 'panel-right', DOMObject);
+
+		}  else if (selfRef.panelList.length == 2){
+		
+		}  else if (selfRef.panelList.length == 3){
+		
+		} else {
+			selfRef.container.trigger("TabFull");		
 		}
 	}
-	
-	if(selfRef.isHover('.panel-drop-area-right')){
-		console.log('right is active');
-		if(selfRef.isHover('.panel-drop-area-top')){
-			console.log('top is active');
-		} else if(selfRef.isHover('.panel-drop-area-bottom')){
-			console.log('bottom is active');
-		}
-	}
-	selfRef.tabPanel.append(DOMObject);
+	selfRef.panelList.push(panel);
 }
 
-sewi.Tab.prototype.setDroppable = function(DOMObject){
+sewi.Tab.prototype.set2Panels = function(panel1ClassStr, panel2ClassStr, DOMObject){
 	var selfRef = this;
-	DOMObject.droppable({
-		drop: function(event, ui){
-					console.log(ui.draggable);
-					selfRef.addResource(ui.draggable);
-				},
-		over: function(){	
-		 },
-		activeClass: 'panel-drop-area-visible',
-		hoverClass: selfRef.DROP_AREA_HOVER
-	});
+	var currentPanel = selfRef.panelList[0];
+	currentPanel.attr('class', panel1ClassStr);
+	var panel = $('<div class="'+panel2ClassStr+'"></div>');
+	panel.append(DOMObject);			
+	selfRef.tabPanel.append(panel);
+	selfRef.panelList.push(panel);
 }
 
 sewi.Tab.prototype.activate = function(){
@@ -116,20 +169,18 @@ sewi.Tab.prototype.deactivate = function(){
 
 sewi.Tab.prototype.isHover = function(dropArea){
 	var selfRef = this;
-	return selfRef.tabPanel.children(dropArea).hasClass(selfRef.DROP_AREA_HOVER);
+	return selfRef.tabPanel.children(dropArea).hasClass(selfRef.DROP_AREA_HOVER_STR);
 }
 
 sewi.Tab.prototype.setDroppable = function(DOMObject){
 	var selfRef = this;
 	DOMObject.droppable({
 		drop: function(event, ui){
-			console.log(ui.draggable);
-			selfRef.append(ui.draggable);
+			event.preventDefault();
+			selfRef.append(ui.draggable, DOMObject);
 		},
-		over: function(){	
-		 },
 		activeClass: 'panel-drop-area-visible',
-		hoverClass: selfRef.DROP_AREA_HOVER
+		hoverClass: selfRef.DROP_AREA_HOVER_STR
 	});
 }
 
@@ -138,13 +189,9 @@ sewi.TabContainer = function(){
 	var selfRef = this;
 	var counter= 1;
 	
-	//Static String values
-	selfRef.DROP_AREA_HOVER = 'panel-drop-area-hover';
-
 	selfRef.currentActiveTab;
 	selfRef.tabButtons=[];	
-	selfRef.resourceList=[];
-
+	
 	selfRef.tabs = [];
 
 	selfRef.container = $('<div class="tab-container"></div>');
