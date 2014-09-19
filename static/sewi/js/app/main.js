@@ -7,14 +7,14 @@ $(function() {
       titleView: '#titleView'
   });
 
-  var tempDrag = $('<div id="draggable"></div>');
+  var tempDrag = $('<div id="draggable">Some words</div>');
   tempDrag.css('background-color', 'red');
   tempDrag.css('width', '100px');
   tempDrag.css('height', '100px');
   tempDrag.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag);
-  
-  var tempDrag2 = $('<div id="draggable"></div>');
+
+  var tempDrag2 = $('<div id="draggable">Some more words</div>');
   tempDrag2.css('background-color', 'red');
   tempDrag2.css('width', '100px');
   tempDrag2.css('height', '100px');
