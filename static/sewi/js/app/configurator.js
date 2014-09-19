@@ -8,33 +8,57 @@ sewi.Configurator = function(options) {
     var defaults = {
         animated: true,
         isBasicInfoMinimized: false,
-        isResourceViewerHidden: true
+        isResourceViewerHidden: true,
+        title: 'Loading',
+        subtitle: 'Please wait'
     };
 
     options = options || {};
-    _.assign(selfRef, defaults, options);
+    _.defaults(options, defaults);
+    _.assign(selfRef, _.pick(options, [
+        'animated',
+        'isBasicInfoMinimized',
+        'isResourceViewerHidden',
+        'titleView',
+        'basicInfoView',
+        'resViewerView',
+        'resGalleryView'
+    ]));
 
     validateArguments();
+    initTitle();
     initBasicInfo();
     initResViewer();
-    initResExplorer();
+    initResGallery();
 
     return this;
 
     function validateArguments() {
+        selfRef.titleView = $(selfRef.titleView);
         selfRef.basicInfoView = $(selfRef.basicInfoView);
         selfRef.resViewerView = $(selfRef.resViewerView);
-        selfRef.resExplorerView = $(selfRef.resExplorerView);
+        selfRef.resGalleryView = $(selfRef.resGalleryView);
 
+        if (selfRef.titleView.length != 1) {
+            throw new Error('options: One titleView selector/element must be provided.')
+        }
         if (selfRef.basicInfoView.length != 1) {
-            throw new Error('options: One beiView selector/element must be provided.')
+            throw new Error('options: One basicInfoView selector/element must be provided.')
         }
         if (selfRef.resViewerView.length != 1) {
-            throw new Error('options: One mainView selector/element must be provided.')
+            throw new Error('options: One resViewerView selector/element must be provided.')
         }
-        if (selfRef.resExplorerView.length != 1) {
-            throw new Error('options: One resView selector/element must be provided.')
+        if (selfRef.resGalleryView.length != 1) {
+            throw new Error('options: One resGalleryView selector/element must be provided.')
         }
+    }
+
+    function initTitle() {
+        selfRef.titleDOM = $('<h1>');
+        selfRef.subtitleDOM = $('<small>');
+        selfRef.titleView.append(selfRef.titleDOM);
+
+        selfRef.setTitle(options.title, options.subtitle);
     }
 
     function initBasicInfo() {
@@ -42,34 +66,35 @@ sewi.Configurator = function(options) {
     }
 
     function initResViewer() {
-        selfRef.tabContainer = new sewi.TabContainer();
-        var element = selfRef.tabContainer.getDOM();
-        element.on("NoTabs", function() {
-            selfRef.isResourceViewerHidden = true;
-            updateViewSizes();
-        });
-        selfRef.resViewerView.append(element);
+        if (_.isFunction(sewi.TabContainer)) {
+            selfRef.tabs = new sewi.TabContainer();
+            var element = selfRef.tabs.getDOM();
+            element.on("NoTabs", function() {
+                selfRef.isResourceViewerHidden = true;
+                updateViewSizes();
+            });
+            selfRef.resViewerView.append(element);
+        }
     }
 
-    function initResExplorer() {
+    function initResGallery() {
         // TODO
     }
 
-    function openResource(resourceId) {
-        // TODO: Open resource in tabContainer
-        // TODO: Pass entire resouce to tabContainer
+    function openResource(galleryElement) {
+        // TODO: Pass entire gallery element to tabs as jQuery object
     }
 
     function updateViewSizes() {
         var totalWidth = 12;
         var basicInfoWidth = 3;
         var minBasicInfoWidth = 1;
-        var resExplorerWidth = 1;
+        var resGalleryWidth = 1;
         var resViewerWidth = 8;
 
         selfRef.basicInfoView
             .add(selfRef.resViewerView)
-            .add(selfRef.resExplorerView)
+            .add(selfRef.resGalleryView)
             .removeClass(function(index, cssClass) {
                 return ( cssClass.match(/(^|\s)col-sm-\S+/g) || [] ).join(' ');
             });
@@ -83,13 +108,27 @@ sewi.Configurator = function(options) {
                    .addClass('col-sm-' + basicInfoWidth);
         }
         if (selfRef.isResourceViewerHidden) {
-            resExplorerWidth += resViewerWidth;
+            resGalleryWidth += resViewerWidth;
             resViewerWidth = 0;
         }
         selfRef.resViewerView
                .addClass('col-sm-' + resViewerWidth);
-        selfRef.resExplorerView
-               .addClass('col-sm-' + resExplorerWidth);
+        selfRef.resGalleryView
+               .addClass('col-sm-' + resGalleryWidth);
     }
 
+    function setEncounterTitle(id, name) {
+        var title = name;
+        var subtitle = "Encounter ID: " + id;
+        selfRef.setTitle(title, subtitle);
+    }
+
+}
+
+sewi.Configurator.prototype.setTitle = function(title, subtitle) {
+    var selfRef = this;
+
+    selfRef.subtitleDOM.text(subtitle);
+    selfRef.titleDOM.text(title + ' ')
+                    .append(selfRef.subtitleDOM);
 }

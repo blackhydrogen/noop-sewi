@@ -1,6 +1,5 @@
 // Main program logic goes here.
 $(function() {
-
   var configurator = new sewi.Configurator({
       basicInfoView: '#beiView',
       resViewerView: '#mainView',
@@ -22,5 +21,4 @@ $(function() {
   tempDrag2.css('height', '100px');
   tempDrag2.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag2);
-
 });
