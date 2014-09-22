@@ -1,29 +1,35 @@
 
         .resource {
             border: solid;
-            display: -webkit-box;
             background-color: #321d6b;
             color: white;
-            width: 350px;
-            margin-bottom: -18px;
+            width: 77px;
+            margin-bottom: -3px;
+            float: left;
         }
+
         .resource:hover {
-            border: solid;
-            zoom: 102%;
+           
             background-color: #190e36;
-            color: white;
-            width: 350px;
-            margin-bottom: -18px;
+           
         }
         .resource-explorer-container {
-            width: 356px;
-            height: 320px;
+            width: 72px;
+            height: 350px;
+
         }
         .media-thumbnail{
-        	width:100px; 
-        	height:100px;
+            width:65px; 
+            height:65px;
             padding: 4px;
         }
+        .clear{
+            clear:both;
+        }
         .media-body{
-            width: 240px;
+            width: 62px;
+            overflow-wrap: break-word;
+            margin-right: 5px;
+            margin-left: 2px;
+            font-size: 0.82em;
         }
