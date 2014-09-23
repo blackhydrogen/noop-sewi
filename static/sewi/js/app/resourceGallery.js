@@ -15,7 +15,7 @@ sewi.ResourceGallery = function() {
     selfRef.loadResources();
 
     $('#scrollable-div').slimScroll({
-        color: '#fff',
+        color: '#000',
         width: '72px',
         size: '4px',
         height: '350px'
@@ -60,5 +60,5 @@ sewi.ResourceGallery.prototype.update = function() {
 }
 
 sewi.ResourceGallery.prototype.getResourceDom = function() {
-    return ($(this).attr('data-resId'));
+    $(document).trigger('resourceClick', [$(this).attr('data-resId')]);
 }

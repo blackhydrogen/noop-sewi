@@ -1,21 +1,22 @@
 
         .resource {
-            border: solid;
-            background-color: #321d6b;
+            border: solid 2.9px;
+            background-color: #d4dbe0;
             color: white;
             width: 77px;
             margin-bottom: -3px;
             float: left;
+            cursor: pointer;
         }
 
         .resource:hover {
            
-            background-color: #190e36;
+            background-color: #adb9c4;
            
         }
         .resource-explorer-container {
-            width: 72px;
-            height: 350px;
+            width: min-width;
+            height: min-height;
 
         }
         .media-thumbnail{
@@ -27,9 +28,10 @@
             clear:both;
         }
         .media-body{
-            width: 62px;
+            width: 66px;
             overflow-wrap: break-word;
             margin-right: 5px;
             margin-left: 2px;
             font-size: 0.82em;
+            color: #000;
         }
