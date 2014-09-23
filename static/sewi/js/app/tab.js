@@ -14,6 +14,15 @@ sewi.Tab = function(tabContainer, id, name){
 	selfRef.DROP_AREA_BOTTOM_STR = '<div class="panel-drop-area panel-drop-area-bottom"></div>';
 	selfRef.DROP_AREA_LEFT_STR = '<div class="panel-drop-area panel-drop-area-left"></div>';
 	selfRef.DROP_AREA_RIGHT_STR = '<div class="panel-drop-area panel-drop-area-right"></div>'
+	selfRef.PANEL_STR = 'panel';
+	selfRef.PANEL_TOP_STR = 'panel-top';
+	selfRef.PANEL_BOTTOM_STR = 'panel-bottom';
+	selfRef.PANEL_LEFT_STR = 'panel-left';
+	selfRef.PANEL_RIGHT_STR = 'panel-right';
+	selfRef.PANEL_TOP_RIGHT_STR = 'panel-top-right';
+	selfRef.PANEL_TOP_LEFT_STR = 'panel-top-left';
+	selfRef.PANEL_BOTTOM_RIGHT_STR = 'panel-bottom-right';
+	selfRef.PANEL_BOTTOM_LEFT_STR = 'panel-bottom-left';
 	
 	var dropAreaDOM = {
 			Top : $(selfRef.DROP_AREA_TOP_STR),
@@ -79,26 +88,44 @@ sewi.Tab.prototype.append = function(DOMObject, dropArea){
 	if(dropArea.hasClass('panel-drop-area-left')){
 		console.log('dropped at left');
 		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], 'panel', DOMObject);
+			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
 		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels(['panel'],['panel-right'], 'panel-left', DOMObject);	
+			selfRef.setPanels([selfRef.PANEL_STR],[selfRef.PANEL_RIGHT_STR], selfRef.PANEL_LEFT_STR, DOMObject);	
 
 		}  else if (selfRef.panelList.length == 2){
 			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels(['panel-top', 'panel-bottom'],
-						['panel-top-right', 'panel-bottom-right'], 
-						'panel-left', 
+				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR], 
+						selfRef.PANEL_LEFT_STR, 
 						DOMObject);
 			} else {
-				selfRef.setPanels(['panel-right','panel-left'],
-						['panel-top-right', 'panel-bottom-left'],
-						'panel-left',
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_LEFT_STR,
 						 DOMObject);
 			}			
 
 		}  else if (selfRef.panelList.length == 3){
 			if(selfRef.tabPanel.children('.panel-top').length > 0){
-			
+				selfRef.setPanels([selfRef.PANEL_TOP_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR],
+						selfRef.PANEL_TOP_LEFT_STR, 
+							DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
+				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_BOTTOM_RIGHT_STR],
+						selfRef.PANEL_BOTTOM_LEFT_STR, 
+							DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
+				selfRef.setPanels([selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_RIGHT_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR],
+						selfRef.PANEL_TOP_LEFT_STR, 
+							DOMObject);
+			} else {
+				selfRef.setPanels([selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_TOP_LEFT_STR, 
+							DOMObject);		
 			}
 		
 		} else {
@@ -107,75 +134,135 @@ sewi.Tab.prototype.append = function(DOMObject, dropArea){
 	} else if(dropArea.hasClass('panel-drop-area-top')){
 		console.log('dropped at top');
 		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], 'panel', DOMObject);
+			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
 		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels(['panel'], ['panel-bottom'], 'panel-top', DOMObject);
+			selfRef.setPanels([selfRef.PANEL_STR], [selfRef.PANEL_BOTTOM_STR], selfRef.PANEL_TOP_STR, DOMObject);
 
 		}  else if (selfRef.panelList.length == 2){
 			
 			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels(['panel-top', 'panel-bottom'],
-						['panel-bottom-left', 'panel-bottom-right'], 
-						'panel-top', 
+				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_BOTTOM_LEFT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR], 
+						selfRef.PANEL_TOP_STR, 
 						DOMObject);
 			} else {
-				selfRef.setPanels(['panel-right','panel-left'],
-						['panel-bottom-right', 'panel-bottom-left'],
-						'panel-top',
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_BOTTOM_RIGHT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_TOP_STR,
 						 DOMObject);
 			}	
 		}  else if (selfRef.panelList.length == 3){
-		
+			if(selfRef.tabPanel.children('.panel-top').length > 0){
+				selfRef.setPanels([selfRef.PANEL_TOP_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR],
+						selfRef.PANEL_TOP_LEFT_STR, 
+						DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
+				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR, selfRef.PANEL_TOP_LEFT_STR],
+						[selfRef.PANEL_BOTTOM_RIGHT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_TOP_LEFT_STR, 
+						 DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR], 
+						[selfRef.PANEL_BOTTOM_RIGHT_STR], 
+						selfRef.PANEL_TOP_RIGHT_STR, 
+						DOMObject);
+			} else {
+				selfRef.setPanels([selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_TOP_LEFT_STR,
+						DOMObject);
+			}
 		} else {
 			selfRef.tabContainer.container.trigger("TabFull");		
 		}
 	} else if(dropArea.hasClass('panel-drop-area-bottom')){
 		console.log('dropped at bottom');
 		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], 'panel', DOMObject);
+			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
 		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels(['panel'], ['panel-top'], 'panel-bottom', DOMObject);
+			selfRef.setPanels([selfRef.PANEL_STR], [selfRef.PANEL_TOP_STR], selfRef.PANEL_BOTTOM_STR, DOMObject);
 
 		}  else if (selfRef.panelList.length == 2){
 			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels(['panel-top', 'panel-bottom'],
-						['panel-top-left', 'panel-top-right'], 
-						'panel-bottom', 
+				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_TOP_RIGHT_STR], 
+						selfRef.PANEL_BOTTOM_STR, 
 						DOMObject);
 			} else {
-				selfRef.setPanels(['panel-right','panel-left'],
-						['panel-top-right', 'panel-top-left'],
-						'panel-bottom',
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_TOP_LEFT_STR],
+						selfRef.PANEL_BOTTOM_STR,
 						 DOMObject);
 			}	
 		
 		}  else if (selfRef.panelList.length == 3){
-		
+			if(selfRef.tabPanel.children('.panel-top').length > 0){
+				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_RIGHT_STR],
+						[selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_TOP_RIGHT_STR],
+						selfRef.PANEL_BOTTOM_RIGHT_STR, 
+						DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
+				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_BOTTOM_RIGHT_STR,
+						DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR],
+						[selfRef.PANEL_TOP_RIGHT_STR],
+						selfRef.PANEL_BOTTOM_RIGHT_STR,
+						DOMObject);
+			} else {
+				selfRef.setPanels([selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_TOP_LEFT_STR],
+						selfRef.PANEL_BOTTOM_LEFT_STR,
+						DOMObject);							
+			}
 		} else {
 			selfRef.tabContainer.container.trigger("TabFull");		
 		}	
 	} else if(dropArea.hasClass('panel-drop-area-right')){
 		console.log('dropped at right');
 		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], 'panel', DOMObject);
+			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
 		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels(['panel'], ['panel-left'], 'panel-right', DOMObject);
+			selfRef.setPanels([selfRef.PANEL_STR], [selfRef.PANEL_LEFT_STR], selfRef.PANEL_RIGHT_STR, DOMObject);
 
 		}  else if (selfRef.panelList.length == 2){
 			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels(['panel-top', 'panel-bottom'],
-						['panel-top-left', 'panel-bottom-left'], 
-						'panel-right', 
+				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_BOTTOM_LEFT_STR], 
+						selfRef.PANEL_RIGHT_STR, 
 						DOMObject);
 			} else {
-				selfRef.setPanels(['panel-right','panel-left'],
-						['panel-bottom-left', 'panel-top-left'],
-						'panel-right',
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
+						[selfRef.PANEL_BOTTOM_LEFT_STR, selfRef.PANEL_TOP_LEFT_STR],
+						selfRef.PANEL_RIGHT_STR,
 						 DOMObject);
 			}	
 		}  else if (selfRef.panelList.length == 3){
-			
-		
+			if(selfRef.tabPanel.children('.panel-top').length > 0){
+				selfRef.setPanels([selfRef.PANEL_TOP_STR],
+						[selfRef.PANEL_TOP_LEFT_STR],
+						selfRef.PANEL_TOP_RIGHT_STR,
+						DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
+				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR],
+						[selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_BOTTOM_RIGHT_STR,
+						DOMObject);
+			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
+				selfRef.setPanels([selfRef.PANEL_RIGHT_STR],
+						  [selfRef.PANEL_TOP_RIGHT_STR], 
+						selfRef.PANEL_BOTTOM_RIGHT_STR,
+						DOMObject);
+			} else {
+				selfRef.setPanels([selfRef.PANEL_LEFT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR], 
+						  [selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
+						selfRef.PANEL_BOTTOM_RIGHT_STR,
+						DOMObject);
+			}
+						
 		} else {
 			selfRef.tabContainer.container.trigger("TabFull");		
 		}
