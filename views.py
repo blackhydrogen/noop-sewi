@@ -11,6 +11,9 @@ logger = logging.getLogger('mds.sewi')
 def main_page(request):
     return render(request, 'sewi/index.html')
 
+def test_page(request):
+    return render(request, 'sewi/testRunner.html')
+
 def get_image(request, image_id):
     logger.info("Retrieving Image ID: " + image_id)
     image_resource = ImageResource("some-udid-here")
