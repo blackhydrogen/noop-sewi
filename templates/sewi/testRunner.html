@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head>
+    <title>SEWI Test Runner</title>
+    <meta charset="utf-8" />
+    {# CSS #}
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/jquery-ui-1.10.3.custom.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/js/tests/vendor/qunit-1.12.0.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
+    {# JavaScript libraries #}
+    <script type="text/javascript" src="{% static "sewi/js/lib/lodash.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/jquery-1.10.2.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/Chart.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/tests/vendor/qunit-1.12.0.js" %}"></script>
+    {# SEWI JavaScript files #}
+  </head>
+  <body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="{% static "sewi/js/tests/tests.js" %}"></script>
+  </body>
+</html>
