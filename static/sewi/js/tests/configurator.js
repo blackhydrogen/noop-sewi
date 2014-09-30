@@ -22,6 +22,15 @@ ResGalleryTestDriver.prototype.getDOM = function() {
     return this.container;
 }
 
+function getTitleText(titleDiv) {
+    var titleText = titleDiv.clone()
+                            .children()
+                            .remove()
+                            .end()
+                            .text();
+    // remove the last whitespace character from the title.
+    return titleText.slice(0, -1);
+}
 
 module('Configurator', {
     setup: function() {
@@ -89,4 +98,26 @@ test('Basic DOM Elements', function(assert) {
     assert.equal(this.basicInfoView.children('div.basic-encounter-container').length, 1, 'Configurator adds the basic information container to the encounter basic information view DIV.');
     assert.equal(this.resViewerView.children('div.resource-viewer-container').length, 1, 'Configurator adds the resource viewer container to the encounter resource viewer DIV.');
     assert.equal(this.resGalleryView.children('div.resource-gallery-container').length, 1, 'Configurator adds the resource gallery container to the encounter resource gallery DIV.');
+});
+
+test('Title and Subtitle', function(assert) {
+    var configurator = new sewi.Configurator({
+        titleView: '#titleView',
+        basicInfoView: '#basicInfoView',
+        resViewerView: '#resViewerView',
+        resGalleryView: '#resGalleryView',
+
+        title: 'Title for Test Case',
+        subtitle: 'Subtitle for Test Case'
+    });
+    var titleDiv = this.titleView.children('h1');
+    var subtitleDiv = titleDiv.children('small');
+
+    assert.equal(subtitleDiv.length, 1, 'Subtitle is displayed with title.');
+    assert.equal(getTitleText(titleDiv), 'Title for Test Case', 'Title text from constructor is displayed correctly.');
+    assert.equal(subtitleDiv.text(), 'Subtitle for Test Case', 'Subtitle text from constructor is displayed correctly.');
+
+    configurator.setTitle('New title', 'New subtitle');
+    assert.equal(getTitleText(titleDiv), 'New title', 'Title text is changed correctly.');
+    assert.equal(subtitleDiv.text(), 'New subtitle', 'Subtitle text is changed correctly.');
 });
