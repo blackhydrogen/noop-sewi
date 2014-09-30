@@ -81,7 +81,12 @@ test('Basic DOM Elements', function(assert) {
         resGalleryView: '#resGalleryView',
     });
     assert.equal(this.titleView.children('h1').length, 1, 'Configurator adds a <h1> element to the title view DIV.');
-    assert.notEqual(this.basicInfoView.length, 0, 'Configurator populates encounter basic information view DIV.');
-    assert.notEqual(this.resViewerView.length, 0, 'Configurator populates encounter resource viewer DIV.');
-    assert.notEqual(this.resGalleryView.length, 0, 'Configurator populates encounter resource gallery DIV.');
+    assert.notEqual(this.basicInfoView.children().length, 0, 'Configurator populates encounter basic information view DIV.');
+    assert.notEqual(this.resViewerView.children().length, 0, 'Configurator populates encounter resource viewer DIV.');
+    assert.notEqual(this.resGalleryView.children().length, 0, 'Configurator populates encounter resource gallery DIV.');
+
+    console.log(this.basicInfoView.children());
+    assert.equal(this.basicInfoView.children('div.basic-encounter-container').length, 1, 'Configurator adds the basic information container to the encounter basic information view DIV.');
+    assert.equal(this.resViewerView.children('div.resource-viewer-container').length, 1, 'Configurator adds the resource viewer container to the encounter resource viewer DIV.');
+    assert.equal(this.resGalleryView.children('div.resource-gallery-container').length, 1, 'Configurator adds the resource gallery container to the encounter resource gallery DIV.');
 });
