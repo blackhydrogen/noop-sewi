@@ -1,5 +1,5 @@
 function BasicEncounterInfoTestDriver() {
-    this.container = $("<div>");
+    this.container = $('<div>').addClass('basic-encounter-container');
 }
 
 BasicEncounterInfoTestDriver.prototype.getDOM = function() {
@@ -7,7 +7,7 @@ BasicEncounterInfoTestDriver.prototype.getDOM = function() {
 }
 
 function ResViewerTestDriver() {
-    this.container = $("<div>");
+    this.container = $('<div>').addClass('resource-viewer-container');
 }
 
 ResViewerTestDriver.prototype.getDOM = function() {
@@ -15,37 +15,41 @@ ResViewerTestDriver.prototype.getDOM = function() {
 }
 
 function ResGalleryTestDriver() {
-    this.container = $("<div>");
+    this.container = $('<div>').addClass('resource-gallery-container');
 }
 
 ResGalleryTestDriver.prototype.getDOM = function() {
     return this.container;
 }
 
+
 module('Configurator', {
-  setup: function() {
-    this.fixture = $('#qunit-fixture');
-    this.titleView = $('<div>').attr('id','titleView').addClass('row').appendTo(this.fixture);
-    var rowDiv = $('<div>').addClass('row').appendTo(this.fixture);
-    this.basicInfoView = $('<div>').attr('id','basicInfoView').appendTo(rowDiv);
-    this.resViewerView = $('<div>').attr('id','resViewerView').appendTo(rowDiv);
-    this.resGalleryView = $('<div>').attr('id','resGalleryView').appendTo(rowDiv);
+    setup: function() {
+        // set up fixture elements
+        this.fixture = $('#qunit-fixture');
+        this.titleView = $('<div>').attr('id','titleView').addClass('row').appendTo(this.fixture);
+        var rowDiv = $('<div>').addClass('row').appendTo(this.fixture);
+        this.basicInfoView = $('<div>').attr('id','basicInfoView').appendTo(rowDiv);
+        this.resViewerView = $('<div>').attr('id','resViewerView').appendTo(rowDiv);
+        this.resGalleryView = $('<div>').attr('id','resGalleryView').appendTo(rowDiv);
 
-    this.oldSewi = sewi;
-    sewi = {
-        TabContainer: ResViewerTestDriver,
-        ResourceGallery: ResGalleryTestDriver,
-        BasicEncounterInfoViewer: BasicEncounterInfoTestDriver,
-        Configurator: sewi.Configurator
-    };
-  },
+        // override SEWI global vars
+        this.oldSewi = sewi;
+        sewi = {
+            TabContainer: ResViewerTestDriver,
+            ResourceGallery: ResGalleryTestDriver,
+            BasicEncounterInfoViewer: BasicEncounterInfoTestDriver,
+            Configurator: sewi.Configurator
+        };
+    },
 
-  teardown: function() {
-    sewi = this.oldSewi;
-  }
+    teardown: function() {
+        // restore global vars (for other test modules to work)
+        sewi = this.oldSewi;
+    }
 });
 
-test("Initialization", function(assert) {
+test('Initialization', function(assert) {
 
     raises(function() {
         var configurator = new sewi.Configurator();
@@ -69,8 +73,7 @@ test("Initialization", function(assert) {
     assert.ok(configurator, 'Configurator can init successfully with selectors/DIVs provided.');
 });
 
-
-test("Basic DOM Elements", function(assert) {
+test('Basic DOM Elements', function(assert) {
     var configurator = new sewi.Configurator({
         titleView: '#titleView',
         basicInfoView: '#basicInfoView',
