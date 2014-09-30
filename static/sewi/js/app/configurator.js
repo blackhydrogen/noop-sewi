@@ -62,7 +62,12 @@ sewi.Configurator = function(options) {
     }
 
     function initBasicInfo() {
-        // TODO
+        if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
+            selfRef.basicInfo = new sewi.BasicEncounterInfoViewer();
+            var element = selfRef.basicInfo.getDOM();
+
+            selfRef.basicInfoView.append(element);
+        }
     }
 
     function initResViewer() {
@@ -78,7 +83,12 @@ sewi.Configurator = function(options) {
     }
 
     function initResGallery() {
-        // TODO
+        if (_.isFunction(sewi.ResourceGallery)) {
+            selfRef.resGallery = new sewi.ResourceGallery();
+            var element = selfRef.resGallery.getDOM();
+
+            selfRef.resGalleryView.append(element);
+        }
     }
 
     function openResource(galleryElement) {
