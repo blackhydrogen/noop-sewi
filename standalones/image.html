@@ -1,7 +1,7 @@
 <style>
 	.image-resource-container {
 		height: 400px;
-		width: 700px;
+		width: 1000px;
 		position: relative;
 		overflow: hidden;
 	}
@@ -13,10 +13,6 @@
 		position: relative;
 	}
 	.image-resource-image {
-		position: absolute;
-		height: auto;
-	}
-	.image-resource-canvas {
 		position: absolute;
 		height: auto;
 	}
@@ -62,9 +58,7 @@
 var mainContainer = $("<div class='image-resource-container'></div>");
 	var imageContainer = $("<div class='image-resource-image-container'></div>")
 	.appendTo(mainContainer);
-		var imageElement = $("<img src='sf.jpg' class='image-resource-image'>");
-		//.appendTo(imageContainer); don't append, in memory only
-		var canvasElement = $("<canvas class='image-resource-canvas'></canvas>")
+		var imageElement = $("<img src='sf.jpg' class='image-resource-image'>")
 		.appendTo(imageContainer);
 	var controlsContainer = $("<div class='image-resource-control-panel animated'></div>")
 	.appendTo(mainContainer);
@@ -84,6 +78,18 @@ var mainContainer = $("<div class='image-resource-container'></div>");
 			.appendTo(invertControlContainer);
 				var invertControl = $("<input type='checkbox' class='image-resource-invert'>")
 				.prependTo(invertControlLabel);
+		var differenceControlContainer = $("<div class='image-resource-control'></div>")
+		.appendTo(controlsContainer)
+			var differenceControlLabel = $("<label>Difference</label>")
+			.appendTo(differenceControlContainer);
+				var differenceControl = $("<input type='checkbox' class='image-resource-difference'>")
+				.prependTo(differenceControlLabel);
+		var grayscaleControlContainer = $("<div class='image-resource-control'></div>")
+		.appendTo(controlsContainer)
+			var grayscaleControlLabel = $("<label>Grayscale</label>")
+			.appendTo(grayscaleControlContainer);
+				var grayscaleControl = $("<input type='checkbox' class='image-resource-grayscale'>")
+				.prependTo(grayscaleControlLabel);
 		var zoomControlContainer = $("<div class='image-resource-control'></div>")
 		.appendTo(controlsContainer)
 		.html("Zoom<br>");
@@ -102,12 +108,11 @@ var mainContainer = $("<div class='image-resource-container'></div>");
 	var showHideControlsButton = $("<input type='button' value='Hide Controls' class='image-resource-show-hide-button'>")
 	.appendTo(mainContainer);
 
-var imageSizeProperties = {
+var imageProperties = {
 	original: {},
 	fit: {},
 	minZoom: {},
-	maxZoom: {},
-	ratio: 0
+	maxZoom: {}
 };
 
 var imageMovementVariables = {
@@ -120,9 +125,11 @@ $(function() {
 	brightnessControl.on("input", adjustImageFilters);
 	contrastControl.on("input", adjustImageFilters);
 	invertControl.on("change", adjustImageFilters);
+	differenceControl.on("change", updateCustomFilters);
+	grayscaleControl.on("change", updateCustomFilters);
 	zoomControl.on("change", calculateImageZoomFromZoomControl);
 	zoom100PercentButton.on("click", function() {
-		updateImageZoom(imageSizeProperties.original.width);
+		updateImageZoom(imageProperties.original.width);
 	});
 	zoomFitButton.on("click", setImageZoomToFit);
 
@@ -130,6 +137,9 @@ $(function() {
 		brightnessControl.val(1);
 		contrastControl.val(1);
 		invertControl.prop("checked", false);
+		differenceControl.prop("checked", false);
+		grayscaleControl.prop("checked", false);
+		updateCustomFilters();
 		adjustImageFilters();
 		setImageZoomToFit();
 	})
@@ -150,52 +160,31 @@ $(function() {
 	imageContainer.on("mousedown", function(event) {
 		imageMovementVariables.originalCursorX = event.pageX;
 		imageMovementVariables.originalCursorY = event.pageY;
-		imageMovementVariables.originalImageX = canvasElement.position().left;
-		imageMovementVariables.originalImageY = canvasElement.position().top;
+		imageMovementVariables.originalImageX = imageElement.position().left;
+		imageMovementVariables.originalImageY = imageElement.position().top;
 		imageMovementVariables.maxImageX = imageContainer.width() / 2;
 		imageMovementVariables.maxImageY = imageContainer.height() / 2;
-		imageMovementVariables.minImageX = imageMovementVariables.maxImageX - canvasElement.width();
-		imageMovementVariables.minImageY = imageMovementVariables.maxImageY - canvasElement.height();
+		imageMovementVariables.minImageX = imageMovementVariables.maxImageX - imageElement.width();
+		imageMovementVariables.minImageY = imageMovementVariables.maxImageY - imageElement.height();
 		imageMovementVariables.ignoreEvent = false; // Used for performances purposes. This variable is set when moveImageToCursor is called too quickly consecutively (after each call to moveImageToCursor, it is set to true, then a timeout() - with some delay - is set it back to false)
 
 		imageContainer.unbind("mousewheel", calculateImageZoomFromMousewheel); //Don't allow the user to move and zoom
+
 		$("body").on("mousemove", moveImageToCursor);
+
+		$("body").one("mouseup", function(event) {
+			imageContainer.on("mousewheel", calculateImageZoomFromMousewheel);
+			$("body").unbind("mousemove", moveImageToCursor);
+		});
+		
 	});
 
-	$("body").on("mouseup", function(event) {
-		imageContainer.on("mousewheel", calculateImageZoomFromMousewheel);
-		$("body").unbind("mousemove", moveImageToCursor);
-	});
-
-	imageElement.load(function() {
-		setupCanvasElement();
-		setImageSizeProperties();
+	imageElement.one("load", function() {
+		setImageProperties();
 		setImageZoomToFit();
 	});
 	
 });
-
-function setupCanvasElement() {
-	canvasElement
-	.prop("height", imageElement.prop("naturalHeight"))
-	.prop("width", imageElement.prop("naturalWidth"));
-
-	canvasElement[0].getContext("2d").drawImage(imageElement[0], 0, 0);
-}
-
-function resizeCanvasElement(newWidth, newHeight) {
-	var tempCanvasElement = $("<canvas></canvas>")
-	.prop("height", canvasElement.prop("height"))
-	.prop("width", canvasElement.prop("width"));
-
-	tempCanvasElement[0].getContext("2d").drawImage(canvasElement[0], 0, 0);
-
-	canvasElement
-	.prop("height", newHeight)
-	.prop("width", newWidth);
-
-	canvasElement[0].getContext("2d").drawImage(imageElement[0], 0, 0, newWidth, newHeight);
-}
 
 function moveImageToCursor(event) {
 	if(imageMovementVariables.ignoreEvent) return false;
@@ -212,125 +201,167 @@ function moveImageToCursor(event) {
 	else if(newImageY > imageMovementVariables.maxImageY)
 		newImageY = imageMovementVariables.maxImageY;
 
-	canvasElement.css({
+	imageElement.css({
 		top: newImageY,
 		left: newImageX
 	});
 
-	// Uncomment if there are performance issues
-	// imageMovementVariables.ignoreEvent = true;
-	// setTimeout(function() {
-	// 	imageMovementVariables.ignoreEvent = false;
-	// }, 10);
+	imageMovementVariables.ignoreEvent = true;
+	setTimeout(function() {
+		imageMovementVariables.ignoreEvent = false;
+	}, 10);
 
 	return false;
 }
 
 function calculateImageZoomFromMousewheel(event) {
+	//Figure out new width
 	var zoomChange = 1 + 0.2 * event.originalEvent.wheelDelta / 120;
-	var newImageWidth = canvasElement.prop("width") * zoomChange;
+	var newImageWidth = imageElement.width() * zoomChange;
 
-	updateImageZoom(newImageWidth);
+	executeZoomImage(newImageWidth, event.clientX, event.clientY);
 
 	return false;
 }
 
+function executeZoomImage(newImageWidth, centreOnX, centreOnY) {
+	if(newImageWidth < imageProperties.minZoom.width) {
+		newImageWidth = imageProperties.minZoom.width;
+	}
+	else if(newImageWidth > imageProperties.maxZoom.width) {
+		newImageWidth = imageProperties.maxZoom.width;
+	}
+
+	// Figure out where to centre image after resizing based on centreOnX, centreOnY
+
+	// Where, in pixels, inside the image is the centre (relative to the image)
+	var imageX = centreOnX - imageElement.position().left;
+	var imageY = centreOnY - imageElement.position().top
+
+	// TODO add condition, if imageX or imageY is out image coordinates, then centre on centre of imageContainer
+
+	var imageRatioX = imageX / imageElement.width();
+	var imageRatioY = imageY / imageElement.height();
+
+	imageElement.width( newImageWidth );
+
+	var newImageX = centreOnX - imageRatioX * imageElement.width();
+	var newImageY = centreOnY - imageRatioY * imageElement.height();
+
+	imageElement.css({
+		top: newImageY,
+		left: newImageX
+	});
+
+	zoomControl.val( Math.floor(imageElement.width() / imageProperties.original.width * 100) );
+}
+
 function calculateImageZoomFromZoomControl() {
-	var newImageWidth = imageSizeProperties.original.width * zoomControl.val() / 100;
+	var newImageWidth = imageProperties.original.width * zoomControl.val() / 100;
 
-	updateImageZoom(newImageWidth);
-}
-
-function updateImageZoom(newImageWidth) {
-	if(newImageWidth < imageSizeProperties.minZoom.width) {
-		newImageWidth = imageSizeProperties.minZoom.width;
-	}
-	else if(newImageWidth > imageSizeProperties.maxZoom.width) {
-		newImageWidth = imageSizeProperties.maxZoom.width;
-	}
-
-	//imageElement.width( newImageWidth );
-	resizeCanvasElement(newImageWidth, newImageWidth / imageSizeProperties.ratio);
-
-	if(newImageWidth < imageSizeProperties.fit.width) {
-		centreImageOnCanvas();
-	}
-
-	updateZoomPercentage();
-}
-
-function updateZoomPercentage() {
-	zoomControl.val( Math.floor(canvasElement.prop("width") / imageSizeProperties.original.width * 100) );
+	executeZoomImage(newImageWidth, imageContainer.width() / 2, imageContainer.height() / 2);
 }
 
 function setImageZoomToFit() {
-	//imageElement.width( imageSizeProperties.fit.width );
-	resizeCanvasElement(imageSizeProperties.fit.width, imageSizeProperties.fit.height);
-
-	updateZoomPercentage();
-
+	executeZoomImage(imageProperties.fit.width, 0, 0);
 	centreImageOnCanvas();
 }
 
 function centreImageOnCanvas() {
-	canvasElement.css({
-		top: (imageContainer.height() - canvasElement.prop("height")) / 2,
-		left: (imageContainer.width() - canvasElement.prop("width")) / 2
+	imageElement.css({
+		top: (imageContainer.height() - imageElement.height()) / 2,
+		left: (imageContainer.width() - imageElement.width()) / 2
 	});
 }
 
-function setImageSizeProperties() {
-
-	imageSizeProperties.original.width = imageElement.prop("naturalWidth");
-	imageSizeProperties.original.height = imageElement.prop("naturalHeight");
-
-	imageSizeProperties.ratio = imageSizeProperties.original.width / imageSizeProperties.original.height;
+function setImageProperties() {
+	imageProperties.original.width = imageElement.prop("naturalWidth");
+	imageProperties.original.height = imageElement.prop("naturalHeight");
+	imageProperties.original.url = imageElement.prop("src");
 
 	//Compute fit sizes
-	var originalWidth = imageSizeProperties.original.width;
-	var originalHeight = imageSizeProperties.original.height;
+	var originalWidth = imageElement.prop("naturalWidth");
+	var originalHeight = imageElement.prop("naturalHeight");
 	var containerWidth = imageContainer.width();
 	var containerHeight = imageContainer.height();
 
 	if(originalWidth <= containerWidth) {
 		if(originalHeight <= containerHeight) {
-			imageSizeProperties.fit.width = originalWidth;
-			imageSizeProperties.fit.height = originalHeight;
+			imageProperties.fit.width = originalWidth;
+			imageProperties.fit.height = originalHeight;
 		}
 		else {
-			imageSizeProperties.fit.width = originalWidth * containerHeight / originalHeight;
-			imageSizeProperties.fit.height = containerHeight;
+			imageProperties.fit.width = originalWidth * containerHeight / originalHeight;
+			imageProperties.fit.height = containerHeight;
 		}
 	}
 	else {
 		if(originalHeight <= containerHeight) {
-			imageSizeProperties.fit.width = containerWidth;
-			imageSizeProperties.fit.height = originalHeight * containerWidth / originalWidth;
+			imageProperties.fit.width = containerWidth;
+			imageProperties.fit.height = originalHeight * containerWidth / originalWidth;
 		}
 		else {
 			var adjustedWidth = originalWidth * containerHeight / originalHeight;
 
 			if(adjustedWidth <= containerWidth) {
-				imageSizeProperties.fit.width = adjustedWidth;
-				imageSizeProperties.fit.height = originalHeight * adjustedWidth / originalWidth;
+				imageProperties.fit.width = adjustedWidth;
+				imageProperties.fit.height = originalHeight * adjustedWidth / originalWidth;
 			}
 			else {
-				imageSizeProperties.fit.width = containerWidth;
-				imageSizeProperties.fit.height = originalHeight * containerWidth / originalWidth;
+				imageProperties.fit.width = containerWidth;
+				imageProperties.fit.height = originalHeight * containerWidth / originalWidth;
 			}
 		}
 	}
 	// End Compute fit sizes
 
-	imageSizeProperties.minZoom.width = imageSizeProperties.fit.width / 2;
-	imageSizeProperties.minZoom.height = imageSizeProperties.fit.height / 2;
+	imageProperties.minZoom.width = imageProperties.fit.width / 2;
+	imageProperties.minZoom.height = imageProperties.fit.height / 2;
 
-	imageSizeProperties.maxZoom.width = imageSizeProperties.original.width * 2;
-	imageSizeProperties.maxZoom.height = imageSizeProperties.original.height * 2;
+	imageProperties.maxZoom.width = imageProperties.original.width * 2;
+	imageProperties.maxZoom.height = imageProperties.original.height * 2;
+}
+
+function updateCustomFilters() {
+	if(differenceControl.prop("checked") == 1 || grayscaleControl.prop("checked") == 1) {
+		canvasElement = $("<canvas></canvas>")
+		.prop("width", imageProperties.original.width)
+		.prop("height", imageProperties.original.height);
+
+		var originalImage = $("<img>").prop("src", imageProperties.original.url);
+
+		canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, imageProperties.original.width, imageProperties.original.height);
+
+		var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, 1600, 1200);
+
+		if(grayscaleControl.prop("checked") == 1) {
+			for(var i = 0; i < canvasData.data.length; i += 4) {
+				// Luminosity method: 0.21 R + 0.72 G + 0.07 B
+				var newColor = Math.floor(0.21 * canvasData.data[i]) + Math.floor(0.72 * canvasData.data[i+1]) + Math.floor(0.07 * canvasData.data[i+2]);
+				canvasData.data[i] = newColor;
+				canvasData.data[i+1] = newColor;
+				canvasData.data[i+2] = newColor;
+			}
+		}
+		if(differenceControl.prop("checked") == 1) {
+			for(var i = 0; i < canvasData.data.length; i += 4) {
+				canvasData.data[i] = Math.abs(255 - 2 * canvasData.data[i]);
+				canvasData.data[i+1] = Math.abs(255 - 2 * canvasData.data[i+1]);
+				canvasData.data[i+2] = Math.abs(255 - 2 * canvasData.data[i+2]);
+			}
+		}
+
+		canvasElement[0].getContext("2d").putImageData(canvasData, 0, 0);
+
+		imageElement.prop("src", canvasElement[0].toDataURL("image/png"));
+	}
+	else {
+		imageElement.prop("src", imageProperties.original.url);
+	}
 }
 
 function adjustImageFilters() {
-	canvasElement.css("-webkit-filter",
+	imageElement.css("-webkit-filter",
 			"brightness(" + brightnessControl.val() + ")"
 			+ "contrast(" + contrastControl.val() + ")"
 			+ "invert(" + (invertControl.prop("checked") ? 1 : 0) + ")");
