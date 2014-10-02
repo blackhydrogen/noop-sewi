@@ -45,7 +45,7 @@ sewi.Tab = function(tabContainer, id, name){
 	selfRef.tabPanel.append(dropAreaDOM.Left);
 	selfRef.tabPanel.append(dropAreaDOM.Right);
 	selfRef.tabPanel.append(dropAreaDOM.Top);
-        selfRef.tabPanel.append(dropAreaDOM.Bottom);
+    selfRef.tabPanel.append(dropAreaDOM.Bottom);
 	
 	
 	selfRef.setDroppable(dropAreaDOM.Top);
@@ -85,7 +85,9 @@ sewi.Tab.prototype.removeEvent = function(event){
 sewi.Tab.prototype.append = function(DOMObject, dropArea){
 	var selfRef = this;
 	console.log(dropArea);
-	if(dropArea.hasClass('panel-drop-area-left')){
+	if(!dropArea){
+		 selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);	
+	} else if(dropArea.hasClass('panel-drop-area-left')){
 		console.log('dropped at left');
 		if(selfRef.panelList.length == 0){
 			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
@@ -313,7 +315,7 @@ sewi.Tab.prototype.setDroppable = function(DOMObject){
 // tab container class
 sewi.TabContainer = function(){
 	var selfRef = this;
-	var counter= 1;
+	selfRef.counter= 1;
 	
 	selfRef.currentActiveTab;
 	selfRef.tabButtons=[];	
@@ -326,8 +328,8 @@ sewi.TabContainer = function(){
 
 	var addTabButton = $('<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>');
 	addTabButton.on('click', function(){
-		selfRef.addNewTab("Tab"+counter,"Tab "+counter,true);
-		counter++;
+		selfRef.addNewTab("Tab"+selfRef.counter,"",true);
+		selfRef.counter++;
 	});
 
 	selfRef.tabButtons.push(addTabButton);
@@ -363,4 +365,10 @@ sewi.TabContainer.prototype.setCurrentActiveTab = function(tab){
 
 sewi.TabContainer.prototype.getDOM = function(){
 	return this.container;
+}
+
+sewi.TabContainer.prototype.addObjectToNewTab = function(id, type, DOMObject){
+	var selfRef = this;
+	selfRef.addNewTab("Tab"+selfRef.counter,"", true);
+	selfRef.currentActiveTab.append(DOMObject);
 }

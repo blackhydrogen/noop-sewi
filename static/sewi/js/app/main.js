@@ -15,9 +15,23 @@ $(function() {
   $('#resView').append(tempDrag);
 
   var tempDrag2 = $('<div id="draggable">Some more words</div>');
-  tempDrag2.css('background-color', 'red');
+  tempDrag2.css('background-color', 'green');
   tempDrag2.css('width', '100px');
   tempDrag2.css('height', '100px');
   tempDrag2.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag2);
+  
+  var tempDrag3 = $('<div id="draggable">Some more more words</div>');
+  tempDrag3.css('background-color', 'blue');
+  tempDrag3.css('width', '100px');
+  tempDrag3.css('height', '200px');
+  tempDrag3.draggable({revert : 'invalid', helper:'clone'});
+  $('#resView').append(tempDrag3);
+  
+  var tempDrag4 = $('<div id="draggable">Some more more words</div>');
+  tempDrag4.css('background-color', 'yellow');
+  tempDrag4.css('width', '200px');
+  tempDrag4.css('height', '200px');
+  tempDrag4.draggable({revert : 'invalid', helper:'clone'});
+  $('#resView').append(tempDrag4);
 });
