@@ -58,7 +58,7 @@
 var mainContainer = $("<div class='image-resource-container'></div>");
 	var imageContainer = $("<div class='image-resource-image-container'></div>")
 	.appendTo(mainContainer);
-		var imageElement = $("<img src='sf.jpg' class='image-resource-image'>")
+		var imageElement = $("<img src='sf.png' class='image-resource-image'>")
 		.appendTo(imageContainer);
 	var controlsContainer = $("<div class='image-resource-control-panel animated'></div>")
 	.appendTo(mainContainer);
@@ -129,7 +129,7 @@ $(function() {
 	grayscaleControl.on("change", updateCustomFilters);
 	zoomControl.on("change", calculateImageZoomFromZoomControl);
 	zoom100PercentButton.on("click", function() {
-		updateImageZoom(imageProperties.original.width);
+		executeZoomImage(imageProperties.original.width, imageContainer.width() / 2, imageContainer.height() / 2);
 	});
 	zoomFitButton.on("click", setImageZoomToFit);
 
