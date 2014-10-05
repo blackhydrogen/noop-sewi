@@ -1,3 +1,28 @@
+@keyframes indicatorKeyFrames{
+	0%{width: 20%; height: 20%; top: 40%; left: 40%; }
+	100%{ width: 100%; height: 100%; top: 0px ; left: 0px;}
+}
+
+@keyframes indicatorRightKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@keyframes indicatorLeftKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@keyframes indicatorTopKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
+@keyframes indicatorBottomKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
 .tab-container{
 	background-color: #AAA;
 	width: 100%;
@@ -32,62 +57,139 @@
 	z-index: 0;
 }
 
+.panel-indicator{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	animation: indicatorKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+}
+
+.panel-indicator-right{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 100%;
+	top: 0;
+	right: 0;
+	animation: indicatorRightKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+}
+
+.panel-indicator-left{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	animation: indicatorRightKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+}
+
+.panel-indicator-top{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 100%;
+	height: 50%;
+	top: 0;
+	left: 0;
+	animation: indicatorTopKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+}
+
+
+.panel-indicator-bottom{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 100%;
+	height: 50%;
+	bottom: 0;
+	left: 0;
+	animation: indicatorBottomKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+}
+
 .panel-drop-area{
 	position: absolute;
-	height: 100%;
-	width: 100%;
-	background-color: #50D0E1;
 	opacity: 0;
 }
 
+.panel-drop-area-full{
+	height: 100%;
+	width: 100%;
+}
+
 .panel-drop-area-top{
-	top: 1%;
-	border-radius: 10px;
-	height: 40%;
-	width: 30%;
-	left: 35%;
+	top: 0;
+	left: 25%;
+	height: 30%;
+	width: 50%;
 }
 
 .panel-drop-area-bottom{
-	bottom: 1%;
-	border-radius: 10px;
-	height: 40%;
-	width: 30%;
-	left: 35%;
+	bottom: 0;
+	left: 25%;
+	height: 30%;
+	width: 50%;
 }
 
 .panel-drop-area-left{
-	left: 1%;
-	border-radius: 10px;
-	width: 30%;
-	height: 40%;
-	top: 30%;
+	left: 0px;
+	top: 0px;
+	width: 25%;
+	height: 100%;
 }
 
 .panel-drop-area-right{
-	right: 1%;
-	border-radius: 10px;
-	width: 30%;
-	height: 40%;
-	top: 30%;
+	top: 0px;
+	right: 0px;
+	width: 25%;
+	height: 100%;
 }
 
 .panel-drop-area-visible{
 	opacity: 0.2;
 }
+
 .panel-drop-area-hover{
 	opacity: 0.4;
 }
 
 .panel{
-	top: 0;
-	left: 0;
+	position: absolute;
+}
+
+.panel-full{
 	width: 100%;
 	height: 100%;
 }
 
 .panel-right{
-	position: absolute;
 	top: 0; 
 	right: 0;
 	width: 50%;
@@ -95,7 +197,6 @@
 }
 
 .panel-left{
-	position: absolute;
 	top: 0;
 	left: 0;
 	width: 50%;
@@ -103,7 +204,6 @@
 }
 
 .panel-top{
-	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -111,15 +211,13 @@
 }
 
 .panel-bottom{
-	position: absolute;
-	bottom: 0;
+	bottom: -21px;
 	left: 0;
 	width: 100%;
 	height: 50%;
 }
 
 .panel-top-right{
-	position: absolute;
 	top: 0;
 	right: 0;
 	width: 50%;
@@ -127,7 +225,6 @@
 }
 
 .panel-top-left{
-	position: absolute;
 	top: 0;
 	left: 0;
 	width: 50%;
@@ -135,7 +232,6 @@
 }
 
 .panel-bottom-right{
-	position: absolute;
 	bottom: 0;
 	right: 0;
 	width: 50%;
@@ -143,9 +239,17 @@
 }
 
 .panel-bottom-left{
-	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 50%;
 	height: 50%;
+}
+
+.dummy-obj{
+	width: 100%;
+	height: 100%;
+	background-color: yellow;
+	border-style: solid;
+	border-width: 5px;
+	border-color: black;
 }

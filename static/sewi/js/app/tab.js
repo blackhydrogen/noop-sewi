@@ -1,4 +1,117 @@
-var sewi = sewi || {}; 
+var sewi = sewi || {};
+// Tab Panel class
+sewi.TabPanel = function(DOMObject, tabObject, state){
+	var selfRef = this;
+	selfRef.state = state;
+	selfRef.tab = tabObject;
+	selfRef.panel = selfRef.setPanelDOM(state);
+	selfRef.panelDropAreaRight = $('<div class="panel-drop-area panel-drop-area-right"></div>');
+	selfRef.panelDropAreaLeft = $('<div class="panel-drop-area panel-drop-area-left"></div>');
+	selfRef.panelDropAreaTop = $('<div class="panel-drop-area panel-drop-area-top"></div>');
+	selfRef.panelDropAreaBottom = $('<div class="panel-drop-area panel-drop-area-bottom"></div>');
+	
+	selfRef.position = {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3}; 
+	
+	selfRef.setDroppable(selfRef.panelDropAreaRight, selfRef.position.RIGHT);
+	selfRef.setDroppable(selfRef.panelDropAreaLeft, selfRef.position.LEFT);
+	selfRef.setDroppable(selfRef.panelDropAreaTop, selfRef.position.TOP);
+	selfRef.setDroppable(selfRef.panelDropAreaBottom, selfRef.position.BOTTOM);
+	
+	selfRef.panel.append(selfRef.panelDropAreaRight);
+	selfRef.panel.append(selfRef.panelDropAreaLeft);
+	selfRef.panel.append(selfRef.panelDropAreaTop);
+	selfRef.panel.append(selfRef.panelDropAreaBottom);
+
+	selfRef.panel.append(DOMObject);
+}
+
+sewi.TabPanel.prototype.setDroppable = function(dropArea, position){
+	var selfRef = this;
+	dropArea.droppable({
+		drop: function(event, ui){
+			event.preventDefault();
+			console.log(ui.draggable);
+			if(selfRef.state == 0){
+				if(position == selfRef.position.RIGHT){
+					console.log("dropped");
+					selfRef.tab.append(ui.draggable, 2);
+					selfRef.tab.tabPanel.children('.panel-indicator-right').remove();
+				} else if (position == selfRef.position.LEFT){
+					selfRef.tab.append(ui.draggable, 1);
+					selfRef.tab.tabPanel.children('.panel-indicator-left').remove();
+				} else if (position == selfRef.position.TOP){
+					selfRef.tab.append(ui.draggable, 3);
+					selfRef.tab.tabPanel.children('.panel-indicator-top').remove();
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.tab.append(ui.draggable, 4);
+					selfRef.tab.tabPanel.children('.panel-indicator-bottom').remove();
+				}
+			}
+		},
+		over: function(event, ui){
+			event.preventDefault();
+			if(selfRef.state == 0){
+				if(position == selfRef.position.RIGHT){
+					selfRef.panel.addClass('panel-left').removeClass('panel-full');
+					selfRef.tab.tabPanel.append($('<div class="panel-indicator-right"></div>'));
+				} else if (position == selfRef.position.LEFT){
+					selfRef.panel.addClass('panel-right').removeClass('panel-full');
+					selfRef.tab.tabPanel.append($('<div class="panel-indicator-left"></div>'));
+				} else if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-bottom').removeClass('panel-full');
+					selfRef.tab.tabPanel.append($('<div class="panel-indicator-top"></div>'));
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-top').removeClass('panel-full');
+					selfRef.tab.tabPanel.append($('<div class="panel-indicator-bottom"></div>'));	
+				}
+			}
+		},
+		out: function(event, ui){
+			if(selfRef.state == 0){
+				if(position == selfRef.position.RIGHT){
+					selfRef.panel.addClass('panel-full').removeClass('panel-left');
+					selfRef.tab.tabPanel.children('.panel-indicator-right').remove();
+				} else if (position == selfRef.position.LEFT){
+					selfRef.panel.addClass('panel-full').removeClass('panel-right');
+					selfRef.tab.tabPanel.children('.panel-indicator-left').remove();
+				} else if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-full').removeClass('panel-bottom');
+					selfRef.tab.tabPanel.children('.panel-indicator-top').remove();
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-full').removeClass('panel-top');
+					selfRef.tab.tabPanel.children('.panel-indicator-bottom').remove();
+				}
+			}
+		}
+	});
+}
+
+sewi.TabPanel.prototype.setPanelDOM = function(state){
+	var selfRef = this;
+	var DOM = $('<div class="animated panel"></div>');
+	switch(state){
+		case 0: 
+			DOM.addClass('panel-full');
+			break;
+		case 1:
+			DOM.addClass('panel-left');
+			break;
+		case 2: 
+			DOM.addClass('panel-right');
+			break;
+		case 3:
+			DOM.addClass('panel-top');
+			break;
+		case 4:
+			DOM.addClass('panel-bottom');
+			break;
+	}
+	return DOM;
+}
+
+sewi.TabPanel.prototype.getDOM = function(){
+	return this.panel;
+}
 
 // Tab class
 sewi.Tab = function(tabContainer, id, name){
@@ -10,28 +123,11 @@ sewi.Tab = function(tabContainer, id, name){
 	
 	// constant variables
 	selfRef.DROP_AREA_HOVER_STR = 'panel-drop-area-hover';
-	selfRef.DROP_AREA_TOP_STR = '<div class="panel-drop-area panel-drop-area-top"></div>';
-	selfRef.DROP_AREA_BOTTOM_STR = '<div class="panel-drop-area panel-drop-area-bottom"></div>';
-	selfRef.DROP_AREA_LEFT_STR = '<div class="panel-drop-area panel-drop-area-left"></div>';
-	selfRef.DROP_AREA_RIGHT_STR = '<div class="panel-drop-area panel-drop-area-right"></div>'
 	selfRef.PANEL_STR = 'panel';
-	selfRef.PANEL_TOP_STR = 'panel-top';
-	selfRef.PANEL_BOTTOM_STR = 'panel-bottom';
-	selfRef.PANEL_LEFT_STR = 'panel-left';
-	selfRef.PANEL_RIGHT_STR = 'panel-right';
-	selfRef.PANEL_TOP_RIGHT_STR = 'panel-top-right';
-	selfRef.PANEL_TOP_LEFT_STR = 'panel-top-left';
-	selfRef.PANEL_BOTTOM_RIGHT_STR = 'panel-bottom-right';
-	selfRef.PANEL_BOTTOM_LEFT_STR = 'panel-bottom-left';
-	
-	var dropAreaDOM = {
-			Top : $(selfRef.DROP_AREA_TOP_STR),
-			Bottom : $(selfRef.DROP_AREA_BOTTOM_STR),
-			Left : $(selfRef.DROP_AREA_LEFT_STR),
-			Right : $(selfRef.DROP_AREA_RIGHT_STR)
-		};
+	selfRef.DROP_AREA_STR = '<div class="panel-drop-area panel-drop-area-full"></div>';
 
-	
+	var dropAreaDOM = $(selfRef.DROP_AREA_STR);
+
 	var removeButton={  	tabRef : selfRef,
 				containerRef : tabContainer,
 				tabButton : selfRef.tabButton,
@@ -42,16 +138,8 @@ sewi.Tab = function(tabContainer, id, name){
 		selfRef.tabContainer.setCurrentActiveTab(selfRef);
 	}	
 
-	selfRef.tabPanel.append(dropAreaDOM.Left);
-	selfRef.tabPanel.append(dropAreaDOM.Right);
-	selfRef.tabPanel.append(dropAreaDOM.Top);
-    selfRef.tabPanel.append(dropAreaDOM.Bottom);
-	
-	
-	selfRef.setDroppable(dropAreaDOM.Top);
-	selfRef.setDroppable(dropAreaDOM.Bottom);
-	selfRef.setDroppable(dropAreaDOM.Left);
-	selfRef.setDroppable(dropAreaDOM.Right);	
+	selfRef.tabPanel.append(dropAreaDOM);
+	selfRef.setDroppable(dropAreaDOM);
 
 	removeButton.DOM.on('click', removeButton, selfRef.removeEvent);
 	selfRef.tabButton.children('a').append(removeButton.DOM);
@@ -82,203 +170,18 @@ sewi.Tab.prototype.removeEvent = function(event){
 	}
 }
 
-sewi.Tab.prototype.append = function(DOMObject, dropArea){
+sewi.Tab.prototype.append = function(DOMObject, state){
 	var selfRef = this;
-	console.log(dropArea);
-	if(!dropArea){
-		 selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);	
-	} else if(dropArea.hasClass('panel-drop-area-left')){
-		console.log('dropped at left');
-		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
-		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels([selfRef.PANEL_STR],[selfRef.PANEL_RIGHT_STR], selfRef.PANEL_LEFT_STR, DOMObject);	
-
-		}  else if (selfRef.panelList.length == 2){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR], 
-						selfRef.PANEL_LEFT_STR, 
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_LEFT_STR,
-						 DOMObject);
-			}			
-
-		}  else if (selfRef.panelList.length == 3){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR],
-						selfRef.PANEL_TOP_LEFT_STR, 
-							DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
-				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_BOTTOM_RIGHT_STR],
-						selfRef.PANEL_BOTTOM_LEFT_STR, 
-							DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_RIGHT_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR],
-						selfRef.PANEL_TOP_LEFT_STR, 
-							DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_TOP_LEFT_STR, 
-							DOMObject);		
-			}
-		
-		} else {
-			selfRef.tabContainer.container.trigger("TabFull");		
-		}
-	} else if(dropArea.hasClass('panel-drop-area-top')){
-		console.log('dropped at top');
-		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
-		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels([selfRef.PANEL_STR], [selfRef.PANEL_BOTTOM_STR], selfRef.PANEL_TOP_STR, DOMObject);
-
-		}  else if (selfRef.panelList.length == 2){
-			
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_BOTTOM_LEFT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR], 
-						selfRef.PANEL_TOP_STR, 
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_BOTTOM_RIGHT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_TOP_STR,
-						 DOMObject);
-			}	
-		}  else if (selfRef.panelList.length == 3){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR],
-						selfRef.PANEL_TOP_LEFT_STR, 
-						DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
-				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR, selfRef.PANEL_TOP_LEFT_STR],
-						[selfRef.PANEL_BOTTOM_RIGHT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_TOP_LEFT_STR, 
-						 DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR], 
-						[selfRef.PANEL_BOTTOM_RIGHT_STR], 
-						selfRef.PANEL_TOP_RIGHT_STR, 
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_TOP_LEFT_STR,
-						DOMObject);
-			}
-		} else {
-			selfRef.tabContainer.container.trigger("TabFull");		
-		}
-	} else if(dropArea.hasClass('panel-drop-area-bottom')){
-		console.log('dropped at bottom');
-		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
-		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels([selfRef.PANEL_STR], [selfRef.PANEL_TOP_STR], selfRef.PANEL_BOTTOM_STR, DOMObject);
-
-		}  else if (selfRef.panelList.length == 2){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_TOP_RIGHT_STR], 
-						selfRef.PANEL_BOTTOM_STR, 
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR, selfRef.PANEL_TOP_LEFT_STR],
-						selfRef.PANEL_BOTTOM_STR,
-						 DOMObject);
-			}	
-		
-		}  else if (selfRef.panelList.length == 3){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_RIGHT_STR],
-						[selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_TOP_RIGHT_STR],
-						selfRef.PANEL_BOTTOM_RIGHT_STR, 
-						DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
-				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_BOTTOM_RIGHT_STR,
-						DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR],
-						[selfRef.PANEL_TOP_RIGHT_STR],
-						selfRef.PANEL_BOTTOM_RIGHT_STR,
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_TOP_LEFT_STR],
-						selfRef.PANEL_BOTTOM_LEFT_STR,
-						DOMObject);							
-			}
-		} else {
-			selfRef.tabContainer.container.trigger("TabFull");		
-		}	
-	} else if(dropArea.hasClass('panel-drop-area-right')){
-		console.log('dropped at right');
-		if(selfRef.panelList.length == 0){
-			selfRef.setPanels([], [], selfRef.PANEL_STR, DOMObject);
-		} else if (selfRef.panelList.length == 1){
-			selfRef.setPanels([selfRef.PANEL_STR], [selfRef.PANEL_LEFT_STR], selfRef.PANEL_RIGHT_STR, DOMObject);
-
-		}  else if (selfRef.panelList.length == 2){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR, selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_BOTTOM_LEFT_STR], 
-						selfRef.PANEL_RIGHT_STR, 
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR,selfRef.PANEL_LEFT_STR],
-						[selfRef.PANEL_BOTTOM_LEFT_STR, selfRef.PANEL_TOP_LEFT_STR],
-						selfRef.PANEL_RIGHT_STR,
-						 DOMObject);
-			}	
-		}  else if (selfRef.panelList.length == 3){
-			if(selfRef.tabPanel.children('.panel-top').length > 0){
-				selfRef.setPanels([selfRef.PANEL_TOP_STR],
-						[selfRef.PANEL_TOP_LEFT_STR],
-						selfRef.PANEL_TOP_RIGHT_STR,
-						DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-bottom').length > 0){
-				selfRef.setPanels([selfRef.PANEL_BOTTOM_STR],
-						[selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_BOTTOM_RIGHT_STR,
-						DOMObject);
-			} else if(selfRef.tabPanel.children('.panel-right').length > 0){
-				selfRef.setPanels([selfRef.PANEL_RIGHT_STR],
-						  [selfRef.PANEL_TOP_RIGHT_STR], 
-						selfRef.PANEL_BOTTOM_RIGHT_STR,
-						DOMObject);
-			} else {
-				selfRef.setPanels([selfRef.PANEL_LEFT_STR, selfRef.PANEL_BOTTOM_RIGHT_STR], 
-						  [selfRef.PANEL_TOP_LEFT_STR, selfRef.PANEL_BOTTOM_LEFT_STR],
-						selfRef.PANEL_BOTTOM_RIGHT_STR,
-						DOMObject);
-			}
-						
-		} else {
-			selfRef.tabContainer.container.trigger("TabFull");		
-		}
-	}
+	var id = DOMObject.attr('data-resId');
+	var type = DOMObject.attr('data-resType');
+	var obj = $('<div class="dummy-obj"></div>');
+	selfRef.setPanel(obj, state);
 }
 
-sewi.Tab.prototype.setPanels = function(originalStrArr, replaceStrArr, newPanelStr, DOMObject){
+sewi.Tab.prototype.setPanel = function(DOMObject, state){
 	var selfRef = this;
-	for(var i=0; i < originalStrArr.length; i++){
-		selfRef.tabPanel.children('.'+originalStrArr[i]).attr('class', replaceStrArr[i]);
-	}
-	var panel = $('<div class="'+newPanelStr+'"></div>');
-	panel.append(DOMObject);			
-	selfRef.tabPanel.append(panel);
+	var panel = new sewi.TabPanel(DOMObject, selfRef, state);			
+	selfRef.tabPanel.append(panel.getDOM());
 	selfRef.panelList.push(panel);
 	console.log(selfRef.panelList.length);
 }
@@ -300,12 +203,25 @@ sewi.Tab.prototype.isHover = function(dropArea){
 	return selfRef.tabPanel.children(dropArea).hasClass(selfRef.DROP_AREA_HOVER_STR);
 }
 
-sewi.Tab.prototype.setDroppable = function(DOMObject){
+sewi.Tab.prototype.setDroppable = function(dropArea){
 	var selfRef = this;
-	DOMObject.droppable({
+	dropArea.droppable({
 		drop: function(event, ui){
 			event.preventDefault();
-			selfRef.append(ui.draggable, DOMObject);
+			dropArea.remove();
+			selfRef.append(ui.draggable, 0);
+			selfRef.tabPanel.children('.panel-indicator').remove();
+		},
+		over: function(event, ui){
+			event.preventDefault();
+			console.log('over');
+			selfRef.tabPanel.append($('<div class="panel-indicator"></div>'));
+		
+		},
+		out: function(event, ui){
+			event.preventDefault();
+			console.log('out');
+			selfRef.tabPanel.children('.panel-indicator').remove();
 		},
 		activeClass: 'panel-drop-area-visible',
 		hoverClass: selfRef.DROP_AREA_HOVER_STR
@@ -370,5 +286,5 @@ sewi.TabContainer.prototype.getDOM = function(){
 sewi.TabContainer.prototype.addObjectToNewTab = function(id, type, DOMObject){
 	var selfRef = this;
 	selfRef.addNewTab("Tab"+selfRef.counter,"", true);
-	selfRef.currentActiveTab.append(DOMObject);
+	selfRef.currentActiveTab.append(DOMObject, 0);
 }

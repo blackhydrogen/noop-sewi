@@ -33,7 +33,7 @@ test('Addition and removal of all tabs', function(assert){
 	assert.equal($('.tab-pane').length, 0, "All tabs removed successfully");
 });
 
-test('Adding multiple DOMs into the tab', function(assert){
+/*test('Adding multiple DOMs into the tab', function(assert){
 	
 
-});
+});*/
