@@ -247,7 +247,7 @@ sewi.Tab = function(tabContainer, id, name){
 	var selfRef = this;
 	selfRef.tabContainer = tabContainer;
 	selfRef.panelList=[];
-	selfRef.tabButton = $('<li><a href="#'+id+'" role="tab" data-toggle="tab">'+name+'</a></li>');
+	selfRef.tabButton = $('<li class="tab-button"><a href="#'+id+'" role="tab" data-toggle="tab">'+name+'</a></li>');
 	selfRef.tabPanel = $('<div class="tab-pane" id="'+id+'"><div class="panel-content">'+name+'</div></div>');
 	
 	// constant variables
@@ -280,7 +280,7 @@ sewi.Tab.prototype.removeEvent = function(event){
 	var selfRef = removeButton.tabRef;
 	var containerRef = removeButton.containerRef;
 	var tabIndex = containerRef.tabs.indexOf(selfRef);
-		
+	
 	removeButton.tabPanel.remove();
 	removeButton.tabButton.remove();
 
@@ -293,6 +293,11 @@ sewi.Tab.prototype.removeEvent = function(event){
 			containerRef.setCurrentActiveTab(containerRef.tabs[tabIndex]);
 		}
 	} 
+
+	var lastIndex = containerRef.tabButtons.length-1;
+	if (!containerRef.tabButtons[lastIndex].is(":visible")){
+		containerRef.tabButtons[lastIndex].show();
+	}
 
 	if (containerRef.tabs.length == 0){
 		selfRef.tabContainer.container.trigger("NoTabs");
@@ -387,14 +392,22 @@ sewi.TabContainer = function(){
 
 sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active){
 	var selfRef = this;
-	var newTab = new sewi.Tab(selfRef, tabName, tabText);
-	selfRef.tabs.push(newTab);
+	if(selfRef.tabs.length < sewi.constants.MAX_NUM_TABS){
+		var newTab = new sewi.Tab(selfRef, tabName, tabText);
+		selfRef.tabs.push(newTab);
 
-	if (active) selfRef.setCurrentActiveTab(newTab);	
+		if (active) selfRef.setCurrentActiveTab(newTab);	
 	
-	var lastIndex = selfRef.tabButtons.length-1;	
-	newTab.tabButton.insertBefore(selfRef.tabButtons[lastIndex]);
-	selfRef.tabContent.append(newTab.tabPanel);
+		var lastIndex = selfRef.tabButtons.length-1;	
+		newTab.tabButton.insertBefore(selfRef.tabButtons[lastIndex]);
+		selfRef.tabContent.append(newTab.tabPanel);
+
+		if(selfRef.tabs.length == sewi.constants.MAX_NUM_TABS){
+			selfRef.tabButtons[lastIndex].hide();
+		}
+	} else {
+		// TO DO: trigger event to notify configurator to display error message
+	}
 }
 
 sewi.TabContainer.prototype.setCurrentActiveTab = function(tab){

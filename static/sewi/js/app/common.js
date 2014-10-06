@@ -17,5 +17,5 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
-
+	MAX_NUM_TABS: 5,
 };
