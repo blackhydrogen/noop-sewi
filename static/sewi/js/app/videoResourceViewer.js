@@ -209,6 +209,8 @@ sewi.VideoResourceViewer = function(options) {
     validateArguments();
     initDOM();
     initControls();
+    attachVideoEventHandlers();
+    attachControlsEventHandlers();
 
     return selfRef;
 
@@ -239,6 +241,65 @@ sewi.VideoResourceViewer = function(options) {
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
         selfRef.mainDOMElement.append(selfRef.controlPanelElement);
+    }
+
+    function attachVideoEventHandlers() {
+        selfRef.videoElement.on('timeupdate seeked', updateTime);
+        selfRef.videoElement.on('play pause', updatePlayingStatus);
+        selfRef.videoElement.on('volumechange', updateVolume);
+    }
+
+    function attachControlsEventHandlers() {
+        selfRef.controlPanelElement.on('Playing', playEvent);
+        selfRef.controlPanelElement.on('Paused', pauseEvent);
+        selfRef.controlPanelElement.on('Muted', muteEvent);
+        selfRef.controlPanelElement.on('Unmuted', unmuteEvent);
+        selfRef.controlPanelElement.on('PositionChanged', positionEvent);
+        selfRef.controlPanelElement.on('VolumeChanged', volumeEvent);
+    }
+
+    function playEvent() {
+        selfRef.videoElement[0].play();
+    }
+
+    function pauseEvent() {
+        selfRef.videoElement[0].pause();
+    }
+
+    function muteEvent() {
+        selfRef.videoElement[0].muted = true;
+    }
+
+    function unmuteEvent() {
+        selfRef.videoElement[0].muted = false;
+    }
+
+    function positionEvent(event, position) {
+        selfRef.videoElement[0].currentTime = selfRef.videoElement[0].duration * position / 100.0;
+    }
+
+    function volumeEvent(event, volume) {
+        selfRef.videoElement[0].volume = volume;
+    }
+
+    function updateTime() {
+        var currentPosition = selfRef.videoElement[0].currentTime / selfRef.videoElement[0].duration * 100.0;
+        selfRef.controls.update({ position: currentPosition });
+    }
+
+    function updatePlayingStatus() {
+        var paused = selfRef.videoElement[0].paused;
+        selfRef.controls.update({ playing: !paused });
+    }
+
+    function updateVolume() {
+        var options = {};
+        options.muted = selfRef.videoElement[0].muted;
+        if (!options.muted) {
+            options.volume = selfRef.videoElement[0].volume;
+        }
+
+        selfRef.controls.update(options);
     }
 }
 
