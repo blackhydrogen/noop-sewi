@@ -17,12 +17,13 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
+	MAX_NUM_TABS: 5,
+	DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
     VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
     VIDEO_RESOURCE_VIEWER_DOM_CLASS: 'video-resource-container',
     VIDEO_RESOURCE_VIEWER_VIDEO_ID: 'videoResource',
     VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
     VIDEO_RESOURCE_VIEWER_CONTENT_DOM: '<div class="video-content animated"></div>',
-
     VIDEO_CONTROLS_DOM_CLASS: 'video-control-panel',
     VIDEO_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
     VIDEO_CONTROLS_INNER_PANEL_DOM: '<div></div>',
