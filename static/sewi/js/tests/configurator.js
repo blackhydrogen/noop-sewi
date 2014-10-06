@@ -60,11 +60,13 @@ module('Configurator', {
 
 test('Initialization', function(assert) {
 
-    raises(function() {
+    assert.throws(function() {
         var configurator = new sewi.Configurator();
     }, Error, 'Throws Error when DIV selectors/elements are not provided.');
 
-    raises(function() {
+    assert.throws(function() { throw new Error() });
+
+    assert.throws(function() {
         var configurator = new sewi.Configurator({
             titleView: '#invalidId',
             basicInfoView: '#invalidId',
