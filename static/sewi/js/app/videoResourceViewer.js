@@ -208,6 +208,7 @@ sewi.VideoResourceViewer = function(options) {
 
     validateArguments();
     initDOM();
+    initControls();
 
     return selfRef;
 
@@ -231,6 +232,13 @@ sewi.VideoResourceViewer = function(options) {
                             .appendTo(selfRef.contentElement);
 
         selfRef.mainDOMElement.append(selfRef.contentElement);
+    }
+
+    function initControls() {
+        selfRef.controls = new sewi.VideoControls();
+
+        selfRef.controlPanelElement = selfRef.controls.getDOM();
+        selfRef.mainDOMElement.append(selfRef.controlPanelElement);
     }
 }
 
