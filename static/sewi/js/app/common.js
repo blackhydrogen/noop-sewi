@@ -12,3 +12,8 @@ sewi.inherits = function(subClass, superClass) {
         throw new Error('Only class definitions can inherit other class definitions.');
     }
 }
+
+/** Declare all constants in this object. */
+sewi.constants = {
+
+};
