@@ -18,4 +18,5 @@ sewi.inherits = function(subClass, superClass) {
 /** Declare all constants in this object. */
 sewi.constants = {
 	MAX_NUM_TABS: 5,
+	DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
 };

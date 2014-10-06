@@ -9,14 +9,12 @@ sewi.TabPanel = function(DOMObject, tabObject, state){
 	selfRef.panelDropAreaRight = $('<div class="panel-drop-area panel-drop-area-right"></div>');
 	selfRef.panelDropAreaLeft = $('<div class="panel-drop-area panel-drop-area-left"></div>');
 	selfRef.panelDropAreaTop = $('<div class="panel-drop-area panel-drop-area-top"></div>');
-	selfRef.panelDropAreaBottom = $('<div class="panel-drop-area panel-drop-area-bottom"></div>');
+	selfRef.panelDropAreaBottom = $('<div class="panel-drop-area panel-drop-area-bottom"></div>'); 
 	
-	selfRef.position = {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3}; 
-	
-	selfRef.setDroppable(selfRef.panelDropAreaRight, selfRef.position.RIGHT);
-	selfRef.setDroppable(selfRef.panelDropAreaLeft, selfRef.position.LEFT);
-	selfRef.setDroppable(selfRef.panelDropAreaTop, selfRef.position.TOP);
-	selfRef.setDroppable(selfRef.panelDropAreaBottom, selfRef.position.BOTTOM);
+	selfRef.setDroppable(selfRef.panelDropAreaRight, sewi.constants.DROP_AREA_POSITIONS.RIGHT);
+	selfRef.setDroppable(selfRef.panelDropAreaLeft, sewi.constants.DROP_AREA_POSITIONS.LEFT);
+	selfRef.setDroppable(selfRef.panelDropAreaTop, sewi.constants.DROP_AREA_POSITIONS.TOP);
+	selfRef.setDroppable(selfRef.panelDropAreaBottom, sewi.constants.DROP_AREA_POSITIONS.BOTTOM);
 	
 	selfRef.panel.append(selfRef.panelDropAreaRight);
 	selfRef.panel.append(selfRef.panelDropAreaLeft);
@@ -35,99 +33,207 @@ sewi.TabPanel.prototype.setDroppable = function(dropArea, position){
 		over: function(event, ui){
 			event.preventDefault();
 			if (selfRef.state == 0){
-				if (position == selfRef.position.RIGHT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.panel.addClass('panel-left').removeClass('panel-full');
 					indicatorDropArea.addClass('panel-indicator-right');
-				} else if (position == selfRef.position.LEFT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.panel.addClass('panel-right').removeClass('panel-full');
 					indicatorDropArea.addClass('panel-indicator-left');
-				} else if (position == selfRef.position.TOP){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.panel.addClass('panel-bottom').removeClass('panel-full');
 					indicatorDropArea.addClass('panel-indicator-top');
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.panel.addClass('panel-top').removeClass('panel-full');
 					indicatorDropArea.addClass('panel-indicator-bottom');
 				}
 			} else if (selfRef.state == 1){
-				if (position == selfRef.position.TOP){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-left');
 					indicatorDropArea.addClass('panel-indicator-top-left');
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.panel.addClass('panel-top-left').removeClass('panel-left');
 					indicatorDropArea.addClass('panel-indicator-bottom-left');	
 				}
 			} else if (selfRef.state == 2){
-				if (position == selfRef.position.TOP){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-right');
 					indicatorDropArea.addClass('panel-indicator-top-right');	
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.panel.addClass('panel-top-right').removeClass('panel-right');
 					indicatorDropArea.addClass('panel-indicator-bottom-right');		
 				}
 			} else if (selfRef.state == 3){
-				if (position == selfRef.position.LEFT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-bottom');
 					indicatorDropArea.addClass('panel-indicator-left-bottom');
-				} else if (position == selfRef.position.RIGHT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-bottom');
 					indicatorDropArea.addClass('panel-indicator-right-bottom');	
 				}
 			} else if (selfRef.state == 4){
-				if (position == selfRef.position.LEFT){	
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){	
 					selfRef.panel.addClass('panel-top-right').removeClass('panel-top');
 					indicatorDropArea.addClass('panel-indicator-left-top');
-				} else if (position == selfRef.position.RIGHT){	
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){	
 					selfRef.panel.addClass('panel-top-left').removeClass('panel-top');
 					indicatorDropArea.addClass('panel-indicator-right-top');
 				}
-			} 
+			} else if (selfRef.state == 5){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP && 
+					selfRef.tab.tabPanel.has('.panel-bottom').length){
+					selfRef.tab.tabPanel.children('.panel-bottom').addClass('panel-bottom-right').removeClass('panel-bottom');
+					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-top-left');
+					indicatorDropArea.addClass('panel-indicator-top-left');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT &&
+					selfRef.tab.tabPanel.has('.panel-right').length){
+					selfRef.tab.tabPanel.children('.panel-right').addClass('panel-bottom-right').removeClass('panel-right');
+					selfRef.panel.addClass('panel-top-right').removeClass('panel-top-left');
+					indicatorDropArea.addClass('panel-indicator-left-top');
+				}
+			} else if (selfRef.state == 6){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP && 
+					selfRef.tab.tabPanel.has('.panel-bottom').length){
+					selfRef.tab.tabPanel.children('.panel-bottom').addClass('panel-bottom-left').removeClass('panel-bottom');
+					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-top-right');
+					indicatorDropArea.addClass('panel-indicator-top-right');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT &&
+					selfRef.tab.tabPanel.has('.panel-left').length){
+					selfRef.tab.tabPanel.children('.panel-left').addClass('panel-bottom-left').removeClass('panel-left');
+					selfRef.panel.addClass('panel-top-left').removeClass('panel-top-right');
+					indicatorDropArea.addClass('panel-indicator-right-top');
+				}
+			
+			} else if (selfRef.state == 7){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM && 
+					selfRef.tab.tabPanel.has('.panel-top').length){
+					selfRef.tab.tabPanel.children('.panel-top').addClass('panel-top-right').removeClass('panel-top');
+					selfRef.panel.addClass('panel-top-left').removeClass('panel-bottom-left');
+					indicatorDropArea.addClass('panel-indicator-bottom-left');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT &&
+					selfRef.tab.tabPanel.has('.panel-right').length){
+					selfRef.tab.tabPanel.children('.panel-right').addClass('panel-top-right').removeClass('panel-right');
+					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-bottom-left');
+					indicatorDropArea.addClass('panel-indicator-left-bottom');
+				}
+
+			} else if (selfRef.state == 8){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM && 
+					selfRef.tab.tabPanel.has('.panel-top').length){
+					selfRef.tab.tabPanel.children('.panel-top').addClass('panel-top-left').removeClass('panel-top');
+					selfRef.panel.addClass('panel-top-right').removeClass('panel-bottom-right');
+					indicatorDropArea.addClass('panel-indicator-bottom-right');
+
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT &&
+							selfRef.tab.tabPanel.has('.panel-left').length){
+					selfRef.tab.tabPanel.children('.panel-left').addClass('panel-top-left').removeClass('panel-left');
+					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-bottom-right');
+					indicatorDropArea.addClass('panel-indicator-right-bottom');
+				}
+			}
 		},
 		out: function(event, ui){
 			if (selfRef.state == 0){
-				if (position == selfRef.position.RIGHT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.panel.addClass('panel-full').removeClass('panel-left');
 					indicatorDropArea.removeClass('panel-indicator-right');
-				} else if (position == selfRef.position.LEFT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.panel.addClass('panel-full').removeClass('panel-right');
 					indicatorDropArea.removeClass('panel-indicator-left');
-				} else if (position == selfRef.position.TOP){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.panel.addClass('panel-full').removeClass('panel-bottom');
 					indicatorDropArea.removeClass('panel-indicator-top');
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.panel.addClass('panel-full').removeClass('panel-top');
 					indicatorDropArea.removeClass('panel-indicator-bottom');
 				}
 			} else if (selfRef.state == 1){
-				if (position == selfRef.position.TOP){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.panel.addClass('panel-left').removeClass('panel-bottom-left');
 					indicatorDropArea.removeClass('panel-indicator-top-left');	
-				} else if (position == selfRef.position.BOTTOM){	
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){	
 					selfRef.panel.addClass('panel-left').removeClass('panel-top-left');
 					indicatorDropArea.removeClass('panel-indicator-bottom-left');	
 				}
 			} else if (selfRef.state == 2){
-				if (position == selfRef.position.TOP){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.panel.addClass('panel-right').removeClass('panel-bottom-right');
 					indicatorDropArea.removeClass('panel-indicator-top-right');		
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.panel.addClass('panel-right').removeClass('panel-top-right');
 					indicatorDropArea.removeClass('panel-indicator-bottom-right');		
 				}
 			} else if (selfRef.state == 3){
-				if (position == selfRef.position.LEFT){	
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){	
 					selfRef.panel.addClass('panel-bottom').removeClass('panel-bottom-right');
 					indicatorDropArea.removeClass('panel-indicator-left-bottom');		
-				} else if (position == selfRef.position.RIGHT){	
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){	
 					selfRef.panel.addClass('panel-bottom').removeClass('panel-bottom-left');
 					indicatorDropArea.removeClass('panel-indicator-right-bottom');		
 				}
 			} else if (selfRef.state == 4){
-				if (position == selfRef.position.LEFT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.panel.addClass('panel-top').removeClass('panel-top-right');
 					indicatorDropArea.removeClass('panel-indicator-left-top');		
-				} else if (position == selfRef.position.RIGHT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.panel.addClass('panel-top').removeClass('panel-top-left');
 					indicatorDropArea.removeClass('panel-indicator-right-top');			
+				}
+			} else if (selfRef.state == 5){ 
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP &&
+					selfRef.tab.tabPanel.has('.panel-bottom-right').length &&
+					selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-top-left').removeClass('panel-bottom-left');
+					selfRef.tab.tabPanel.children('.panel-bottom-right').addClass('panel-bottom').removeClass('panel-bottom-right');
+					indicatorDropArea.removeClass('panel-indicator-top-left');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT &&
+							selfRef.tab.tabPanel.has('.panel-bottom-right').length &&
+							selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-top-left').removeClass('panel-top-right');
+					selfRef.tab.tabPanel.children('.panel-bottom-right').addClass('panel-right').removeClass('panel-bottom-right');
+					indicatorDropArea.removeClass('panel-indicator-left-top');
+				}
+			} else if (selfRef.state == 6){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP &&
+					selfRef.tab.tabPanel.has('.panel-bottom-left').length &&
+					selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-top-right').removeClass('panel-bottom-right');
+					selfRef.tab.tabPanel.children('.panel-bottom-left').addClass('panel-bottom').removeClass('panel-bottom-left');
+					indicatorDropArea.removeClass('panel-indicator-top-right');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT &&
+							selfRef.tab.tabPanel.has('.panel-bottom-left').length &&
+							selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-top-right').removeClass('panel-top-left');
+					selfRef.tab.tabPanel.children('.panel-bottom-left').addClass('panel-left').removeClass('panel-bottom-left');
+					indicatorDropArea.removeClass('panel-indicator-right-top');
+				}	
+			} else if (selfRef.state == 7){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM &&
+					selfRef.tab.tabPanel.has('.panel-top-right').length &&
+					selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-top-left');
+					selfRef.tab.tabPanel.children('.panel-top-right').addClass('panel-top').removeClass('panel-top-right');
+					indicatorDropArea.removeClass('panel-indicator-bottom-left');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT &&
+							selfRef.tab.tabPanel.has('.panel-top-right').length &&
+							selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-bottom-right');
+					selfRef.tab.tabPanel.children('.panel-top-right').addClass('panel-right').removeClass('panel-top-right');
+					indicatorDropArea.removeClass('panel-indicator-left-bottom');
+				}
+			} else if (selfRef.state == 8){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT && 
+					selfRef.tab.tabPanel.has('.panel-top-left').length &&
+					selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-bottom-left');
+					selfRef.tab.tabPanel.children('.panel-top-left').addClass('panel-left').removeClass('panel-top-left');
+					indicatorDropArea.removeClass('panel-indicator-right-bottom');
+					
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM &&
+							selfRef.tab.tabPanel.has('.panel-top-left').length &&
+							selfRef.tab.panelList.length == 3){
+					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-top-right');
+					selfRef.tab.tabPanel.children('.panel-top-left').addClass('panel-top').removeClass('panel-top-left');
+					indicatorDropArea.removeClass('panel-indicator-bottom-right');
 				}
 			}
 		}
@@ -141,62 +247,102 @@ sewi.TabPanel.prototype.setIndicatorDroppable = function(dropArea, position){
 			event.preventDefault();
 			console.log(ui.draggable);
 			if (selfRef.state == 0){
-				if (position == selfRef.position.RIGHT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.state = 1; //LEFT
 					selfRef.tab.append(ui.draggable, 2);
 					dropArea.removeClass('panel-indicator-right');
-				} else if (position == selfRef.position.LEFT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.state = 2  //RIGHT
 					selfRef.tab.append(ui.draggable, 1);
 					dropArea.removeClass('panel-indicator-left');
-				} else if (position == selfRef.position.TOP){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.state = 3; //BOTTOM
 					selfRef.tab.append(ui.draggable, 4);
 					dropArea.removeClass('panel-indicator-top');
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.state = 4; //TOP
 					selfRef.tab.append(ui.draggable, 3);
 					dropArea.removeClass('panel-indicator-bottom');
 				}
 			} else if (selfRef.state == 1){
-				if (position == selfRef.position.TOP){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.state = 7;
 					selfRef.tab.append(ui.draggable, 5);
 					dropArea.removeClass('panel-indicator-top-left');
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.state = 5;
 					selfRef.tab.append(ui.draggable, 7);
 					dropArea.removeClass('panel-indicator-bottom-left');
 				}
 			} else if (selfRef.state == 2){
-				if (position == selfRef.position.TOP){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
 					selfRef.state = 8;
 					selfRef.tab.append(ui.draggable, 6);
 					dropArea.removeClass('panel-indicator-top-right');
-				} else if (position == selfRef.position.BOTTOM){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
 					selfRef.state = 6;
 					selfRef.tab.append(ui.draggable, 8);
 					dropArea.removeClass('panel-indicator-bottom-right');
 				}
 			} else if (selfRef.state == 3){
-				if (position == selfRef.position.LEFT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.state = 8;
 					selfRef.tab.append(ui.draggable, 7);
 					dropArea.removeClass('panel-indicator-left-bottom');
-				} else if (position == selfRef.position.RIGHT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.state = 7;
 					selfRef.tab.append(ui.draggable, 8);
 					dropArea.removeClass('panel-indicator-right-bottom');
 				}
 			} else if (selfRef.state == 4){
-				if (position == selfRef.position.LEFT){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
 					selfRef.state = 6;
 					selfRef.tab.append(ui.draggable, 5);
 					dropArea.removeClass('panel-indicator-left-top');
-				} else if (position == selfRef.position.RIGHT){
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
 					selfRef.state = 5;
 					selfRef.tab.append(ui.draggable, 6);
 					dropArea.removeClass('panel-indicator-right-top');
+				}
+			} else if (selfRef.state == 5){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
+					selfRef.state = 7;
+					selfRef.tab.append(ui.draggable, 5);
+					dropArea.removeClass('panel-indicator-top-left');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
+					selfRef.state = 6;
+					selfRef.tab.append(ui.draggable, 5);
+					dropArea.removeClass('panel-indicator-left-top');
+				}	
+			} else if (selfRef.state == 6){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.TOP){
+					selfRef.state = 8;
+					selfRef.tab.append(ui.draggable, 6);
+					dropArea.removeClass('panel-indicator-top-right');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
+					selfRef.state = 5;
+					selfRef.tab.append(ui.draggable, 6);
+					dropArea.removeClass('panel-indicator-right-top');
+				}
+			} else if (selfRef.state == 7){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.LEFT){
+					selfRef.state = 8;
+					selfRef.tab.append(ui.draggable, 7);
+					dropArea.removeClass('panel-indicator-left-bottom');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
+					selfRef.state = 5;
+					selfRef.tab.append(ui.draggable, 7);
+					dropArea.removeClass('panel-indicator-bottom-left');
+				}
+			} else if (selfRef.state == 8){
+				if (position == sewi.constants.DROP_AREA_POSITIONS.RIGHT){
+					selfRef.state = 7;
+					selfRef.tab.append(ui.draggable, 8);
+					dropArea.removeClass('panel-indicator-right-bottom');
+				} else if (position == sewi.constants.DROP_AREA_POSITIONS.BOTTOM){
+					selfRef.state = 6;
+					selfRef.tab.append(ui.draggable, 8);
+					dropArea.removeClass('panel-indicator-bottom-right');
 				}
 			}
 		},
