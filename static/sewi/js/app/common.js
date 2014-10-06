@@ -2,6 +2,8 @@ var sewi = sewi || {};
 
 /**
  * Helper function to ensure that a class inherits another class.
+ * Note that classes must still use {NameOfSuperClass}.call(this) in their
+ * constructor to initialize themselves.
  * @param  {function} subClass   Function definition of the sub class.
  * @param  {function} superClass Function definition of the super class.
  */
