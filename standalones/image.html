@@ -402,6 +402,7 @@ function updateCustomFilters() {
 		t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
 		imageElement.prop("src", canvasElement[0].toDataURL("image/jpeg", 0.9));
+		imageElement.prop("src", canvasElement[0].toDataURL("image/png"));
 
 		t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 	}
@@ -477,16 +478,15 @@ function applyFalseColorFilterToPixelData(pixelData, chosenFalseColorPalette) {
 	console.log(colorHasBeenCounted);
 
 	var falseColorMapping = [];
-	var numberOfFalseColorsUsed = 0;
-	var falseColorMultiplier = 256 / colorCount;
+	var falseColorsUsedCounter = 0;
 	for(var i = 0; i < 256; i++) {
 		if(!colorHasBeenCounted[i]) {
 			falseColorMapping[i] = null;
 			continue;
 		}
 
-		falseColorMapping[i] = Math.floor(numberOfFalseColorsUsed * falseColorMultiplier);
-		numberOfFalseColorsUsed++;
+		falseColorMapping[i] = Math.round(falseColorsUsedCounter * 256 / colorCount);
+		falseColorsUsedCounter++;
 	}
 
 	for(var i = 0; i < pixelData.length; i += 4) {
