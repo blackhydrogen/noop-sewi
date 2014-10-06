@@ -17,5 +17,10 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
+    VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
+    VIDEO_RESOURCE_VIEWER_DOM_CLASS: 'video-resource-container',
+    VIDEO_RESOURCE_VIEWER_VIDEO_ID: 'videoResource',
+    VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
+    VIDEO_RESOURCE_VIEWER_CONTENT_DOM: '<div class="video-content animated"></div>',
 
 };
