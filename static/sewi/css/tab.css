@@ -23,6 +23,31 @@
 	100%{height: 50%;}
 }
 
+@-webkit-keyframes indicatorKeyFrames{
+	0%{width: 20%; height: 20%; top: 40%; left: 40%; }
+	100%{ width: 100%; height: 100%; top: 0px ; left: 0px;}
+}
+
+@-webkit-keyframes indicatorRightKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@-webkit-keyframes indicatorLeftKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@-webkit-keyframes indicatorTopKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
+@-webkit-keyframes indicatorBottomKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
 .tab-container{
 	background-color: #AAA;
 	width: 100%;
@@ -67,6 +92,8 @@
 	border-color: #0522FF;
 	animation: indicatorKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-right{
@@ -83,6 +110,8 @@
 	right: 0;
 	animation: indicatorRightKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-left{
@@ -99,6 +128,8 @@
 	left: 0;
 	animation: indicatorRightKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-top{
@@ -115,6 +146,8 @@
 	left: 0;
 	animation: indicatorTopKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorTopKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 
@@ -132,6 +165,8 @@
 	left: 0;
 	animation: indicatorBottomKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorBottomKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-bottom-left{
@@ -148,6 +183,8 @@
 	left: 0;
 	animation: indicatorBottomKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorBottomKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-top-left{
@@ -164,6 +201,8 @@
 	left: 0;
 	animation: indicatorTopKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorTopKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-bottom-right{
@@ -180,6 +219,8 @@
 	right: 0;
 	animation: indicatorBottomKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorBottomKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-top-right{
@@ -196,6 +237,8 @@
 	right: 0;
 	animation: indicatorTopKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorTopKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-right-top{
@@ -212,6 +255,8 @@
 	right: 0;
 	animation: indicatorRightKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-left-top{
@@ -228,6 +273,8 @@
 	left: 0;
 	animation: indicatorLeftKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorLeftKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-right-bottom{
@@ -244,6 +291,8 @@
 	right: 0;
 	animation: indicatorRightKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-indicator-left-bottom{
@@ -260,6 +309,8 @@
 	left: 0;
 	animation: indicatorLeftKeyFrames 0.2s ease-out;
 	animation-fill-mode: forwards;
+	-webkit-animation: indicatorLeftKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
 }
 
 .panel-drop-area{
