@@ -211,6 +211,7 @@ sewi.VideoResourceViewer = function(options) {
     initControls();
     attachVideoEventHandlers();
     attachControlsEventHandlers();
+    setUpInactivityEventHandlers();
 
     return selfRef;
 
@@ -258,6 +259,10 @@ sewi.VideoResourceViewer = function(options) {
         selfRef.controlPanelElement.on('VolumeChanged', volumeEvent);
     }
 
+    function setUpInactivityEventHandlers() {
+        selfRef.mainDOMElement.mousemove(showControlsTemporarily);
+    }
+
     function playEvent() {
         selfRef.videoElement[0].play();
     }
@@ -300,6 +305,19 @@ sewi.VideoResourceViewer = function(options) {
         }
 
         selfRef.controls.update(options);
+    }
+
+    function showControlsTemporarily() {
+        selfRef.contentElement.addClass('active');
+        if (selfRef.hideTimerId) {
+            clearTimeout(selfRef.hideTimerId);
+            delete selfRef.hideTimerId;
+        }
+        selfRef.hideTimerId = _.delay(hideControls, 2000);
+    }
+
+    function hideControls() {
+        selfRef.contentElement.removeClass('active');
     }
 }
 
