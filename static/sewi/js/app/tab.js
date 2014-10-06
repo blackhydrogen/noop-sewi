@@ -1,4 +1,5 @@
 var sewi = sewi || {};
+
 // Tab Panel class
 sewi.TabPanel = function(DOMObject, tabObject, state){
 	var selfRef = this;
@@ -27,62 +28,178 @@ sewi.TabPanel = function(DOMObject, tabObject, state){
 
 sewi.TabPanel.prototype.setDroppable = function(dropArea, position){
 	var selfRef = this;
+	var indicatorDropArea = $('<div></div>');
+	selfRef.tab.tabPanel.append(indicatorDropArea);
+	selfRef.setIndicatorDroppable(indicatorDropArea, position);
+	dropArea.droppable({
+		over: function(event, ui){
+			event.preventDefault();
+			if (selfRef.state == 0){
+				if (position == selfRef.position.RIGHT){
+					selfRef.panel.addClass('panel-left').removeClass('panel-full');
+					indicatorDropArea.addClass('panel-indicator-right');
+				} else if (position == selfRef.position.LEFT){
+					selfRef.panel.addClass('panel-right').removeClass('panel-full');
+					indicatorDropArea.addClass('panel-indicator-left');
+				} else if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-bottom').removeClass('panel-full');
+					indicatorDropArea.addClass('panel-indicator-top');
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-top').removeClass('panel-full');
+					indicatorDropArea.addClass('panel-indicator-bottom');
+				}
+			} else if (selfRef.state == 1){
+				if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-left');
+					indicatorDropArea.addClass('panel-indicator-top-left');
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-top-left').removeClass('panel-left');
+					indicatorDropArea.addClass('panel-indicator-bottom-left');	
+				}
+			} else if (selfRef.state == 2){
+				if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-right');
+					indicatorDropArea.addClass('panel-indicator-top-right');	
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-top-right').removeClass('panel-right');
+					indicatorDropArea.addClass('panel-indicator-bottom-right');		
+				}
+			} else if (selfRef.state == 3){
+				if (position == selfRef.position.LEFT){
+					selfRef.panel.addClass('panel-bottom-right').removeClass('panel-bottom');
+					indicatorDropArea.addClass('panel-indicator-left-bottom');
+				} else if (position == selfRef.position.RIGHT){
+					selfRef.panel.addClass('panel-bottom-left').removeClass('panel-bottom');
+					indicatorDropArea.addClass('panel-indicator-right-bottom');	
+				}
+			} else if (selfRef.state == 4){
+				if (position == selfRef.position.LEFT){	
+					selfRef.panel.addClass('panel-top-right').removeClass('panel-top');
+					indicatorDropArea.addClass('panel-indicator-left-top');
+				} else if (position == selfRef.position.RIGHT){	
+					selfRef.panel.addClass('panel-top-left').removeClass('panel-top');
+					indicatorDropArea.addClass('panel-indicator-right-top');
+				}
+			} 
+		},
+		out: function(event, ui){
+			if (selfRef.state == 0){
+				if (position == selfRef.position.RIGHT){
+					selfRef.panel.addClass('panel-full').removeClass('panel-left');
+					indicatorDropArea.removeClass('panel-indicator-right');
+				} else if (position == selfRef.position.LEFT){
+					selfRef.panel.addClass('panel-full').removeClass('panel-right');
+					indicatorDropArea.removeClass('panel-indicator-left');
+				} else if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-full').removeClass('panel-bottom');
+					indicatorDropArea.removeClass('panel-indicator-top');
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-full').removeClass('panel-top');
+					indicatorDropArea.removeClass('panel-indicator-bottom');
+				}
+			} else if (selfRef.state == 1){
+				if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-left').removeClass('panel-bottom-left');
+					indicatorDropArea.removeClass('panel-indicator-top-left');	
+				} else if (position == selfRef.position.BOTTOM){	
+					selfRef.panel.addClass('panel-left').removeClass('panel-top-left');
+					indicatorDropArea.removeClass('panel-indicator-bottom-left');	
+				}
+			} else if (selfRef.state == 2){
+				if (position == selfRef.position.TOP){
+					selfRef.panel.addClass('panel-right').removeClass('panel-bottom-right');
+					indicatorDropArea.removeClass('panel-indicator-top-right');		
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.panel.addClass('panel-right').removeClass('panel-top-right');
+					indicatorDropArea.removeClass('panel-indicator-bottom-right');		
+				}
+			} else if (selfRef.state == 3){
+				if (position == selfRef.position.LEFT){	
+					selfRef.panel.addClass('panel-bottom').removeClass('panel-bottom-right');
+					indicatorDropArea.removeClass('panel-indicator-left-bottom');		
+				} else if (position == selfRef.position.RIGHT){	
+					selfRef.panel.addClass('panel-bottom').removeClass('panel-bottom-left');
+					indicatorDropArea.removeClass('panel-indicator-right-bottom');		
+				}
+			} else if (selfRef.state == 4){
+				if (position == selfRef.position.LEFT){
+					selfRef.panel.addClass('panel-top').removeClass('panel-top-right');
+					indicatorDropArea.removeClass('panel-indicator-left-top');		
+				} else if (position == selfRef.position.RIGHT){
+					selfRef.panel.addClass('panel-top').removeClass('panel-top-left');
+					indicatorDropArea.removeClass('panel-indicator-right-top');			
+				}
+			}
+		}
+	});
+}
+
+sewi.TabPanel.prototype.setIndicatorDroppable = function(dropArea, position){
+	var selfRef = this;
 	dropArea.droppable({
 		drop: function(event, ui){
 			event.preventDefault();
 			console.log(ui.draggable);
-			if(selfRef.state == 0){
-				if(position == selfRef.position.RIGHT){
-					console.log("dropped");
+			if (selfRef.state == 0){
+				if (position == selfRef.position.RIGHT){
+					selfRef.state = 1; //LEFT
 					selfRef.tab.append(ui.draggable, 2);
-					selfRef.tab.tabPanel.children('.panel-indicator-right').remove();
+					dropArea.removeClass('panel-indicator-right');
 				} else if (position == selfRef.position.LEFT){
+					selfRef.state = 2  //RIGHT
 					selfRef.tab.append(ui.draggable, 1);
-					selfRef.tab.tabPanel.children('.panel-indicator-left').remove();
+					dropArea.removeClass('panel-indicator-left');
 				} else if (position == selfRef.position.TOP){
-					selfRef.tab.append(ui.draggable, 3);
-					selfRef.tab.tabPanel.children('.panel-indicator-top').remove();
-				} else if (position == selfRef.position.BOTTOM){
+					selfRef.state = 3; //BOTTOM
 					selfRef.tab.append(ui.draggable, 4);
-					selfRef.tab.tabPanel.children('.panel-indicator-bottom').remove();
+					dropArea.removeClass('panel-indicator-top');
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.state = 4; //TOP
+					selfRef.tab.append(ui.draggable, 3);
+					dropArea.removeClass('panel-indicator-bottom');
+				}
+			} else if (selfRef.state == 1){
+				if (position == selfRef.position.TOP){
+					selfRef.state = 7;
+					selfRef.tab.append(ui.draggable, 5);
+					dropArea.removeClass('panel-indicator-top-left');
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.state = 5;
+					selfRef.tab.append(ui.draggable, 7);
+					dropArea.removeClass('panel-indicator-bottom-left');
+				}
+			} else if (selfRef.state == 2){
+				if (position == selfRef.position.TOP){
+					selfRef.state = 8;
+					selfRef.tab.append(ui.draggable, 6);
+					dropArea.removeClass('panel-indicator-top-right');
+				} else if (position == selfRef.position.BOTTOM){
+					selfRef.state = 6;
+					selfRef.tab.append(ui.draggable, 8);
+					dropArea.removeClass('panel-indicator-bottom-right');
+				}
+			} else if (selfRef.state == 3){
+				if (position == selfRef.position.LEFT){
+					selfRef.state = 8;
+					selfRef.tab.append(ui.draggable, 7);
+					dropArea.removeClass('panel-indicator-left-bottom');
+				} else if (position == selfRef.position.RIGHT){
+					selfRef.state = 7;
+					selfRef.tab.append(ui.draggable, 8);
+					dropArea.removeClass('panel-indicator-right-bottom');
+				}
+			} else if (selfRef.state == 4){
+				if (position == selfRef.position.LEFT){
+					selfRef.state = 6;
+					selfRef.tab.append(ui.draggable, 5);
+					dropArea.removeClass('panel-indicator-left-top');
+				} else if (position == selfRef.position.RIGHT){
+					selfRef.state = 5;
+					selfRef.tab.append(ui.draggable, 6);
+					dropArea.removeClass('panel-indicator-right-top');
 				}
 			}
 		},
-		over: function(event, ui){
-			event.preventDefault();
-			if(selfRef.state == 0){
-				if(position == selfRef.position.RIGHT){
-					selfRef.panel.addClass('panel-left').removeClass('panel-full');
-					selfRef.tab.tabPanel.append($('<div class="panel-indicator-right"></div>'));
-				} else if (position == selfRef.position.LEFT){
-					selfRef.panel.addClass('panel-right').removeClass('panel-full');
-					selfRef.tab.tabPanel.append($('<div class="panel-indicator-left"></div>'));
-				} else if (position == selfRef.position.TOP){
-					selfRef.panel.addClass('panel-bottom').removeClass('panel-full');
-					selfRef.tab.tabPanel.append($('<div class="panel-indicator-top"></div>'));
-				} else if (position == selfRef.position.BOTTOM){
-					selfRef.panel.addClass('panel-top').removeClass('panel-full');
-					selfRef.tab.tabPanel.append($('<div class="panel-indicator-bottom"></div>'));	
-				}
-			}
-		},
-		out: function(event, ui){
-			if(selfRef.state == 0){
-				if(position == selfRef.position.RIGHT){
-					selfRef.panel.addClass('panel-full').removeClass('panel-left');
-					selfRef.tab.tabPanel.children('.panel-indicator-right').remove();
-				} else if (position == selfRef.position.LEFT){
-					selfRef.panel.addClass('panel-full').removeClass('panel-right');
-					selfRef.tab.tabPanel.children('.panel-indicator-left').remove();
-				} else if (position == selfRef.position.TOP){
-					selfRef.panel.addClass('panel-full').removeClass('panel-bottom');
-					selfRef.tab.tabPanel.children('.panel-indicator-top').remove();
-				} else if (position == selfRef.position.BOTTOM){
-					selfRef.panel.addClass('panel-full').removeClass('panel-top');
-					selfRef.tab.tabPanel.children('.panel-indicator-bottom').remove();
-				}
-			}
-		}
 	});
 }
 
@@ -100,10 +217,22 @@ sewi.TabPanel.prototype.setPanelDOM = function(state){
 			DOM.addClass('panel-right');
 			break;
 		case 3:
-			DOM.addClass('panel-top');
+			DOM.addClass('panel-bottom');
 			break;
 		case 4:
-			DOM.addClass('panel-bottom');
+			DOM.addClass('panel-top');
+			break;
+		case 5:
+			DOM.addClass('panel-top-left');
+			break;
+		case 6:
+			DOM.addClass('panel-top-right');
+			break;
+		case 7:
+			DOM.addClass('panel-bottom-left');
+			break;
+		case 8:
+			DOM.addClass('panel-bottom-right');
 			break;
 	}
 	return DOM;
@@ -157,15 +286,15 @@ sewi.Tab.prototype.removeEvent = function(event){
 
 	containerRef.tabs.splice(tabIndex, 1);
 
-	if(containerRef.currentActiveTab == selfRef){
-		if(tabIndex == containerRef.tabs.length){
+	if (containerRef.currentActiveTab == selfRef){
+		if (tabIndex == containerRef.tabs.length){
 			containerRef.setCurrentActiveTab(containerRef.tabs[tabIndex-1]);
 		} else {
 			containerRef.setCurrentActiveTab(containerRef.tabs[tabIndex]);
 		}
 	} 
 
-	if(containerRef.tabs.length == 0){
+	if (containerRef.tabs.length == 0){
 		selfRef.tabContainer.container.trigger("NoTabs");
 	}
 }
@@ -261,7 +390,7 @@ sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active){
 	var newTab = new sewi.Tab(selfRef, tabName, tabText);
 	selfRef.tabs.push(newTab);
 
-	if(active) selfRef.setCurrentActiveTab(newTab);	
+	if (active) selfRef.setCurrentActiveTab(newTab);	
 	
 	var lastIndex = selfRef.tabButtons.length-1;	
 	newTab.tabButton.insertBefore(selfRef.tabButtons[lastIndex]);
@@ -270,11 +399,11 @@ sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active){
 
 sewi.TabContainer.prototype.setCurrentActiveTab = function(tab){
 	var selfRef = this;	
-	if(selfRef.currentActiveTab){
+	if (selfRef.currentActiveTab){
 		selfRef.currentActiveTab.deactivate();
 	}
 	selfRef.currentActiveTab = tab;
-	if(tab){
+	if (tab){
 		selfRef.currentActiveTab.activate();
 	}
 }
