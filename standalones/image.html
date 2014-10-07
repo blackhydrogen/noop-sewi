@@ -1,14 +1,30 @@
 <style>
+	/* Begin Bootstrap over-writes */
+	.image-resource-control-panel input,
+	.image-resource-control-panel select {
+		color: #000;
+	}
+
+	.image-resource-control-panel input[type=range]:focus,
+	.image-resource-control-panel input[type=range]:hover,
+	.image-resource-control-panel input[type=range]:active {
+		background: initial;
+		box-shadow: initial;
+		border-color: initial;
+	}
+
+	/* End Bootstrap over-writes */
+
 	.image-resource-container {
-		height: 600px;
-		width: 1000px;
+		height: 100%;
+		width: 100%;
 		position: relative;
 		overflow: hidden;
 	}
 	.image-resource-image-container {
 		width: 100%;
 		height: 100%;
-		background: #333333;
+		background: #333;
 		overflow: hidden;
 		position: relative;
 	}
@@ -46,13 +62,19 @@
 	.image-resource-show-hide-button:hover {
 		opacity: 1;
 	}
+</style>
+<style type="text/css">
+	.image-resource-container {
+		height: 600px;
+		width: 1000px;
+	}
 	.animated {
   		transition: all 200ms ease-in-out 0s;
 	}
 </style>
-<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.15.0.css">
-<!--<script src="http://code.jquery.com/qunit/qunit-1.15.0.js"></script><!---->
-<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<link rel="stylesheet" href="qunit-1.15.0.css">
+<script src="qunit-1.15.0.js"></script><!---->
+<script src="jquery-2.1.1.min.js"></script>
 <script type="text/javascript">
 var sewi = sewi || {};
 
@@ -425,7 +447,7 @@ sewi.ImageResourceViewer = function() {
 		}
 
 		console.log("=== END OF REPORT ===") // DEBUG
-		console.log("");
+		console.log(""); // DEBUG
 	}
 
 	function applyGrayscaleFilterToPixelData(pixelData) {
@@ -489,567 +511,561 @@ sewi.ImageResourceViewer = function() {
 				+ "contrast(" + contrastControl.val() + ")"
 				+ "invert(" + (invertControl.prop("checked") ? 1 : 0) + ")");
 	}
+
+	// ============================================================================================================================= TESTS ==
+
+	var previousImageElementURL;
+	var previousImageResourceWidth;
+	var previousImageResourceHeight;
+	var testImageIsLoaded = false;
+
+	QUnit.begin(function() {
+		previousImageElementURL = imageElement.prop("src");
+		previousImageResourceWidth = mainContainer.width();
+		previousImageResourceHeight = mainContainer.height();
+
+		imageElement.one("load", function() {
+			testImageIsLoaded = true;
+		});
+
+		imageElement.prop("src", "testimage.png");
+	});
+
+	QUnit.done(function() {
+		imageElement.one("load", function() {
+			setImageProperties();
+			setImageZoomToFit();
+		});
+
+		imageElement.prop("src", previousImageElementURL);
+		mainContainer.width(previousImageResourceWidth);
+		mainContainer.height(previousImageResourceHeight);
+	});
+
+	QUnit.module("Zoom Control Tests, 100% Zoom Button")
+
+	QUnit.asyncTest("Fit/Fit", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(700);
+			mainContainer.height(663);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Fit/Small", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(700);
+			mainContainer.height(653);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, -5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Fit/Large", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(700);
+			mainContainer.height(673);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, 5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Small/Fit", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(690);
+			mainContainer.height(663);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, -5, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Small/Small", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(690);
+			mainContainer.height(653);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, -5, "Left");
+				assert.equal(imageElement.position().top, -5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Small/Large", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(690);
+			mainContainer.height(673);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, -5, "Left");
+				assert.equal(imageElement.position().top, 5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Large/Fit", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(710);
+			mainContainer.height(663);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 5, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Large/Small", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(710);
+			mainContainer.height(653);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 5, "Left");
+				assert.equal(imageElement.position().top, -5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Large/Large", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(710);
+			mainContainer.height(673);
+			setImageProperties();
+
+			zoom100PercentButton.trigger("click");
+			setTimeout(function() {
+				
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 5, "Left");
+				assert.equal(imageElement.position().top, 5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+
+	QUnit.module("Zoom Control Tests, Fit Zoom Button")
+
+	QUnit.asyncTest("Fit/Fit", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(700);
+			mainContainer.height(663);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Fit/Small", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(700);
+			mainContainer.height(653);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 689, "Width");
+				assert.equal(imageElement.height(), 653, "Height");
+				assert.equal(imageElement.position().left, 5.5, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Fit/Large", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(700);
+			mainContainer.height(673);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, 5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Small/Fit", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(690);
+			mainContainer.height(663);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 690, "Width");
+				assert.equal(imageElement.height(), 654, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, 4.5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Small/Small", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(690);
+			mainContainer.height(653);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 689, "Width");
+				assert.equal(imageElement.height(), 653, "Height");
+				assert.equal(imageElement.position().left, 0.5, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Small/Large", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(690);
+			mainContainer.height(673);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 690, "Width");
+				assert.equal(imageElement.height(), 654, "Height");
+				assert.equal(imageElement.position().left, 0, "Left");
+				assert.equal(imageElement.position().top, 9.5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Large/Fit", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(710);
+			mainContainer.height(663);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 5, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Large/Small", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(710);
+			mainContainer.height(653);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 689, "Width");
+				assert.equal(imageElement.height(), 653, "Height");
+				assert.equal(imageElement.position().left, 10.5, "Left");
+				assert.equal(imageElement.position().top, 0, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
+
+	QUnit.asyncTest("Large/Large", function(assert) {
+		assert.expect(4);
+
+		var conditionTest = function() {
+			if(testImageIsLoaded)
+				test();
+			else
+				setTimeout(conditionTest, 50);
+		};
+
+		var test = function() {
+			mainContainer.width(710);
+			mainContainer.height(673);
+			setImageProperties();
+
+			zoomFitButton.trigger("click");
+			setTimeout(function() {
+				assert.equal(imageElement.width(), 700, "Width");
+				assert.equal(imageElement.height(), 663, "Height");
+				assert.equal(imageElement.position().left, 5, "Left");
+				assert.equal(imageElement.position().top, 5, "Top");
+				QUnit.start();
+			}, 50);
+		};
+
+		conditionTest();
+	});
 };
 
 //sewi.inherits(sewi.ImageResourceViewer, sewi.ConfiguratorElement);
 
-var theComponent = new sewi.ImageResourceViewer();
-theComponent.load();
 $(function() {
+	var theComponent = new sewi.ImageResourceViewer();
+	theComponent.load();
 	$("body").prepend(theComponent.getDOM());
 });
 
-</script>
-
-<script type="text/javascript">
-// Tests here
-
-/*
-
-var previousImageElementURL;
-var previousImageResourceWidth;
-var previousImageResourceHeight;
-var testImageIsLoaded = false;
-
-QUnit.begin(function() {
-	previousImageElementURL = imageElement.prop("src");
-	previousImageResourceWidth = mainContainer.width();
-	previousImageResourceHeight = mainContainer.height();
-
-	imageElement.one("load", function() {
-		testImageIsLoaded = true;
-	});
-
-	imageElement.prop("src", "testimage.png");
-});
-
-QUnit.done(function() {
-	imageElement.one("load", function() {
-		setImageProperties();
-		setImageZoomToFit();
-	});
-
-	imageElement.prop("src", previousImageElementURL);
-	mainContainer.width(previousImageResourceWidth);
-	mainContainer.height(previousImageResourceHeight);
-});
-
-QUnit.module("Zoom Control Tests, 100% Zoom Button")
-
-QUnit.asyncTest("Fit/Fit", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(700);
-		mainContainer.height(663);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Fit/Small", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(700);
-		mainContainer.height(653);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, -5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Fit/Large", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(700);
-		mainContainer.height(673);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, 5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Small/Fit", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(690);
-		mainContainer.height(663);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, -5, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Small/Small", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(690);
-		mainContainer.height(653);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, -5, "Left");
-			assert.equal(imageElement.position().top, -5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Small/Large", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(690);
-		mainContainer.height(673);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, -5, "Left");
-			assert.equal(imageElement.position().top, 5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Large/Fit", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(710);
-		mainContainer.height(663);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 5, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Large/Small", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(710);
-		mainContainer.height(653);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 5, "Left");
-			assert.equal(imageElement.position().top, -5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Large/Large", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(710);
-		mainContainer.height(673);
-		setImageProperties();
-
-		zoom100PercentButton.trigger("click");
-		setTimeout(function() {
-			
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 5, "Left");
-			assert.equal(imageElement.position().top, 5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-
-QUnit.module("Zoom Control Tests, Fit Zoom Button")
-
-QUnit.asyncTest("Fit/Fit", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(700);
-		mainContainer.height(663);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Fit/Small", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(700);
-		mainContainer.height(653);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 689, "Width");
-			assert.equal(imageElement.height(), 653, "Height");
-			assert.equal(imageElement.position().left, 5.5, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Fit/Large", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(700);
-		mainContainer.height(673);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, 5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Small/Fit", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(690);
-		mainContainer.height(663);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 690, "Width");
-			assert.equal(imageElement.height(), 654, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, 4.5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Small/Small", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(690);
-		mainContainer.height(653);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 689, "Width");
-			assert.equal(imageElement.height(), 653, "Height");
-			assert.equal(imageElement.position().left, 0.5, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Small/Large", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(690);
-		mainContainer.height(673);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 690, "Width");
-			assert.equal(imageElement.height(), 654, "Height");
-			assert.equal(imageElement.position().left, 0, "Left");
-			assert.equal(imageElement.position().top, 9.5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Large/Fit", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(710);
-		mainContainer.height(663);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 5, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Large/Small", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(710);
-		mainContainer.height(653);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 689, "Width");
-			assert.equal(imageElement.height(), 653, "Height");
-			assert.equal(imageElement.position().left, 10.5, "Left");
-			assert.equal(imageElement.position().top, 0, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-QUnit.asyncTest("Large/Large", function(assert) {
-	assert.expect(4);
-
-	var conditionTest = function() {
-		if(testImageIsLoaded)
-			test();
-		else
-			setTimeout(conditionTest, 50);
-	};
-
-	var test = function() {
-		mainContainer.width(710);
-		mainContainer.height(673);
-		setImageProperties();
-
-		zoomFitButton.trigger("click");
-		setTimeout(function() {
-			assert.equal(imageElement.width(), 700, "Width");
-			assert.equal(imageElement.height(), 663, "Height");
-			assert.equal(imageElement.position().left, 5, "Left");
-			assert.equal(imageElement.position().top, 5, "Top");
-			QUnit.start();
-		}, 50);
-	};
-
-	conditionTest();
-});
-
-//*/
 </script>
 
 <body>
