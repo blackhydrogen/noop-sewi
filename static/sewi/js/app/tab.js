@@ -389,7 +389,7 @@ sewi.TabPanel.prototype.getDOM = function(){
 }
 
 // Tab class
-sewi.Tab = function(tabContainer, id, name){
+sewi.Tab = function(tabContainer, id, name, hasDropArea){
 	var selfRef = this;
 	selfRef.tabContainer = tabContainer;
 	selfRef.panelList=[];
@@ -401,7 +401,6 @@ sewi.Tab = function(tabContainer, id, name){
 	selfRef.PANEL_STR = 'panel';
 	selfRef.DROP_AREA_STR = '<div class="panel-drop-area panel-drop-area-full"></div>';
 
-	var dropAreaDOM = $(selfRef.DROP_AREA_STR);
 
 	var removeButton={  	tabRef : selfRef,
 				containerRef : tabContainer,
@@ -413,8 +412,11 @@ sewi.Tab = function(tabContainer, id, name){
 		selfRef.tabContainer.setCurrentActiveTab(selfRef);
 	}	
 
-	selfRef.tabPanel.append(dropAreaDOM);
-	selfRef.setDroppable(dropAreaDOM);
+	if(hasDropArea){
+		var dropAreaDOM = $(selfRef.DROP_AREA_STR);
+		selfRef.tabPanel.append(dropAreaDOM);
+		selfRef.setDroppable(dropAreaDOM);
+	}
 
 	removeButton.DOM.on('click', removeButton, selfRef.removeEvent);
 	selfRef.tabButton.children('a').append(removeButton.DOM);
@@ -524,7 +526,7 @@ sewi.TabContainer = function(){
 
 	var addTabButton = $('<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>');
 	addTabButton.on('click', function(){
-		selfRef.addNewTab("Tab"+selfRef.counter,"",true);
+		selfRef.addNewTab("Tab"+selfRef.counter,"",true, true);
 		selfRef.counter++;
 	});
 
@@ -536,10 +538,10 @@ sewi.TabContainer = function(){
 
 }
 
-sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active){
+sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active, hasDropArea){
 	var selfRef = this;
 	if(selfRef.tabs.length < sewi.constants.MAX_NUM_TABS){
-		var newTab = new sewi.Tab(selfRef, tabName, tabText);
+		var newTab = new sewi.Tab(selfRef, tabName, tabText, hasDropArea);
 		selfRef.tabs.push(newTab);
 
 		if (active) selfRef.setCurrentActiveTab(newTab);	
@@ -573,6 +575,6 @@ sewi.TabContainer.prototype.getDOM = function(){
 
 sewi.TabContainer.prototype.addObjectToNewTab = function(id, type, DOMObject){
 	var selfRef = this;
-	selfRef.addNewTab("Tab"+selfRef.counter,"", true);
+	selfRef.addNewTab("Tab"+selfRef.counter,"", true, false);
 	selfRef.currentActiveTab.append(DOMObject, 0);
 }
