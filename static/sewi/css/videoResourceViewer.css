@@ -1,0 +1,128 @@
+@font-face {
+  font-family: 'VideoIcons';
+  src: url('../fonts/videoFonts.eot');
+  src: url('../fonts/videoFonts.eot?#iefix') format('embedded-opentype'), url('../fonts/videoFonts.woff') format('woff'), url('../fonts/videoFonts.ttf') format('truetype'), url('../fonts/videoFonts.svg#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.video-resource-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: grey;
+}
+
+.video-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+    cursor: none;
+}
+
+.video-content.active {
+    height: calc(100% - 30px);
+    cursor: initial;
+}
+
+.video-content video {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.video-control-panel {
+    width: 100%;
+    overflow: hidden;
+    background-color: #eee;
+}
+
+.video-control-panel button {
+    height: 30px;
+    width: 30px;
+    padding: 0;
+}
+
+.video-control-panel button:before {
+    font-family: 'VideoIcons';
+}
+
+.video-control-panel button.play-button:before {
+    content: '\e001'
+}
+
+.video-control-panel.playing button.play-button:before {
+    content: '\e002'
+}
+
+.video-control-panel button.mute-button:before {
+    content: '\e006'
+}
+
+.video-control-panel.muted button.mute-button:before {
+    content: '\e003'
+}
+
+.video-control-panel input[type=range] {
+    display: inline-block;
+    height: 30px;
+    background: initial;
+    -webkit-appearance: none;
+}
+
+.video-control-panel>div.left {
+    width: 30px;
+    float: left;
+    margin-right: 10px;
+}
+
+.video-control-panel>div.right {
+    width: 30px;
+    float: right;
+    margin-left: 10px;
+}
+
+.video-control-panel>div.right.long {
+    width: 100px;
+}
+
+.video-control-panel>div.center {
+    overflow: hidden;
+}
+
+.video-control-panel input[type=range]:focus,
+.video-control-panel input[type=range]:hover,
+.video-control-panel input[type=range]:active {
+    background: initial;
+    box-shadow: initial;
+    border-color: initial;
+    box-shadow: initial;
+}
+
+.video-control-panel input[type=range]::-webkit-slider-runnable-track {
+    height: 5px;
+    border: none;
+    border-radius: 2px;
+    background: #aaa;
+}
+
+.video-control-panel input[type=range].progress-slider::-webkit-slider-runnable-track {
+    height: 20px;
+}
+
+.video-control-panel input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: -7px;
+}
+
+.video-control-panel input[type=range].progress-slider::-webkit-slider-thumb {
+    margin-top: 0;
+}

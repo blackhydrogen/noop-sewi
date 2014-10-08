@@ -1,29 +1,37 @@
 
         .resource {
-            border: solid;
-            display: -webkit-box;
-            background-color: #321d6b;
+            border: solid 2.9px;
+            background-color: #d4dbe0;
             color: white;
-            width: 350px;
-            margin-bottom: -18px;
+            width: 77px;
+            margin-bottom: -3px;
+            float: left;
+            cursor: pointer;
         }
+
         .resource:hover {
-            border: solid;
-            zoom: 102%;
-            background-color: #190e36;
-            color: white;
-            width: 350px;
-            margin-bottom: -18px;
+           
+            background-color: #adb9c4;
+           
         }
         .resource-explorer-container {
-            width: 356px;
-            height: 320px;
+            width: 70px;
+            height: 200px;
+
         }
         .media-thumbnail{
-        	width:100px; 
-        	height:100px;
+        	width:65px; 
+        	height:65px;
             padding: 4px;
         }
+        .clear{
+            clear:both;
+        }
         .media-body{
-            width: 240px;
+            width: 66px;
+overflow-wrap: break-word;
+margin-right: 5px;
+margin-left: 2px;
+font-size: 0.82em;
+color: #000;
         }
