@@ -21,7 +21,10 @@ def get_image(request, image_id):
     return HttpResponse(data, mimetype='application/json')
 
 def get_video(request, video_id):
-    pass
-    
+    logger.info('Retrieving Video ID: ' + video_id)
+    video_resource = VideoResource(video_id)
+    data = json.dumps(video_resource)
+    return HttpResponse(data, mimetype='application/json')
+
 def get_video_thumbnail(request, video_id):
     pass
