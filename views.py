@@ -19,3 +19,9 @@ def get_image(request, image_id):
     image_resource = ImageResource("some-udid-here")
     data = json.dumps(image_resource.get_info())
     return HttpResponse(data, mimetype='application/json')
+
+def get_video(request, video_id):
+    pass
+    
+def get_video_thumbnail(request, video_id):
+    pass
