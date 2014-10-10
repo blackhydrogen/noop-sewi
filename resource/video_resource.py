@@ -22,9 +22,9 @@ class VideoResource(BaseResource):
         self.__path = self.__observation.value_complex.url
         self.__mimetype = self.__observation.value_text
 
-    @staticmethod
-    def is_video_concept(concept):
-        return self.__VIDEO_TYPE_STRING in concept.mimetype
+    @classmethod
+    def is_video_concept(cls, concept):
+        return cls.__VIDEO_TYPE_STRING in concept.mimetype
 
     def get_info(self):
         return {
