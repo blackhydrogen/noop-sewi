@@ -65,3 +65,15 @@ class VideoResourceTestCase(TestCase):
         self.valid_test_observation.delete()
         self.valid_test_concept.delete()
         delete_test_encounter(self.test_encounter)
+
+    def test_video_resource_initialization(self):
+        with self.assertRaises(ObjectDoesNotExist):
+            VideoResource('invalidUUID')
+        with self.assertRaises(StandardError):
+            VideoResource(self.invalid_test_observation_1.uuid)
+        with self.assertRaises(StandardError):
+            VideoResource(self.invalid_test_observation_2.uuid)
+
+        test_video_resource = VideoResource(self.valid_test_observation.uuid)
+
+        self.assertIsInstance(test_video_resource, VideoResource, 'Instance created is not a VideoResource.')
