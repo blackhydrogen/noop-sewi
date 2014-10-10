@@ -19,7 +19,7 @@ class VideoResource(BaseResource):
             raise ValueError(self.__ERROR_RESOURCE_NOT_VIDEO)
         logger.debug('Video observation successfully retrieved: %s' % resource_id)
 
-        self.__path = self.__observation.value_complex.url
+        self.__url = self.__observation.value_complex.url
         self.__mimetype = self.__observation.value_text
 
     @classmethod
@@ -28,12 +28,12 @@ class VideoResource(BaseResource):
 
     def get_info(self):
         return {
-            'path': self.get_content(),
+            'url': self.get_content(),
             'type': self.get_type()
         }
 
     def get_content(self):
-        return self.__path;
+        return self.__url;
 
     def get_type(self):
         return self.__mimetype
