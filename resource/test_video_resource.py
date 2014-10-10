@@ -77,3 +77,12 @@ class VideoResourceTestCase(TestCase):
         test_video_resource = VideoResource(self.valid_test_observation.uuid)
 
         self.assertIsInstance(test_video_resource, VideoResource, 'Instance created is not a VideoResource.')
+
+    def test_video_resource_data(self):
+        test_video_resource = VideoResource(self.valid_test_observation.uuid)
+        test_data = test_video_resource.get_info()
+
+        self.assertEquals(test_data['type'], 'video/mp4', 'VideoResource is not the correct type.')
+        self.assertIn('test.mp4', test_data['url'], 'VideoResource url does not contain the file name.')
+        self.assertEquals(test_video_resource.get_type(), test_data['type'], 'VideoResource type does not match data returned.')
+        self.assertEquals(test_video_resource.get_content(), test_data['url'], 'VideoResource URL does not match data returned.')
