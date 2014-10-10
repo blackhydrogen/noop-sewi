@@ -14,7 +14,7 @@ class VideoResource(BaseResource):
     def __init__(self, resource_id):
         self.__observation = Observation.objects.get(uuid=resource_id)
 
-        self.__concept = Concept.objects.get(uuid=self.__observation.concept.uuid)
+        self.__concept = self.__observation.concept
         if not self.is_video_concept(self.__concept):
             raise ValueError(self.__ERROR_RESOURCE_NOT_VIDEO)
         logger.debug('Video observation successfully retrieved: %s' % resource_id)
