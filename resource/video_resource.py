@@ -12,12 +12,12 @@ class VideoResource(BaseResource):
         self.__concept = Concept.objects.get(uuid=self.__observation.concept.uuid)
         if not self.__is_video_concept(self.__concept):
             raise ValueError('Resource is not a video.')
-        self.__mimetype = self.__concept.mimetype
         self.__path = self.__observation.value_complex.url
+        self.__mimetype = self.__observation.value_text
 
     @staticmethod
     def __is_video_concept(concept):
-        return concept.datatype == 'video'
+        return 'video' in concept.mimetype
 
     def get_info(self):
         return {
