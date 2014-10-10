@@ -15,7 +15,7 @@ class VideoResource(BaseResource):
         self.__path = observation.value_complex.url()
         self.__mimetype = self.__concept.mimetype
 
-    @class_method
+    @staticmethod
     def __is_video_concept(concept):
         return concept.datatype == 'video'
 
