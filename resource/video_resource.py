@@ -20,7 +20,7 @@ class VideoResource(BaseResource):
         logger.debug('Video observation successfully retrieved: %s' % resource_id)
 
         self.__url = self.__observation.value_complex.url
-        self.__mimetype = self.__observation.value_text
+        self.__mimetype = self.__concept.mimetype
 
     @classmethod
     def is_video_concept(cls, concept):
