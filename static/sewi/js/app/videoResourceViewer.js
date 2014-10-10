@@ -195,7 +195,7 @@ sewi.VideoResourceViewer = function(options) {
 
     var selfRef = this;
     var defaults = {
-
+        
     };
 
     options = options || {};
@@ -205,8 +205,10 @@ sewi.VideoResourceViewer = function(options) {
     ]));
 
     selfRef.isLoaded = false;
+    selfRef.isDataLoaded = false;
 
     validateArguments();
+    loadVideoData();
     initDOM();
     initControls();
     attachVideoEventHandlers();
@@ -219,6 +221,23 @@ sewi.VideoResourceViewer = function(options) {
         if (!_.isString(selfRef.id)) {
             throw new Error('options: Valid resource id must be provided.');
         }
+    }
+
+    // Load video information from the server
+    function loadVideoData() {
+        var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
+
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            async: true,
+            url: videoResourceURL
+        }).done(function(data) {
+            console.log('Video data retrieved.');
+            selfRef.video = data;
+            selfRef.isDataLoaded = true;
+            selfRef.mainDOMElement.trigger('DataLoaded');
+        });
     }
 
     function initDOM() {
@@ -330,17 +349,18 @@ sewi.VideoResourceViewer.prototype.load = function() {
 
         selfRef.videoElement.css('min-width', '320px');
         selfRef.isLoaded = true;
+        selfRef.mainDOMElement.trigger('Loaded');
     }
 
     return selfRef;
 
     function retrieveSource() {
         // TODO: Load this.id from server into mainDOMElement
-        var videoSource = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
-        videoSource.attr({
-            src: 'http://techslides.com/demos/sample-videos/small.mp4',
-            type: 'video/mp4',
+        var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
+        videoSourceElement.attr({
+            src: selfRef.video.url,
+            type: selfRef.video.type,
         });
-        videoSource.appendTo(selfRef.videoElement);
+        videoSourceElement.appendTo(selfRef.videoElement);
     }
 }
