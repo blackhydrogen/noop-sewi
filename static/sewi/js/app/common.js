@@ -17,6 +17,12 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
+    RESOURCE_VIEWER_CLASS: 'resource-viewer',
+    RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button"><span aria-hidden="true">&times;</span></button>',
+    RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button">F</button>',
+    RESOURCE_VIEWER_MOVE_BUTTON_DOM: '<button type="button" class="btn btn-default move-button">M</button>',
+    RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel"></div>',
+
 	MAX_NUM_TABS: 5,
 	DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
     VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
