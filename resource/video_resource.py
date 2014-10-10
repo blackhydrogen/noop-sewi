@@ -1,6 +1,9 @@
 from . import BaseResource
 from mds.core.models import Observation, Concept
 
+import logging
+logger = logging.getLogger('mds.sewi')
+
 class VideoResource(BaseResource):
     """A representation of a video Resource.
     """
@@ -14,6 +17,8 @@ class VideoResource(BaseResource):
         self.__concept = Concept.objects.get(uuid=self.__observation.concept.uuid)
         if not self.__is_video_concept(self.__concept):
             raise ValueError(self.__ERROR_RESOURCE_NOT_VIDEO)
+        logger.debug('Video observation successfully retrieved: %s' % resource_id)
+
         self.__path = self.__observation.value_complex.url
         self.__mimetype = self.__observation.value_text
 
