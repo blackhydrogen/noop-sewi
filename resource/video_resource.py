@@ -1,5 +1,5 @@
 from . import BaseResource
-from mds.core.models import Observation
+from mds.core.models import Observation, Concept
 
 class VideoResource(BaseResource):
     """A representation of a video Resource.
