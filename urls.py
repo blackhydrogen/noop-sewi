@@ -14,8 +14,8 @@ urlpatterns = patterns(
   url(r'^resources/image/(?P<image_id>\S+)/?$', views.get_image, name='get_image'),
   #url(r'^resources/image/(?P<image_id>\w+)/thumb$', views.get_image_thumbnail, name='get_image_thumbnail'),
   # Videos
-  #url(r'^resources/video/(?P<video_id>\w+)/?$', views.get_video, name='get_video'),
-  #url(r'^resources/video/(?P<video_id>\w+)/thumb$', views.get_video_thumbnail, name='get_video_thumb'),
+  url(r'^resources/video/(?P<video_id>[\w-]+)/?$', views.get_video, name='get_video'),
+  url(r'^resources/video/(?P<video_id>[\w-]+)/thumb$', views.get_video_thumbnail, name='get_video_thumbnail'),
   # Audio
   #url(r'^resources/audio/(?P<audio_id>\w+)/?$', views.get_audio, name='get_audio'),
   #url(r'^resources/audio/(?P<audio_id>\w+)/thumb$', views.get_audio_thumbnail, name='get_audio_thumb'),
