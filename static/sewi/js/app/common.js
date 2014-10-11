@@ -20,7 +20,6 @@ sewi.constants = {
     RESOURCE_VIEWER_CLASS: 'resource-viewer',
     RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button"><span aria-hidden="true">&times;</span></button>',
     RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button">F</button>',
-    RESOURCE_VIEWER_MOVE_BUTTON_DOM: '<button type="button" class="btn btn-default move-button">M</button>',
     RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden"></div>',
 
 	MAX_NUM_TABS: 5,
