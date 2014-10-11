@@ -18,7 +18,8 @@ sewi.ResourceGallery.prototype.loadResources = function(){
 			var path = selfRef.resources[i];
 		    var resourceElement = $('<div>')
 			.addClass('resource')
-			.attr("data-resId" ,i);			
+			.attr("data-res-id" ,i)
+			.attr("data-res-type", "image");			
 			//.draggable({ helper: 'clone'});
 			
 			resourceElement.on('dblclick', getResourceDom);

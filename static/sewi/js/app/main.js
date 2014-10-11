@@ -7,14 +7,14 @@ $(function() {
       titleView: '#titleView'
   });
 
-  var tempDrag = $('<div id="draggable" data-resId="123" data-resType="Image">Some words</div>');
+  var tempDrag = $('<div id="draggable" data-res-id="123" data-res-type="image">Some words</div>');
   tempDrag.css('background-color', 'red');
   tempDrag.css('width', '100px');
   tempDrag.css('height', '100px');
   tempDrag.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag);
 
-  var tempDrag2 = $('<div id="draggable" data-resId="124">Some more words</div>');
+  var tempDrag2 = $('<div id="draggable" data-res-id="as124" data-res-type="video">Some more words</div>');
   tempDrag2.css('background-color', 'green');
   tempDrag2.css('width', '100px');
   tempDrag2.css('height', '100px');
@@ -35,6 +35,6 @@ $(function() {
   tempDrag4.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag4);
 
-  var audioPlayer = new sewi.AudioResourceViewer();
+//  var audioPlayer = new sewi.AudioResourceViewer();
 //  $('#resView').append(audioPlayer.getDOM());
 });
