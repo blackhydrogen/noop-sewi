@@ -47,7 +47,18 @@
 		margin-right: 10px;
 		float: left;
 		text-align: center;
-		height: 100%;
+	}
+
+	.image-resource-control-group {
+		margin-right: 10px;
+		float: left;
+		text-align: left;
+	}
+
+	.image-resource-control-group .image-resource-control {
+		margin-right: initial;
+		float: initial;
+		text-align: initial;
 	}
 	.image-resource-show-hide-button {
 		position: absolute;
@@ -118,54 +129,62 @@ sewi.ImageResourceViewer = function() {
 			.appendTo(imageContainer);
 		var controlsContainer = $('<div class="image-resource-control-panel animated"></div>')
 		.appendTo(mainContainer);
-			var brightnessControlContainer = $('<div class="image-resource-control"></div>')
-			.appendTo(controlsContainer)
-			.html('Brightness<br>');
-				var brightnessControl = $('<input type="range" class="image-resource-brightness" min="0" max="2" step="0.1">')
-				.appendTo(brightnessControlContainer);
-			var contrastControlContainer = $('<div class="image-resource-control"></div>')
-			.appendTo(controlsContainer)
-			.html('Contrast<br>');
-				var contrastControl = $('<input type="range" class="image-resource-contrast" min="0" max="2" step="0.1">')
-				.appendTo(contrastControlContainer);
-			var invertControlContainer = $('<div class="image-resource-control"></div>')
-			.appendTo(controlsContainer)
-				var invertControlLabel = $('<label>Invert</label>')
-				.appendTo(invertControlContainer);
-					var invertControl = $('<input type="checkbox" class="image-resource-invert">')
-					.prependTo(invertControlLabel);
-			var differenceControlContainer = $('<div class="image-resource-control"></div>')
-			.appendTo(controlsContainer)
-				var differenceControlLabel = $('<label>Difference</label>')
-				.appendTo(differenceControlContainer);
-					var differenceControl = $('<input type="checkbox" class="image-resource-difference">')
-					.prependTo(differenceControlLabel);
-			var grayscaleControlContainer = $('<div class="image-resource-control"></div>')
-			.appendTo(controlsContainer)
-				var grayscaleControlLabel = $('<label>Grayscale</label>')
-				.appendTo(grayscaleControlContainer);
-					var grayscaleControl = $('<input type="checkbox" class="image-resource-grayscale">')
-					.prependTo(grayscaleControlLabel);
-			var falseColorControlContainer = $('<div class="image-resource-control"></div>')
+			var controlGroup1 = $('<div class="image-resource-control-group"></div>')
+			.appendTo(controlsContainer);
+				var brightnessControlContainer = $('<span class="image-resource-control"></span>')
+				.appendTo(controlGroup1)
+					var brightnessControlLabel = $('<label>Brightness</label>')
+					.appendTo(brightnessControlContainer);
+						var brightnessControl = $('<input type="range" class="image-resource-brightness" min="0" max="2" step="0.1">')
+						.appendTo(brightnessControlLabel);
+				controlGroup1.append($("<br>"));
+				var contrastControlContainer = $('<span class="image-resource-control"></span>')
+				.appendTo(controlGroup1)
+					var contrastControlLabel = $('<label>Contrast</label>')
+					.appendTo(contrastControlContainer);
+						var contrastControl = $('<input type="range" class="image-resource-contrast" min="0" max="2" step="0.1">')
+						.appendTo(contrastControlLabel);
+			var controlGroup2 = $('<div class="image-resource-control-group"></div>')
+			.appendTo(controlsContainer);
+				var invertControlContainer = $('<span class="image-resource-control"></span>')
+				.appendTo(controlGroup2)
+					var invertControlLabel = $('<label>Invert</label>')
+					.appendTo(invertControlContainer);
+						var invertControl = $('<input type="checkbox" class="image-resource-invert">')
+						.prependTo(invertControlLabel);
+				controlGroup2.append($("<br>"));
+				var grayscaleControlContainer = $('<span class="image-resource-control"></span>')
+				.appendTo(controlGroup2)
+					var grayscaleControlLabel = $('<label>Grayscale</label>')
+					.appendTo(grayscaleControlContainer);
+						var grayscaleControl = $('<input type="checkbox" class="image-resource-grayscale">')
+						.prependTo(grayscaleControlLabel);
+				controlGroup2.append($("<br>"));
+				var differenceControlContainer = $('<span class="image-resource-control"></span>')
+				.appendTo(controlGroup2)
+					var differenceControlLabel = $('<label>Difference</label>')
+					.appendTo(differenceControlContainer);
+						var differenceControl = $('<input type="checkbox" class="image-resource-difference">')
+						.prependTo(differenceControlLabel);
+			var falseColorControlContainer = $('<span class="image-resource-control"></span>')
 			.appendTo(controlsContainer)
 			.html("False Color<br>")
 				var falseColorControl = $('<select class="image-resource-false-color"></select>')
 				.appendTo(falseColorControlContainer);
 					setupFalseColorControl(falseColorControl);
-			var zoomControlContainer = $('<div class="image-resource-control"></div>')
+			var zoomControlContainer = $('<span class="image-resource-control"></span>')
 			.appendTo(controlsContainer)
-			.html('Zoom<br>');
+			.html('Zoom&nbsp;');
 				var zoomControl = $('<input type="number" class="image-resource-zoom" min="10" max="200" step="10">')
 				.appendTo(zoomControlContainer);
-				$('<span>%</span>')
-				.appendTo(zoomControlContainer)
+				zoomControlContainer.append($('<span>&nbsp;%</span><br>'));
 				var zoom100PercentButton = $('<input type="button" class="image-resource-zoom-100" value="100%">')
 				.appendTo(zoomControlContainer);
 				var zoomFitButton = $('<input type="button" class="image-resource-zoom-fit" value="Fit">')
 				.appendTo(zoomControlContainer);
-			var resetControlContainer = $('<div class="image-resource-control"></div>')
+			var resetControlContainer = $('<span class="image-resource-control"></span>')
 			.appendTo(controlsContainer);
-				var resetControl = $('<input type="button" value="Reset" class="image-resource-reset-button">')
+				var resetControl = $('<input type="button" value="Reset All Filters" class="image-resource-reset-button">')
 				.appendTo(resetControlContainer);
 		var showHideControlsButton = $('<input type="button" value="Hide Controls" class="image-resource-show-hide-button">')
 		.appendTo(mainContainer);
