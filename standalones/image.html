@@ -125,7 +125,7 @@ sewi.ImageResourceViewer = function() {
 	var mainContainer = $('<div class="image-resource-main-container"></div>');
 		var imageContainer = $('<div class="image-resource-image-container"></div>')
 		.appendTo(mainContainer);
-			var imageElement = $('<img src="sfl.jpg" class="image-resource-image">')
+			var imageElement = $('<img src="sfc.png" class="image-resource-image">')
 			.appendTo(imageContainer);
 		var controlsContainer = $('<div class="image-resource-control-panel animated"></div>')
 		.appendTo(mainContainer);
@@ -146,13 +146,6 @@ sewi.ImageResourceViewer = function() {
 						.appendTo(contrastControlLabel);
 			var controlGroup2 = $('<div class="image-resource-control-group"></div>')
 			.appendTo(controlsContainer);
-				var invertControlContainer = $('<span class="image-resource-control"></span>')
-				.appendTo(controlGroup2)
-					var invertControlLabel = $('<label>Invert</label>')
-					.appendTo(invertControlContainer);
-						var invertControl = $('<input type="checkbox" class="image-resource-invert">')
-						.prependTo(invertControlLabel);
-				controlGroup2.append($("<br>"));
 				var grayscaleControlContainer = $('<span class="image-resource-control"></span>')
 				.appendTo(controlGroup2)
 					var grayscaleControlLabel = $('<label>Grayscale</label>')
@@ -166,6 +159,13 @@ sewi.ImageResourceViewer = function() {
 					.appendTo(differenceControlContainer);
 						var differenceControl = $('<input type="checkbox" class="image-resource-difference">')
 						.prependTo(differenceControlLabel);
+				controlGroup2.append($("<br>"));
+				var invertControlContainer = $('<span class="image-resource-control"></span>')
+				.appendTo(controlGroup2)
+					var invertControlLabel = $('<label>Invert</label>')
+					.appendTo(invertControlContainer);
+						var invertControl = $('<input type="checkbox" class="image-resource-invert">')
+						.prependTo(invertControlLabel);
 			var falseColorControlContainer = $('<span class="image-resource-control"></span>')
 			.appendTo(controlsContainer)
 			.html("False Color<br>")
@@ -206,17 +206,15 @@ sewi.ImageResourceViewer = function() {
 	selfref.load = function() {
 		$("html").on("mousemove", function(event) {
 			$("#debug").html(
-				event.pageX + ", " + event.pageY + "<br>" + 
-				imageContainer.position().left + ", " + imageContainer.position().top + "<br>" + 
-				(event.pageX - imageContainer.position().left) + ", " + (event.pageY - imageContainer.position().top)
+				event.pageX + ", " + event.pageY + "<br>"
 			);
 		})
-		brightnessControl.on("input", adjustImageFilters);
-		contrastControl.on("input", adjustImageFilters);
-		invertControl.on("change", adjustImageFilters);
-		differenceControl.on("change", updateCustomFilters);
-		grayscaleControl.on("change", updateCustomFilters);
-		falseColorControl.on("change", updateCustomFilters);
+		brightnessControl.on("input", applyInbuiltImageFilters);
+		contrastControl.on("input", applyInbuiltImageFilters);
+		invertControl.on("change", applyCustomImageFilters);
+		differenceControl.on("change", applyCustomImageFilters);
+		grayscaleControl.on("change", applyCustomImageFilters);
+		falseColorControl.on("change", applyCustomImageFilters);
 		zoomControl.on("change", calculateImageZoomFromZoomControl);
 		zoom100PercentButton.on("click", function() {
 			executeZoomImage(imageProperties.original.width, 0, 0);
@@ -231,8 +229,8 @@ sewi.ImageResourceViewer = function() {
 			differenceControl.prop("checked", false);
 			grayscaleControl.prop("checked", false);
 			falseColorControl.val("");
-			updateCustomFilters();
-			adjustImageFilters();
+			applyCustomImageFilters();
+			applyInbuiltImageFilters();
 			setImageZoomToFit();
 		})
 
@@ -427,16 +425,18 @@ sewi.ImageResourceViewer = function() {
 		imageProperties.maxZoom.height = imageProperties.original.height * 2;
 	}
 
-	function updateCustomFilters() {
+	function applyCustomImageFilters() {
 		var t1 = new Date().getTime();
 		var t2;
 
 		var toApplyGrayscaleFilter = grayscaleControl.prop("checked") == 1;
 		var toApplyDifferenceFilter = differenceControl.prop("checked") == 1;
+		var toApplyInvertFilter = invertControl.prop("checked") == 1;
 		var toApplyHistogramEqualizationFilter = false; //histogramEqualizationControl.prop("checked") == 1;
 		var toApplyFalseColorFilter = falseColorControl.children(":selected").val() != "";
 
-		if(toApplyGrayscaleFilter
+		if(toApplyInvertFilter
+			|| toApplyGrayscaleFilter
 			|| toApplyDifferenceFilter
 			|| toApplyHistogramEqualizationFilter
 			|| toApplyFalseColorFilter) {
@@ -466,6 +466,9 @@ sewi.ImageResourceViewer = function() {
 			if(toApplyDifferenceFilter) {
 				applyDifferenceFilterToPixelData(canvasData.data);
 			}
+			if(toApplyInvertFilter) {
+				applyInvertFilterToPixelData(canvasData.data);
+			}
 			if(toApplyHistogramEqualizationFilter) {
 				applyHistogramEqualizationFilterToPixelData(canvasData.data);
 			}
@@ -490,6 +493,15 @@ sewi.ImageResourceViewer = function() {
 
 		console.log("=== END OF REPORT ===") // DEBUG
 		console.log(""); // DEBUG
+	}
+
+	function applyInvertFilterToPixelData(pixelData) {
+		for(var i = 0; i < pixelData.length; i += 4) {
+			// Direct computation is faster than using an array
+			pixelData[i] = 255 - pixelData[i];
+			pixelData[i+1] = 255 - pixelData[i+1];
+			pixelData[i+2] = 255 - pixelData[i+2];
+		}
 	}
 
 	function applyGrayscaleFilterToPixelData(pixelData) {
@@ -547,11 +559,11 @@ sewi.ImageResourceViewer = function() {
 		}
 	}
 
-	function adjustImageFilters() {
+	function applyInbuiltImageFilters() {
 		imageElement.css("-webkit-filter",
-				"brightness(" + brightnessControl.val() + ")"
-				+ "contrast(" + contrastControl.val() + ")"
-				+ "invert(" + (invertControl.prop("checked") ? 1 : 0) + ")");
+			"brightness(" + brightnessControl.val() + ")"
+			+ "contrast(" + contrastControl.val() + ")"
+		);
 	}
 
 	/*
