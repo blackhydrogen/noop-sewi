@@ -191,7 +191,7 @@ sewi.VideoResourceViewer = function(options) {
     if (!(this instanceof sewi.VideoResourceViewer))
         return new sewi.VideoResourceViewer(options);
 
-    sewi.ConfiguratorElement.call(this);
+    sewi.ResourceViewer.call(this);
 
     var selfRef = this;
     var defaults = {
@@ -340,7 +340,7 @@ sewi.VideoResourceViewer = function(options) {
     }
 }
 
-sewi.inherits(sewi.VideoResourceViewer, sewi.ConfiguratorElement);
+sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
 
 sewi.VideoResourceViewer.prototype.load = function() {
     var selfRef = this;
