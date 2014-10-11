@@ -22,6 +22,10 @@ sewi.TabPanel = function(DOMObject, tabObject, state){
 	selfRef.panel.append(selfRef.panelDropAreaBottom);
 
 	selfRef.panel.append(DOMObject);
+	
+	DOMObject.on('Closing', function(){
+		
+	});
 }
 
 sewi.TabPanel.prototype.setDroppable = function(dropArea, position){
@@ -413,9 +417,7 @@ sewi.Tab = function(tabContainer, id, name, hasDropArea){
 	}	
 
 	if(hasDropArea){
-		var dropAreaDOM = $(selfRef.DROP_AREA_STR);
-		selfRef.tabPanel.append(dropAreaDOM);
-		selfRef.setDroppable(dropAreaDOM);
+		selfRef.addDropArea();
 	}
 
 	removeButton.DOM.on('click', removeButton, selfRef.removeEvent);
@@ -485,14 +487,26 @@ sewi.Tab.prototype.isHover = function(dropArea){
 	return selfRef.tabPanel.children(dropArea).hasClass(selfRef.DROP_AREA_HOVER_STR);
 }
 
+sewi.Tab.prototype.addDropArea = function(){
+	var selfRef = this;
+	var dropAreaDOM = $(selfRef.DROP_AREA_STR);
+	selfRef.tabPanel.append(dropAreaDOM);
+	selfRef.setDroppable(dropAreaDOM);
+}
+
+sewi.Tab.prototype.removeDropArea = function(dropArea){
+	var selfRef = this;
+	dropArea.remove();
+	selfRef.tabPanel.children('.panel-indicator').remove();
+}
+
 sewi.Tab.prototype.setDroppable = function(dropArea){
 	var selfRef = this;
 	dropArea.droppable({
 		drop: function(event, ui){
 			event.preventDefault();
-			dropArea.remove();
+			selfRef.removeDropArea(dropArea);
 			selfRef.append(ui.draggable, 0);
-			selfRef.tabPanel.children('.panel-indicator').remove();
 		},
 		over: function(event, ui){
 			event.preventDefault();
