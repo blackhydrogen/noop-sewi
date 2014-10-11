@@ -8,8 +8,15 @@ sewi.ResourceGallery = function(){
 	selfRef .resourceHeaders = [];
 	selfRef.resourceHeaders.push("X-Ray-Stub", "ECG-Stub", "Video-Stub");
 
-	selfRef.container = $('<div class="resource-explorer-container"></div>');	
+	selfRef.container = $('<div>').addClass('resource-explorer-container').attr('id' ,"scrollable-div");	
 	selfRef.loadResources();
+
+		 $('#scrollable-div').slimScroll({
+        color: '#fff',
+        width: '72px', 
+        size: '4px', 
+        height: '350px'
+    });
 }
 
 sewi.ResourceGallery.prototype.loadResources = function(){
@@ -25,9 +32,9 @@ sewi.ResourceGallery.prototype.loadResources = function(){
 			resourceElement.on('dblclick', getResourceDom);
 
 		resourceElement.append(
-			$('<img>').attr('src', path)
+			$('<img>').attr('src', path).addClass('media-thumbnail')
 		).append(
-			$('<p>').text(selfRef.resourceHeaders[i])
+			$('<p>').text(selfRef.resourceHeaders[i]).addClass('media-body')
 		);
 
 		    
