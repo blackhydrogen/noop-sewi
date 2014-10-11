@@ -22,3 +22,15 @@
 .animated {
   transition: all 200ms ease-in-out 0s;
 }
+
+.resource-viewer .top-panel {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.resource-viewer .top-panel>button {
+    float: right;
+}
