@@ -19,6 +19,7 @@
   min-height: 1px;
 }
 
+/* Any 'animated' elements will have a smooth transition */
 .animated {
   transition: all 200ms ease-in-out 0s;
 }
@@ -33,4 +34,21 @@
 
 .resource-viewer .top-panel>button {
     float: right;
+}
+
+/* Hide elements in full screen with 'fullscreen-hidden' class */
+:-webkit-full-screen .fullscreen-hidden {
+    display: none;
+}
+
+:-moz-full-screen .fullscreen-hidden {
+    display: none;
+}
+
+:-ms-full-screen .fullscreen-hidden {
+    display: none;
+}
+
+:fullscreen .fullscreen-hidden {
+    display: none;
 }
