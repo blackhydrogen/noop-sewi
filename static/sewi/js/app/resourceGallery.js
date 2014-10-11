@@ -8,20 +8,23 @@ sewi.ResourceGallery = function() {
     selfRef.resourceHeaders = [];
     selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub');
 
+    selfRef.resourceTypes = [];
+    selfRef.resourceTypes.push('img', 'img', 'video');
+
     selfRef.metaData = [];
     selfRef.metaData.push('24/11/2013');
     
     selfRef.container = $('<div>').addClass('resource-explorer-container').attr('id', 'scrollable-div');
     selfRef.loadResources();
 
-    $('#scrollable-div').slimScroll({
+    selfRef.container.find('.resource-explorer-container').slimScroll({
         color: '#000',
         width: '72px',
         size: '4px',
         height: '350px'
     });
 
-    $("[rel='tooltip']").tooltip({
+    selfRef.container.find('.resource').tooltip({
         html: true
     });
 }
@@ -33,6 +36,7 @@ sewi.ResourceGallery.prototype.loadResources = function() {
         var resourceElement = $('<div>')
             .addClass('resource')
             .attr('data-resId', i)
+            .attr('data-resType', selfRef.resourceTypes[i])
             .attr('rel', 'tooltip')
             .attr('data-placement', 'left')
             .attr('title', 'Recorded on:' + selfRef.metaData[0])
@@ -59,5 +63,5 @@ sewi.ResourceGallery.prototype.update = function() {
 }
 
 sewi.ResourceGallery.prototype.getResourceDom = function() {
-    $(document).trigger('resourceClick', [$(this).attr('data-resId')]);
+    $(document).trigger('resourceClick', [$(this)]);
 }
