@@ -61,13 +61,17 @@ sewi.TabPanel = function(DOMObject, tabObject, state){
 			}
 			selfRef.removeSelf();
 		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT){
-		
-		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){
-		
+			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-right');
+			selfRef.removeSelf();		
+		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){	
+			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-left');
+			selfRef.removeSelf();		
 		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
-		
+			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-right');
+			selfRef.removeSelf();		
 		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT){
-		
+			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
+			selfRef.removeSelf();		
 		}
 	});
 
