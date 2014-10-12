@@ -23,6 +23,11 @@
   transition: all 200ms ease-in-out 0s;
 }
 
+.resource-viewer{
+	height: 100%;
+	width: 100%;
+}
+
 .resource-viewer .top-panel {
     position: absolute;
     top: 0;

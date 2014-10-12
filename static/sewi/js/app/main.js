@@ -21,7 +21,7 @@ $(function() {
   tempDrag2.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag2);
   
-  var tempDrag3 = $('<div id="draggable" data-resId="125">Some more more words</div>');
+  var tempDrag3 = $('<div id="draggable" data-res-id="125" data-res-type="audio">Some more more words</div>');
   tempDrag3.css('background-color', 'blue');
   tempDrag3.css('width', '100px');
   tempDrag3.css('height', '200px');
@@ -35,6 +35,4 @@ $(function() {
   tempDrag4.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag4);
 
-//  var audioPlayer = new sewi.AudioResourceViewer();
-//  $('#resView').append(audioPlayer.getDOM());
 });
