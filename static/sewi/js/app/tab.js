@@ -495,6 +495,7 @@ sewi.Tab.prototype.addDropArea = function(){
 }
 
 sewi.Tab.prototype.removeDropArea = function(dropArea){
+	var selfRef = this;
 	dropArea.remove();
 	selfRef.tabPanel.children('.panel-indicator').remove();
 }

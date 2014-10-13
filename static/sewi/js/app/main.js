@@ -36,5 +36,5 @@ $(function() {
   $('#resView').append(tempDrag4);
 
   var audioPlayer = new sewi.AudioResourceViewer();
-  $('#resView').append(audioPlayer.getDOM());
-);
+//  $('#resView').append(audioPlayer.getDOM());
+});
