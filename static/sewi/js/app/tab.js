@@ -23,7 +23,7 @@ sewi.TabPanel = function(DOMObject, tabObject, state){
 
 	selfRef.panel.append(DOMObject);
 	
-	DOMObject.on('Closing', function(){
+	$(DOMObject).on('Closing', function(){
 		
 	});
 }
@@ -456,10 +456,25 @@ sewi.Tab.prototype.removeEvent = function(event){
 
 sewi.Tab.prototype.append = function(DOMObject, state){
 	var selfRef = this;
-	var id = DOMObject.attr('data-resId');
-	var type = DOMObject.attr('data-resType');
-	var obj = $('<div class="dummy-obj"></div>');
-	selfRef.setPanel(obj, state);
+	var id = DOMObject.data('resId');
+	var type = DOMObject.data('resType');
+	var obj;
+	switch(type){
+		case 'image':
+			obj = new sewi.ImageResourceViewer();
+			break;
+		case 'video':
+			obj = new sewi.VideoResourceViewer();
+			break;
+		case 'audio':
+			//obj = new sewi.AudioResourceViewer();
+			break;
+		case 'chart':
+			//obj = new sewi.ChartResourceViewer();
+			break;
+		default:
+	}
+	selfRef.setPanel(obj.getDOM(), state);
 }
 
 sewi.Tab.prototype.setPanel = function(DOMObject, state){
