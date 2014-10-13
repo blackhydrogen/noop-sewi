@@ -34,86 +34,86 @@
     height: 100%;
 }
 
-.video-control-panel {
+.media-control-panel {
     width: 100%;
     overflow: hidden;
     background-color: #eee;
 }
 
-.video-control-panel button {
+.media-control-panel button {
     height: 30px;
     width: 30px;
     padding: 0;
 }
 
-.video-control-panel button:before {
+.media-control-panel button:before {
     font-family: 'VideoIcons';
 }
 
-.video-control-panel button.play-button:before {
+.media-control-panel button.play-button:before {
     content: '\e001'
 }
 
-.video-control-panel.playing button.play-button:before {
+.media-control-panel.playing button.play-button:before {
     content: '\e002'
 }
 
-.video-control-panel button.mute-button:before {
+.media-control-panel button.mute-button:before {
     content: '\e006'
 }
 
-.video-control-panel.muted button.mute-button:before {
+.media-control-panel.muted button.mute-button:before {
     content: '\e003'
 }
 
-.video-control-panel input[type=range] {
+.media-control-panel input[type=range] {
     display: inline-block;
     height: 30px;
     background: initial;
     -webkit-appearance: none;
 }
 
-.video-control-panel>div.left {
+.media-control-panel>div.left {
     width: 30px;
     float: left;
     margin-right: 10px;
 }
 
-.video-control-panel>div.right {
+.media-control-panel>div.right {
     width: 30px;
     float: right;
     margin-left: 10px;
 }
 
-.video-control-panel>div.right.long {
+.media-control-panel>div.right.long {
     width: 100px;
 }
 
-.video-control-panel>div.center {
+.media-control-panel>div.center {
     overflow: hidden;
 }
 
-.video-control-panel input[type=range]:focus,
-.video-control-panel input[type=range]:hover,
-.video-control-panel input[type=range]:active {
+.media-control-panel input[type=range]:focus,
+.media-control-panel input[type=range]:hover,
+.media-control-panel input[type=range]:active {
     background: initial;
     box-shadow: initial;
     border-color: initial;
     box-shadow: initial;
 }
 
-.video-control-panel input[type=range]::-webkit-slider-runnable-track {
+.media-control-panel input[type=range]::-webkit-slider-runnable-track {
     height: 5px;
     border: none;
     border-radius: 2px;
     background: #aaa;
 }
 
-.video-control-panel input[type=range].progress-slider::-webkit-slider-runnable-track {
+.media-control-panel input[type=range].progress-slider::-webkit-slider-runnable-track {
     height: 20px;
 }
 
-.video-control-panel input[type=range]::-webkit-slider-thumb {
+.media-control-panel input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 20px;
     width: 10px;
@@ -123,6 +123,6 @@
     margin-top: -7px;
 }
 
-.video-control-panel input[type=range].progress-slider::-webkit-slider-thumb {
+.media-control-panel input[type=range].progress-slider::-webkit-slider-thumb {
     margin-top: 0;
 }
