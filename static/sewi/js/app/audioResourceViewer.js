@@ -8,7 +8,7 @@ sewi.AudioResourceViewer = function(){
 	var selfRef = this;
 	
 	selfRef.init();
-	
+    selfRef.initControls();	
 }
 
 sewi.inherits(sewi.AudioResourceViewer, sewi.ResourceViewer);
@@ -20,7 +20,7 @@ sewi.AudioResourceViewer.prototype.load = function(url, type){
 sewi.AudioResourceViewer.prototype.init = function(){
 	var selfRef = this;
 	var audio = new Audio();
-	audio.src = '/static/sewi/media/20 BRE@TH__LESS.mp3';
+	audio.src = '/static/sewi/media/gun_battle_sound.wav';
 	audio.controls = true;
 	audio.preload = "auto";
 	$(audio).addClass('audio-control');
@@ -38,4 +38,10 @@ sewi.AudioResourceViewer.prototype.init = function(){
 	}
 
 	selfRef.mainDOMElement.append(audio); 	
+}
+
+sewi.AudioResourceViewer.prototype.initControls = function(){
+    var selfRef = this;
+    selfRef.controls = new sewi.MediaControls();
+    selfRef.mainDOMElement.append(selfRef.controls.getDOM());
 }
