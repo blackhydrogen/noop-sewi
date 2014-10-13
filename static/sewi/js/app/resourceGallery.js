@@ -35,8 +35,8 @@ sewi.ResourceGallery.prototype.loadResources = function() {
         var path = selfRef.resources[i];
         var resourceElement = $('<div>')
             .addClass('resource')
-            .attr('data-resId', i)
-            .attr('data-resType', selfRef.resourceTypes[i])
+            .attr('data-res-id', i)
+            .attr('data-res-type', selfRef.resourceTypes[i])
             .attr('rel', 'tooltip')
             .attr('data-placement', 'left')
             .attr('title', 'Recorded on:' + selfRef.metaData[0])
