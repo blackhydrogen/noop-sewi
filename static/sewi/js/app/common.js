@@ -17,15 +17,19 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
-    RESOURCE_VIEWER_CLASS: 'resource-viewer',
+	//Tab Constants
+	TAB_MAX_NUM_TABS: 5,
+	TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
+	TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
+    
+	//Resource Viewer Constants
+	RESOURCE_VIEWER_CLASS: 'resource-viewer',
     RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button"><span aria-hidden="true">&times;</span></button>',
     RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button">F</button>',
     RESOURCE_VIEWER_MOVE_BUTTON_DOM: '<button type="button" class="btn btn-default move-button">M</button>',
     RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel"></div>',
 
-	MAX_NUM_TABS: 5,
-	DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
-
+	//Video Resource Constants
     VIDEO_RESOURCE_URL: '/sewi/resources/video/',
     VIDEO_RESOURCE_THUMBNAIL_URL: '/thumb',
     VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
@@ -34,6 +38,7 @@ sewi.constants = {
     VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
     VIDEO_RESOURCE_VIEWER_CONTENT_DOM: '<div class="video-content animated"></div>',
 
+	//Video Controls Constants
     VIDEO_CONTROLS_DOM_CLASS: 'video-control-panel',
     VIDEO_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
     VIDEO_CONTROLS_INNER_PANEL_DOM: '<div></div>',
