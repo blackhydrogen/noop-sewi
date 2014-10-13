@@ -45,19 +45,16 @@ sewi.ResourceViewer = function() {
 	function addButtons() {
 		var closeButton = $(sewi.constants.RESOURCE_VIEWER_CLOSE_BUTTON_DOM);
 		var fullscreenButton = $(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM);
-		var moveButton = $(sewi.constants.RESOURCE_VIEWER_MOVE_BUTTON_DOM);
 
 		var panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
 
 		panel.append(closeButton)
-			 .append(fullscreenButton)
-			 .append(moveButton);
+			 .append(fullscreenButton);
 
 		selfRef.mainDOMElement.append(panel);
 
 		closeButton.click(closeButtonClicked);
 		fullscreenButton.click(fullscreenButtonClicked);
-		moveButton.click(moveButtonClicked);
 	}
 
 	function closeButtonClicked() {

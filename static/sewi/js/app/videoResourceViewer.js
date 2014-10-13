@@ -1,9 +1,9 @@
 var sewi = sewi || {};
 
-sewi.VideoControls = function() {
+sewi.MediaControls = function() {
     // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.VideoControls))
-        return new sewi.VideoControls();
+    if (!(this instanceof sewi.MediaControls))
+        return new sewi.MediaControls();
 
     sewi.ConfiguratorElement.call(this);
 
@@ -77,9 +77,9 @@ sewi.VideoControls = function() {
     }
 }
 
-sewi.inherits(sewi.VideoControls, sewi.ConfiguratorElement);
+sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
-sewi.VideoControls.prototype.togglePlay = function() {
+sewi.MediaControls.prototype.togglePlay = function() {
     var selfRef = this;
 
     if (selfRef.isPlaying) {
@@ -93,7 +93,7 @@ sewi.VideoControls.prototype.togglePlay = function() {
     return this;
 }
 
-sewi.VideoControls.prototype.toggleMute = function() {
+sewi.MediaControls.prototype.toggleMute = function() {
     var selfRef = this;
 
     if (selfRef.isMuted) {
@@ -107,7 +107,7 @@ sewi.VideoControls.prototype.toggleMute = function() {
     return this;
 }
 
-sewi.VideoControls.prototype.volume = function(volume) {
+sewi.MediaControls.prototype.volume = function(volume) {
     var selfRef = this;
 
     if (_.isUndefined(volume)) {
@@ -125,7 +125,7 @@ sewi.VideoControls.prototype.volume = function(volume) {
     return this;
 }
 
-sewi.VideoControls.prototype.playbackPosition = function(position) {
+sewi.MediaControls.prototype.playbackPosition = function(position) {
     var selfRef = this;
 
     if (_.isUndefined(position)) {
@@ -139,18 +139,18 @@ sewi.VideoControls.prototype.playbackPosition = function(position) {
     return this;
 }
 
-sewi.VideoControls.prototype.downloadProgress = function(progress) {
+sewi.MediaControls.prototype.downloadProgress = function(progress) {
     var selfRef = this;
 
 
 }
 
 /**
- * Updates the displayed values of the VideoControls instance.
+ * Updates the displayed values of the MediaControls instance.
  * @param  {object} options A dictionary containing all values that will be changed.
- * @return {VideoControls} This instance of VideoControls.
+ * @return {MediaControls} This instance of MediaControls.
  */
-sewi.VideoControls.prototype.update = function(options) {
+sewi.MediaControls.prototype.update = function(options) {
     options = options || {};
 
     var selfRef = this;
@@ -195,7 +195,7 @@ sewi.VideoResourceViewer = function(options) {
 
     var selfRef = this;
     var defaults = {
-        
+
     };
 
     options = options || {};
@@ -257,7 +257,7 @@ sewi.VideoResourceViewer = function(options) {
     }
 
     function initControls() {
-        selfRef.controls = new sewi.VideoControls();
+        selfRef.controls = new sewi.MediaControls();
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
         selfRef.mainDOMElement.append(selfRef.controlPanelElement);
