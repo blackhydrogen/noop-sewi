@@ -19,27 +19,27 @@ sewi.MediaControls = function() {
     });
 
     function initDOM() {
-        selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_CONTROLS_DOM_CLASS);
+        selfRef.mainDOMElement.addClass(sewi.constants.MEDIA_CONTROLS_DOM_CLASS);
 
-        var button = $(sewi.constants.VIDEO_CONTROLS_BUTTON_DOM);
-        var innerPanel = $(sewi.constants.VIDEO_CONTROLS_INNER_PANEL_DOM);
+        var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
+        var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
         var leftInnerPanel = innerPanel.clone()
-                                       .addClass(sewi.constants.VIDEO_CONTROLS_LEFT_PANEL_CLASS);
+                                       .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
         var rightInnerPanel = innerPanel.clone()
-                                        .addClass(sewi.constants.VIDEO_CONTROLS_RIGHT_PANEL_CLASS);
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var extremeRightInnerPanel = innerPanel.clone()
-                                               .addClass(sewi.constants.VIDEO_CONTROLS_RIGHT_PANEL_CLASS)
-                                               .addClass(sewi.constants.VIDEO_CONTROLS_LONG_PANEL_CLASS);
+                                               .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+                                               .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
         var centerInnerPanel = innerPanel.clone()
                                          .addClass('center');
 
         selfRef.playPauseButton = button.clone()
-                                        .addClass(sewi.constants.VIDEO_CONTROLS_PLAY_CLASS);
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
         selfRef.muteButton = button.clone()
-                                   .addClass(sewi.constants.VIDEO_CONTROLS_MUTE_CLASS);
-        selfRef.volumeSlider = $(sewi.constants.VIDEO_CONTROLS_VOLUME_SLIDER_DOM);
-        selfRef.progressSlider = $(sewi.constants.VIDEO_CONTROLS_PROGRESS_SLIDER_DOM);
+                                   .addClass(sewi.constants.MEDIA_CONTROLS_MUTE_CLASS);
+        selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
+        selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
         leftInnerPanel.append(selfRef.playPauseButton);
         rightInnerPanel.append(selfRef.muteButton)
