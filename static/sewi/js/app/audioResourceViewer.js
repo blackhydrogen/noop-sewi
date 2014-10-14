@@ -6,7 +6,6 @@ sewi.AudioResourceViewer = function(){
 		return new sewi.AudioResourceViewer();
 	sewi.ResourceViewer.call(this);
 	var selfRef = this;
-	
 	selfRef.init();
     selfRef.initControls();	
 }
@@ -19,12 +18,17 @@ sewi.AudioResourceViewer.prototype.load = function(url, type){
 
 sewi.AudioResourceViewer.prototype.init = function(){
 	var selfRef = this;
-	var audio = new Audio();
-	audio.src = '/static/sewi/media/gun_battle_sound.wav';
-	audio.controls = true;
-	audio.preload = "auto";
-	$(audio).addClass('audio-control');
-	var contextClass = (window.AudioContext || 
+	var url = '/static/sewi/media/gun_battle_sound.wav';
+	var request = XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arrayBuffer';
+    request.addEventListener('progress', selfRef.onProgress, false);
+    request.addEventListener('load', selfRef.onComplete, false);
+    request.addEventListener('abort', selfRef.onAbort, false);
+    request.addEventListener('error', selfRef.onError, false);
+    request.send();
+
+	/*var contextClass = (window.AudioContext || 
 	  					window.webkitAudioContext || 
 	    				window.mozAudioContext || 
 		  				window.oAudioContext || 
@@ -36,8 +40,26 @@ sewi.AudioResourceViewer.prototype.init = function(){
 	} else {
 		//TO DO: web audio api not supported by the browser.
 	}
+    */
+    var contentDOM = $('<div class="audio-content"></div>');
+    selfRef.mainDOMElement.append(contentDOM);
+    selfRef.mainDOMElement.addClass('audio-resource-viewer');
+}
 
-	selfRef.mainDOMElement.append(audio); 	
+sewi.AudioResourceViewer.prototype.onProgress = function(event){
+
+}
+
+sewi.AudioResourceViewer.prototype.onComplete = function(event){
+    console.log("file loaded");
+}
+
+sewi.AudioResourceViewer.prototype.onAbort = function(event){
+
+}
+
+sewi.AudioResourceViewer.prototype.onError = function(event){
+
 }
 
 sewi.AudioResourceViewer.prototype.initControls = function(){

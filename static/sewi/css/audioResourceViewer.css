@@ -2,3 +2,8 @@
 	position: absolute;
 	bottom: 0px;
 }
+
+.audio-resource-viewer>.media-control-panel{
+    position: absolute;
+    bottom: 0px;
+}
