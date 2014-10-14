@@ -203,39 +203,44 @@ var sewi = sewi || {};
 
 })();
 
+(function(){
+    sewi.VideoResourceViewer = function(options) {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.VideoResourceViewer))
+            return new sewi.VideoResourceViewer(options);
 
-sewi.VideoResourceViewer = function(options) {
-    // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.VideoResourceViewer))
-        return new sewi.VideoResourceViewer(options);
+        sewi.ResourceViewer.call(this);
 
-    sewi.ResourceViewer.call(this);
+        var selfRef = this;
+        var defaults = {
 
-    var selfRef = this;
-    var defaults = {
+        };
 
-    };
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(selfRef, _.pick(options, [
+            'id',
+        ]));
 
-    options = options || {};
-    _.defaults(options, defaults);
-    _.assign(selfRef, _.pick(options, [
-        'id',
-    ]));
+        selfRef.isLoaded = false;
+        selfRef.isDataLoaded = false;
 
-    selfRef.isLoaded = false;
-    selfRef.isDataLoaded = false;
+        validateArguments.call(selfRef);
+        loadVideoData.call(selfRef);
+        initDOM.call(selfRef);
+        initControls.call(selfRef);
+        attachVideoEventHandlers.call(selfRef);
+        attachControlsEventHandlers.call(selfRef);
+        setUpInactivityEventHandlers.call(selfRef);
 
-    validateArguments();
-    loadVideoData();
-    initDOM();
-    initControls();
-    attachVideoEventHandlers();
-    attachControlsEventHandlers();
-    setUpInactivityEventHandlers();
+        return selfRef;
+    }
 
-    return selfRef;
+    sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
 
+    // VideoResourceViewer private methods
     function validateArguments() {
+        var selfRef = this;
         if (!_.isString(selfRef.id)) {
             throw new Error('options: Valid resource id must be provided.');
         }
@@ -243,6 +248,7 @@ sewi.VideoResourceViewer = function(options) {
 
     // Load video information from the server
     function loadVideoData() {
+        var selfRef = this;
         var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
 
         $.ajax({
@@ -259,6 +265,7 @@ sewi.VideoResourceViewer = function(options) {
     }
 
     function initDOM() {
+        var selfRef = this;
         selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_RESOURCE_VIEWER_DOM_CLASS);
 
         selfRef.contentElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTENT_DOM);
@@ -275,6 +282,7 @@ sewi.VideoResourceViewer = function(options) {
     }
 
     function initControls() {
+        var selfRef = this;
         selfRef.controls = new sewi.MediaControls();
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
@@ -282,59 +290,71 @@ sewi.VideoResourceViewer = function(options) {
     }
 
     function attachVideoEventHandlers() {
-        selfRef.videoElement.on('timeupdate seeked', updateTime);
-        selfRef.videoElement.on('play pause', updatePlayingStatus);
-        selfRef.videoElement.on('volumechange', updateVolume);
+        var selfRef = this;
+        selfRef.videoElement.on('timeupdate seeked', selfRef, updateTime);
+        selfRef.videoElement.on('play pause', selfRef, updatePlayingStatus);
+        selfRef.videoElement.on('volumechange', selfRef, updateVolume);
     }
 
     function attachControlsEventHandlers() {
-        selfRef.controlPanelElement.on('Playing', playEvent);
-        selfRef.controlPanelElement.on('Paused', pauseEvent);
-        selfRef.controlPanelElement.on('Muted', muteEvent);
-        selfRef.controlPanelElement.on('Unmuted', unmuteEvent);
-        selfRef.controlPanelElement.on('PositionChanged', positionEvent);
-        selfRef.controlPanelElement.on('VolumeChanged', volumeEvent);
+        var selfRef = this;
+        selfRef.controlPanelElement.on('Playing', selfRef, playEvent);
+        selfRef.controlPanelElement.on('Paused', selfRef, pauseEvent);
+        selfRef.controlPanelElement.on('Muted', selfRef, muteEvent);
+        selfRef.controlPanelElement.on('Unmuted', selfRef, unmuteEvent);
+        selfRef.controlPanelElement.on('PositionChanged', selfRef, positionEvent);
+        selfRef.controlPanelElement.on('VolumeChanged', selfRef, volumeEvent);
     }
 
     function setUpInactivityEventHandlers() {
-        selfRef.mainDOMElement.mousemove(showControlsTemporarily);
+        var selfRef = this;
+        selfRef.mainDOMElement.mousemove(selfRef, showControlsTemporarily);
     }
 
-    function playEvent() {
+    function playEvent(event) {
+        var selfRef = event.data;
         selfRef.videoElement[0].play();
     }
 
-    function pauseEvent() {
+    function pauseEvent(event) {
+        var selfRef = event.data;
         selfRef.videoElement[0].pause();
     }
 
-    function muteEvent() {
+    function muteEvent(event) {
         selfRef.videoElement[0].muted = true;
+        var selfRef = event.data;
     }
 
-    function unmuteEvent() {
+    function unmuteEvent(event) {
+        var selfRef = event.data;
         selfRef.videoElement[0].muted = false;
     }
 
     function positionEvent(event, position) {
+        var selfRef = event.data;
         selfRef.videoElement[0].currentTime = selfRef.videoElement[0].duration * position / 100.0;
     }
 
     function volumeEvent(event, volume) {
+        var selfRef = event.data;
         selfRef.videoElement[0].volume = volume;
     }
 
-    function updateTime() {
+    function updateTime(event) {
+        var selfRef = event.data;
         var currentPosition = selfRef.videoElement[0].currentTime / selfRef.videoElement[0].duration * 100.0;
         selfRef.controls.update({ position: currentPosition });
     }
 
-    function updatePlayingStatus() {
+    function updatePlayingStatus(event) {
+        var selfRef = event.data;
         var paused = selfRef.videoElement[0].paused;
         selfRef.controls.update({ playing: !paused });
     }
 
-    function updateVolume() {
+    function updateVolume(event) {
+        var selfRef = event.data;
         var options = {};
         options.muted = selfRef.videoElement[0].muted;
         if (!options.muted) {
@@ -344,41 +364,42 @@ sewi.VideoResourceViewer = function(options) {
         selfRef.controls.update(options);
     }
 
-    function showControlsTemporarily() {
+    function showControlsTemporarily(event) {
+        var selfRef = event.data;
         selfRef.contentElement.addClass('active');
         if (selfRef.hideTimerId) {
             clearTimeout(selfRef.hideTimerId);
             delete selfRef.hideTimerId;
         }
-        selfRef.hideTimerId = _.delay(hideControls, 2000);
+        selfRef.hideTimerId = _.delay(hideControls, 2000, selfRef);
     }
 
-    function hideControls() {
+    function hideControls(selfRef) {
         selfRef.contentElement.removeClass('active');
     }
-}
 
-sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
+    // VideoResourceViewer public methods
+    sewi.VideoResourceViewer.prototype.load = function() {
+        var selfRef = this;
+        if (!selfRef.isLoaded) {
+            retrieveSource();
 
-sewi.VideoResourceViewer.prototype.load = function() {
-    var selfRef = this;
-    if (!selfRef.isLoaded) {
-        retrieveSource();
+            selfRef.videoElement.css('min-width', '320px');
+            selfRef.isLoaded = true;
+            selfRef.mainDOMElement.trigger('Loaded');
+        }
 
-        selfRef.videoElement.css('min-width', '320px');
-        selfRef.isLoaded = true;
-        selfRef.mainDOMElement.trigger('Loaded');
+        return selfRef;
+
+        function retrieveSource() {
+            // TODO: Load this.id from server into mainDOMElement
+            var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
+            videoSourceElement.attr({
+                src: selfRef.video.url,
+                type: selfRef.video.type,
+            });
+            videoSourceElement.appendTo(selfRef.videoElement);
+        }
     }
 
-    return selfRef;
-
-    function retrieveSource() {
-        // TODO: Load this.id from server into mainDOMElement
-        var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
-        videoSourceElement.attr({
-            src: selfRef.video.url,
-            type: selfRef.video.type,
-        });
-        videoSourceElement.appendTo(selfRef.videoElement);
-    }
-}
+})();
