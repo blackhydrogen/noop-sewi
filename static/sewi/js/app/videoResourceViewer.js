@@ -1,9 +1,9 @@
 var sewi = sewi || {};
 
-sewi.VideoControls = function() {
+sewi.MediaControls = function() {
     // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.VideoControls))
-        return new sewi.VideoControls();
+    if (!(this instanceof sewi.MediaControls))
+        return new sewi.MediaControls();
 
     sewi.ConfiguratorElement.call(this);
 
@@ -19,27 +19,27 @@ sewi.VideoControls = function() {
     });
 
     function initDOM() {
-        selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_CONTROLS_DOM_CLASS);
+        selfRef.mainDOMElement.addClass(sewi.constants.MEDIA_CONTROLS_DOM_CLASS);
 
-        var button = $(sewi.constants.VIDEO_CONTROLS_BUTTON_DOM);
-        var innerPanel = $(sewi.constants.VIDEO_CONTROLS_INNER_PANEL_DOM);
+        var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
+        var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
         var leftInnerPanel = innerPanel.clone()
-                                       .addClass(sewi.constants.VIDEO_CONTROLS_LEFT_PANEL_CLASS);
+                                       .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
         var rightInnerPanel = innerPanel.clone()
-                                        .addClass(sewi.constants.VIDEO_CONTROLS_RIGHT_PANEL_CLASS);
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var extremeRightInnerPanel = innerPanel.clone()
-                                               .addClass(sewi.constants.VIDEO_CONTROLS_RIGHT_PANEL_CLASS)
-                                               .addClass(sewi.constants.VIDEO_CONTROLS_LONG_PANEL_CLASS);
+                                               .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+                                               .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
         var centerInnerPanel = innerPanel.clone()
                                          .addClass('center');
 
         selfRef.playPauseButton = button.clone()
-                                        .addClass(sewi.constants.VIDEO_CONTROLS_PLAY_CLASS);
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
         selfRef.muteButton = button.clone()
-                                   .addClass(sewi.constants.VIDEO_CONTROLS_MUTE_CLASS);
-        selfRef.volumeSlider = $(sewi.constants.VIDEO_CONTROLS_VOLUME_SLIDER_DOM);
-        selfRef.progressSlider = $(sewi.constants.VIDEO_CONTROLS_PROGRESS_SLIDER_DOM);
+                                   .addClass(sewi.constants.MEDIA_CONTROLS_MUTE_CLASS);
+        selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
+        selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
         leftInnerPanel.append(selfRef.playPauseButton);
         rightInnerPanel.append(selfRef.muteButton)
@@ -77,9 +77,9 @@ sewi.VideoControls = function() {
     }
 }
 
-sewi.inherits(sewi.VideoControls, sewi.ConfiguratorElement);
+sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
-sewi.VideoControls.prototype.togglePlay = function() {
+sewi.MediaControls.prototype.togglePlay = function() {
     var selfRef = this;
 
     if (selfRef.isPlaying) {
@@ -93,7 +93,7 @@ sewi.VideoControls.prototype.togglePlay = function() {
     return this;
 }
 
-sewi.VideoControls.prototype.toggleMute = function() {
+sewi.MediaControls.prototype.toggleMute = function() {
     var selfRef = this;
 
     if (selfRef.isMuted) {
@@ -107,7 +107,7 @@ sewi.VideoControls.prototype.toggleMute = function() {
     return this;
 }
 
-sewi.VideoControls.prototype.volume = function(volume) {
+sewi.MediaControls.prototype.volume = function(volume) {
     var selfRef = this;
 
     if (_.isUndefined(volume)) {
@@ -125,7 +125,7 @@ sewi.VideoControls.prototype.volume = function(volume) {
     return this;
 }
 
-sewi.VideoControls.prototype.playbackPosition = function(position) {
+sewi.MediaControls.prototype.playbackPosition = function(position) {
     var selfRef = this;
 
     if (_.isUndefined(position)) {
@@ -139,18 +139,18 @@ sewi.VideoControls.prototype.playbackPosition = function(position) {
     return this;
 }
 
-sewi.VideoControls.prototype.downloadProgress = function(progress) {
+sewi.MediaControls.prototype.downloadProgress = function(progress) {
     var selfRef = this;
 
 
 }
 
 /**
- * Updates the displayed values of the VideoControls instance.
+ * Updates the displayed values of the MediaControls instance.
  * @param  {object} options A dictionary containing all values that will be changed.
- * @return {VideoControls} This instance of VideoControls.
+ * @return {MediaControls} This instance of MediaControls.
  */
-sewi.VideoControls.prototype.update = function(options) {
+sewi.MediaControls.prototype.update = function(options) {
     options = options || {};
 
     var selfRef = this;
@@ -195,7 +195,7 @@ sewi.VideoResourceViewer = function(options) {
 
     var selfRef = this;
     var defaults = {
-        
+
     };
 
     options = options || {};
@@ -257,7 +257,7 @@ sewi.VideoResourceViewer = function(options) {
     }
 
     function initControls() {
-        selfRef.controls = new sewi.VideoControls();
+        selfRef.controls = new sewi.MediaControls();
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
         selfRef.mainDOMElement.append(selfRef.controlPanelElement);
