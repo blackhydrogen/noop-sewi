@@ -1,24 +1,31 @@
 var sewi = sewi || {};
 
-sewi.MediaControls = function() {
-    // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.MediaControls))
-        return new sewi.MediaControls();
+(function() {
+    sewi.MediaControls = function() {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.MediaControls))
+            return new sewi.MediaControls();
 
-    sewi.ConfiguratorElement.call(this);
+        sewi.ConfiguratorElement.call(this);
 
-    var selfRef = this;
+        var selfRef = this;
 
-    initDOM();
-    initEvents();
+        initDOM.call(selfRef);
+        initEvents.call(selfRef);
 
-    _.assign(selfRef, {
-        isPlaying: false,
-        isMuted: false,
-        progress: 0.0,
-    });
+        _.assign(selfRef, {
+            isPlaying: false,
+            isMuted: false,
+            progress: 0.0,
+        });
+    }
 
+    sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
+
+    // MediaControls private methods begin
     function initDOM() {
+        var selfRef = this;
+
         selfRef.mainDOMElement.addClass(sewi.constants.MEDIA_CONTROLS_DOM_CLASS);
 
         var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
@@ -53,138 +60,149 @@ sewi.MediaControls = function() {
     }
 
     function initEvents() {
-        selfRef.playPauseButton.click(playPauseClicked);
-        selfRef.muteButton.click(muteClicked);
-        selfRef.volumeSlider.on('input', volumeChanged);
-        selfRef.progressSlider.on('change', progressChanged);
+        var selfRef = this;
+
+        selfRef.playPauseButton.click(selfRef, playPauseClicked);
+        selfRef.muteButton.click(selfRef, muteClicked);
+        selfRef.volumeSlider.on('input', selfRef, volumeChanged);
+        selfRef.progressSlider.on('change', selfRef, progressChanged);
     }
 
-    function playPauseClicked() {
+    function playPauseClicked(event) {
+        var selfRef = event.data;
+
         selfRef.togglePlay();
     }
 
-    function muteClicked() {
+    function muteClicked(event) {
+        var selfRef = event.data;
+
         selfRef.toggleMute();
     }
 
-    function volumeChanged() {
+    function volumeChanged(event) {
+        var selfRef = event.data;
+
         selfRef.volume(selfRef.volumeSlider[0].value);
     }
 
-    function progressChanged() {
+    function progressChanged(event) {
+        var selfRef = event.data;
+
         selfRef.playbackPosition(selfRef.progressSlider[0].value);
         //selfRef.setPlaybackProgress(??);
     }
-}
 
-sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
+    // MediaControls public methods
+    sewi.MediaControls.prototype.togglePlay = function() {
+        var selfRef = this;
 
-sewi.MediaControls.prototype.togglePlay = function() {
-    var selfRef = this;
-
-    if (selfRef.isPlaying) {
-        selfRef.mainDOMElement.trigger('Paused');
-    } else {
-        selfRef.mainDOMElement.trigger('Playing');
-    }
-
-    selfRef.update({ playing: !selfRef.isPlaying });
-
-    return this;
-}
-
-sewi.MediaControls.prototype.toggleMute = function() {
-    var selfRef = this;
-
-    if (selfRef.isMuted) {
-        selfRef.mainDOMElement.trigger('Unmuted');
-    } else {
-        selfRef.mainDOMElement.trigger('Muted');
-    }
-
-    selfRef.update({ muted: !selfRef.isMuted });
-
-    return this;
-}
-
-sewi.MediaControls.prototype.volume = function(volume) {
-    var selfRef = this;
-
-    if (_.isUndefined(volume)) {
-        return selfRef.volumeSlider[0].value;
-    }
-
-    if (selfRef.isMuted) {
-        selfRef.mainDOMElement.trigger('Unmuted');
-    }
-
-    selfRef.update({ volume: volume });
-
-    selfRef.mainDOMElement.trigger('VolumeChanged', volume);
-
-    return this;
-}
-
-sewi.MediaControls.prototype.playbackPosition = function(position) {
-    var selfRef = this;
-
-    if (_.isUndefined(position)) {
-        return selfRef.progressSlider[0].value;
-    }
-
-    selfRef.update({ position: position });
-
-    selfRef.mainDOMElement.trigger('PositionChanged', position);
-
-    return this;
-}
-
-sewi.MediaControls.prototype.downloadProgress = function(progress) {
-    var selfRef = this;
-
-
-}
-
-/**
- * Updates the displayed values of the MediaControls instance.
- * @param  {object} options A dictionary containing all values that will be changed.
- * @return {MediaControls} This instance of MediaControls.
- */
-sewi.MediaControls.prototype.update = function(options) {
-    options = options || {};
-
-    var selfRef = this;
-
-    if (!_.isUndefined(options.playing)) {
-
-        selfRef.isPlaying = !!options.playing;
-
-        if (!selfRef.isPlaying) {
-            selfRef.mainDOMElement.removeClass('playing');
+        if (selfRef.isPlaying) {
+            selfRef.mainDOMElement.trigger('Paused');
         } else {
-            selfRef.mainDOMElement.addClass('playing');
+            selfRef.mainDOMElement.trigger('Playing');
+        }
+
+        selfRef.update({ playing: !selfRef.isPlaying });
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.toggleMute = function() {
+        var selfRef = this;
+
+        if (selfRef.isMuted) {
+            selfRef.mainDOMElement.trigger('Unmuted');
+        } else {
+            selfRef.mainDOMElement.trigger('Muted');
+        }
+
+        selfRef.update({ muted: !selfRef.isMuted });
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.volume = function(volume) {
+        var selfRef = this;
+
+        if (_.isUndefined(volume)) {
+            return selfRef.volumeSlider[0].value;
+        }
+
+        if (selfRef.isMuted) {
+            selfRef.mainDOMElement.trigger('Unmuted');
+        }
+
+        selfRef.update({ volume: volume });
+
+        selfRef.mainDOMElement.trigger('VolumeChanged', volume);
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.playbackPosition = function(position) {
+        var selfRef = this;
+
+        if (_.isUndefined(position)) {
+            return selfRef.progressSlider[0].value;
+        }
+
+        selfRef.update({ position: position });
+
+        selfRef.mainDOMElement.trigger('PositionChanged', position);
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.downloadProgress = function(progress) {
+        var selfRef = this;
+
+
+    }
+
+    /**
+     * Updates the displayed values of the MediaControls instance.
+     * @param  {object} options A dictionary containing all values that will be changed.
+     * @return {MediaControls} This instance of MediaControls.
+     */
+    sewi.MediaControls.prototype.update = function(options) {
+        options = options || {};
+
+        var selfRef = this;
+
+        if (!_.isUndefined(options.playing)) {
+
+            selfRef.isPlaying = !!options.playing;
+
+            if (!selfRef.isPlaying) {
+                selfRef.mainDOMElement.removeClass('playing');
+            } else {
+                selfRef.mainDOMElement.addClass('playing');
+            }
+        }
+
+        if (!_.isUndefined(options.position)) {
+            selfRef.progressSlider[0].value = options.position;
+        }
+
+        if (!_.isUndefined(options.volume)) {
+            selfRef.volumeSlider[0].value = options.volume;
+            options.muted = false;
+        }
+
+        if (!_.isUndefined(options.muted)) {
+            selfRef.isMuted = !!options.muted;
+
+            if (!selfRef.isMuted) {
+                selfRef.mainDOMElement.removeClass('muted');
+            } else {
+                selfRef.mainDOMElement.addClass('muted');
+            }
         }
     }
 
-    if (!_.isUndefined(options.position)) {
-        selfRef.progressSlider[0].value = options.position;
-    }
+})();
 
-    if (!_.isUndefined(options.volume)) {
-        selfRef.volumeSlider[0].value = options.volume;
-        options.muted = false;
-    }
-
-    if (!_.isUndefined(options.muted)) {
-        selfRef.isMuted = !!options.muted;
-
-        if (!selfRef.isMuted) {
-            selfRef.mainDOMElement.removeClass('muted');
-        } else {
-            selfRef.mainDOMElement.addClass('muted');
-        }
-    }
-}
 
 sewi.VideoResourceViewer = function(options) {
     // Safeguard if function is called without `new` keyword
