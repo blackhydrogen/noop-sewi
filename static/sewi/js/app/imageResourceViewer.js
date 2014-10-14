@@ -498,6 +498,6 @@ sewi.ImageResourceViewer = function() {
 			+ "contrast(" + contrastControl.val() + ")"
 		);
 	}
-
-	sewi.inherits(sewi.ImageResourceViewer, sewi.ConfiguratorElement);
 };
+
+sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
