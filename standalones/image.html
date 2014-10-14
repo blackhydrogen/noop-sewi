@@ -88,12 +88,18 @@
 	}
 </style>
 <link rel="stylesheet" href="qunit-1.15.0.css">
-<script src="qunit-1.15.0.js"></script><!---->
 <script src="jquery-2.1.1.min.js"></script>
+<script src="qunit-1.15.0.js"></script><!---->
+<script src="lodash.min.js"></script>
+<script src="common.js"></script>
+<script src="configuratorElement.js"></script>
+
 <script type="text/javascript">
 var sewi = sewi || {};
 
 sewi.ImageResourceViewer = function() {
+	sewi.ResourceViewer.call(this);
+
 	var selfref = this;
 
 	var falseColorPalette = {
@@ -122,7 +128,8 @@ sewi.ImageResourceViewer = function() {
 		}
 	};
 
-	var mainContainer = $('<div class="image-resource-main-container"></div>');
+	var mainContainer = selfref.mainDOMElement;
+	mainContainer.addClass("image-resource-main-container");
 		var imageContainer = $('<div class="image-resource-image-container"></div>')
 		.appendTo(mainContainer);
 			var imageElement = $('<img src="he.jpg" class="image-resource-image">')
@@ -203,10 +210,6 @@ sewi.ImageResourceViewer = function() {
 	};
 
 	var imageMovementVariables = {
-	};
-
-	selfref.getDOM = function() {
-		return mainContainer;
 	};
 
 	selfref.load = function() {
@@ -592,6 +595,8 @@ sewi.ImageResourceViewer = function() {
 			+ "contrast(" + contrastControl.val() + ")"
 		);
 	}
+
+	sewi.inherits(sewi.ImageResourceViewer, sewi.ConfiguratorElement);
 
 	/*
 	// ============================================================================================================================= TESTS ==
@@ -1140,8 +1145,6 @@ sewi.ImageResourceViewer = function() {
 	});
 	//*/
 };
-
-//sewi.inherits(sewi.ImageResourceViewer, sewi.ConfiguratorElement);
 
 $(function() {
 	var theComponent = new sewi.ImageResourceViewer();
