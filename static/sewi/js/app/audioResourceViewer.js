@@ -6,7 +6,7 @@ sewi.AudioResourceViewer = function(){
 		return new sewi.AudioResourceViewer();
 	sewi.ResourceViewer.call(this);
 	var selfRef = this;
-	selfRef.init();
+    selfRef.init();
     selfRef.initControls();	
 }
 
@@ -18,14 +18,22 @@ sewi.AudioResourceViewer.prototype.load = function(url, type){
 
 sewi.AudioResourceViewer.prototype.init = function(){
 	var selfRef = this;
-	var url = '/static/sewi/media/gun_battle_sound.wav';
-	var request = XMLHttpRequest();
+    selfRef.progressBar = new sewi.ProgressBar();
+    selfRef.progressBar.setText('fetching audio clip');
+    var contentDOM = $('<div class="audio-content"></div>');
+    contentDOM.append(selfRef.progressBar.getDOM());
+    selfRef.mainDOMElement.append(contentDOM);
+    selfRef.mainDOMElement.addClass('audio-resource-viewer');
+	
+    var url = '/static/sewi/media/gun_battle_sound.wav';
+	var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arrayBuffer';
-    request.addEventListener('progress', selfRef.onProgress, false);
-    request.addEventListener('load', selfRef.onComplete, false);
-    request.addEventListener('abort', selfRef.onAbort, false);
-    request.addEventListener('error', selfRef.onError, false);
+
+    request.addEventListener('progress', selfRef.onProgress.bind(this), false);
+    request.addEventListener('load', selfRef.onComplete.bind(this), false);
+    request.addEventListener('abort', selfRef.onAbort.bind(this), false);
+    request.addEventListener('error', selfRef.onError.bind(this), false);
     request.send();
 
 	/*var contextClass = (window.AudioContext || 
@@ -41,25 +49,29 @@ sewi.AudioResourceViewer.prototype.init = function(){
 		//TO DO: web audio api not supported by the browser.
 	}
     */
-    var contentDOM = $('<div class="audio-content"></div>');
-    selfRef.mainDOMElement.append(contentDOM);
-    selfRef.mainDOMElement.addClass('audio-resource-viewer');
 }
 
 sewi.AudioResourceViewer.prototype.onProgress = function(event){
-
+    var selfRef = this;
+    console.log(selfRef);
+    if(event.lengthComputable){
+        var percent = (event.loaded/event.total) * 100
+        console.log((event.loaded / event.total) * 100);
+        selfRef.progressBar.update(percent);
+    }
 }
 
 sewi.AudioResourceViewer.prototype.onComplete = function(event){
+    var selfRef = this;
     console.log("file loaded");
 }
 
 sewi.AudioResourceViewer.prototype.onAbort = function(event){
-
+    var selfRef = this;
 }
 
 sewi.AudioResourceViewer.prototype.onError = function(event){
-
+    var selfRef = this;
 }
 
 sewi.AudioResourceViewer.prototype.initControls = function(){

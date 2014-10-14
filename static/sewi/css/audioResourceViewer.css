@@ -3,7 +3,22 @@
 	bottom: 0px;
 }
 
+.audio-resource-viewer{
+    background-color: #808080;
+}
 .audio-resource-viewer>.media-control-panel{
     position: absolute;
     bottom: 0px;
+}
+.audio-resource-viewer>.audio-content>.progress{
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: 50%;
+}
+
+.progress-bar-text{
+    position: absolute;
+    width: 100%;
+    text-align: center;
 }
