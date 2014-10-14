@@ -596,8 +596,6 @@ sewi.ImageResourceViewer = function() {
 		);
 	}
 
-	sewi.inherits(sewi.ImageResourceViewer, sewi.ConfiguratorElement);
-
 	/*
 	// ============================================================================================================================= TESTS ==
 
@@ -1145,6 +1143,8 @@ sewi.ImageResourceViewer = function() {
 	});
 	//*/
 };
+
+sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
 
 $(function() {
 	var theComponent = new sewi.ImageResourceViewer();
