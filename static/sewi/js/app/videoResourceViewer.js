@@ -308,6 +308,7 @@ var sewi = sewi || {};
 
     function attachVideoEventHandlers() {
         var selfRef = this;
+        selfRef.videoElement.on('durationchange', selfRef, updateDuration);
         selfRef.videoElement.on('timeupdate seeked', selfRef, updateTime);
         selfRef.videoElement.on('play pause', selfRef, updatePlayingStatus);
         selfRef.videoElement.on('volumechange', selfRef, updateVolume);
@@ -358,10 +359,20 @@ var sewi = sewi || {};
         selfRef.videoElement[0].volume = volume;
     }
 
+    function updateDuration(event) {
+        var selfRef = event.data;
+        selfRef.controls.update({
+            duration: selfRef.videoElement[0].duration
+        });
+    }
+
     function updateTime(event) {
         var selfRef = event.data;
         var currentPosition = selfRef.videoElement[0].currentTime / selfRef.videoElement[0].duration * 100.0;
-        selfRef.controls.update({ position: currentPosition });
+        selfRef.controls.update({
+            position: currentPosition,
+            currentTime: selfRef.videoElement[0].currentTime
+        });
     }
 
     function updatePlayingStatus(event) {
