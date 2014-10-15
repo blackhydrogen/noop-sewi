@@ -60,19 +60,51 @@ sewi.TabPanel = function(DOMObject, tabObject, state){
 				selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, sewi.constants.TAB_PANEL_POSITIONS.FULL, 'panel-full', 'panel-bottom');
 			}
 			selfRef.removeSelf();
-		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT){
-			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-right');
-			selfRef.removeSelf();		
-		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){	
-			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-left');
-			selfRef.removeSelf();		
-		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
-			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-right');
-			selfRef.removeSelf();		
-		} else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT){
-			selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
-			selfRef.removeSelf();		
-		}
+        } else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT){
+            if(_.size(selfRef.tab.panelList) == 3){
+                if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT]) {
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-right');
+                } else if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT]) {
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.LEFT, 'panel-left', 'panel-bottom-left');
+                }
+            } else {
+                selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-right');
+            }
+            selfRef.removeSelf();       
+        } else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){  
+            if(_.size(selfRef.tab.panelList) == 3){
+                if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT]){
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, 'panel-right', 'panel-bottom-right');
+                } else if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT]) {
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-left');
+                }    
+            } else {
+                selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.TOP, 'panel-top', 'panel-top-left');
+            }
+            selfRef.removeSelf();       
+        } else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
+            if(_.size(selfRef.tab.panelList) == 3){
+                if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT]){
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-right');
+                } else if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT]) {
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.LEFT, 'panel-left', 'panel-top-left');
+                }
+            } else {
+                selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-right');
+            }
+            selfRef.removeSelf();       
+        } else if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT){
+            if(_.size(selfRef.tab.panelList) == 3){
+                if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT]){
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
+                } else if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT]) {
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, 'panel-right', 'panel-top-right');
+                }
+            } else {
+                selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
+            }
+            selfRef.removeSelf();       
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
 	});
 
 	$(DOMObject).on('FullscreenToggled', function(){
