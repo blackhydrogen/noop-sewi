@@ -17,19 +17,20 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
-	//Tab Constants
-	TAB_MAX_NUM_TABS: 5,
-	TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
-	TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
+    //Tab Constants
+    TAB_MAX_NUM_TABS: 5,
+    TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
+    TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
     
-	//Resource Viewer Constants
-	RESOURCE_VIEWER_CLASS: 'resource-viewer',
-    RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button"><span aria-hidden="true">&times;</span></button>',
-    RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button">F</button>',
-    RESOURCE_VIEWER_MOVE_BUTTON_DOM: '<button type="button" class="btn btn-default move-button">M</button>',
-    RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel"></div>',
+    //Resource Viewer Constants
+    RESOURCE_VIEWER_CLASS: 'resource-viewer',
+    RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
+    RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
+    RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
+    RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
+    RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden"></div>',
 
-	//Video Resource Constants
+    //Video Resource Constants
     VIDEO_RESOURCE_URL: '/sewi/resources/video/',
     VIDEO_RESOURCE_THUMBNAIL_URL: '/thumb',
     VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
@@ -38,15 +39,16 @@ sewi.constants = {
     VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
     VIDEO_RESOURCE_VIEWER_CONTENT_DOM: '<div class="video-content animated"></div>',
 
-	//Video Controls Constants
-    VIDEO_CONTROLS_DOM_CLASS: 'video-control-panel',
-    VIDEO_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
-    VIDEO_CONTROLS_INNER_PANEL_DOM: '<div></div>',
-    VIDEO_CONTROLS_LEFT_PANEL_CLASS: 'left',
-    VIDEO_CONTROLS_RIGHT_PANEL_CLASS: 'right',
-    VIDEO_CONTROLS_LONG_PANEL_CLASS: 'long',
-    VIDEO_CONTROLS_PLAY_CLASS: 'btn-block play-button',
-    VIDEO_CONTROLS_MUTE_CLASS: 'mute-button',
-    VIDEO_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" />',
-    VIDEO_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',
+    //Media Controls Constants
+    MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
+    MEDIA_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
+    MEDIA_CONTROLS_INNER_PANEL_DOM: '<div></div>',
+    MEDIA_CONTROLS_LEFT_PANEL_CLASS: 'left',
+    MEDIA_CONTROLS_RIGHT_PANEL_CLASS: 'right',
+    MEDIA_CONTROLS_LONG_PANEL_CLASS: 'long',
+    MEDIA_CONTROLS_DURATION_CLASS: 'duration',
+    MEDIA_CONTROLS_PLAY_CLASS: 'btn-block play-button',
+    MEDIA_CONTROLS_MUTE_CLASS: 'mute-button',
+    MEDIA_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" />',
+    MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',
 };

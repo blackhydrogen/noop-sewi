@@ -1,246 +1,288 @@
 var sewi = sewi || {};
 
-sewi.VideoControls = function() {
-    // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.VideoControls))
-        return new sewi.VideoControls();
+(function() {
+    sewi.MediaControls = function() {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.MediaControls))
+            return new sewi.MediaControls();
 
-    sewi.ConfiguratorElement.call(this);
+        sewi.ConfiguratorElement.call(this);
 
-    var selfRef = this;
+        var selfRef = this;
 
-    initDOM();
-    initEvents();
+        initDOM.call(selfRef);
+        initEvents.call(selfRef);
 
-    _.assign(selfRef, {
-        isPlaying: false,
-        isMuted: false,
-        progress: 0.0,
-    });
+        _.assign(selfRef, {
+            isPlaying: false,
+            isMuted: false,
+            progress: 0.0,
+            duration: 0.0
+        });
+    }
 
+    sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
+
+    var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
+
+    // MediaControls private methods begin
     function initDOM() {
-        selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_CONTROLS_DOM_CLASS);
+        var selfRef = this;
 
-        var button = $(sewi.constants.VIDEO_CONTROLS_BUTTON_DOM);
-        var innerPanel = $(sewi.constants.VIDEO_CONTROLS_INNER_PANEL_DOM);
+        selfRef.mainDOMElement.addClass(sewi.constants.MEDIA_CONTROLS_DOM_CLASS);
 
-        var leftInnerPanel = innerPanel.clone()
-                                       .addClass(sewi.constants.VIDEO_CONTROLS_LEFT_PANEL_CLASS);
-        var rightInnerPanel = innerPanel.clone()
-                                        .addClass(sewi.constants.VIDEO_CONTROLS_RIGHT_PANEL_CLASS);
-        var extremeRightInnerPanel = innerPanel.clone()
-                                               .addClass(sewi.constants.VIDEO_CONTROLS_RIGHT_PANEL_CLASS)
-                                               .addClass(sewi.constants.VIDEO_CONTROLS_LONG_PANEL_CLASS);
-        var centerInnerPanel = innerPanel.clone()
-                                         .addClass('center');
+        var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
+        var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
+
+        var playButtonPanel = innerPanel.clone()
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
+        sewi.durationTextPanel = innerPanel.clone()
+                                           .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+                                           .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
+        var muteButtonPanel = innerPanel.clone()
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
+        var volumeSliderPanel = innerPanel.clone()
+                                          .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+                                          .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
+        var seekSliderPanel = innerPanel.clone()
+                                        .addClass('center');
 
         selfRef.playPauseButton = button.clone()
-                                        .addClass(sewi.constants.VIDEO_CONTROLS_PLAY_CLASS);
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
         selfRef.muteButton = button.clone()
-                                   .addClass(sewi.constants.VIDEO_CONTROLS_MUTE_CLASS);
-        selfRef.volumeSlider = $(sewi.constants.VIDEO_CONTROLS_VOLUME_SLIDER_DOM);
-        selfRef.progressSlider = $(sewi.constants.VIDEO_CONTROLS_PROGRESS_SLIDER_DOM);
+                                   .addClass(sewi.constants.MEDIA_CONTROLS_MUTE_CLASS);
+        selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
+        selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
-        leftInnerPanel.append(selfRef.playPauseButton);
-        rightInnerPanel.append(selfRef.muteButton)
-        extremeRightInnerPanel.append(selfRef.volumeSlider);
-        centerInnerPanel.append(selfRef.progressSlider);
+        playButtonPanel.append(selfRef.playPauseButton);
+        muteButtonPanel.append(selfRef.muteButton)
+        volumeSliderPanel.append(selfRef.volumeSlider);
+        seekSliderPanel.append(selfRef.progressSlider);
 
-        selfRef.mainDOMElement.append(leftInnerPanel)
-                              .append(extremeRightInnerPanel)
-                              .append(rightInnerPanel)
-                              .append(centerInnerPanel);
+        sewi.durationTextPanel.text(generateDurationText({
+            currentSecs: '--',
+            currentMins: '--',
+            durationSecs: '--',
+            durationMins: '--'
+        }));
+
+        selfRef.mainDOMElement.append(playButtonPanel)
+                              .append(volumeSliderPanel)
+                              .append(muteButtonPanel)
+                              .append(sewi.durationTextPanel)
+                              .append(seekSliderPanel);
     }
 
     function initEvents() {
-        selfRef.playPauseButton.click(playPauseClicked);
-        selfRef.muteButton.click(muteClicked);
-        selfRef.volumeSlider.on('input', volumeChanged);
-        selfRef.progressSlider.on('change', progressChanged);
+        var selfRef = this;
+
+        selfRef.playPauseButton.click(selfRef, playPauseClicked);
+        selfRef.muteButton.click(selfRef, muteClicked);
+        selfRef.volumeSlider.on('input', selfRef, volumeChanged);
+        selfRef.progressSlider.on('change', selfRef, progressChanged);
     }
 
-    function playPauseClicked() {
+    function playPauseClicked(event) {
+        var selfRef = event.data;
+
         selfRef.togglePlay();
     }
 
-    function muteClicked() {
+    function muteClicked(event) {
+        var selfRef = event.data;
+
         selfRef.toggleMute();
     }
 
-    function volumeChanged() {
+    function volumeChanged(event) {
+        var selfRef = event.data;
+
         selfRef.volume(selfRef.volumeSlider[0].value);
     }
 
-    function progressChanged() {
+    function progressChanged(event) {
+        var selfRef = event.data;
+
         selfRef.playbackPosition(selfRef.progressSlider[0].value);
         //selfRef.setPlaybackProgress(??);
     }
-}
 
-sewi.inherits(sewi.VideoControls, sewi.ConfiguratorElement);
-
-sewi.VideoControls.prototype.togglePlay = function() {
-    var selfRef = this;
-
-    if (selfRef.isPlaying) {
-        selfRef.mainDOMElement.trigger('Paused');
-    } else {
-        selfRef.mainDOMElement.trigger('Playing');
+    function getTimeDigits(number) {
+        return ('0' + number).slice(-2);
     }
 
-    selfRef.update({ playing: !selfRef.isPlaying });
+    // MediaControls public methods
+    sewi.MediaControls.prototype.togglePlay = function() {
+        var selfRef = this;
 
-    return this;
-}
-
-sewi.VideoControls.prototype.toggleMute = function() {
-    var selfRef = this;
-
-    if (selfRef.isMuted) {
-        selfRef.mainDOMElement.trigger('Unmuted');
-    } else {
-        selfRef.mainDOMElement.trigger('Muted');
-    }
-
-    selfRef.update({ muted: !selfRef.isMuted });
-
-    return this;
-}
-
-sewi.VideoControls.prototype.volume = function(volume) {
-    var selfRef = this;
-
-    if (_.isUndefined(volume)) {
-        return selfRef.volumeSlider[0].value;
-    }
-
-    if (selfRef.isMuted) {
-        selfRef.mainDOMElement.trigger('Unmuted');
-    }
-
-    selfRef.update({ volume: volume });
-
-    selfRef.mainDOMElement.trigger('VolumeChanged', volume);
-
-    return this;
-}
-
-sewi.VideoControls.prototype.playbackPosition = function(position) {
-    var selfRef = this;
-
-    if (_.isUndefined(position)) {
-        return selfRef.progressSlider[0].value;
-    }
-
-    selfRef.update({ position: position });
-
-    selfRef.mainDOMElement.trigger('PositionChanged', position);
-
-    return this;
-}
-
-sewi.VideoControls.prototype.downloadProgress = function(progress) {
-    var selfRef = this;
-
-
-}
-
-/**
- * Updates the displayed values of the VideoControls instance.
- * @param  {object} options A dictionary containing all values that will be changed.
- * @return {VideoControls} This instance of VideoControls.
- */
-sewi.VideoControls.prototype.update = function(options) {
-    options = options || {};
-
-    var selfRef = this;
-
-    if (!_.isUndefined(options.playing)) {
-
-        selfRef.isPlaying = !!options.playing;
-
-        if (!selfRef.isPlaying) {
-            selfRef.mainDOMElement.removeClass('playing');
+        if (selfRef.isPlaying) {
+            selfRef.mainDOMElement.trigger('Paused');
         } else {
-            selfRef.mainDOMElement.addClass('playing');
+            selfRef.mainDOMElement.trigger('Playing');
+        }
+
+        selfRef.update({ playing: !selfRef.isPlaying });
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.toggleMute = function() {
+        var selfRef = this;
+
+        if (selfRef.isMuted) {
+            selfRef.mainDOMElement.trigger('Unmuted');
+        } else {
+            selfRef.mainDOMElement.trigger('Muted');
+        }
+
+        selfRef.update({ muted: !selfRef.isMuted });
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.volume = function(volume) {
+        var selfRef = this;
+
+        if (_.isUndefined(volume)) {
+            return selfRef.volumeSlider[0].value;
+        }
+
+        if (selfRef.isMuted) {
+            selfRef.mainDOMElement.trigger('Unmuted');
+        }
+
+        selfRef.update({ volume: volume });
+
+        selfRef.mainDOMElement.trigger('VolumeChanged', volume);
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.playbackPosition = function(position) {
+        var selfRef = this;
+
+        if (_.isUndefined(position)) {
+            return selfRef.progressSlider[0].value;
+        }
+
+        selfRef.update({ position: position });
+
+        selfRef.mainDOMElement.trigger('PositionChanged', position);
+
+        return this;
+    }
+
+    sewi.MediaControls.prototype.downloadProgress = function(progress) {
+        var selfRef = this;
+
+
+    }
+
+    /**
+     * Updates the displayed values of the MediaControls instance.
+     * @param  {object} options A dictionary containing all values that will be changed.
+     * @return {MediaControls} This instance of MediaControls.
+     */
+    sewi.MediaControls.prototype.update = function(options) {
+        options = options || {};
+
+        var selfRef = this;
+
+        if (!_.isUndefined(options.playing)) {
+
+            selfRef.isPlaying = !!options.playing;
+
+            if (!selfRef.isPlaying) {
+                selfRef.mainDOMElement.removeClass('playing');
+            } else {
+                selfRef.mainDOMElement.addClass('playing');
+            }
+        }
+
+        if (!_.isUndefined(options.duration)) {
+            selfRef.duration = options.duration;
+        }
+
+        if (!_.isUndefined(options.currentTime)) {
+            var currentMins = Math.floor(options.currentTime / 60);
+            var currentSecs = Math.floor(options.currentTime % 60);
+
+            var durationMins = Math.floor(selfRef.duration / 60);
+            var durationSecs = Math.floor(selfRef.duration % 60);
+
+            sewi.durationTextPanel.text(generateDurationText({
+                currentMins: getTimeDigits(currentMins),
+                currentSecs: getTimeDigits(currentSecs),
+                durationMins: getTimeDigits(durationMins),
+                durationSecs: getTimeDigits(durationSecs),
+            }));
+        }
+
+        if (!_.isUndefined(options.position)) {
+            selfRef.progressSlider[0].value = options.position;
+        }
+
+        if (!_.isUndefined(options.volume)) {
+            selfRef.volumeSlider[0].value = options.volume;
+            options.muted = false;
+        }
+
+        if (!_.isUndefined(options.muted)) {
+            selfRef.isMuted = !!options.muted;
+
+            if (!selfRef.isMuted) {
+                selfRef.mainDOMElement.removeClass('muted');
+            } else {
+                selfRef.mainDOMElement.addClass('muted');
+            }
         }
     }
 
-    if (!_.isUndefined(options.position)) {
-        selfRef.progressSlider[0].value = options.position;
+})();
+
+(function(){
+    sewi.VideoResourceViewer = function(options) {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.VideoResourceViewer))
+            return new sewi.VideoResourceViewer(options);
+
+        sewi.ResourceViewer.call(this);
+
+        var selfRef = this;
+        var defaults = {
+
+        };
+
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(selfRef, _.pick(options, [
+            'id',
+        ]));
+
+        selfRef.isLoaded = false;
+
+        validateArguments.call(selfRef);
+        initDOM.call(selfRef);
+        initControls.call(selfRef);
+        attachVideoEventHandlers.call(selfRef);
+        attachControlsEventHandlers.call(selfRef);
+        setUpInactivityEventHandlers.call(selfRef);
+
+        return selfRef;
     }
 
-    if (!_.isUndefined(options.volume)) {
-        selfRef.volumeSlider[0].value = options.volume;
-        options.muted = false;
-    }
+    sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
 
-    if (!_.isUndefined(options.muted)) {
-        selfRef.isMuted = !!options.muted;
-
-        if (!selfRef.isMuted) {
-            selfRef.mainDOMElement.removeClass('muted');
-        } else {
-            selfRef.mainDOMElement.addClass('muted');
-        }
-    }
-}
-
-sewi.VideoResourceViewer = function(options) {
-    // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.VideoResourceViewer))
-        return new sewi.VideoResourceViewer(options);
-
-    sewi.ResourceViewer.call(this);
-
-    var selfRef = this;
-    var defaults = {
-        
-    };
-
-    options = options || {};
-    _.defaults(options, defaults);
-    _.assign(selfRef, _.pick(options, [
-        'id',
-    ]));
-
-    selfRef.isLoaded = false;
-    selfRef.isDataLoaded = false;
-
-    validateArguments();
-    loadVideoData();
-    initDOM();
-    initControls();
-    attachVideoEventHandlers();
-    attachControlsEventHandlers();
-    setUpInactivityEventHandlers();
-
-    return selfRef;
-
+    // VideoResourceViewer private methods
     function validateArguments() {
+        var selfRef = this;
         if (!_.isString(selfRef.id)) {
             throw new Error('options: Valid resource id must be provided.');
         }
     }
 
-    // Load video information from the server
-    function loadVideoData() {
-        var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
-
-        $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            async: true,
-            url: videoResourceURL
-        }).done(function(data) {
-            console.log('Video data retrieved.');
-            selfRef.video = data;
-            selfRef.isDataLoaded = true;
-            selfRef.mainDOMElement.trigger('DataLoaded');
-        });
-    }
-
     function initDOM() {
+        var selfRef = this;
         selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_RESOURCE_VIEWER_DOM_CLASS);
 
         selfRef.contentElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTENT_DOM);
@@ -257,66 +299,90 @@ sewi.VideoResourceViewer = function(options) {
     }
 
     function initControls() {
-        selfRef.controls = new sewi.VideoControls();
+        var selfRef = this;
+        selfRef.controls = new sewi.MediaControls();
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
         selfRef.mainDOMElement.append(selfRef.controlPanelElement);
     }
 
     function attachVideoEventHandlers() {
-        selfRef.videoElement.on('timeupdate seeked', updateTime);
-        selfRef.videoElement.on('play pause', updatePlayingStatus);
-        selfRef.videoElement.on('volumechange', updateVolume);
+        var selfRef = this;
+        selfRef.videoElement.on('durationchange', selfRef, updateDuration);
+        selfRef.videoElement.on('timeupdate seeked', selfRef, updateTime);
+        selfRef.videoElement.on('play pause', selfRef, updatePlayingStatus);
+        selfRef.videoElement.on('volumechange', selfRef, updateVolume);
     }
 
     function attachControlsEventHandlers() {
-        selfRef.controlPanelElement.on('Playing', playEvent);
-        selfRef.controlPanelElement.on('Paused', pauseEvent);
-        selfRef.controlPanelElement.on('Muted', muteEvent);
-        selfRef.controlPanelElement.on('Unmuted', unmuteEvent);
-        selfRef.controlPanelElement.on('PositionChanged', positionEvent);
-        selfRef.controlPanelElement.on('VolumeChanged', volumeEvent);
+        var selfRef = this;
+        selfRef.controlPanelElement.on('Playing', selfRef, playEvent);
+        selfRef.controlPanelElement.on('Paused', selfRef, pauseEvent);
+        selfRef.controlPanelElement.on('Muted', selfRef, muteEvent);
+        selfRef.controlPanelElement.on('Unmuted', selfRef, unmuteEvent);
+        selfRef.controlPanelElement.on('PositionChanged', selfRef, positionEvent);
+        selfRef.controlPanelElement.on('VolumeChanged', selfRef, volumeEvent);
     }
 
     function setUpInactivityEventHandlers() {
-        selfRef.mainDOMElement.mousemove(showControlsTemporarily);
+        var selfRef = this;
+        selfRef.mainDOMElement.mousemove(selfRef, showControlsTemporarily);
     }
 
-    function playEvent() {
+    function playEvent(event) {
+        var selfRef = event.data;
         selfRef.videoElement[0].play();
     }
 
-    function pauseEvent() {
+    function pauseEvent(event) {
+        var selfRef = event.data;
         selfRef.videoElement[0].pause();
     }
 
-    function muteEvent() {
+    function muteEvent(event) {
         selfRef.videoElement[0].muted = true;
+        var selfRef = event.data;
     }
 
-    function unmuteEvent() {
+    function unmuteEvent(event) {
+        var selfRef = event.data;
         selfRef.videoElement[0].muted = false;
     }
 
     function positionEvent(event, position) {
+        var selfRef = event.data;
         selfRef.videoElement[0].currentTime = selfRef.videoElement[0].duration * position / 100.0;
     }
 
     function volumeEvent(event, volume) {
+        var selfRef = event.data;
         selfRef.videoElement[0].volume = volume;
     }
 
-    function updateTime() {
-        var currentPosition = selfRef.videoElement[0].currentTime / selfRef.videoElement[0].duration * 100.0;
-        selfRef.controls.update({ position: currentPosition });
+    function updateDuration(event) {
+        var selfRef = event.data;
+        selfRef.controls.update({
+            duration: selfRef.videoElement[0].duration
+        });
     }
 
-    function updatePlayingStatus() {
+    function updateTime(event) {
+        var selfRef = event.data;
+        var currentPosition = selfRef.videoElement[0].currentTime / selfRef.videoElement[0].duration * 100.0;
+        selfRef.controls.update({
+            position: currentPosition,
+            currentTime: selfRef.videoElement[0].currentTime
+        });
+    }
+
+    function updatePlayingStatus(event) {
+        var selfRef = event.data;
         var paused = selfRef.videoElement[0].paused;
         selfRef.controls.update({ playing: !paused });
     }
 
-    function updateVolume() {
+    function updateVolume(event) {
+        var selfRef = event.data;
         var options = {};
         options.muted = selfRef.videoElement[0].muted;
         if (!options.muted) {
@@ -326,41 +392,57 @@ sewi.VideoResourceViewer = function(options) {
         selfRef.controls.update(options);
     }
 
-    function showControlsTemporarily() {
+    function showControlsTemporarily(event) {
+        var selfRef = event.data;
         selfRef.contentElement.addClass('active');
         if (selfRef.hideTimerId) {
             clearTimeout(selfRef.hideTimerId);
             delete selfRef.hideTimerId;
         }
-        selfRef.hideTimerId = _.delay(hideControls, 2000);
+        selfRef.hideTimerId = _.delay(hideControls, 2000, selfRef);
     }
 
-    function hideControls() {
+    function hideControls(selfRef) {
         selfRef.contentElement.removeClass('active');
     }
-}
 
-sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
+    // Load video information from the server
+    function loadVideoData() {
+        var selfRef = this;
+        var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
 
-sewi.VideoResourceViewer.prototype.load = function() {
-    var selfRef = this;
-    if (!selfRef.isLoaded) {
-        retrieveSource();
-
-        selfRef.videoElement.css('min-width', '320px');
-        selfRef.isLoaded = true;
-        selfRef.mainDOMElement.trigger('Loaded');
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            async: true,
+            url: videoResourceURL
+        }).done(retrieveVideo.bind(selfRef));
     }
 
-    return selfRef;
+    function retrieveVideo(videoData) {
+        var selfRef = this;
 
-    function retrieveSource() {
-        // TODO: Load this.id from server into mainDOMElement
+        console.log('Video data retrieved.');
+        selfRef.videoData = videoData;
+        selfRef.isLoaded = true;
+        selfRef.mainDOMElement.trigger('Loaded');
         var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
         videoSourceElement.attr({
-            src: selfRef.video.url,
-            type: selfRef.video.type,
+            src: selfRef.videoData.url,
+            type: selfRef.videoData.type,
         });
         videoSourceElement.appendTo(selfRef.videoElement);
     }
-}
+
+    // VideoResourceViewer public methods
+    sewi.VideoResourceViewer.prototype.load = function() {
+        var selfRef = this;
+
+        if (!selfRef.isLoaded) {
+            loadVideoData.call(selfRef);
+        }
+
+        return selfRef;
+    }
+
+})();
