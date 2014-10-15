@@ -1,73 +1,100 @@
 var sewi = sewi || {};
-sewi.ConfiguratorElement = function() {
 
-	var selfRef = this;
+(function() {
+	sewi.ConfiguratorElement = function() {
 
-	selfRef.mainDOMElement = $("<div></div>");
-}
+		var selfRef = this;
 
-/**
- * Retrieves the DOM element owned by this object.
- * @return {jQuery} The DOM element container.
- */
-sewi.ConfiguratorElement.prototype.getDOM = function() {
-	return this.mainDOMElement;
-}
+		selfRef.mainDOMElement = $("<div></div>");
+	}
 
-/**
- * Helper function for triggering an event on the main DOM element.
- * Arguments are exactly like jQuery.fn.trigger()
- */
-sewi.ConfiguratorElement.prototype.trigger = function() {
-	this.mainDOMElement.trigger.apply(this.mainDOMElement, arguments);
-}
+	/**
+	 * Retrieves the DOM element owned by this object.
+	 * @return {jQuery} The DOM element container.
+	 */
+	sewi.ConfiguratorElement.prototype.getDOM = function() {
+		return this.mainDOMElement;
+	}
 
-/**
-* Helper function for triggering an event on the main DOM element.
-* Arguments are exactly like jQuery.fn.on()
-*/
-sewi.ConfiguratorElement.prototype.on = function() {
-	this.mainDOMElement.on.apply(this.mainDOMElement, arguments);
-}
+	/**
+	 * Helper function for triggering an event on the main DOM element.
+	 * Arguments are exactly like jQuery.fn.trigger()
+	 */
+	sewi.ConfiguratorElement.prototype.trigger = function() {
+		this.mainDOMElement.trigger.apply(this.mainDOMElement, arguments);
+	}
 
-sewi.ResourceViewer = function() {
-	sewi.ConfiguratorElement.call(this);
+	/**
+	* Helper function for triggering an event on the main DOM element.
+	* Arguments are exactly like jQuery.fn.on()
+	*/
+	sewi.ConfiguratorElement.prototype.on = function() {
+		this.mainDOMElement.on.apply(this.mainDOMElement, arguments);
+	}
+})();
 
-	var selfRef = this;
+(function() {
+	sewi.ResourceViewer = function() {
+		sewi.ConfiguratorElement.call(this);
 
-	setupDOM();
-	addButtons();
+		var selfRef = this;
 
+		setupDOM.call(selfRef);
+		addButtons.call(selfRef);
+	}
+	sewi.inherits(sewi.ResourceViewer, sewi.ConfiguratorElement);
+
+	// ResourceViewer private methods
 	function setupDOM() {
+		var selfRef = this;
+
 		selfRef.mainDOMElement.addClass(sewi.constants.RESOURCE_VIEWER_CLASS);
 	}
 
 	function addButtons() {
+		var selfRef = this;
+
 		var closeButton = $(sewi.constants.RESOURCE_VIEWER_CLOSE_BUTTON_DOM);
 		var fullscreenButton = $(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM);
 
-		var panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
+		selfRef.panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
 
-		panel.append(closeButton)
-			 .append(fullscreenButton);
+		selfRef.panel.append(closeButton)
+			   .append(fullscreenButton);
 
-		selfRef.mainDOMElement.append(panel);
+		selfRef.mainDOMElement.append(selfRef.panel);
 
-		closeButton.click(closeButtonClicked);
-		fullscreenButton.click(fullscreenButtonClicked);
+		closeButton.click(closeButtonClicked.bind(selfRef));
+		fullscreenButton.click(fullscreenButtonClicked.bind(selfRef));
 	}
 
 	function closeButtonClicked() {
+		var selfRef = this;
+
 		selfRef.trigger('Closing');
 	}
 
 	function fullscreenButtonClicked() {
+		var selfRef = this;
+
 		selfRef.trigger('FullscreenToggled');
 	}
 
-	function moveButtonClicked() {
-		// TODO: Trigger an appropriate event
-        //selfRef.trigger('')
+	sewi.ResourceViewer.prototype.addDownloadButton = function(url) {
+		var selfRef = this;
+
+		if (!_.isString(url)) {
+			throw new ValueError('URL must be a string');
+		}
+
+		if (selfRef.panel.has(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS).length) {
+			return;
+		}
+
+		var downloadButton = $(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM);
+		downloadButton.addClass(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS)
+					  .attr('href', url);
+
+		selfRef.panel.append(downloadButton);
 	}
-}
-sewi.inherits(sewi.ResourceViewer, sewi.ConfiguratorElement);
+})();
