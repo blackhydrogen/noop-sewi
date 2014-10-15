@@ -24,6 +24,17 @@
   transition: all 200ms ease-in-out 0s;
 }
 
+div.minimize-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.5);
+    padding: 2px 5px;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 0 0 5px;
+}
+
 .resource-viewer .top-panel {
     position: absolute;
     top: 0;
