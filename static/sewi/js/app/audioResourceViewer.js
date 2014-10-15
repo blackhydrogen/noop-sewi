@@ -18,7 +18,7 @@ sewi.AudioResourceViewer.prototype.load = function(url, type){
 
 sewi.AudioResourceViewer.prototype.init = function(){
 	var selfRef = this;
-    selfRef.progressBar = new sewi.ProgressBar();
+    selfRef.progressBar = new sewi.ProgressBar(true);
     selfRef.progressBar.setText('fetching audio clip');
     var contentDOM = $('<div class="audio-content"></div>');
     contentDOM.append(selfRef.progressBar.getDOM());
@@ -77,5 +77,15 @@ sewi.AudioResourceViewer.prototype.onError = function(event){
 sewi.AudioResourceViewer.prototype.initControls = function(){
     var selfRef = this;
     selfRef.controls = new sewi.MediaControls();
+    selfRef.controls.on('Playing', selfRef.playAudio);
+    selfRef.controls.on('Paused', selfRef.pauseAudio);
     selfRef.mainDOMElement.append(selfRef.controls.getDOM());
+}
+
+sewi.AudioResourceViewer.prototype.playAudio = function(){
+    console.log('audio playing');
+}
+
+sewi.AudioResourceViewer.prototype.pauseAudio = function(){
+    console.log('audio paused');
 }

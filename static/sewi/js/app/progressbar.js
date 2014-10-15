@@ -1,9 +1,18 @@
 var sewi = sewi || {};
 
 // Progress Bar
-sewi.ProgressBar = function(){
+sewi.ProgressBar = function(animated){
     var selfRef = this;
-    selfRef.dom = $('<div class="progress"><div class="progress-bar" role="progressbar"></div><div class="progress-bar-text"></div></div>');
+    var progressBar = $('<div class="progress-bar" role="progressbar"></div>');
+    var text = ('<div class="progress-bar-text"></div>');
+
+    if(animated){
+        progressBar.addClass('progress-bar-striped');
+        progressBar.addClass('active');
+    }
+    selfRef.dom = $('<div class="progress"></div>');
+    selfRef.dom.append(progressBar);
+    selfRef.dom.append(text);
 }
 
 sewi.ProgressBar.prototype.update = function(percent){
