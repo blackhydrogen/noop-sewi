@@ -109,7 +109,7 @@ var sewi = sewi || {};
     function openResource(galleryElement) {
         var selfRef = this;
 
-        // TODO: Pass entire gallery element to tabs as jQuery object
+        selfRef.tabs.addObjectToNewTab(galleryElement);
     }
 
     function updateViewSizes() {
