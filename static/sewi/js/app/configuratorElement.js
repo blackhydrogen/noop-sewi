@@ -57,12 +57,12 @@ var sewi = sewi || {};
 		var closeButton = $(sewi.constants.RESOURCE_VIEWER_CLOSE_BUTTON_DOM);
 		var fullscreenButton = $(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM);
 
-		var panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
+		selfRef.panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
 
-		panel.append(closeButton)
-			.append(fullscreenButton);
+		selfRef.panel.append(closeButton)
+			   .append(fullscreenButton);
 
-		selfRef.mainDOMElement.append(panel);
+		selfRef.mainDOMElement.append(selfRef.panel);
 
 		closeButton.click(closeButtonClicked.bind(selfRef));
 		fullscreenButton.click(fullscreenButtonClicked.bind(selfRef));
@@ -78,5 +78,23 @@ var sewi = sewi || {};
 		var selfRef = this;
 
 		selfRef.trigger('FullscreenToggled');
+	}
+
+	sewi.ResourceViewer.prototype.addDownloadButton = function(url) {
+		var selfRef = this;
+
+		if (!_.isString(url)) {
+			throw new ValueError('URL must be a string');
+		}
+
+		if (selfRef.panel.has(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS).length) {
+			return;
+		}
+
+		var downloadButton = $(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM);
+		downloadButton.addClass(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS)
+					  .attr('href', url);
+
+		selfRef.panel.append(downloadButton);
 	}
 })();

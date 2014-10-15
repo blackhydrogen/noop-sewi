@@ -20,6 +20,8 @@ sewi.constants = {
     RESOURCE_VIEWER_CLASS: 'resource-viewer',
     RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
     RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
+    RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default" download><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
+    RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
     RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden"></div>',
 
 	MAX_NUM_TABS: 5,

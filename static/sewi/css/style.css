@@ -32,7 +32,8 @@
     z-index: 1;
 }
 
-.resource-viewer .top-panel>button {
+.resource-viewer .top-panel>button,
+.resource-viewer .top-panel>a {
     float: right;
 }
 
