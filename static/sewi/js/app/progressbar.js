@@ -8,7 +8,14 @@ sewi.ProgressBar = function(){
 
 sewi.ProgressBar.prototype.update = function(percent){
     var selfRef = this;
-    selfRef.dom.children('.progress-bar').css('width', percent+'%');
+    var methodName = 'sewi.ProgressBar.prototype.update';
+    if(_.isNumber(percent) == false){
+        console.error(methodName + ': parameter is not a number');
+    } else if(percent > 100 || percent < 0){
+        console.error(methodName + ': parameter is out of range');
+    } else {
+        selfRef.dom.children('.progress-bar').css('width', percent+'%');
+    }  
 }
 
 sewi.ProgressBar.prototype.setText = function(string){
