@@ -81,10 +81,7 @@ var sewi = sewi || {};
 
         var minimizeElement = $('<div class="minimize-button">&lt;&lt;</div>');
         selfRef.basicInfoView.append(minimizeElement);
-        minimizeElement.click(function() {
-            selfRef.isBasicInfoMinimized = !selfRef.isBasicInfoMinimized;
-            updateViewSizes.call(selfRef);
-        });
+        minimizeElement.click(minimizeToggled.bind(selfRef));
     }
 
     function initResViewer() {
@@ -93,10 +90,7 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.TabContainer)) {
             selfRef.tabs = new sewi.TabContainer();
             var element = selfRef.tabs.getDOM();
-            element.on("NoTabs", function() {
-                selfRef.isResourceViewerHidden = true;
-                updateViewSizes.call(selfRef);
-            });
+            element.on("NoTabs", allTabsClosed.bind(selfRef));
             selfRef.resViewerView.append(element);
         }
     }
@@ -158,6 +152,26 @@ var sewi = sewi || {};
         var title = name;
         var subtitle = "Encounter #" + id;
         selfRef.setTitle(title, subtitle);
+    }
+
+    function basicInfoLoaded(event, encounter) {
+        var selfRef = this;
+
+        setEncounterTitle.call(selfRef, encounter.id, encounter.title);
+    }
+
+    function minimizeToggled() {
+        var selfRef = this;
+
+        selfRef.isBasicInfoMinimized = !selfRef.isBasicInfoMinimized;
+        updateViewSizes.call(selfRef);
+    }
+
+    function allTabsClosed() {
+        var selfRef = this;
+
+        selfRef.isResourceViewerHidden = true;
+        updateViewSizes.call(selfRef);
     }
 
     // Configurator public methods
