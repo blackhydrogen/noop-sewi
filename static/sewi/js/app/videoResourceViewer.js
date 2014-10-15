@@ -382,7 +382,7 @@ var sewi = sewi || {};
     sewi.VideoResourceViewer.prototype.load = function() {
         var selfRef = this;
         if (!selfRef.isLoaded) {
-            retrieveSource();
+            retrieveVideo();
 
             selfRef.videoElement.css('min-width', '320px');
             selfRef.isLoaded = true;
@@ -391,7 +391,7 @@ var sewi = sewi || {};
 
         return selfRef;
 
-        function retrieveSource() {
+        function retrieveVideo() {
             // TODO: Load this.id from server into mainDOMElement
             var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
             videoSourceElement.attr({
