@@ -8,6 +8,7 @@ sewi.AudioResourceViewer = function(){
 	var selfRef = this;
     selfRef.offset = 0;
     selfRef.startTime = 0;
+    selfRef.isPlaying = false;
     selfRef.init();
     selfRef.initControls();	
 }
@@ -41,9 +42,7 @@ sewi.AudioResourceViewer.prototype.init = function(){
 
 	selfRef.scriptProcessor = selfRef.audioContext.createScriptProcessor(512, 1, 1); 
     selfRef.scriptProcessor.connect(selfRef.audioContext.destination);
-    selfRef.scriptProcessor.onaudioprocess = function(event){
-   //     console.log(event.playbackTime);
-    }
+    selfRef.scriptProcessor.onaudioprocess = selfRef.updateAudioSlider.bind(this);
 
     selfRef.request = new XMLHttpRequest();
     selfRef.request.open('GET', url, true);
@@ -90,30 +89,59 @@ sewi.AudioResourceViewer.prototype.initControls = function(){
     selfRef.controls = new sewi.MediaControls();
     selfRef.controls.on('Playing', selfRef.playAudio.bind(this));
     selfRef.controls.on('Paused', selfRef.pauseAudio.bind(this));
-    //selfRef.controls.on('PositionChanged', selfRef.updateAudioSlider.bind(this));
+    selfRef.controls.on('PositionChanged', selfRef.sliderChanged.bind(this));
     selfRef.mainDOMElement.append(selfRef.controls.getDOM());
+}
+
+sewi.AudioResourceViewer.prototype.sliderChanged = function(event, position){
+    var selfRef = this;
+    selfRef.offset = (position/100) * selfRef.source.buffer.duration;
 }
 
 sewi.AudioResourceViewer.prototype.updateAudioSlider = function(event){
     var selfRef = this;
-    selfRef.controls.update({position : (selfRef.offset / selfRef.source.duration)*100});
+    if(selfRef.source){
+        if(selfRef.isPlaying){
+            var percent = (((Date.now()-selfRef.startTime)/1000 + selfRef.offset) / selfRef.source.buffer.duration)*100;
+            selfRef.controls.update({position : percent});
+            if(percent >= 100){
+                selfRef.isPlaying = false;
+                selfRef.offset = 0;
+                selfRef.source.disconnect(selfRef.audioContext.destination);
+                selfRef.source.disconnect(selfRef.scriptProcessor);
+                selfRef.controls.update({position : 0, 
+                                        playing : selfRef.isPlaying});
+            }
+        }
+   }
 }
 
 sewi.AudioResourceViewer.prototype.playAudio = function(){
     var selfRef = this;
     console.log('audio playing');
-    console.log(selfRef.audioContext.currentTime);
     selfRef.source = selfRef.audioContext.createBufferSource();	
     selfRef.source.buffer = selfRef.audioBuffer;
 	selfRef.source.connect(selfRef.audioContext.destination);
 	selfRef.source.connect(selfRef.scriptProcessor);
+    selfRef.source.onended = selfRef.onAudioFinish.bind(this);
     selfRef.startTime = Date.now();
     selfRef.source.start(0, selfRef.offset);
+    selfRef.isPlaying = true;
+    selfRef.controls.update({isPlaying: selfRef.isPlaying});
 }
 
 sewi.AudioResourceViewer.prototype.pauseAudio = function(){
     var selfRef = this;
     console.log('audio paused');
+    selfRef.isPlaying = false;
 	selfRef.offset += (Date.now() - selfRef.startTime) / 1000;
     selfRef.source.stop(0);
+    selfRef.controls.update({isPlaying: selfRef.isPlaying});
+}
+
+sewi.AudioResourceViewer.prototype.onAudioFinish = function(event){
+    var selfRef = this;
+    console.log("Audio ended");
+    selfRef.source.disconnect(selfRef.audioContext.destination);
+    selfRef.source.disconnect(selfRef.scriptProcessor);
 }
