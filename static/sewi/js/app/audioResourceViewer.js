@@ -34,7 +34,8 @@ sewi.AudioResourceViewer.prototype.init = function(){
 	    				window.mozAudioContext || 
 		  				window.oAudioContext || 
 		    			window.msAudioContext);
-	if(contextClass){
+	
+    if(contextClass){
 		selfRef.audioContext =new contextClass();
 	} else {
 		//TO DO: web audio api not supported by the browser.
@@ -43,6 +44,10 @@ sewi.AudioResourceViewer.prototype.init = function(){
 	selfRef.scriptProcessor = selfRef.audioContext.createScriptProcessor(512, 1, 1); 
     selfRef.scriptProcessor.connect(selfRef.audioContext.destination);
     selfRef.scriptProcessor.onaudioprocess = selfRef.updateAudioSlider.bind(this);
+
+    selfRef.gainNode = selfRef.audioContext.createGain();
+    selfRef.gainNode.connect(selfRef.audioContext.destination);
+    selfRef.gainNode.gain.value = 1;
 
     selfRef.request = new XMLHttpRequest();
     selfRef.request.open('GET', url, true);
@@ -90,12 +95,18 @@ sewi.AudioResourceViewer.prototype.initControls = function(){
     selfRef.controls.on('Playing', selfRef.playAudio.bind(this));
     selfRef.controls.on('Paused', selfRef.pauseAudio.bind(this));
     selfRef.controls.on('PositionChanged', selfRef.sliderChanged.bind(this));
+    selfRef.controls.on('VolumeChanged', selfRef.volumeSliderChanged.bind(this));
     selfRef.mainDOMElement.append(selfRef.controls.getDOM());
 }
 
 sewi.AudioResourceViewer.prototype.sliderChanged = function(event, position){
     var selfRef = this;
     selfRef.offset = (position/100) * selfRef.source.buffer.duration;
+}
+
+sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
+    var selfRef = this;
+    selfRef.gainNode.gain.value = volume;
 }
 
 sewi.AudioResourceViewer.prototype.updateAudioSlider = function(event){
@@ -107,7 +118,7 @@ sewi.AudioResourceViewer.prototype.updateAudioSlider = function(event){
             if(percent >= 100){
                 selfRef.isPlaying = false;
                 selfRef.offset = 0;
-                selfRef.source.disconnect(selfRef.audioContext.destination);
+                selfRef.source.disconnect(selfRef.gainNode);
                 selfRef.source.disconnect(selfRef.scriptProcessor);
                 selfRef.controls.update({position : 0, 
                                         playing : selfRef.isPlaying});
@@ -121,7 +132,7 @@ sewi.AudioResourceViewer.prototype.playAudio = function(){
     console.log('audio playing');
     selfRef.source = selfRef.audioContext.createBufferSource();	
     selfRef.source.buffer = selfRef.audioBuffer;
-	selfRef.source.connect(selfRef.audioContext.destination);
+	selfRef.source.connect(selfRef.gainNode);
 	selfRef.source.connect(selfRef.scriptProcessor);
     selfRef.source.onended = selfRef.onAudioFinish.bind(this);
     selfRef.startTime = Date.now();
@@ -142,6 +153,6 @@ sewi.AudioResourceViewer.prototype.pauseAudio = function(){
 sewi.AudioResourceViewer.prototype.onAudioFinish = function(event){
     var selfRef = this;
     console.log("Audio ended");
-    selfRef.source.disconnect(selfRef.audioContext.destination);
+    selfRef.source.disconnect(selfRef.gainNode);
     selfRef.source.disconnect(selfRef.scriptProcessor);
 }
