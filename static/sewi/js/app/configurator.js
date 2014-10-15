@@ -78,6 +78,13 @@ var sewi = sewi || {};
 
             selfRef.basicInfoView.append(element);
         }
+
+        var minimizeElement = $('<div class="minimize-button">&lt;&lt;</div>');
+        selfRef.basicInfoView.append(minimizeElement);
+        minimizeElement.click(function() {
+            selfRef.isBasicInfoMinimized = !selfRef.isBasicInfoMinimized;
+            updateViewSizes.call(selfRef);
+        });
     }
 
     function initResViewer() {
