@@ -31,14 +31,14 @@ var sewi = sewi || {};
         var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
         var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
-        var leftInnerPanel = innerPanel.clone()
+        var playButtonPanel = innerPanel.clone()
                                        .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
-        var rightInnerPanel = innerPanel.clone()
+        var muteButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
-        var extremeRightInnerPanel = innerPanel.clone()
+        var volumeSliderPanel = innerPanel.clone()
                                                .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
                                                .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
-        var centerInnerPanel = innerPanel.clone()
+        var seekSliderPanel = innerPanel.clone()
                                          .addClass('center');
 
         selfRef.playPauseButton = button.clone()
@@ -48,15 +48,15 @@ var sewi = sewi || {};
         selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
-        leftInnerPanel.append(selfRef.playPauseButton);
-        rightInnerPanel.append(selfRef.muteButton)
-        extremeRightInnerPanel.append(selfRef.volumeSlider);
-        centerInnerPanel.append(selfRef.progressSlider);
+        playButtonPanel.append(selfRef.playPauseButton);
+        muteButtonPanel.append(selfRef.muteButton)
+        volumeSliderPanel.append(selfRef.volumeSlider);
+        seekSliderPanel.append(selfRef.progressSlider);
 
-        selfRef.mainDOMElement.append(leftInnerPanel)
-                              .append(extremeRightInnerPanel)
-                              .append(rightInnerPanel)
-                              .append(centerInnerPanel);
+        selfRef.mainDOMElement.append(playButtonPanel)
+                              .append(muteButtonPanel)
+                              .append(volumeSliderPanel)
+                              .append(seekSliderPanel);
     }
 
     function initEvents() {
