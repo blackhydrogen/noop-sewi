@@ -223,10 +223,8 @@ var sewi = sewi || {};
         ]));
 
         selfRef.isLoaded = false;
-        selfRef.isDataLoaded = false;
 
         validateArguments.call(selfRef);
-        loadVideoData.call(selfRef);
         initDOM.call(selfRef);
         initControls.call(selfRef);
         attachVideoEventHandlers.call(selfRef);
@@ -244,24 +242,6 @@ var sewi = sewi || {};
         if (!_.isString(selfRef.id)) {
             throw new Error('options: Valid resource id must be provided.');
         }
-    }
-
-    // Load video information from the server
-    function loadVideoData() {
-        var selfRef = this;
-        var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
-
-        $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            async: true,
-            url: videoResourceURL
-        }).done(function(data) {
-            console.log('Video data retrieved.');
-            selfRef.video = data;
-            selfRef.isDataLoaded = true;
-            selfRef.mainDOMElement.trigger('DataLoaded');
-        });
     }
 
     function initDOM() {
@@ -378,28 +358,43 @@ var sewi = sewi || {};
         selfRef.contentElement.removeClass('active');
     }
 
+    // Load video information from the server
+    function loadVideoData() {
+        var selfRef = this;
+        var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
+
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            async: true,
+            url: videoResourceURL
+        }).done(retrieveVideo.bind(selfRef));
+    }
+
+    function retrieveVideo(videoData) {
+        var selfRef = this;
+
+        console.log('Video data retrieved.');
+        selfRef.videoData = videoData;
+        selfRef.isLoaded = true;
+        selfRef.mainDOMElement.trigger('Loaded');
+        var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
+        videoSourceElement.attr({
+            src: selfRef.videoData.url,
+            type: selfRef.videoData.type,
+        });
+        videoSourceElement.appendTo(selfRef.videoElement);
+    }
+
     // VideoResourceViewer public methods
     sewi.VideoResourceViewer.prototype.load = function() {
         var selfRef = this;
-        if (!selfRef.isLoaded) {
-            retrieveVideo();
 
-            selfRef.videoElement.css('min-width', '320px');
-            selfRef.isLoaded = true;
-            selfRef.mainDOMElement.trigger('Loaded');
+        if (!selfRef.isLoaded) {
+            loadVideoData.call(selfRef);
         }
 
         return selfRef;
-
-        function retrieveVideo() {
-            // TODO: Load this.id from server into mainDOMElement
-            var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
-            videoSourceElement.attr({
-                src: selfRef.video.url,
-                type: selfRef.video.type,
-            });
-            videoSourceElement.appendTo(selfRef.videoElement);
-        }
     }
 
 })();
