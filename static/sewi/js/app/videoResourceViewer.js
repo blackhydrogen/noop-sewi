@@ -17,10 +17,13 @@ var sewi = sewi || {};
             isPlaying: false,
             isMuted: false,
             progress: 0.0,
+            duration: 0.0
         });
     }
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
+
+    var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
 
     // MediaControls private methods begin
     function initDOM() {
@@ -32,14 +35,17 @@ var sewi = sewi || {};
         var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
         var playButtonPanel = innerPanel.clone()
-                                       .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
+                                        .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
+        sewi.durationTextPanel = innerPanel.clone()
+                                           .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+                                           .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
         var muteButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var volumeSliderPanel = innerPanel.clone()
-                                               .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
-                                               .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
+                                          .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+                                          .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
-                                         .addClass('center');
+                                        .addClass('center');
 
         selfRef.playPauseButton = button.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
@@ -53,9 +59,17 @@ var sewi = sewi || {};
         volumeSliderPanel.append(selfRef.volumeSlider);
         seekSliderPanel.append(selfRef.progressSlider);
 
+        sewi.durationTextPanel.text(generateDurationText({
+            currentSecs: '--',
+            currentMins: '--',
+            durationSecs: '--',
+            durationMins: '--'
+        }));
+
         selfRef.mainDOMElement.append(playButtonPanel)
-                              .append(muteButtonPanel)
                               .append(volumeSliderPanel)
+                              .append(muteButtonPanel)
+                              .append(sewi.durationTextPanel)
                               .append(seekSliderPanel);
     }
 
@@ -91,6 +105,10 @@ var sewi = sewi || {};
 
         selfRef.playbackPosition(selfRef.progressSlider[0].value);
         //selfRef.setPlaybackProgress(??);
+    }
+
+    function getTimeDigits(number) {
+        return ('0' + number).slice(-2);
     }
 
     // MediaControls public methods
@@ -179,6 +197,25 @@ var sewi = sewi || {};
             } else {
                 selfRef.mainDOMElement.addClass('playing');
             }
+        }
+
+        if (!_.isUndefined(options.duration)) {
+            selfRef.duration = options.duration;
+        }
+
+        if (!_.isUndefined(options.currentTime)) {
+            var currentMins = Math.floor(options.currentTime / 60);
+            var currentSecs = Math.floor(options.currentTime % 60);
+
+            var durationMins = Math.floor(selfRef.duration / 60);
+            var durationSecs = Math.floor(selfRef.duration % 60);
+
+            sewi.durationTextPanel.text(generateDurationText({
+                currentMins: getTimeDigits(currentMins),
+                currentSecs: getTimeDigits(currentSecs),
+                durationMins: getTimeDigits(durationMins),
+                durationSecs: getTimeDigits(durationSecs),
+            }));
         }
 
         if (!_.isUndefined(options.position)) {
