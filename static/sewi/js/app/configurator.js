@@ -129,7 +129,7 @@ sewi.Configurator = function(options) {
 
     function setEncounterTitle(id, name) {
         var title = name;
-        var subtitle = "Encounter ID: " + id;
+        var subtitle = "Encounter #" + id;
         selfRef.setTitle(title, subtitle);
     }
 
