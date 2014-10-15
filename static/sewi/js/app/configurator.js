@@ -1,39 +1,45 @@
 var sewi = sewi || {};
-sewi.Configurator = function(options) {
-    // Safeguard if function is called without `new` keyword
-    if (!(this instanceof sewi.Configurator))
-        return new sewi.Configurator(options);
 
-    var selfRef = this;
-    var defaults = {
-        animated: true,
-        isBasicInfoMinimized: false,
-        isResourceViewerHidden: true,
-        title: 'Loading',
-        subtitle: 'Please wait'
-    };
+(function() {
+    sewi.Configurator = function(options) {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.Configurator))
+            return new sewi.Configurator(options);
 
-    options = options || {};
-    _.defaults(options, defaults);
-    _.assign(selfRef, _.pick(options, [
-        'animated',
-        'isBasicInfoMinimized',
-        'isResourceViewerHidden',
-        'titleView',
-        'basicInfoView',
-        'resViewerView',
-        'resGalleryView'
-    ]));
+        var selfRef = this;
+        var defaults = {
+            animated: true,
+            isBasicInfoMinimized: false,
+            isResourceViewerHidden: true,
+            title: 'Loading',
+            subtitle: 'Please wait'
+        };
 
-    validateArguments();
-    initTitle();
-    initBasicInfo();
-    initResViewer();
-    initResGallery();
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(selfRef, _.pick(options, [
+            'animated',
+            'isBasicInfoMinimized',
+            'isResourceViewerHidden',
+            'titleView',
+            'basicInfoView',
+            'resViewerView',
+            'resGalleryView'
+        ]));
 
-    return this;
+        validateArguments.call(selfRef);
+        initTitle.call(selfRef, options);
+        initBasicInfo.call(selfRef);
+        initResViewer.call(selfRef);
+        initResGallery.call(selfRef);
 
+        return this;
+    }
+
+    // Configurator private methods
     function validateArguments() {
+        var selfRef = this;
+
         selfRef.titleView = $(selfRef.titleView);
         selfRef.basicInfoView = $(selfRef.basicInfoView);
         selfRef.resViewerView = $(selfRef.resViewerView);
@@ -53,7 +59,9 @@ sewi.Configurator = function(options) {
         }
     }
 
-    function initTitle() {
+    function initTitle(options) {
+        var selfRef = this;
+
         selfRef.titleDOM = $('<h1>');
         selfRef.subtitleDOM = $('<small>');
         selfRef.titleView.append(selfRef.titleDOM);
@@ -62,6 +70,8 @@ sewi.Configurator = function(options) {
     }
 
     function initBasicInfo() {
+        var selfRef = this;
+
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
             selfRef.basicInfo = new sewi.BasicEncounterInfoViewer();
             var element = selfRef.basicInfo.getDOM();
@@ -71,18 +81,22 @@ sewi.Configurator = function(options) {
     }
 
     function initResViewer() {
+        var selfRef = this;
+
         if (_.isFunction(sewi.TabContainer)) {
             selfRef.tabs = new sewi.TabContainer();
             var element = selfRef.tabs.getDOM();
             element.on("NoTabs", function() {
                 selfRef.isResourceViewerHidden = true;
-                updateViewSizes();
+                updateViewSizes.call(selfRef);
             });
             selfRef.resViewerView.append(element);
         }
     }
 
     function initResGallery() {
+        var selfRef = this;
+
         if (_.isFunction(sewi.ResourceGallery)) {
             selfRef.resGallery = new sewi.ResourceGallery();
             var element = selfRef.resGallery.getDOM();
@@ -92,10 +106,14 @@ sewi.Configurator = function(options) {
     }
 
     function openResource(galleryElement) {
+        var selfRef = this;
+
         // TODO: Pass entire gallery element to tabs as jQuery object
     }
 
     function updateViewSizes() {
+        var selfRef = this;
+
         var totalWidth = 12;
         var basicInfoWidth = 3;
         var minBasicInfoWidth = 1;
@@ -128,17 +146,19 @@ sewi.Configurator = function(options) {
     }
 
     function setEncounterTitle(id, name) {
+        var selfRef = this;
+
         var title = name;
         var subtitle = "Encounter #" + id;
         selfRef.setTitle(title, subtitle);
     }
 
-}
+    // Configurator public methods
+    sewi.Configurator.prototype.setTitle = function(title, subtitle) {
+        var selfRef = this;
 
-sewi.Configurator.prototype.setTitle = function(title, subtitle) {
-    var selfRef = this;
-
-    selfRef.subtitleDOM.text(subtitle);
-    selfRef.titleDOM.text(title + ' ')
-                    .append(selfRef.subtitleDOM);
-}
+        selfRef.subtitleDOM.text(subtitle);
+        selfRef.titleDOM.text(title + ' ')
+                        .append(selfRef.subtitleDOM);
+    }
+})();
