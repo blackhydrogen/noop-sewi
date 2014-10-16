@@ -38,6 +38,7 @@
     width: 100%;
     overflow: hidden;
     background-color: #eee;
+    height: 30px;
 }
 
 .media-control-panel button {
@@ -74,13 +75,11 @@
 }
 
 .media-control-panel>div.left {
-    width: 30px;
     float: left;
     margin-right: 10px;
 }
 
 .media-control-panel>div.right {
-    width: 30px;
     float: right;
     margin-left: 10px;
 }
@@ -91,6 +90,13 @@
 
 .media-control-panel>div.center {
     overflow: hidden;
+}
+
+.media-control-panel>div.duration {
+    white-space: nowrap;
+    line-height: 30px;
+    font-weight: bold;
+    color: #555;
 }
 
 .media-control-panel input[type=range]:focus,

@@ -24,21 +24,42 @@
   transition: all 200ms ease-in-out 0s;
 }
 
-.resource-viewer{
-	height: 100%;
-	width: 100%;
+div.minimize-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: rgba(0,0,0,0.5);
+    padding: 2px 5px;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 0 0 5px;
+}
+
+.resource-viewer {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
 }
 
 .resource-viewer .top-panel {
     position: absolute;
-    top: 0;
+    top: -40px;
+    left: 0;
+    height: 40px;
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
-    z-index: 1;
 }
 
-.resource-viewer .top-panel>button {
+.resource-viewer:hover .top-panel {
+    top: 0;
+}
+
+.resource-viewer .top-panel>button,
+.resource-viewer .top-panel>a {
     float: right;
+    height: 40px;
+    width: 40px;
 }
 
 /* Hide elements in full screen with 'fullscreen-hidden' class */

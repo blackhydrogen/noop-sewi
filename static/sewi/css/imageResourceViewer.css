@@ -1,47 +1,79 @@
-.image-resource-container {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
+/* Begin Bootstrap over-writes */
+.image-resource-control-panel input,
+.image-resource-control-panel select {
+  color: #000;
+}
+
+.image-resource-control-panel input[type=range]:focus,
+.image-resource-control-panel input[type=range]:hover,
+.image-resource-control-panel input[type=range]:active {
+  background: initial;
+  box-shadow: initial;
+  border-color: initial;
+}
+
+/* End Bootstrap over-writes */
+
+.image-resource-main-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 .image-resource-image-container {
-	width: 100%;
-	height: 100%;
-	background: #333333;
-	overflow: hidden;
-	position: relative;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  overflow: hidden;
+  position: relative;
 }
 .image-resource-image {
-	position: absolute;
-	height: auto;
+  position: absolute;
+  height: auto;
 }
 .image-resource-control-panel {
-	color: white;
-	width: 100%;
-	min-height: 50px;
-	max-height: 150px;
-	background-color: rgba(0, 0, 0, 0.8);
-	position: absolute;
-	overflow: auto;
-	bottom: 0px;
-	left: 0px;
+  color: white;
+  width: 100%;
+  min-height: 50px;
+  max-height: 150px;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  overflow: auto;
+  bottom: 0px;
+  left: 0px;
 }
 .image-resource-control {
-	margin-right: 10px;
-	float: left;
-	text-align: center;
-	height: 100%;
+  margin-right: 10px;
+  float: left;
+  text-align: center;
+}
+
+.image-resource-control-group {
+  margin-right: 10px;
+  float: left;
+  text-align: left;
+}
+
+.image-resource-control-group .image-resource-control {
+  margin-right: initial;
+  float: initial;
+  text-align: initial;
 }
 .image-resource-show-hide-button {
-	position: absolute;
-	bottom: 0px;
-	right: 0px;
-	width: 100px;
-	opacity: 0.3;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 100px;
+  opacity: 0.3;
 }
 .image-resource-zoom {
-	width: 45px;
+  width: 45px;
 }
 .image-resource-show-hide-button:hover {
+<<<<<<< HEAD
 	opacity: 1;
 }
+=======
+  opacity: 1;
+}
+>>>>>>> origin/master
