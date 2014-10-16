@@ -35,12 +35,18 @@ div.minimize-button {
     border-radius: 0 0 0 5px;
 }
 
+.resource-viewer {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 .resource-viewer .top-panel {
     position: absolute;
     top: 0;
+    left: 0;
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
-    z-index: 1;
 }
 
 .resource-viewer .top-panel>button,
