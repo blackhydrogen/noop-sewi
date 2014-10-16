@@ -33,11 +33,14 @@ sewi.constants = {
     //Video Resource Constants
     VIDEO_RESOURCE_URL: '/sewi/resources/video/',
     VIDEO_RESOURCE_THUMBNAIL_URL: '/thumb',
+    VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
     VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
     VIDEO_RESOURCE_VIEWER_DOM_CLASS: 'video-resource-container',
     VIDEO_RESOURCE_VIEWER_VIDEO_ID: 'videoResource',
     VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
     VIDEO_RESOURCE_VIEWER_CONTENT_DOM: '<div class="video-content animated"></div>',
+    VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM: '<div class="video-boundary"></div>',
+    VIDEO_RESOURCE_VIEWER_CONTAINER_DOM: '<div class="video-container"></div>',
 
     //Media Controls Constants
     MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
