@@ -415,7 +415,11 @@ var sewi = sewi || {};
 
         var videoWidth = selfRef.videoElement[0].videoWidth;
         var videoHeight = selfRef.videoElement[0].videoHeight;
-        // TODO: set video size
+
+        selfRef.videoContainerElement.css({
+            width: videoWidth,
+            height: videoHeight
+        })
         setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
     }
 
