@@ -485,6 +485,8 @@ var sewi = sewi || {};
             type: selfRef.videoData.type,
         });
         videoSourceElement.appendTo(selfRef.videoElement);
+
+        selfRef.addDownloadButton(selfRef.videoData.url);
     }
 
     // VideoResourceViewer public methods
