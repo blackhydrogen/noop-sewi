@@ -7,7 +7,9 @@ sewi.AudioResourceViewer = function(){
 	sewi.ResourceViewer.call(this);
 	var selfRef = this;
     selfRef.offset = 0;
+    selfRef.gainValue = 0;
     selfRef.startTime = 0;
+    selfRef.audioBuffer = null;
     selfRef.isPlaying = false;
     selfRef.init();
     selfRef.initControls();	
@@ -43,7 +45,7 @@ sewi.AudioResourceViewer.prototype.init = function(){
 
 	selfRef.scriptProcessor = selfRef.audioContext.createScriptProcessor(512, 1, 1); 
     selfRef.scriptProcessor.connect(selfRef.audioContext.destination);
-    selfRef.scriptProcessor.onaudioprocess = selfRef.updateAudioSlider.bind(this);
+    selfRef.scriptProcessor.onaudioprocess = selfRef.updateMediaControl.bind(this);
 
     selfRef.gainNode = selfRef.audioContext.createGain();
     selfRef.gainNode.connect(selfRef.audioContext.destination);
@@ -77,7 +79,9 @@ sewi.AudioResourceViewer.prototype.onComplete = function(event){
     var audioData = selfRef.request.response;
     console.log(audioData);
     selfRef.audioContext.decodeAudioData(audioData, function(buffer){
-                                         selfRef.audioBuffer = buffer;}, 
+                                            selfRef.audioBuffer = buffer;
+                                            selfRef.controls.update({duration : selfRef.audioBuffer.duration, currentTime : selfRef.offset});
+                                         }, 
                                          function(e){"Error with decoding audio data" + e.err}); 
 }
 
@@ -113,18 +117,21 @@ sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume)
 
 sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
     var selfRef = this;
+    selfRef.gainNode.gain.value = selfRef.gainValue;
 }
 
 sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
     var selfRef = this;
+    selfRef.gainValue = selfRef.gainNode.gain.value;
+    selfRef.gainNode.gain.value = 0;
 }
 
-sewi.AudioResourceViewer.prototype.updateAudioSlider = function(event){
+sewi.AudioResourceViewer.prototype.updateMediaControl = function(event){
     var selfRef = this;
     if(selfRef.source){
         if(selfRef.isPlaying){
             var percent = (((Date.now()-selfRef.startTime)/1000 + selfRef.offset) / selfRef.source.buffer.duration)*100;
-            selfRef.controls.update({position : percent});
+            selfRef.controls.update({position : percent, currentTime : ((Date.now()-selfRef.startTime)/1000 + selfRef.offset) });
             if(percent >= 100){
                 selfRef.isPlaying = false;
                 selfRef.offset = 0;

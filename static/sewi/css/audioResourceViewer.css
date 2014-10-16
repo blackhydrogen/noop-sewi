@@ -5,6 +5,8 @@
 
 .audio-resource-viewer{
     background-color: #808080;
+    height:100%;
+    width: 100%;
 }
 .audio-resource-viewer>.media-control-panel{
     position: absolute;
