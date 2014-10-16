@@ -21,14 +21,14 @@ sewi.constants = {
     TAB_MAX_NUM_TABS: 5,
     TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
     TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
-    
+
     //Resource Viewer Constants
     RESOURCE_VIEWER_CLASS: 'resource-viewer',
     RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
     RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
     RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
     RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
-    RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden"></div>',
+    RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden animated"></div>',
 
     //Video Resource Constants
     VIDEO_RESOURCE_URL: '/sewi/resources/video/',
