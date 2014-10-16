@@ -48,7 +48,9 @@ var sewi = sewi || {};
 	function setupDOM() {
 		var selfRef = this;
 
-		selfRef.mainDOMElement.addClass(sewi.constants.RESOURCE_VIEWER_CLASS);
+		selfRef.mainDOMOuterContainer = $("<div></div>");
+        selfRef.mainDOMOuterContainer.addClass(sewi.constants.RESOURCE_VIEWER_CLASS)
+                                     .append(selfRef.mainDOMElement);
 	}
 
 	function addButtons() {
@@ -62,7 +64,7 @@ var sewi = sewi || {};
 		selfRef.panel.append(closeButton)
 			   .append(fullscreenButton);
 
-		selfRef.mainDOMElement.append(selfRef.panel);
+		selfRef.mainDOMOuterContainer.append(selfRef.panel);
 
 		closeButton.click(closeButtonClicked.bind(selfRef));
 		fullscreenButton.click(fullscreenButtonClicked.bind(selfRef));
@@ -78,6 +80,11 @@ var sewi = sewi || {};
 		var selfRef = this;
 
 		selfRef.trigger('FullscreenToggled');
+	}
+
+	// Overrides getDOM of ConfiguratorElement
+	sewi.ResourceViewer.prototype.getDOM = function() {
+	    return this.mainDOMOuterContainer;
 	}
 
 	sewi.ResourceViewer.prototype.addDownloadButton = function(url) {
