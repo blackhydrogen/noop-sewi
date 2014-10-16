@@ -96,6 +96,8 @@ sewi.AudioResourceViewer.prototype.initControls = function(){
     selfRef.controls.on('Paused', selfRef.pauseAudio.bind(this));
     selfRef.controls.on('PositionChanged', selfRef.sliderChanged.bind(this));
     selfRef.controls.on('VolumeChanged', selfRef.volumeSliderChanged.bind(this));
+    selfRef.controls.on('Unmuted', selfRef.volumeUnmuted.bind(this));
+    selfRef.controls.on('Muted', selfRef.volumeMuted.bind(this));
     selfRef.mainDOMElement.append(selfRef.controls.getDOM());
 }
 
@@ -107,6 +109,14 @@ sewi.AudioResourceViewer.prototype.sliderChanged = function(event, position){
 sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
     var selfRef = this;
     selfRef.gainNode.gain.value = volume;
+}
+
+sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
+    var selfRef = this;
+}
+
+sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
+    var selfRef = this;
 }
 
 sewi.AudioResourceViewer.prototype.updateAudioSlider = function(event){
