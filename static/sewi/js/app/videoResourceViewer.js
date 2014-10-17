@@ -41,9 +41,6 @@ var sewi = sewi || {};
                                            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
         var muteButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
-        var volumeSliderPanel = innerPanel.clone()
-                                          .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
-                                          .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
                                         .addClass('center');
 
@@ -54,9 +51,10 @@ var sewi = sewi || {};
         selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
+        var volumeControl = initVerticalSlider(selfRef.volumeSlider, selfRef.muteButton);
+
         playButtonPanel.append(selfRef.playPauseButton);
-        muteButtonPanel.append(selfRef.muteButton)
-        volumeSliderPanel.append(selfRef.volumeSlider);
+        muteButtonPanel.append(volumeControl);
         seekSliderPanel.append(selfRef.progressSlider);
 
         sewi.durationTextPanel.text(generateDurationText({
@@ -67,7 +65,6 @@ var sewi = sewi || {};
         }));
 
         selfRef.mainDOMElement.append(playButtonPanel)
-                              .append(volumeSliderPanel)
                               .append(muteButtonPanel)
                               .append(sewi.durationTextPanel)
                               .append(seekSliderPanel);
