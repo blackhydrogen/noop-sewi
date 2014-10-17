@@ -26,7 +26,7 @@ var sewi = sewi || {};
         var selfRef = this;
         selfRef.mainDOMElement.addClass('audio-resource-viewer');
         
-        var url = '/static/sewi/media/gun_battle_sound.wav';
+        var url = '/static/sewi/media/Early_Riser.mp3';
         var contextClass = (window.AudioContext || 
                             window.webkitAudioContext || 
                             window.mozAudioContext || 
@@ -52,11 +52,12 @@ var sewi = sewi || {};
             selfRef.request = new XMLHttpRequest();
             selfRef.request.open('GET', url, true);
             selfRef.request.responseType = 'arraybuffer';
+            selfRef.request.onreadystatechange = onReadyStateChange.bind(this);
 
-            selfRef.request.addEventListener('progress', selfRef.onProgress.bind(this), false);
-            selfRef.request.addEventListener('load', selfRef.onComplete.bind(this), false);
-            selfRef.request.addEventListener('abort', selfRef.onAbort.bind(this), false);
-            selfRef.request.addEventListener('error', selfRef.onError.bind(this), false);
+            selfRef.request.addEventListener('progress', onProgress.bind(this), false);
+            selfRef.request.addEventListener('load', onComplete.bind(this), false);
+            selfRef.request.addEventListener('abort', onAbort.bind(this), false);
+            selfRef.request.addEventListener('error', onError.bind(this), false);
             selfRef.request.send();
 
         } else {
@@ -65,10 +66,17 @@ var sewi = sewi || {};
             selfRef.mainDOMElement.append(error.getDOM());
         }
 
-        
+    }
+    
+    function onReadyStateChange(event){
+        var selfRef = this;
+        console.log("readystatechange");
+        if(selfRef.request.readyState > 2 && selfRef.request.status == 200){
+            console.log("response:" + selfRef.request.response);
+        }
     }
 
-    sewi.AudioResourceViewer.prototype.onProgress = function(event){
+    function onProgress(event){
         var selfRef = this;
         if(event.lengthComputable){
             var percent = (event.loaded/event.total) * 100
@@ -77,7 +85,7 @@ var sewi = sewi || {};
         }
     }
 
-    sewi.AudioResourceViewer.prototype.onComplete = function(event){
+    function onComplete(event){
         console.log("file loaded");
         var selfRef = this;
         var audioData = selfRef.request.response;
@@ -89,11 +97,11 @@ var sewi = sewi || {};
                                              function(e){"Error with decoding audio data" + e.err}); 
     }
 
-    sewi.AudioResourceViewer.prototype.onAbort = function(event){
+    function onAbort(event){
         var selfRef = this;
     }
 
-    sewi.AudioResourceViewer.prototype.onError = function(event){
+    function onError(event){
         var selfRef = this;
     }
 
@@ -153,30 +161,36 @@ var sewi = sewi || {};
     sewi.AudioResourceViewer.prototype.playAudio = function(){
         var selfRef = this;
         console.log('audio playing');
-        selfRef.source = selfRef.audioContext.createBufferSource();	
-        selfRef.source.buffer = selfRef.audioBuffer;
-        selfRef.source.connect(selfRef.gainNode);
-        selfRef.source.connect(selfRef.scriptProcessor);
-        selfRef.source.onended = selfRef.onAudioFinish.bind(this);
-        selfRef.startTime = Date.now();
-        selfRef.source.start(0, selfRef.offset);
-        selfRef.isPlaying = true;
-        selfRef.controls.update({isPlaying: selfRef.isPlaying});
+        if(selfRef.audioBuffer){
+            selfRef.source = selfRef.audioContext.createBufferSource();	
+            selfRef.source.buffer = selfRef.audioBuffer;
+            selfRef.source.connect(selfRef.gainNode);
+            selfRef.source.connect(selfRef.scriptProcessor);
+            selfRef.source.onended = selfRef.onAudioFinish.bind(this);
+            selfRef.startTime = Date.now();
+            selfRef.source.start(0, selfRef.offset);
+            selfRef.isPlaying = true;
+            selfRef.controls.update({isPlaying: selfRef.isPlaying});
+        }
     }
 
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
         var selfRef = this;
         console.log('audio paused');
-        selfRef.isPlaying = false;
-        selfRef.offset += (Date.now() - selfRef.startTime) / 1000;
-        selfRef.source.stop(0);
-        selfRef.controls.update({isPlaying: selfRef.isPlaying});
+        if(selfRef.source){
+            selfRef.isPlaying = false;
+            selfRef.offset += (Date.now() - selfRef.startTime) / 1000;
+            selfRef.source.stop(0);
+            selfRef.controls.update({isPlaying: selfRef.isPlaying});
+        }
     }
 
     sewi.AudioResourceViewer.prototype.onAudioFinish = function(event){
         var selfRef = this;
         console.log("Audio ended");
-        selfRef.source.disconnect(selfRef.gainNode);
-        selfRef.source.disconnect(selfRef.scriptProcessor);
+        if(selfRef.source){
+            selfRef.source.disconnect(selfRef.gainNode);
+            selfRef.source.disconnect(selfRef.scriptProcessor);
+        }
     }
 })();
