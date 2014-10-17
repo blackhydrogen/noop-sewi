@@ -78,3 +78,25 @@ div.minimize-button {
 :fullscreen .fullscreen-hidden {
     display: none;
 }
+
+.error-screen{
+    position: absolute;
+    background-color: #000;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+.error-screen>.error-text{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    color: white;
+    text-align: center;
+}
+
+.progress-bar-text{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
