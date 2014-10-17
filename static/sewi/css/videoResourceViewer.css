@@ -98,34 +98,8 @@
     color: #555;
 }
 
-.media-control-panel input[type=range]:focus,
-.media-control-panel input[type=range]:hover,
-.media-control-panel input[type=range]:active {
-    background: initial;
-    box-shadow: initial;
-    border-color: initial;
-    box-shadow: initial;
-}
-
-.media-control-panel input[type=range]::-webkit-slider-runnable-track {
-    height: 5px;
-    border: none;
-    border-radius: 2px;
-    background: #aaa;
-}
-
 .media-control-panel input[type=range].progress-slider::-webkit-slider-runnable-track {
     height: 20px;
-}
-
-.media-control-panel input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 20px;
-    width: 10px;
-    background: #fff;
-    border: 1px #ccc solid;
-    border-radius: 2px;
-    margin-top: -7px;
 }
 
 .media-control-panel input[type=range].progress-slider::-webkit-slider-thumb {
