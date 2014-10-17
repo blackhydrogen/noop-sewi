@@ -82,6 +82,35 @@ var sewi = sewi || {};
         selfRef.progressSlider.on('change', selfRef, progressChanged);
     }
 
+    /**
+     * Generates the DOM elements necessary to produce a vertical slider.
+     * @param {jQuery} sliderDOMElement  The slider DOM element
+     * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
+     *                                   hover trigger.
+     */
+    function initVerticalSlider(sliderDOMElement, triggerDOMElement) {
+        var verticalSliderContainer = $(sewi.constants.VERTICAL_SLIDER_CONTAINER_DOM);
+        var verticalSliderElement = $(sewi.constants.VERTICAL_SLIDER_DOM);
+
+        verticalSliderElement.append(sliderDOMElement);
+
+        verticalSliderContainer.append(verticalSliderElement)
+                               .append(triggerDOMElement);
+
+        sliderDOMElement.focus(verticalSliderFocused)
+                        .blur(verticalSliderUnfocused);
+
+        return verticalSliderContainer;
+    }
+
+    function verticalSliderFocused(event) {
+        $(event.target).parent().addClass('active');
+    }
+
+    function verticalSliderUnfocused(event) {
+        $(event.target).parent().removeClass('active');
+    }
+
     function playPauseClicked(event) {
         var selfRef = event.data;
 

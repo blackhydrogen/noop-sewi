@@ -17,6 +17,10 @@ sewi.inherits = function(subClass, superClass) {
 
 /** Declare all constants in this object. */
 sewi.constants = {
+    //Vertical Slider Constants
+    VERTICAL_SLIDER_CONTAINER_DOM: '<div class="vertical-slider-container"></div>',
+    VERTICAL_SLIDER_DOM: '<div class="vertical-slider animated"></div>',
+
     //Tab Constants
     TAB_MAX_NUM_TABS: 5,
     TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
