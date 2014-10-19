@@ -51,7 +51,7 @@ var sewi = sewi || {};
         selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
-        var volumeControl = initVerticalSlider(selfRef.volumeSlider, selfRef.muteButton);
+        var volumeControl = createVerticalSlider(selfRef.volumeSlider, selfRef.muteButton);
 
         playButtonPanel.append(selfRef.playPauseButton);
         muteButtonPanel.append(volumeControl);
@@ -85,7 +85,7 @@ var sewi = sewi || {};
      * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
      *                                   hover trigger.
      */
-    function initVerticalSlider(sliderDOMElement, triggerDOMElement) {
+    function createVerticalSlider(sliderDOMElement, triggerDOMElement) {
         var verticalSliderContainer = $(sewi.constants.VERTICAL_SLIDER_CONTAINER_DOM);
         var verticalSliderElement = $(sewi.constants.VERTICAL_SLIDER_DOM);
 
