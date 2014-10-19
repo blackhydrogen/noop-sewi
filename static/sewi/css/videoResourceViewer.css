@@ -105,6 +105,10 @@
     margin-top: 0;
 }
 
+.media-control-panel .volume-popup {
+    background-color: #eee;
+}
+
 /* Vertical range input styles */
 
 .vertical-slider-container {

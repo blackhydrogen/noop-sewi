@@ -55,6 +55,7 @@ sewi.constants = {
     MEDIA_CONTROLS_LONG_PANEL_CLASS: 'long',
     MEDIA_CONTROLS_DURATION_CLASS: 'duration',
     MEDIA_CONTROLS_PLAY_CLASS: 'btn-block play-button',
+    MEDIA_CONTROLS_VOLUME_POPUP_CLASS: 'volume-popup',
     MEDIA_CONTROLS_MUTE_CLASS: 'mute-button',
     MEDIA_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" />',
     MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',

@@ -51,7 +51,9 @@ var sewi = sewi || {};
         selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
-        var volumeControl = createVerticalSlider(selfRef.volumeSlider, selfRef.muteButton);
+        var volumeControl = createVerticalSlider(selfRef.volumeSlider,
+                                                 selfRef.muteButton,
+                                                 sewi.constants.MEDIA_CONTROLS_VOLUME_POPUP_CLASS);
 
         playButtonPanel.append(selfRef.playPauseButton);
         muteButtonPanel.append(volumeControl);
