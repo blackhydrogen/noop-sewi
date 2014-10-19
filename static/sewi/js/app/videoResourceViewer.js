@@ -51,9 +51,9 @@ var sewi = sewi || {};
         selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
-        var volumeControl = createVerticalSlider(selfRef.volumeSlider,
-                                                 selfRef.muteButton,
-                                                 sewi.constants.MEDIA_CONTROLS_VOLUME_POPUP_CLASS);
+        var volumeControl = sewi.createVerticalSlider(selfRef.volumeSlider,
+                                                      selfRef.muteButton,
+                                                      sewi.constants.MEDIA_CONTROLS_VOLUME_POPUP_CLASS);
 
         playButtonPanel.append(selfRef.playPauseButton);
         muteButtonPanel.append(volumeControl);
@@ -79,36 +79,6 @@ var sewi = sewi || {};
         selfRef.muteButton.click(selfRef, muteClicked);
         selfRef.volumeSlider.on('input', selfRef, volumeChanged);
         selfRef.progressSlider.on('change', selfRef, progressChanged);
-    }
-
-    /**
-     * Generates the DOM elements necessary to produce a vertical slider.
-     * @param {jQuery} sliderDOMElement  The slider DOM element
-     * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
-     *                                   hover trigger.
-     */
-    function createVerticalSlider(sliderDOMElement, triggerDOMElement, verticalSliderClass) {
-        var verticalSliderContainer = $(sewi.constants.VERTICAL_SLIDER_CONTAINER_DOM);
-        var popupElement = $(sewi.constants.VERTICAL_SLIDER_POPUP_DOM);
-
-        popupElement.append(sliderDOMElement)
-                    .addClass(verticalSliderClass);
-
-        verticalSliderContainer.append(popupElement)
-                               .append(triggerDOMElement);
-
-        sliderDOMElement.focus(verticalSliderFocused)
-                        .blur(verticalSliderUnfocused);
-
-        return verticalSliderContainer;
-    }
-
-    function verticalSliderFocused(event) {
-        $(event.target).parent().addClass('active');
-    }
-
-    function verticalSliderUnfocused(event) {
-        $(event.target).parent().removeClass('active');
     }
 
     function playPauseClicked(event) {
