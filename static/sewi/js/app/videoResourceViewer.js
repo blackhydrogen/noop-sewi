@@ -85,13 +85,13 @@ var sewi = sewi || {};
      * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
      *                                   hover trigger.
      */
-    function createVerticalSlider(sliderDOMElement, triggerDOMElement) {
+    function createVerticalSlider(sliderDOMElement, triggerDOMElement, verticalSliderClass) {
         var verticalSliderContainer = $(sewi.constants.VERTICAL_SLIDER_CONTAINER_DOM);
-        var verticalSliderElement = $(sewi.constants.VERTICAL_SLIDER_DOM);
+        var popupElement = $(sewi.constants.VERTICAL_SLIDER_POPUP_DOM);
 
-        verticalSliderElement.append(sliderDOMElement);
+        popupElement.append(sliderDOMElement);
 
-        verticalSliderContainer.append(verticalSliderElement)
+        verticalSliderContainer.append(popupElement)
                                .append(triggerDOMElement);
 
         sliderDOMElement.focus(verticalSliderFocused)

@@ -115,7 +115,7 @@
   margin: 0px;
 }
 
-.vertical-slider {
+.vertical-slider-popup {
   width: 30px;
   border-radius: 5px;
   background: white;
@@ -127,20 +127,20 @@
   transition: margin-top 0.2s linear,height 0.2s linear,padding 0.2s linear;
 }
 
-.vertical-slider-container:hover .vertical-slider,
-.vertical-slider.active {
+.vertical-slider-container:hover .vertical-slider-popup,
+.vertical-slider-popup.active {
   height: 120px;
   margin-top: -120px;
   padding: 10px 0;
 }
 
-.vertical-slider>input[type=range] {
+.vertical-slider-popup>input[type=range] {
   transform: translate(-70px, 0) rotate(270deg);
   width: 100px;
   height: 30px;
   transform-origin: 85px 50%;
 }
 
-.vertical-slider>input[type=range]:focus {
+.vertical-slider-popup>input[type=range]:focus {
   outline: none;
 }
