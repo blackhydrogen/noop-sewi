@@ -41,9 +41,6 @@ var sewi = sewi || {};
                                            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
         var muteButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
-        var volumeSliderPanel = innerPanel.clone()
-                                          .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
-                                          .addClass(sewi.constants.MEDIA_CONTROLS_LONG_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
                                         .addClass('center');
 
@@ -54,9 +51,12 @@ var sewi = sewi || {};
         selfRef.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         selfRef.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
+        var volumeControl = sewi.createVerticalSlider(selfRef.volumeSlider,
+                                                      selfRef.muteButton,
+                                                      sewi.constants.MEDIA_CONTROLS_VOLUME_POPUP_CLASS);
+
         playButtonPanel.append(selfRef.playPauseButton);
-        muteButtonPanel.append(selfRef.muteButton)
-        volumeSliderPanel.append(selfRef.volumeSlider);
+        muteButtonPanel.append(volumeControl);
         seekSliderPanel.append(selfRef.progressSlider);
 
         sewi.durationTextPanel.text(generateDurationText({
@@ -67,7 +67,6 @@ var sewi = sewi || {};
         }));
 
         selfRef.mainDOMElement.append(playButtonPanel)
-                              .append(volumeSliderPanel)
                               .append(muteButtonPanel)
                               .append(sewi.durationTextPanel)
                               .append(seekSliderPanel);
@@ -286,6 +285,8 @@ var sewi = sewi || {};
         selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_RESOURCE_VIEWER_DOM_CLASS);
 
         selfRef.contentElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTENT_DOM);
+        selfRef.boundaryElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM);
+        selfRef.videoContainerElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTAINER_DOM);
 
         selfRef.videoElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_DOM);
         selfRef.videoElement.attr({
@@ -293,9 +294,17 @@ var sewi = sewi || {};
                             })
                             .attr('width', '100%')
                             .attr('height', 'auto')
-                            .appendTo(selfRef.contentElement);
+                            .appendTo(selfRef.videoContainerElement);
+
+        selfRef.boundaryElement.appendTo(selfRef.contentElement);
+        selfRef.videoContainerElement.appendTo(selfRef.contentElement);
 
         selfRef.mainDOMElement.append(selfRef.contentElement);
+
+        selfRef.videoContainerElement.draggable({
+            containment: selfRef.boundaryElement,
+            scope: 'video'
+        });
     }
 
     function initControls() {
@@ -309,6 +318,7 @@ var sewi = sewi || {};
     function attachVideoEventHandlers() {
         var selfRef = this;
         selfRef.videoElement.on('durationchange', selfRef, updateDuration);
+        selfRef.videoElement.on('loadedmetadata', selfRef, updateDimensions);
         selfRef.videoElement.on('timeupdate seeked', selfRef, updateTime);
         selfRef.videoElement.on('play pause', selfRef, updatePlayingStatus);
         selfRef.videoElement.on('volumechange', selfRef, updateVolume);
@@ -327,6 +337,39 @@ var sewi = sewi || {};
     function setUpInactivityEventHandlers() {
         var selfRef = this;
         selfRef.mainDOMElement.mousemove(selfRef, showControlsTemporarily);
+    }
+
+    function setBoundarySize(videoSize) {
+        var selfRef = this;
+
+        if (!_.isObject(videoSize)){
+            videoSize = getSize(selfRef.videoContainer);
+        }
+
+        var boundaryLeft;
+        var boundaryRight;
+        var boundaryTop;
+        var boundaryBottom;
+
+        boundaryLeft = boundaryRight = -videoSize.width / 2;
+        boundaryTop = boundaryBottom = -videoSize.height / 2;
+
+        selfRef.boundaryElement.css({
+            left: boundaryLeft,
+            right: boundaryRight,
+            top: boundaryTop,
+            bottom: boundaryBottom
+        });
+
+        // Reset the boundary containment
+        //selfRef.videoContainerElement.draggable('option', 'containment', selfRef.boundaryElement)
+    }
+
+    function getSize(element) {
+        return {
+            width: $(element).width(),
+            height: $(element).height()
+        }
     }
 
     function playEvent(event) {
@@ -364,6 +407,19 @@ var sewi = sewi || {};
         selfRef.controls.update({
             duration: selfRef.videoElement[0].duration
         });
+    }
+
+    function updateDimensions(event) {
+        var selfRef = event.data;
+
+        var videoWidth = selfRef.videoElement[0].videoWidth;
+        var videoHeight = selfRef.videoElement[0].videoHeight;
+
+        selfRef.videoContainerElement.css({
+            width: videoWidth,
+            height: videoHeight
+        })
+        setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
     }
 
     function updateTime(event) {
@@ -432,6 +488,8 @@ var sewi = sewi || {};
             type: selfRef.videoData.type,
         });
         videoSourceElement.appendTo(selfRef.videoElement);
+
+        selfRef.addDownloadButton(selfRef.videoData.url);
     }
 
     // VideoResourceViewer public methods
