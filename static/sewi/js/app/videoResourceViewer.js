@@ -89,7 +89,8 @@ var sewi = sewi || {};
         var verticalSliderContainer = $(sewi.constants.VERTICAL_SLIDER_CONTAINER_DOM);
         var popupElement = $(sewi.constants.VERTICAL_SLIDER_POPUP_DOM);
 
-        popupElement.append(sliderDOMElement);
+        popupElement.append(sliderDOMElement)
+                    .addClass(verticalSliderClass);
 
         verticalSliderContainer.append(popupElement)
                                .append(triggerDOMElement);
