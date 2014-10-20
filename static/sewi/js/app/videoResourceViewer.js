@@ -289,9 +289,7 @@ var sewi = sewi || {};
         selfRef.videoContainerElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTAINER_DOM);
 
         selfRef.videoElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_DOM);
-        selfRef.videoElement.attr({
-                                'id': sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_ID + selfRef.id,
-                            })
+        selfRef.videoElement.addClass(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_ID_CLASS + selfRef.id)
                             .attr('width', '100%')
                             .attr('height', 'auto')
                             .appendTo(selfRef.videoContainerElement);
