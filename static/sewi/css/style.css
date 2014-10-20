@@ -44,9 +44,9 @@ div.minimize-button {
 
 .resource-viewer .top-panel {
     position: absolute;
-    top: -40px;
+    top: -30px;
     left: 0;
-    height: 40px;
+    height: 30px;
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
 }
@@ -58,8 +58,9 @@ div.minimize-button {
 .resource-viewer .top-panel>button,
 .resource-viewer .top-panel>a {
     float: right;
-    height: 40px;
-    width: 40px;
+    height: 30px;
+    width: 30px;
+    padding: 5px 8px;
 }
 
 /* Range input styles */
