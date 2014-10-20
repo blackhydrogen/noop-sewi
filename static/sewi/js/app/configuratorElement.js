@@ -71,6 +71,7 @@ var sewi = sewi || {};
 
 		setupDOM.call(selfRef);
 		addButtons.call(selfRef);
+		addErrorScreen.call(selfRef);
 	}
 	sewi.inherits(sewi.ResourceViewer, sewi.ConfiguratorElement);
 
@@ -101,6 +102,12 @@ var sewi = sewi || {};
 
 		closeButton.click(closeButtonClicked.bind(selfRef));
 		fullscreenButton.click(fullscreenButtonClicked.bind(selfRef));
+	}
+
+	function addErrorScreen() {
+		var selfRef = this;
+
+		selfRef.errorScreen = new sewi.ErrorScreen();
 	}
 
 	function closeButtonClicked() {
@@ -136,6 +143,20 @@ var sewi = sewi || {};
 					  .attr('href', url);
 
 		selfRef.buttonGroup.prepend(downloadButton);
+	}
+
+	sewi.ResourceViewer.prototype.showError = function(errorText) {
+		var selfRef = this;
+		var errorScreenElement = selfRef.errorScreen.getDOM();
+
+		selfRef.errorScreen.setText(errorText);
+		selfRef.mainDOMOuterContainer.append(errorScreenElement);
+	}
+
+	sewi.ResourceViewer.prototype.hideError = function() {
+		var selfRef = this;
+		var errorScreenElement = selfRef.errorScreen.getDOM();
+		errorScreenElement.detach();
 	}
 
 	// Unimplemented methods, must be overridden by subclasses
