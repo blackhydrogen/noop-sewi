@@ -75,32 +75,32 @@ var sewi = sewi || {};
     function initEvents() {
         var selfRef = this;
 
-        selfRef.playPauseButton.click(selfRef, playPauseClicked);
-        selfRef.muteButton.click(selfRef, muteClicked);
-        selfRef.volumeSlider.on('input', selfRef, volumeChanged);
-        selfRef.progressSlider.on('change', selfRef, progressChanged);
+        selfRef.playPauseButton.click(playPauseClicked.bind(selfRef));
+        selfRef.muteButton.click(muteClicked.bind(selfRef));
+        selfRef.volumeSlider.on('input', volumeChanged.bind(selfRef));
+        selfRef.progressSlider.on('change', progressChanged.bind(selfRef));
     }
 
-    function playPauseClicked(event) {
-        var selfRef = event.data;
+    function playPauseClicked() {
+        var selfRef = this;
 
         selfRef.togglePlay();
     }
 
-    function muteClicked(event) {
-        var selfRef = event.data;
+    function muteClicked() {
+        var selfRef = this;
 
         selfRef.toggleMute();
     }
 
-    function volumeChanged(event) {
-        var selfRef = event.data;
+    function volumeChanged() {
+        var selfRef = this;
 
         selfRef.volume(selfRef.volumeSlider[0].value);
     }
 
-    function progressChanged(event) {
-        var selfRef = event.data;
+    function progressChanged() {
+        var selfRef = this;
 
         selfRef.playbackPosition(selfRef.progressSlider[0].value);
         //selfRef.setPlaybackProgress(??);
@@ -317,26 +317,26 @@ var sewi = sewi || {};
 
     function attachVideoEventHandlers() {
         var selfRef = this;
-        selfRef.videoElement.on('durationchange', selfRef, updateDuration);
-        selfRef.videoElement.on('loadedmetadata', selfRef, updateDimensions);
-        selfRef.videoElement.on('timeupdate seeked', selfRef, updateTime);
-        selfRef.videoElement.on('play pause', selfRef, updatePlayingStatus);
-        selfRef.videoElement.on('volumechange', selfRef, updateVolume);
+        selfRef.videoElement.on('durationchange', updateDuration.bind(selfRef));
+        selfRef.videoElement.on('loadedmetadata', updateDimensions.bind(selfRef));
+        selfRef.videoElement.on('timeupdate seeked', updateTime.bind(selfRef));
+        selfRef.videoElement.on('play pause', updatePlayingStatus.bind(selfRef));
+        selfRef.videoElement.on('volumechange', updateVolume.bind(selfRef));
     }
 
     function attachControlsEventHandlers() {
         var selfRef = this;
-        selfRef.controlPanelElement.on('Playing', selfRef, playEvent);
-        selfRef.controlPanelElement.on('Paused', selfRef, pauseEvent);
-        selfRef.controlPanelElement.on('Muted', selfRef, muteEvent);
-        selfRef.controlPanelElement.on('Unmuted', selfRef, unmuteEvent);
-        selfRef.controlPanelElement.on('PositionChanged', selfRef, positionEvent);
-        selfRef.controlPanelElement.on('VolumeChanged', selfRef, volumeEvent);
+        selfRef.controlPanelElement.on('Playing', playEvent.bind(selfRef));
+        selfRef.controlPanelElement.on('Paused', pauseEvent.bind(selfRef));
+        selfRef.controlPanelElement.on('Muted', muteEvent.bind(selfRef));
+        selfRef.controlPanelElement.on('Unmuted', unmuteEvent.bind(selfRef));
+        selfRef.controlPanelElement.on('PositionChanged', positionEvent.bind(selfRef));
+        selfRef.controlPanelElement.on('VolumeChanged', volumeEvent.bind(selfRef));
     }
 
     function setUpInactivityEventHandlers() {
         var selfRef = this;
-        selfRef.mainDOMElement.mousemove(selfRef, showControlsTemporarily);
+        selfRef.mainDOMElement.mousemove(showControlsTemporarily.bind(selfRef));
     }
 
     function setBoundarySize(videoSize) {
@@ -372,45 +372,45 @@ var sewi = sewi || {};
         }
     }
 
-    function playEvent(event) {
-        var selfRef = event.data;
+    function playEvent() {
+        var selfRef = this;
         selfRef.videoElement[0].play();
     }
 
-    function pauseEvent(event) {
-        var selfRef = event.data;
+    function pauseEvent() {
+        var selfRef = this;
         selfRef.videoElement[0].pause();
     }
 
-    function muteEvent(event) {
+    function muteEvent() {
+        var selfRef = this;
         selfRef.videoElement[0].muted = true;
-        var selfRef = event.data;
     }
 
-    function unmuteEvent(event) {
-        var selfRef = event.data;
+    function unmuteEvent() {
+        var selfRef = this;
         selfRef.videoElement[0].muted = false;
     }
 
     function positionEvent(event, position) {
-        var selfRef = event.data;
+        var selfRef = this;
         selfRef.videoElement[0].currentTime = selfRef.videoElement[0].duration * position / 100.0;
     }
 
     function volumeEvent(event, volume) {
-        var selfRef = event.data;
+        var selfRef = this;
         selfRef.videoElement[0].volume = volume;
     }
 
-    function updateDuration(event) {
-        var selfRef = event.data;
+    function updateDuration() {
+        var selfRef = this;
         selfRef.controls.update({
             duration: selfRef.videoElement[0].duration
         });
     }
 
-    function updateDimensions(event) {
-        var selfRef = event.data;
+    function updateDimensions() {
+        var selfRef = this;
 
         var videoWidth = selfRef.videoElement[0].videoWidth;
         var videoHeight = selfRef.videoElement[0].videoHeight;
@@ -422,8 +422,9 @@ var sewi = sewi || {};
         setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
     }
 
-    function updateTime(event) {
-        var selfRef = event.data;
+    function updateTime() {
+        var selfRef = this;
+
         var currentPosition = selfRef.videoElement[0].currentTime / selfRef.videoElement[0].duration * 100.0;
         selfRef.controls.update({
             position: currentPosition,
@@ -431,14 +432,14 @@ var sewi = sewi || {};
         });
     }
 
-    function updatePlayingStatus(event) {
-        var selfRef = event.data;
+    function updatePlayingStatus() {
+        var selfRef = this;
         var paused = selfRef.videoElement[0].paused;
         selfRef.controls.update({ playing: !paused });
     }
 
-    function updateVolume(event) {
-        var selfRef = event.data;
+    function updateVolume() {
+        var selfRef = this;
         var options = {};
         options.muted = selfRef.videoElement[0].muted;
         if (!options.muted) {
@@ -448,8 +449,8 @@ var sewi = sewi || {};
         selfRef.controls.update(options);
     }
 
-    function showControlsTemporarily(event) {
-        var selfRef = event.data;
+    function showControlsTemporarily() {
+        var selfRef = this;
         selfRef.contentElement.addClass('active');
         if (selfRef.hideTimerId) {
             clearTimeout(selfRef.hideTimerId);
