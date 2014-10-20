@@ -36,7 +36,7 @@ var sewi = sewi || {};
 
         var playButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
-        sewi.durationTextPanel = innerPanel.clone()
+        selfRef.durationTextPanel = innerPanel.clone()
                                            .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
                                            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
         var muteButtonPanel = innerPanel.clone()
@@ -59,7 +59,7 @@ var sewi = sewi || {};
         muteButtonPanel.append(volumeControl);
         seekSliderPanel.append(selfRef.progressSlider);
 
-        sewi.durationTextPanel.text(generateDurationText({
+        selfRef.durationTextPanel.text(generateDurationText({
             currentSecs: '--',
             currentMins: '--',
             durationSecs: '--',
@@ -68,7 +68,7 @@ var sewi = sewi || {};
 
         selfRef.mainDOMElement.append(playButtonPanel)
                               .append(muteButtonPanel)
-                              .append(sewi.durationTextPanel)
+                              .append(selfRef.durationTextPanel)
                               .append(seekSliderPanel);
     }
 
@@ -209,7 +209,7 @@ var sewi = sewi || {};
             var durationMins = Math.floor(selfRef.duration / 60);
             var durationSecs = Math.floor(selfRef.duration % 60);
 
-            sewi.durationTextPanel.text(generateDurationText({
+            selfRef.durationTextPanel.text(generateDurationText({
                 currentMins: getTimeDigits(currentMins),
                 currentSecs: getTimeDigits(currentSecs),
                 durationMins: getTimeDigits(durationMins),
