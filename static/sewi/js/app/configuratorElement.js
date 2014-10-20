@@ -104,4 +104,9 @@ var sewi = sewi || {};
 
 		selfRef.panel.append(downloadButton);
 	}
+
+	// Unimplemented methods, must be overridden by subclasses
+
+	sewi.ResourceViewer.prototype.load = _.noop;
+	sewi.ResourceViewer.prototype.resize = _.noop;
 })();
