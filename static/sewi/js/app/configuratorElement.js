@@ -63,6 +63,54 @@ var sewi = sewi || {};
 
 })();
 
+(function(){
+    // Progress Bar
+    sewi.ProgressBar = function (animated) {
+        if(!(this instanceof sewi.ProgressBar))
+            return new sewi.ProgressBar(animated);
+
+		sewi.ConfiguratorElement.call(this);
+
+        var selfRef = this;
+
+		initDOM.call(selfRef, animated);
+	}
+	sewi.inherits(sewi.ProgressBar, sewi.ConfiguratorElement);
+
+	function initDOM(animated) {
+		var selfRef = this;
+		if (_.isUndefined(animated)) animated = true;
+
+        selfRef.progressBarElement = $(sewi.constants.PROGRESS_BAR_DOM);
+        selfRef.textElement = $(sewi.constants.PROGRESS_BAR_TEXT_DOM);
+
+        if (animated) {
+            selfRef.progressBarElement.addClass(sewi.constants.PROGRESS_BAR_ANIMATED_CLASS)
+        }
+        selfRef.mainDOMElement.append(selfRef.progressBarElement)
+							  .append(selfRef.textElement)
+							  .addClass(sewi.constants.PROGRESS_CLASS);
+    }
+
+    sewi.ProgressBar.prototype.update = function(percent){
+        var selfRef = this;
+        var methodName = 'sewi.ProgressBar.prototype.update';
+        if(_.isNumber(percent) == false){
+            console.error(methodName + ': parameter is not a number');
+        } else if(percent > 100 || percent < 0){
+            console.error(methodName + ': parameter is out of range');
+        } else {
+            selfRef.progressBarElement.css('width', percent+'%');
+        }
+    }
+
+    sewi.ProgressBar.prototype.setText = function(progressText) {
+        var selfRef = this;
+        selfRef.textElement.text(progressText);
+    }
+
+})();
+
 (function() {
 	sewi.ResourceViewer = function() {
 		sewi.ConfiguratorElement.call(this);

@@ -62,6 +62,12 @@ var sewi = sewi || {};
         ERROR_SCREEN_CLASS: 'error-screen',
         ERROR_SCREEN_TEXT_DOM: '<div class="error-text"></div>',
 
+        //Progress Constants
+        PROGRESS_CLASS: 'progress',
+        PROGRESS_BAR_DOM: '<div class="progress-bar" role="progressbar"></div>',
+        PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
+        PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
+
         //Resource Viewer Constants
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',

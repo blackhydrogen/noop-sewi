@@ -86,6 +86,19 @@ div.minimize-button {
     text-align: center;
 }
 
+.resource-viewer .progress{
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: 50%;
+}
+
+.resource-viewer .progress .progress-bar-text{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
 /* Range input styles */
 
 input[type=range] {
