@@ -64,6 +64,7 @@ var sewi = sewi || {};
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
+        RESOURCE_VIEWER_BUTTON_GROUP_DOM: '<div class="btn-group"></div>',
         RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden animated"></div>',
 
         //Video Resource Constants

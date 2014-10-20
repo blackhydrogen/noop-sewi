@@ -59,10 +59,13 @@ var sewi = sewi || {};
 		var closeButton = $(sewi.constants.RESOURCE_VIEWER_CLOSE_BUTTON_DOM);
 		var fullscreenButton = $(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM);
 
+		selfRef.buttonGroup = $(sewi.constants.RESOURCE_VIEWER_BUTTON_GROUP_DOM);
 		selfRef.panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
 
-		selfRef.panel.append(closeButton)
-			   .append(fullscreenButton);
+		selfRef.buttonGroup.append(fullscreenButton)
+			   .append(closeButton);
+
+		selfRef.panel.append(selfRef.buttonGroup);
 
 		selfRef.mainDOMOuterContainer.append(selfRef.panel);
 
@@ -102,7 +105,7 @@ var sewi = sewi || {};
 		downloadButton.addClass(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS)
 					  .attr('href', url);
 
-		selfRef.panel.append(downloadButton);
+		selfRef.buttonGroup.prepend(downloadButton);
 	}
 
 	// Unimplemented methods, must be overridden by subclasses

@@ -55,9 +55,12 @@ div.minimize-button {
     top: 0;
 }
 
-.resource-viewer .top-panel>button,
-.resource-viewer .top-panel>a {
+.resource-viewer .btn-group {
     float: right;
+}
+
+.resource-viewer .top-panel button,
+.resource-viewer .top-panel a {
     height: 30px;
     width: 30px;
     padding: 5px 8px;
