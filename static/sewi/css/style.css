@@ -45,14 +45,18 @@ div.minimize-button {
 .resource-viewer .top-panel {
     position: absolute;
     top: -30px;
-    left: 0;
+    right: 0;
     height: 30px;
-    width: 100%;
     background: rgba(0, 0, 0, 0.2);
+    opacity: 0.2;
 }
 
 .resource-viewer:hover .top-panel {
     top: 0;
+}
+
+.resource-viewer .top-panel:hover {
+    opacity: 1;
 }
 
 .resource-viewer .btn-group {
