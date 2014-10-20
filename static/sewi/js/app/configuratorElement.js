@@ -33,6 +33,36 @@ var sewi = sewi || {};
 	}
 })();
 
+(function(){
+    sewi.ErrorScreen = function(){
+        if(!(this instanceof sewi.ErrorScreen))
+            return new sewi.ErrorScreen();
+
+		sewi.ConfiguratorElement.call(this);
+
+        var selfRef = this;
+
+		initDOM.call(selfRef);
+
+    }
+	sewi.inherits(sewi.ErrorScreen, sewi.ConfiguratorElement);
+
+	function initDOM() {
+		var selfRef = this;
+
+		selfRef.textElement = $(sewi.constants.ERROR_SCREEN_TEXT_DOM);
+		selfRef.mainDOMElement.append(selfRef.textElement)
+							  .addClass(sewi.constants.ERROR_SCREEN_CLASS);
+	}
+
+    sewi.ErrorScreen.prototype.setText = function(string){
+        var selfRef = this;
+
+		selfRef.textElement.text(string);
+    }
+
+})();
+
 (function() {
 	sewi.ResourceViewer = function() {
 		sewi.ConfiguratorElement.call(this);
