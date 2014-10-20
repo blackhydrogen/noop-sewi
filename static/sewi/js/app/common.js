@@ -68,6 +68,7 @@ var sewi = sewi || {};
         PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
 
+
         //Resource Viewer Constants
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
@@ -76,6 +77,7 @@ var sewi = sewi || {};
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
         RESOURCE_VIEWER_BUTTON_GROUP_DOM: '<div class="btn-group"></div>',
         RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden animated"></div>',
+        RESOURCE_VIEWER_DEFAULT_LOADING_MESSAGE: 'Loading Resource',
 
         //Video Resource Constants
         VIDEO_RESOURCE_URL: '/sewi/resources/video/',

@@ -120,6 +120,7 @@ var sewi = sewi || {};
 		setupDOM.call(selfRef);
 		addButtons.call(selfRef);
 		addErrorScreen.call(selfRef);
+		addProgressBar.call(selfRef);
 	}
 	sewi.inherits(sewi.ResourceViewer, sewi.ConfiguratorElement);
 
@@ -156,6 +157,12 @@ var sewi = sewi || {};
 		var selfRef = this;
 
 		selfRef.errorScreen = new sewi.ErrorScreen();
+	}
+
+	function addProgressBar() {
+		var selfRef = this;
+
+		selfRef.progressBar = new sewi.ProgressBar();
 	}
 
 	function closeButtonClicked() {
@@ -205,6 +212,34 @@ var sewi = sewi || {};
 		var selfRef = this;
 		var errorScreenElement = selfRef.errorScreen.getDOM();
 		errorScreenElement.detach();
+	}
+
+	sewi.ResourceViewer.prototype.showProgressBar = function(progressText) {
+		var selfRef = this;
+		var progressBarElement = selfRef.progressBar.getDOM();
+		progressText = progressText || sewi.constants.RESOURCE_VIEWER_DEFAULT_LOADING_MESSAGE;
+
+		selfRef.progressBar.setText(progressText);
+		selfRef.progressBar.update(0);
+
+		selfRef.mainDOMOuterContainer.append(progressBarElement);
+	}
+
+	sewi.ResourceViewer.prototype.updateProgressBar = function(percent, progressText) {
+		var selfRef = this;
+		var progressBarElement = selfRef.progressBar.getDOM();
+
+		if (progressText) {
+			selfRef.progressBar.setText(progressText);
+		}
+		selfRef.progressBar.update(percent);
+	}
+
+	sewi.ResourceViewer.prototype.hideProgressBar = function() {
+		var selfRef = this;
+		var progressBarElement = selfRef.progressBar.getDOM();
+
+		progressBarElement.detach();
 	}
 
 	// Unimplemented methods, must be overridden by subclasses
