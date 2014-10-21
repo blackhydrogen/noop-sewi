@@ -86,11 +86,15 @@ div.minimize-button {
     text-align: center;
 }
 
-.resource-viewer .progress{
+.resource-viewer .progress {
     position: absolute;
     width: 50%;
     left: 25%;
     top: 50%;
+}
+
+.resource-viewer .progress .progress-bar {
+    transition: width 200ms ease-out 0s;
 }
 
 .resource-viewer .progress .progress-bar-text{
