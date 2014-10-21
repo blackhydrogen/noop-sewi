@@ -58,13 +58,26 @@ var sewi = sewi || {};
         TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
         TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
 
+        //Error Screen Constants
+        ERROR_SCREEN_CLASS: 'error-screen',
+        ERROR_SCREEN_TEXT_DOM: '<div class="error-text"></div>',
+
+        //Progress Constants
+        PROGRESS_CLASS: 'progress',
+        PROGRESS_BAR_DOM: '<div class="progress-bar" role="progressbar"></div>',
+        PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
+        PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
+
+
         //Resource Viewer Constants
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
+        RESOURCE_VIEWER_BUTTON_GROUP_DOM: '<div class="btn-group"></div>',
         RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden animated"></div>',
+        RESOURCE_VIEWER_DEFAULT_LOADING_MESSAGE: 'Loading Resource',
 
         //Video Resource Constants
         VIDEO_RESOURCE_URL: '/sewi/resources/video/',
