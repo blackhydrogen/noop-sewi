@@ -76,6 +76,8 @@ var sewi = sewi || {};
             selfRef.basicInfo = new sewi.BasicEncounterInfoViewer();
             var element = selfRef.basicInfo.getDOM();
 
+            element.on('Error', basicInfoCrashed.bind(selfRef));
+
             selfRef.basicInfoView.append(element);
         }
 
@@ -91,6 +93,7 @@ var sewi = sewi || {};
             selfRef.tabs = new sewi.TabContainer();
             var element = selfRef.tabs.getDOM();
             element.on("NoTabs", allTabsClosed.bind(selfRef));
+            element.on('Error', resViewerCrashed.bind(selfRef));
             selfRef.resViewerView.append(element);
         }
     }
@@ -101,6 +104,7 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.ResourceGallery)) {
             selfRef.resGallery = new sewi.ResourceGallery();
             var element = selfRef.resGallery.getDOM();
+            element.on('Error', resGalleryCrashed.bind(selfRef));
 
             selfRef.resGalleryView.append(element);
         }
@@ -177,6 +181,30 @@ var sewi = sewi || {};
         var selfRef = this;
 
         setEncounterTitle.call(selfRef, encounter.id, encounter.title);
+    }
+
+    function basicInfoCrashed() {
+        var selfRef = this;
+        // Destructive removal (including all events)
+        selfRef.basicInfoView.children().remove();
+
+        selfRef.basicInfoView.append(createErrorScreen('Basic Info has crashed!', initBasicInfo.bind(selfRef)));
+    }
+
+    function resViewerCrashed() {
+        var selfRef = this;
+        // Destructive removal (including all events)
+        selfRef.resViewerView.children().remove();
+
+        selfRef.resViewerView.append(createErrorScreen('Resource viewer has crashed!', initResViewer.bind(selfRef)));
+    }
+
+    function resGalleryCrashed() {
+        var selfRef = this;
+        // Destructive removal (including all events)
+        selfRef.resGalleryView.children().remove();
+
+        selfRef.resGalleryView.append(createErrorScreen('Resource gallery has crashed!', initResGallery.bind(selfRef)));
     }
 
     function refreshClicked(event) {
