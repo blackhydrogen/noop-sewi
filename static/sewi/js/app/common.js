@@ -104,6 +104,13 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_MUTE_CLASS: 'mute-button',
         MEDIA_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" />',
         MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',
+
+        //Configurator Constants
+        CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',
+        CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM: '<p></p>',
+        CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM: '<button class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>',
+        CONFIGURATOR_ERROR_SCREEN_BACKDROP_DOM: '<div></div>',
+
     };
 
 })();

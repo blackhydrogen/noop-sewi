@@ -154,10 +154,39 @@ var sewi = sewi || {};
         selfRef.setTitle(title, subtitle);
     }
 
+    function createErrorScreen(errorMessage, reloadCallback) {
+        var selfRef = this;
+
+        var centralElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_RETRY_DOM);
+        var messageElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM).text(errorMessage);
+        var buttonElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM);
+        var backdropElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_BACKDROP_DOM).addClass(sewi.constants.ERROR_SCREEN_CLASS);
+
+        backdropElement.append(centralElement);
+        centralElement.append(messageElement).append(buttonElement);
+
+        buttonElement.click({
+            element: backdropElement,
+            callback: reloadCallback
+        }, refreshClicked.bind(selfRef));
+
+        return backdropElement;
+    }
+
     function basicInfoLoaded(event, encounter) {
         var selfRef = this;
 
         setEncounterTitle.call(selfRef, encounter.id, encounter.title);
+    }
+
+    function refreshClicked(event) {
+        var selfRef = this;
+
+        var element = event.data.element;
+        var callback = event.data.callback;
+
+        element.remove();
+        callback.call(selfRef);
     }
 
     function minimizeToggled() {
