@@ -78,6 +78,13 @@ div.minimize-button {
     width: 100%;
     height: 100%;
 }
+.error-screen>.retry {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    color: white;
+    text-align: center;
+}
 .error-screen>.error-text{
     position: absolute;
     top: 50%;
