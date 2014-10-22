@@ -317,6 +317,7 @@ var sewi = sewi || {};
         var selfRef = this;
         selfRef.videoElement.on('durationchange', updateDuration.bind(selfRef));
         selfRef.videoElement.on('loadedmetadata', updateDimensions.bind(selfRef));
+        selfRef.videoElement.on('canplay', selfRef.hideProgressBar.bind(selfRef));
         selfRef.videoElement.on('timeupdate seeked', updateTime.bind(selfRef));
         selfRef.videoElement.on('play pause', updatePlayingStatus.bind(selfRef));
         selfRef.videoElement.on('volumechange', updateVolume.bind(selfRef));
@@ -466,6 +467,8 @@ var sewi = sewi || {};
         var selfRef = this;
         var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
 
+        selfRef.showProgressBar();
+
         $.ajax({
             dataType: 'json',
             type: 'GET',
@@ -487,6 +490,8 @@ var sewi = sewi || {};
             type: selfRef.videoData.type,
         });
         videoSourceElement.appendTo(selfRef.videoElement);
+
+        selfRef.updateProgressBar(80, sewi.constants.VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE);
 
         selfRef.addDownloadButton(selfRef.videoData.url);
     }
