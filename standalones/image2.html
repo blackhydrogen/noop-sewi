@@ -95,12 +95,15 @@
 <script src="lodash.min.js"></script>
 <script src="common.js"></script>
 <script src="configuratorElement.js"></script>
+<script src="panZoomWidget.js"></script>
 
 <script type="text/javascript">
 var sewi = sewi || {};
 
 sewi.ImageResourceViewer = function() {
 	sewi.ResourceViewer.call(this);
+
+	var originalImageInfo = {};
 
 	var selfref = this;
 
@@ -210,16 +213,6 @@ sewi.ImageResourceViewer = function() {
 		var showHideControlsButton = $('<input type="button" value="Hide Controls" class="image-resource-show-hide-button">')
 		.appendTo(mainContainer);
 
-	var imageProperties = {
-		original: {},
-		fit: {},
-		minZoom: {},
-		maxZoom: {}
-	};
-
-	var imageMovementVariables = {
-	};
-
 	function setupFalseColorControl(selectComponent) {
 		var capitalizeFirstCharacter = function(string) {
 			return string.charAt(0).toUpperCase() + string.slice(1);
@@ -232,152 +225,6 @@ sewi.ImageResourceViewer = function() {
 			$('<option value="' + i + '">' + falseColorPalette[i].name + '</option>')
 			.appendTo(selectComponent);
 		}
-	}
-
-	function moveImageToCursor(event) {
-		if(imageMovementVariables.ignoreEvent) return false;
-		var newImagePositionX = imageMovementVariables.originalImageX + event.pageX - imageMovementVariables.originalCursorX;
-		var newImagePositionY = imageMovementVariables.originalImageY + event.pageY - imageMovementVariables.originalCursorY;
-
-		if(newImagePositionX < imageMovementVariables.minImageX)
-			newImagePositionX = imageMovementVariables.minImageX;
-		else if(newImagePositionX > imageMovementVariables.maxImageX)
-			newImagePositionX = imageMovementVariables.maxImageX;
-
-		if(newImagePositionY < imageMovementVariables.minImageY)
-			newImagePositionY = imageMovementVariables.minImageY;
-		else if(newImagePositionY > imageMovementVariables.maxImageY)
-			newImagePositionY = imageMovementVariables.maxImageY;
-
-		imageElement.css({
-			top: newImagePositionY,
-			left: newImagePositionX
-		});
-
-		imageMovementVariables.ignoreEvent = true;
-		setTimeout(function() {
-			imageMovementVariables.ignoreEvent = false;
-		}, 10);
-
-		return false;
-	}
-
-	function calculateImageZoomFromMousewheel(event) {
-		// Figure out new width
-		var zoomChange = 1 + 0.2 * event.originalEvent.wheelDelta / 120;
-		var newImageWidth = imageElement.width() * zoomChange;
-
-		var cursorPositionOnImageContainerX = event.pageX - imageContainer.position().left;
-		var cursorPositionOnImageContainerY = event.pageY - imageContainer.position().top;
-
-		executeZoomImage(newImageWidth, cursorPositionOnImageContainerX, cursorPositionOnImageContainerY);
-
-		return false;
-	}
-
-	function calculateImageZoomFromZoomControl() {
-		var newImageWidth = imageProperties.original.width * zoomControl.val() / 100;
-
-		executeZoomImage(newImageWidth, imageContainer.width() / 2, imageContainer.height() / 2);
-	}
-
-	function executeZoomImage(newImageWidth, cursorPositionOnImageContainerX, cursorPositionOnImageContainerY) {
-		if(newImageWidth < imageProperties.minZoom.width) {
-			newImageWidth = imageProperties.minZoom.width;
-		}
-		else if(newImageWidth > imageProperties.maxZoom.width) {
-			newImageWidth = imageProperties.maxZoom.width;
-		}
-
-		// Figure out where to centre image after resizing based on cursorPositionOnImageContainerX, cursorPositionOnImageContainerY
-
-		// Where, in pixels, inside the image is the zoom centre (relative to the image)
-		var zoomCentreOnImageX = cursorPositionOnImageContainerX - imageElement.position().left;
-		var zoomCentreOnImageY = cursorPositionOnImageContainerY - imageElement.position().top;
-
-		// If zoomCentreOnImageX or zoomCentreOnImageY is out the image coordinates, then centre on centre of imageContainer (try again recursively)
-		if(zoomCentreOnImageX < 0
-			|| zoomCentreOnImageX > imageElement.width()
-			|| zoomCentreOnImageY < 0
-			|| zoomCentreOnImageY > imageElement.height()) {
-			executeZoomImage(newImageWidth, imageContainer.width() / 2, imageContainer.height() / 2);
-			return;
-		}
-
-		var zoomCentreToWidthRatioX = zoomCentreOnImageX / imageElement.width();
-		var zoomCentreToHeightRatioY = zoomCentreOnImageY / imageElement.height();
-
-		imageElement.width( newImageWidth );
-
-		var newImagePositionX = cursorPositionOnImageContainerX - zoomCentreToWidthRatioX * imageElement.width();
-		var newImagePositionY = cursorPositionOnImageContainerY - zoomCentreToHeightRatioY * imageElement.height();
-
-		imageElement.css({
-			top: newImagePositionY,
-			left: newImagePositionX
-		});
-
-		zoomControl.val( Math.floor(imageElement.width() / imageProperties.original.width * 100) );
-	}
-
-	function setImageZoomToFit() {
-		executeZoomImage(imageProperties.fit.width, 0, 0);
-		centreImageOnCanvas();
-	}
-
-	function centreImageOnCanvas() {
-		imageElement.css({
-			top: (imageContainer.height() - imageElement.height()) / 2,
-			left: (imageContainer.width() - imageElement.width()) / 2
-		});
-	}
-
-	function setImageProperties() {
-		imageProperties.original.width = imageElement.prop("naturalWidth");
-		imageProperties.original.height = imageElement.prop("naturalHeight");
-		imageProperties.original.url = imageElement.prop("src");
-
-		//Compute fit sizes
-		var originalWidth = imageElement.prop("naturalWidth");
-		var originalHeight = imageElement.prop("naturalHeight");
-		var containerWidth = imageContainer.width();
-		var containerHeight = imageContainer.height();
-
-		if(originalWidth <= containerWidth) {
-			if(originalHeight <= containerHeight) {
-				imageProperties.fit.width = originalWidth;
-				imageProperties.fit.height = originalHeight;
-			}
-			else {
-				imageProperties.fit.width = originalWidth * containerHeight / originalHeight;
-				imageProperties.fit.height = containerHeight;
-			}
-		}
-		else {
-			if(originalHeight <= containerHeight) {
-				imageProperties.fit.width = containerWidth;
-				imageProperties.fit.height = originalHeight * containerWidth / originalWidth;
-			}
-			else {
-				var adjustedWidth = originalWidth * containerHeight / originalHeight;
-
-				if(adjustedWidth <= containerWidth) {
-					imageProperties.fit.width = adjustedWidth;
-					imageProperties.fit.height = originalHeight * adjustedWidth / originalWidth;
-				}
-				else {
-					imageProperties.fit.width = containerWidth;
-					imageProperties.fit.height = originalHeight * containerWidth / originalWidth;
-				}
-			}
-		}
-		// End Compute fit sizes
-
-		imageProperties.minZoom.width = imageProperties.fit.width / 2;
-		imageProperties.minZoom.height = imageProperties.fit.height / 2;
-
-		imageProperties.maxZoom.width = imageProperties.original.width * 2;
-		imageProperties.maxZoom.height = imageProperties.original.height * 2;
 	}
 
 	function applyCustomImageFilters() {
@@ -398,16 +245,16 @@ sewi.ImageResourceViewer = function() {
 			|| toApplyFalseColorFilter
 			|| toApplySelectiveStretchingFilter) {
 			canvasElement = $("<canvas></canvas>")
-			.prop("width", imageProperties.original.width)
-			.prop("height", imageProperties.original.height);
+			.prop("width", originalImageInfo.width)
+			.prop("height", originalImageInfo.height);
 
-			var originalImage = $("<img>").prop("src", imageProperties.original.url);
+			var originalImage = $("<img>").prop("src", originalImageInfo.url);
 
-			canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, imageProperties.original.width, imageProperties.original.height);
+			canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, originalImageInfo.width, originalImageInfo.height);
 
 			t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-			var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, imageProperties.original.width, imageProperties.original.height);
+			var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, originalImageInfo.width, originalImageInfo.height);
 
 			t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
@@ -450,7 +297,7 @@ sewi.ImageResourceViewer = function() {
 			t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 		}
 		else {
-			imageElement.prop("src", imageProperties.original.url);
+			imageElement.prop("src", originalImageInfo.url);
 		}
 
 		console.log("=== END OF REPORT ===") // DEBUG
@@ -600,12 +447,6 @@ sewi.ImageResourceViewer = function() {
 		histogramEqualizeControl.on("change", applyCustomImageFilters);
 		selectiveStretchingRegionControl.on("change", applyCustomImageFilters);
 		selectiveStretchingIntensityControl.on("input", applyCustomImageFilters);
-		zoomControl.on("change", calculateImageZoomFromZoomControl);
-		zoom100PercentButton.on("click", function() {
-			executeZoomImage(imageProperties.original.width, 0, 0);
-			centreImageOnCanvas();
-		});
-		zoomFitButton.on("click", setImageZoomToFit);
 
 		resetControl.on("click", function() {
 			brightnessControl.val(1);
@@ -630,38 +471,41 @@ sewi.ImageResourceViewer = function() {
 			}
 		});
 
-		imageContainer.on("mousewheel", calculateImageZoomFromMousewheel);
-
-		imageContainer.on("mousedown", function(event) {
-			imageMovementVariables.originalCursorX = event.pageX;
-			imageMovementVariables.originalCursorY = event.pageY;
-			imageMovementVariables.originalImageX = imageElement.position().left;
-			imageMovementVariables.originalImageY = imageElement.position().top;
-			imageMovementVariables.maxImageX = imageContainer.width() / 2;
-			imageMovementVariables.maxImageY = imageContainer.height() / 2;
-			imageMovementVariables.minImageX = imageMovementVariables.maxImageX - imageElement.width();
-			imageMovementVariables.minImageY = imageMovementVariables.maxImageY - imageElement.height();
-			imageMovementVariables.ignoreEvent = false; // Used for performances purposes. This variable is set when moveImageToCursor is called too quickly consecutively (after each call to moveImageToCursor, it is set to true, then a timeout() - with some delay - is set it back to false)
-
-			imageContainer.unbind("mousewheel", calculateImageZoomFromMousewheel); //Don't allow the user to move and zoom
-
-			$("body").on("mousemove", moveImageToCursor);
-
-			$("body").one("mouseup", function(event) {
-				imageContainer.on("mousewheel", calculateImageZoomFromMousewheel);
-				$("body").unbind("mousemove", moveImageToCursor);
-			});
-			
-		});
-
 		imageElement.one("load", function() {
-			setImageProperties();
-			setImageZoomToFit();
+			originalImageInfo.width = imageElement.prop("naturalWidth");
+			originalImageInfo.height = imageElement.prop("naturalHeight");
+			originalImageInfo.url = imageElement.prop("src");
 		});
+
+		setupZoomControls();
 	};
 
+	function setupZoomControls() {
+		var imagePanZoomWidget;
+
+		imageElement.on("zoomchange", function() {
+			zoomControl.val( imagePanZoomWidget.getTargetZoom(imagePanZoomWidget) );
+		});
+		
+		imageElement.one("load", function() {
+			imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
+			imagePanZoomWidget.setTargetZoomToFit(imagePanZoomWidget);
+		});
+
+		zoomControl.on("change", function() {
+			imagePanZoomWidget.setTargetZoom(imagePanZoomWidget, zoomControl.val());
+		});
+		zoom100PercentButton.on("click", function() {
+			imagePanZoomWidget.setTargetZoom(imagePanZoomWidget, 100);
+			imagePanZoomWidget.centreTargetOnContainer(imagePanZoomWidget);
+		});
+		zoomFitButton.on("click", function() {
+			imagePanZoomWidget.setTargetZoomToFit(imagePanZoomWidget);
+		});
+	}
+
 	selfref.resizeCallback = function() {
-		setImageProperties();
+		setoriginalImageInfo();
 	}
 
 	/*
@@ -686,7 +530,7 @@ sewi.ImageResourceViewer = function() {
 
 	QUnit.done(function() {
 		imageElement.one("load", function() {
-			setImageProperties();
+			setoriginalImageInfo();
 			setImageZoomToFit();
 		});
 
@@ -710,7 +554,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -738,7 +582,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -766,7 +610,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -794,7 +638,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -823,7 +667,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -852,7 +696,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -881,7 +725,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -910,7 +754,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -939,7 +783,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -971,7 +815,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -999,7 +843,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1027,7 +871,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1055,7 +899,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1083,7 +927,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1111,7 +955,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1139,7 +983,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1167,7 +1011,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1195,7 +1039,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
