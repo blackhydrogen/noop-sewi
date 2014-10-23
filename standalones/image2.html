@@ -103,6 +103,8 @@ var sewi = sewi || {};
 sewi.ImageResourceViewer = function() {
 	sewi.ResourceViewer.call(this);
 
+	var originalImageInfo = {};
+
 	var selfref = this;
 
 	var falseColorPalette = {
@@ -243,16 +245,16 @@ sewi.ImageResourceViewer = function() {
 			|| toApplyFalseColorFilter
 			|| toApplySelectiveStretchingFilter) {
 			canvasElement = $("<canvas></canvas>")
-			.prop("width", imageProperties.original.width)
-			.prop("height", imageProperties.original.height);
+			.prop("width", originalImageInfo.width)
+			.prop("height", originalImageInfo.height);
 
-			var originalImage = $("<img>").prop("src", imageProperties.original.url);
+			var originalImage = $("<img>").prop("src", originalImageInfo.url);
 
-			canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, imageProperties.original.width, imageProperties.original.height);
+			canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, originalImageInfo.width, originalImageInfo.height);
 
 			t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-			var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, imageProperties.original.width, imageProperties.original.height);
+			var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, originalImageInfo.width, originalImageInfo.height);
 
 			t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
@@ -295,7 +297,7 @@ sewi.ImageResourceViewer = function() {
 			t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 		}
 		else {
-			imageElement.prop("src", imageProperties.original.url);
+			imageElement.prop("src", originalImageInfo.url);
 		}
 
 		console.log("=== END OF REPORT ===") // DEBUG
@@ -469,6 +471,12 @@ sewi.ImageResourceViewer = function() {
 			}
 		});
 
+		imageElement.one("load", function() {
+			originalImageInfo.width = imageElement.prop("naturalWidth");
+			originalImageInfo.height = imageElement.prop("naturalHeight");
+			originalImageInfo.url = imageElement.prop("src");
+		});
+
 		setupZoomControls();
 	};
 
@@ -497,7 +505,7 @@ sewi.ImageResourceViewer = function() {
 	}
 
 	selfref.resizeCallback = function() {
-		setImageProperties();
+		setoriginalImageInfo();
 	}
 
 	/*
@@ -522,7 +530,7 @@ sewi.ImageResourceViewer = function() {
 
 	QUnit.done(function() {
 		imageElement.one("load", function() {
-			setImageProperties();
+			setoriginalImageInfo();
 			setImageZoomToFit();
 		});
 
@@ -546,7 +554,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -574,7 +582,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -602,7 +610,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -630,7 +638,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -659,7 +667,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -688,7 +696,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -717,7 +725,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -746,7 +754,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -775,7 +783,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
@@ -807,7 +815,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -835,7 +843,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -863,7 +871,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(700);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -891,7 +899,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -919,7 +927,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -947,7 +955,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(690);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -975,7 +983,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(663);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1003,7 +1011,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(653);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
@@ -1031,7 +1039,7 @@ sewi.ImageResourceViewer = function() {
 		var test = function() {
 			mainContainer.width(710);
 			mainContainer.height(673);
-			setImageProperties();
+			setoriginalImageInfo();
 
 			zoomFitButton.trigger("click");
 			setTimeout(function() {
