@@ -461,17 +461,23 @@ var sewi = sewi || {};
     function updateBufferedProgress() {
         var selfRef = this;
 
-        var bufferedRange = selfRef.videoElement[0].buffered;
-        console.log(bufferedRange);
-        if (bufferedRange.length > 0) {
-            var lastBuffer = bufferedRange.length - 1;
-            var startTime = bufferedRange.start(lastBuffer);
-            var endTime = bufferedRange.end(lastBuffer);
-            selfRef.controls.update({
-                buffer: {
-                    start: startTime,
-                    end: endTime
+        var bufferedRanges = selfRef.videoElement[0].buffered;
+        var numOfBuffers = bufferedRanges.length;
+
+        if (bufferedRanges.length > 0) {
+
+            var buffers = [];
+
+            for (var i = 0; i < numOfBuffers; i++) {
+                var buffer = {
+                    start: bufferedRanges.start(i),
+                    end: bufferedRanges.end(i)
                 }
+                buffers.push(buffer);
+            }
+
+            selfRef.controls.update({
+                buffers: buffers
             });
         }
     }
