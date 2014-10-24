@@ -6,6 +6,10 @@
   font-style: normal;
 }
 
+video {
+    background: black;
+}
+
 .video-resource-container {
     width: 100%;
     height: 100%;
@@ -65,13 +69,6 @@
     content: '\e003'
 }
 
-.media-control-panel input[type=range] {
-    display: inline-block;
-    height: 30px;
-    background: initial;
-    -webkit-appearance: none;
-}
-
 .media-control-panel>div.left {
     float: left;
     margin-right: 10px;
@@ -97,8 +94,35 @@
     color: #555;
 }
 
+.media-control-panel .seek-bar {
+    position: relative;
+    margin: 5px 0;
+    overflow: hidden;
+    border-radius: 2px;
+    height: 20px;
+}
+.media-control-panel .seek-bar .seek-bar-background {
+    position: absolute;
+    background: #999;
+    width: 100%;
+    height: 100%;
+}
+
+.media-control-panel .seek-bar .seek-bar-buffer {
+    position: absolute;
+    background: #f00;
+    height: 100%;
+}
+
+.media-control-panel .seek-bar input[type=range].progress-slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
 .media-control-panel input[type=range].progress-slider::-webkit-slider-runnable-track {
     height: 20px;
+    background: transparent;
 }
 
 .media-control-panel input[type=range].progress-slider::-webkit-slider-thumb {

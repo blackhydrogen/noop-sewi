@@ -43,6 +43,9 @@ var sewi = sewi || {};
                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
                                         .addClass('center');
+        var seekBarElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_DOM);
+        var seekBarBackgroundElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM);
+        selfRef.seekBarBufferElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM);
 
         selfRef.playPauseButton = button.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
@@ -57,7 +60,11 @@ var sewi = sewi || {};
 
         playButtonPanel.append(selfRef.playPauseButton);
         muteButtonPanel.append(volumeControl);
-        seekSliderPanel.append(selfRef.progressSlider);
+        seekSliderPanel.append(seekBarElement);
+
+        seekBarElement.append(seekBarBackgroundElement)
+                         .append(selfRef.seekBarBufferElement)
+                         .append(selfRef.progressSlider);
 
         selfRef.durationTextPanel.text(generateDurationText({
             currentSecs: '--',
@@ -171,12 +178,6 @@ var sewi = sewi || {};
         return this;
     }
 
-    sewi.MediaControls.prototype.downloadProgress = function(progress) {
-        var selfRef = this;
-
-
-    }
-
     /**
      * Updates the displayed values of the MediaControls instance.
      * @param  {object} options A dictionary containing all values that will be changed.
@@ -234,6 +235,20 @@ var sewi = sewi || {};
             } else {
                 selfRef.mainDOMElement.addClass('muted');
             }
+        }
+
+        if (!_.isUndefined(options.buffer)) {
+            var duration = selfRef.duration;
+
+            console.log(options.buffer);
+
+            var distanceFromStart = (options.buffer.start / duration) * 100;
+            var distanceFromEnd = (1 - options.buffer.end / duration) * 100;
+
+            selfRef.seekBarBufferElement.css({
+                left: distanceFromStart,
+                right: distanceFromEnd
+            });
         }
     }
 
