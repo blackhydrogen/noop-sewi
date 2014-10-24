@@ -285,7 +285,7 @@ var sewi = sewi || {};
         selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_RESOURCE_VIEWER_DOM_CLASS);
 
         selfRef.contentElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTENT_DOM);
-        selfRef.boundaryElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM);
+        //selfRef.boundaryElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM);
         selfRef.videoContainerElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTAINER_DOM);
 
         selfRef.videoElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_DOM);
@@ -294,15 +294,9 @@ var sewi = sewi || {};
                             .attr('height', 'auto')
                             .appendTo(selfRef.videoContainerElement);
 
-        selfRef.boundaryElement.appendTo(selfRef.contentElement);
         selfRef.videoContainerElement.appendTo(selfRef.contentElement);
 
         selfRef.mainDOMElement.append(selfRef.contentElement);
-
-        selfRef.videoContainerElement.draggable({
-            containment: selfRef.boundaryElement,
-            scope: 'video'
-        });
     }
 
     function initControls() {
@@ -415,10 +409,17 @@ var sewi = sewi || {};
         var videoHeight = selfRef.videoElement[0].videoHeight;
 
         selfRef.videoContainerElement.css({
-            width: videoWidth,
-            height: videoHeight
-        })
-        setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
+            width: videoWidth
+        });
+
+        //setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
+
+        if (_.isUndefined(selfRef.panZoomWidget)) {
+            selfRef.panZoomWidget = new sewi.PanZoomWidget(selfRef.videoContainerElement, selfRef.contentElement, videoWidth, videoHeight);
+            selfRef.panZoomWidget.centreTargetOnContainer(selfRef.panZoomWidget);
+        } else {
+            console.log('updateDimensions() called');
+        }
     }
 
     function updateTime() {
