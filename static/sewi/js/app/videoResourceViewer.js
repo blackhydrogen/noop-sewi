@@ -326,6 +326,7 @@ var sewi = sewi || {};
         var selfRef = this;
         selfRef.videoElement.on('durationchange', updateDuration.bind(selfRef));
         selfRef.videoElement.on('loadedmetadata', updateDimensions.bind(selfRef));
+        selfRef.videoElement.on('timeupdate progress', updateBufferedProgress.bind(selfRef));
         selfRef.videoElement.on('canplay', selfRef.hideProgressBar.bind(selfRef));
         selfRef.videoElement.on('timeupdate seeked', updateTime.bind(selfRef));
         selfRef.videoElement.on('play pause', updatePlayingStatus.bind(selfRef));
@@ -415,6 +416,24 @@ var sewi = sewi || {};
         selfRef.controls.update({
             duration: selfRef.videoElement[0].duration
         });
+    }
+
+    function updateBufferedProgress() {
+        var selfRef = this;
+
+        var bufferedRange = selfRef.videoElement[0].buffered;
+        console.log(bufferedRange);
+        if (bufferedRange.length > 0) {
+            var lastBuffer = bufferedRange.length - 1;
+            var startTime = bufferedRange.start(lastBuffer);
+            var endTime = bufferedRange.end(lastBuffer);
+            selfRef.controls.update({
+                buffer: {
+                    start: startTime,
+                    end: endTime
+                }
+            });
+        }
     }
 
     function updateDimensions() {
