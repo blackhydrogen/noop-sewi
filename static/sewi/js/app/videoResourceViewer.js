@@ -87,6 +87,7 @@ var sewi = sewi || {};
         selfRef.playPauseButton.click(playPauseClicked.bind(selfRef));
         selfRef.muteButton.click(muteClicked.bind(selfRef));
         selfRef.volumeSlider.on('input', volumeChanged.bind(selfRef));
+        selfRef.progressSlider.on('input', progressSeeking.bind(selfRef));
         selfRef.progressSlider.on('change', progressChanged.bind(selfRef));
     }
 
@@ -141,9 +142,16 @@ var sewi = sewi || {};
         selfRef.volume(selfRef.volumeSlider[0].value);
     }
 
+    function progressSeeking() {
+        var selfRef = this;
+
+        selfRef.isSeeking = true;
+    }
+
     function progressChanged() {
         var selfRef = this;
 
+        selfRef.isSeeking = false;
         selfRef.playbackPosition(selfRef.progressSlider[0].value);
         //selfRef.setPlaybackProgress(??);
     }
@@ -253,7 +261,7 @@ var sewi = sewi || {};
             }));
         }
 
-        if (!_.isUndefined(options.position)) {
+        if (!_.isUndefined(options.position) && !selfRef.isSeeking) {
             selfRef.progressSlider[0].value = options.position;
         }
 
