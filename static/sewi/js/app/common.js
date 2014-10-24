@@ -107,7 +107,8 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',
         MEDIA_CONTROLS_SEEK_BAR_DOM: '<div class="seek-bar"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
-        MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="seek-bar-buffer"></div>',
+        MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
+        MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
     };
 
 })();

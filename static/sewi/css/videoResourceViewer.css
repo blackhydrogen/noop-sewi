@@ -103,14 +103,21 @@ video {
 }
 .media-control-panel .seek-bar .seek-bar-background {
     position: absolute;
-    background: #999;
+    background-color: #ccc;
+    background: rgba(0, 0, 0, 0.3);
     width: 100%;
     height: 100%;
 }
 
-.media-control-panel .seek-bar .seek-bar-buffer {
+.media-control-panel .seek-bar .seek-bar-buffers {
     position: absolute;
-    background: #f00;
+    height: 100%;
+    width: 100%;
+}
+
+.media-control-panel .seek-bar .seek-bar-buffers .buffer {
+    position: absolute;
+    background-color: #428BCA;
     height: 100%;
 }
 
