@@ -90,6 +90,7 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_CONTENT_DOM: '<div class="video-content animated"></div>',
         VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM: '<div class="video-boundary"></div>',
         VIDEO_RESOURCE_VIEWER_CONTAINER_DOM: '<div class="video-container"></div>',
+        VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE: 'Loading Video',
 
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
@@ -99,11 +100,15 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_RIGHT_PANEL_CLASS: 'right',
         MEDIA_CONTROLS_LONG_PANEL_CLASS: 'long',
         MEDIA_CONTROLS_DURATION_CLASS: 'duration',
-        MEDIA_CONTROLS_PLAY_CLASS: 'btn-block play-button',
+        MEDIA_CONTROLS_PLAY_CLASS: 'play-button',
         MEDIA_CONTROLS_VOLUME_POPUP_CLASS: 'volume-popup',
         MEDIA_CONTROLS_MUTE_CLASS: 'mute-button',
         MEDIA_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" />',
         MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',
+        MEDIA_CONTROLS_SEEK_BAR_DOM: '<div class="seek-bar"></div>',
+        MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
+        MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
+        MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
 
         //Configurator Constants
         CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',

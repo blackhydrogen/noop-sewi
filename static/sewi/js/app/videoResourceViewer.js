@@ -1,7 +1,7 @@
 var sewi = sewi || {};
 
 (function() {
-    sewi.MediaControls = function() {
+    sewi.MediaControls = function(options) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.MediaControls))
             return new sewi.MediaControls();
@@ -10,15 +10,30 @@ var sewi = sewi || {};
 
         var selfRef = this;
 
-        initDOM.call(selfRef);
-        initEvents.call(selfRef);
+        var defaults = {
+            isSeekHidden: false,
+            isDurationHidden: false,
+            extraButtons: {}
+        };
+
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(selfRef, _.pick(options, [
+            'isSeekBarHidden',
+            'isDurationHidden',
+            'extraButtons'
+        ]));
 
         _.assign(selfRef, {
             isPlaying: false,
             isMuted: false,
             progress: 0.0,
-            duration: 0.0
+            duration: 0.0,
+            numOfBufferBars: 0
         });
+
+        initDOM.call(selfRef);
+        initEvents.call(selfRef);
     }
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
@@ -34,15 +49,18 @@ var sewi = sewi || {};
         var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
         var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
-        var playButtonPanel = innerPanel.clone()
+        var leftButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
         selfRef.durationTextPanel = innerPanel.clone()
                                            .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
                                            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
-        var muteButtonPanel = innerPanel.clone()
-                                        .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
+        var rightButtonPanel = innerPanel.clone()
+                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
                                         .addClass('center');
+        var seekBarElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_DOM);
+        var seekBarBackgroundElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM);
+        selfRef.seekBarBufferContainer = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM);
 
         selfRef.playPauseButton = button.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
@@ -55,9 +73,13 @@ var sewi = sewi || {};
                                                       selfRef.muteButton,
                                                       sewi.constants.MEDIA_CONTROLS_VOLUME_POPUP_CLASS);
 
-        playButtonPanel.append(selfRef.playPauseButton);
-        muteButtonPanel.append(volumeControl);
-        seekSliderPanel.append(selfRef.progressSlider);
+        leftButtonPanel.append(selfRef.playPauseButton);
+        rightButtonPanel.append(volumeControl);
+        seekSliderPanel.append(seekBarElement);
+
+        seekBarElement.append(seekBarBackgroundElement)
+                      .append(selfRef.seekBarBufferContainer)
+                      .append(selfRef.progressSlider);
 
         selfRef.durationTextPanel.text(generateDurationText({
             currentSecs: '--',
@@ -66,10 +88,26 @@ var sewi = sewi || {};
             durationMins: '--'
         }));
 
-        selfRef.mainDOMElement.append(playButtonPanel)
-                              .append(muteButtonPanel)
-                              .append(selfRef.durationTextPanel)
-                              .append(seekSliderPanel);
+        // Add any extra buttons to the left and right, if any.
+        if (selfRef.extraButtons) {
+            if (selfRef.extraButtons.left) {
+                leftButtonPanel.append(selfRef.extraButtons.left);
+            }
+            if (selfRef.extraButtons.right) {
+                rightButtonPanel.prepend(selfRef.extraButtons.right);
+            }
+        }
+
+        selfRef.mainDOMElement.append(leftButtonPanel)
+                              .append(rightButtonPanel);
+
+        if (!selfRef.isDurationHidden) {
+            selfRef.mainDOMElement.append(selfRef.durationTextPanel);
+        }
+
+        if (!selfRef.isSeekBarHidden) {
+            selfRef.mainDOMElement.append(seekSliderPanel);
+        }
     }
 
     function initEvents() {
@@ -78,7 +116,41 @@ var sewi = sewi || {};
         selfRef.playPauseButton.click(playPauseClicked.bind(selfRef));
         selfRef.muteButton.click(muteClicked.bind(selfRef));
         selfRef.volumeSlider.on('input', volumeChanged.bind(selfRef));
+        selfRef.progressSlider.on('input', progressSeeking.bind(selfRef));
         selfRef.progressSlider.on('change', progressChanged.bind(selfRef));
+    }
+
+    function setNumberOfBufferBars(numOfBars) {
+        var selfRef = this;
+
+        var seekBarBufferElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM);
+        var difference = numOfBars - selfRef.numOfBufferBars;
+        if (difference < 0) {
+            var excessBars = selfRef.seekBarBufferContainer.children().slice(difference);
+            excessBars.remove();
+        } else if (difference > 0) {
+            var seekBarBufferElements = repeatString(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM, difference);
+            selfRef.seekBarBufferContainer.append(seekBarBufferElements);
+        }
+
+        selfRef.numOfBufferBars = numOfBars;
+    }
+
+    function repeatString(string, numOfTimes) {
+        return new Array(numOfTimes + 1).join(string);
+    }
+
+    function setBufferBarPositions(positions) {
+        var selfRef = this;
+
+        selfRef.seekBarBufferContainer.children().each(_.partial(setBufferBarPosition, positions));
+    }
+
+    function setBufferBarPosition(positions, index) {
+        $(this).css({
+            left:  positions[index].left,
+            right: positions[index].right
+        });
     }
 
     function playPauseClicked() {
@@ -99,9 +171,16 @@ var sewi = sewi || {};
         selfRef.volume(selfRef.volumeSlider[0].value);
     }
 
+    function progressSeeking() {
+        var selfRef = this;
+
+        selfRef.isSeeking = true;
+    }
+
     function progressChanged() {
         var selfRef = this;
 
+        selfRef.isSeeking = false;
         selfRef.playbackPosition(selfRef.progressSlider[0].value);
         //selfRef.setPlaybackProgress(??);
     }
@@ -171,12 +250,6 @@ var sewi = sewi || {};
         return this;
     }
 
-    sewi.MediaControls.prototype.downloadProgress = function(progress) {
-        var selfRef = this;
-
-
-    }
-
     /**
      * Updates the displayed values of the MediaControls instance.
      * @param  {object} options A dictionary containing all values that will be changed.
@@ -217,7 +290,7 @@ var sewi = sewi || {};
             }));
         }
 
-        if (!_.isUndefined(options.position)) {
+        if (!_.isUndefined(options.position) && !selfRef.isSeeking) {
             selfRef.progressSlider[0].value = options.position;
         }
 
@@ -234,6 +307,25 @@ var sewi = sewi || {};
             } else {
                 selfRef.mainDOMElement.addClass('muted');
             }
+        }
+
+        if (!_.isUndefined(options.buffers) && options.buffers.length > 0) {
+            var duration = selfRef.duration;
+            var numOfBuffers = options.buffers.length;
+
+            var positions = [];
+
+            for (var i = 0; i < numOfBuffers; i++) {
+                var position = {
+                    left:  ((options.buffers[i].start / duration) * 100) + '%',
+                    right: ((1 - options.buffers[i].end / duration) * 100) + '%'
+                }
+                positions.push(position);
+            }
+
+            setNumberOfBufferBars.call(selfRef, numOfBuffers);
+            setBufferBarPositions.call(selfRef, positions);
+
         }
     }
 
@@ -285,7 +377,7 @@ var sewi = sewi || {};
         selfRef.mainDOMElement.addClass(sewi.constants.VIDEO_RESOURCE_VIEWER_DOM_CLASS);
 
         selfRef.contentElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTENT_DOM);
-        selfRef.boundaryElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM);
+        //selfRef.boundaryElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM);
         selfRef.videoContainerElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_CONTAINER_DOM);
 
         selfRef.videoElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_DOM);
@@ -294,15 +386,9 @@ var sewi = sewi || {};
                             .attr('height', 'auto')
                             .appendTo(selfRef.videoContainerElement);
 
-        selfRef.boundaryElement.appendTo(selfRef.contentElement);
         selfRef.videoContainerElement.appendTo(selfRef.contentElement);
 
         selfRef.mainDOMElement.append(selfRef.contentElement);
-
-        selfRef.videoContainerElement.draggable({
-            containment: selfRef.boundaryElement,
-            scope: 'video'
-        });
     }
 
     function initControls() {
@@ -317,6 +403,8 @@ var sewi = sewi || {};
         var selfRef = this;
         selfRef.videoElement.on('durationchange', updateDuration.bind(selfRef));
         selfRef.videoElement.on('loadedmetadata', updateDimensions.bind(selfRef));
+        selfRef.videoElement.on('timeupdate progress', updateBufferedProgress.bind(selfRef));
+        selfRef.videoElement.on('canplay', selfRef.hideProgressBar.bind(selfRef));
         selfRef.videoElement.on('timeupdate seeked', updateTime.bind(selfRef));
         selfRef.videoElement.on('play pause', updatePlayingStatus.bind(selfRef));
         selfRef.videoElement.on('volumechange', updateVolume.bind(selfRef));
@@ -407,6 +495,30 @@ var sewi = sewi || {};
         });
     }
 
+    function updateBufferedProgress() {
+        var selfRef = this;
+
+        var bufferedRanges = selfRef.videoElement[0].buffered;
+        var numOfBuffers = bufferedRanges.length;
+
+        if (bufferedRanges.length > 0) {
+
+            var buffers = [];
+
+            for (var i = 0; i < numOfBuffers; i++) {
+                var buffer = {
+                    start: bufferedRanges.start(i),
+                    end: bufferedRanges.end(i)
+                }
+                buffers.push(buffer);
+            }
+
+            selfRef.controls.update({
+                buffers: buffers
+            });
+        }
+    }
+
     function updateDimensions() {
         var selfRef = this;
 
@@ -414,10 +526,17 @@ var sewi = sewi || {};
         var videoHeight = selfRef.videoElement[0].videoHeight;
 
         selfRef.videoContainerElement.css({
-            width: videoWidth,
-            height: videoHeight
-        })
-        setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
+            width: videoWidth
+        });
+
+        //setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
+
+        if (_.isUndefined(selfRef.panZoomWidget)) {
+            selfRef.panZoomWidget = new sewi.PanZoomWidget(selfRef.videoContainerElement, selfRef.contentElement, videoWidth, videoHeight);
+            selfRef.panZoomWidget.centreTargetOnContainer(selfRef.panZoomWidget);
+        } else {
+            console.log('updateDimensions() called');
+        }
     }
 
     function updateTime() {
@@ -466,6 +585,8 @@ var sewi = sewi || {};
         var selfRef = this;
         var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
 
+        selfRef.showProgressBar();
+
         $.ajax({
             dataType: 'json',
             type: 'GET',
@@ -487,6 +608,8 @@ var sewi = sewi || {};
             type: selfRef.videoData.type,
         });
         videoSourceElement.appendTo(selfRef.videoElement);
+
+        selfRef.updateProgressBar(80, sewi.constants.VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE);
 
         selfRef.addDownloadButton(selfRef.videoData.url);
     }
