@@ -347,7 +347,7 @@ var sewi = sewi || {};
         canvasHTMLElement.onmouseout = canvasMouseOutEvent.bind(this);
         canvasHTMLElement.onmousemove = canvasMouseMoveEvent.bind(this);
         canvasHTMLElement.onmouseup = canvasMouseUpEvent.bind(this);
-
+        canvasHTMLElement.ondblclick = canvasDoubleClickEvent.bind(this);
     }
 
     function canvasMouseOverEvent(event){
@@ -451,8 +451,12 @@ var sewi = sewi || {};
         selfRef.mouseSelectionOfStart = false;
         selfRef.mouseSelectionOfEnd = false;
         selfRef.mouseDown = false;
-        selfRef.draw.call(this);
-        updateLinkedGraph.call(this);
+        
+        zoomToSelection.call(this);
+        selfRef.updateGraph();
+        updateLinkedGraph.call(this)
+        //selfRef.draw.call(this);
+        //updateLinkedGraph.call(this);
     }
 
     function canvasMouseOutEvent(event){
@@ -474,6 +478,19 @@ var sewi = sewi || {};
         updateLinkedGraph.call(this);    
     }
 
+    function canvasDoubleClickEvent(event){
+        var selfRef = this;
+        
+        // reset the selection mouse states for the selection
+        selfRef.mouseInsideOfSelection = false;
+        selfRef.mouseSelectionOfStart = false;
+        selfRef.mouseSelectionOfEnd = false;
+        selfRef.mouseDown = false;
+        
+        zoomToFit.call(this);
+        selfRef.updateGraph();
+        updateLinkedGraph.call(this)
+    }
 
     function clearCanvas(canvasContext){
         var selfRef = this;
@@ -603,7 +620,12 @@ var sewi = sewi || {};
             canvasContext.stroke();
         }
     }
-    
+
+    function drawText(canvasContext){
+        var selfRef = this;
+
+    }
+
     function getDataInResolution(){
         var selfRef = this;
 
@@ -730,6 +752,8 @@ var sewi = sewi || {};
         drawSelector.call(this, canvasContext);
         // Draw the playback line indicator
         drawPlaybackLineIndicator.call(this, canvasContext);
+        // Draw text
+        drawText.call(this, canvasContext);
     }
 
     sewi.AudioAmplitudeGraph.prototype.updateGraph = function(){
