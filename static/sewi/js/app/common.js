@@ -109,6 +109,15 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
+
+        //Configurator Constants
+        CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',
+        CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM: '<p></p>',
+        CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM: '<button class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>',
+        CONFIGURATOR_ERROR_SCREEN_BACKDROP_DOM: '<div></div>',
+        CONFIGURATOR_RELOAD_LINK_DOM: '<button class="btn btn-link">Reload</button>',
+        CONFIGURATOR_ACTIVE_ALERT_CLASS: 'active',
+        CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE: 'An error has occured! Please reload the page!',
     };
 
 })();

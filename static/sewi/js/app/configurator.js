@@ -24,7 +24,8 @@ var sewi = sewi || {};
             'titleView',
             'basicInfoView',
             'resViewerView',
-            'resGalleryView'
+            'resGalleryView',
+            'alertsView'
         ]));
 
         validateArguments.call(selfRef);
@@ -44,6 +45,7 @@ var sewi = sewi || {};
         selfRef.basicInfoView = $(selfRef.basicInfoView);
         selfRef.resViewerView = $(selfRef.resViewerView);
         selfRef.resGalleryView = $(selfRef.resGalleryView);
+        selfRef.alertsView = $(selfRef.alertsView);
 
         if (selfRef.titleView.length != 1) {
             throw new Error('options: One titleView selector/element must be provided.')
@@ -56,6 +58,9 @@ var sewi = sewi || {};
         }
         if (selfRef.resGalleryView.length != 1) {
             throw new Error('options: One resGalleryView selector/element must be provided.')
+        }
+        if (selfRef.alertsView.length != 1) {
+            throw new Error('options: One alertsView selector/element must be provided.')
         }
     }
 
@@ -76,7 +81,12 @@ var sewi = sewi || {};
             selfRef.basicInfo = new sewi.BasicEncounterInfoViewer();
             var element = selfRef.basicInfo.getDOM();
 
+            element.on('BEILoaded', basicInfoLoaded.bind(selfRef));
+            element.on('Error', basicInfoCrashed.bind(selfRef));
+
             selfRef.basicInfoView.append(element);
+
+            selfRef.basicInfo.load();
         }
 
         var minimizeElement = $('<div class="minimize-button">&lt;&lt;</div>');
@@ -91,6 +101,7 @@ var sewi = sewi || {};
             selfRef.tabs = new sewi.TabContainer();
             var element = selfRef.tabs.getDOM();
             element.on("NoTabs", allTabsClosed.bind(selfRef));
+            element.on('Error', resViewerCrashed.bind(selfRef));
             selfRef.resViewerView.append(element);
         }
     }
@@ -101,13 +112,20 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.ResourceGallery)) {
             selfRef.resGallery = new sewi.ResourceGallery();
             var element = selfRef.resGallery.getDOM();
+            element.on('resourceClick', galleryOpenedResource.bind(selfRef));
+            element.on('Error', resGalleryCrashed.bind(selfRef));
 
             selfRef.resGalleryView.append(element);
+
+            selfRef.resGallery.load();
         }
     }
 
     function openResource(galleryElement) {
         var selfRef = this;
+
+        selfRef.isResourceViewerHidden = false;
+        updateViewSizes.call(selfRef);
 
         selfRef.tabs.addObjectToNewTab(galleryElement);
     }
@@ -154,10 +172,82 @@ var sewi = sewi || {};
         selfRef.setTitle(title, subtitle);
     }
 
+    function createErrorScreen(errorMessage, reloadCallback) {
+        var selfRef = this;
+
+        var centralElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_RETRY_DOM);
+        var messageElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM).text(errorMessage);
+        var buttonElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM);
+        var backdropElement = $(sewi.constants.CONFIGURATOR_ERROR_SCREEN_BACKDROP_DOM).addClass(sewi.constants.ERROR_SCREEN_CLASS);
+
+        backdropElement.append(centralElement);
+        centralElement.append(messageElement).append(buttonElement);
+
+        buttonElement.click({
+            element: backdropElement,
+            callback: reloadCallback
+        }, refreshClicked.bind(selfRef));
+
+        return backdropElement;
+    }
+
     function basicInfoLoaded(event, encounter) {
         var selfRef = this;
 
-        setEncounterTitle.call(selfRef, encounter.id, encounter.title);
+        setEncounterTitle.call(selfRef, encounter.id, encounter.name);
+    }
+
+    function basicInfoCrashed() {
+        var selfRef = this;
+        // Destructive removal (including all events)
+        selfRef.basicInfoView.children().remove();
+
+        selfRef.basicInfoView.append(createErrorScreen('Basic Info has crashed!', initBasicInfo.bind(selfRef)));
+    }
+
+    function resViewerCrashed() {
+        var selfRef = this;
+        // Hide all tooltips
+        $('.tooltip').hide();
+
+        // Destructive removal (including all events)
+        selfRef.resViewerView.children().remove();
+
+        selfRef.resViewerView.append(createErrorScreen('Resource viewer has crashed!', initResViewer.bind(selfRef)));
+    }
+
+    function resGalleryCrashed() {
+        var selfRef = this;
+        // Destructive removal (including all events)
+        selfRef.resGalleryView.children().remove();
+
+        selfRef.resGalleryView.append(createErrorScreen('Resource gallery has crashed!', initResGallery.bind(selfRef)));
+    }
+
+    function reportSeriousError() {
+        var selfRef = this;
+
+        if (selfRef.alertsView.hasClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS)) {
+            return;
+        }
+
+        var reloadLink = $(sewi.constants.CONFIGURATOR_RELOAD_LINK_DOM);
+        reloadLink.click(function() {
+            window.location.reload(true);
+        })
+        selfRef.alertsView.text(sewi.constants.CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE)
+                          .append(reloadLink)
+                          .addClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS);
+    }
+
+    function refreshClicked(event) {
+        var selfRef = this;
+
+        var element = event.data.element;
+        var callback = event.data.callback;
+
+        element.remove();
+        callback.call(selfRef);
     }
 
     function minimizeToggled() {
@@ -172,6 +262,12 @@ var sewi = sewi || {};
 
         selfRef.isResourceViewerHidden = true;
         updateViewSizes.call(selfRef);
+    }
+
+    function galleryOpenedResource(event, resourceDOM) {
+        var selfRef = this;
+
+        openResource.call(selfRef, resourceDOM);
     }
 
     // Configurator public methods

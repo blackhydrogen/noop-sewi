@@ -4,7 +4,8 @@ $(function() {
       basicInfoView: '#beiView',
       resViewerView: '#mainView',
       resGalleryView: '#resView',
-      titleView: '#titleView'
+      titleView: '#titleView',
+      alertsView: '#alerts',
   });
 
   var tempDrag = $('<div id="draggable" data-resId="123" data-resType="Image">Some words</div>');
