@@ -10,6 +10,18 @@
   padding: 0;
 }
 
+#alerts {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    margin-left: -200px;
+    width: 400px;
+}
+
+#alerts.active {
+    top: 0px;
+}
+
 .col-sm-0 {
   width: 0px;
   float: left;
@@ -17,6 +29,17 @@
   margin: 0px;
   padding: 0px;
   min-height: 1px;
+}
+
+.btn-link {
+    padding: 0;
+    border: 0;
+    margin: 0 2px;
+}
+
+.btn-link:focus,
+.btn-link:active:focus {
+    outline: 0;
 }
 
 /* Any 'animated' elements will have a smooth transition */
