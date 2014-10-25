@@ -252,6 +252,13 @@ var sewi = sewi || {};
             selfRef.source.disconnect(selfRef.scriptProcessor);
         }
     }
+
+    sewi.AudioResourceViewer.prototype.resize = function(){
+        var selfRef = this;
+        for(var i=0; i < selfRef.audioAmplitudeGraphs.length; i++) {
+            selfRef.audioAmplitudeGraphs[i].updateGraph();
+        }
+    }
 })();
 
 
@@ -471,8 +478,6 @@ var sewi = sewi || {};
         zoomToSelection.call(this);
         selfRef.updateGraph();
         updateLinkedGraph.call(this)
-        //selfRef.draw.call(this);
-        //updateLinkedGraph.call(this);
     }
 
     function canvasMouseOutEvent(event){
@@ -548,7 +553,7 @@ var sewi = sewi || {};
         var data = seq.channelData;
         var canvasWidth = selfRef.canvasDOM.width();
         //canvasContext.setLineWidth(1);
-        canvasContext.strokeStyle = "rgba(0, 0,0,0.5)";                
+        canvasContext.strokeStyle = "rgba(0,0,0,0.5)";                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
 
@@ -628,8 +633,7 @@ var sewi = sewi || {};
     function drawPlaybackLineIndicator(canvasContext){
         var selfRef = this;
         var playbackPixelPos = getAbsoluteToPixel.call(this, selfRef.playbackPos * selfRef.audioSequence.sampleRate);
-        //console.log(selfRef.playbackPos);
-        //console.log(playbackPixelPos);
+        
         if (playbackPixelPos > 0 && playbackPixelPos < selfRef.canvasWidth){
             canvasContext.strokeStyle = this.colorSelectionStroke;
             canvasContext.beginPath();
@@ -641,9 +645,20 @@ var sewi = sewi || {};
 
     function drawText(canvasContext){
         var selfRef = this;
-
+        drawTextWithShadow(selfRef.name, 1, 10, "rgba(0,0,0,1)", canvasContext);
+        drawTextWithShadow("Position: " + Math.round(selfRef.viewPos), 1, 20, "rgb(0,0,0)", canvasContext);
+        drawTextWithShadow("Selection: " + selfRef.selectionStart + " - " + selfRef.selectionEnd +
+                " (" + (selfRef.selectionEnd - selfRef.selectionStart) + ")", 1, 30, "rgb(255,0,0)", canvasContext);
     }
 
+    function drawTextWithShadow(text, x, y, style, canvasContext){
+        canvasContext.fillStyle = "rgba(0,0,0,0.25)";
+        canvasContext.fillText(text,x + 1, y + 1);
+
+        canvasContext.fillStyle = style;
+        canvasContext.fillText(text,x, y);
+    }
+    
     function getDataInResolution(){
         var selfRef = this;
 
@@ -794,9 +809,6 @@ var sewi = sewi || {};
         var selfRef = this;
         //selfRef.name = name;
         selfRef.sampleRate = sampleRate;
-        selfRef.channelData = [];
-        for(var i = 0; i < channelData.length; i++){
-            selfRef.channelData.push(channelData[i]);
-        }
+        selfRef.channelData = Array.prototype.slice.call(channelData);
     }
 })();
