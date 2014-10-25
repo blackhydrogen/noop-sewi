@@ -12,6 +12,7 @@ var sewi = sewi || {};
 
         var defaults = {
             isSeekHidden: false,
+            isDurationHidden: false,
             extraButtons: {}
         };
 
@@ -19,6 +20,7 @@ var sewi = sewi || {};
         _.defaults(options, defaults);
         _.assign(selfRef, _.pick(options, [
             'isSeekBarHidden',
+            'isDurationHidden',
             'extraButtons'
         ]));
 
@@ -97,8 +99,11 @@ var sewi = sewi || {};
         }
 
         selfRef.mainDOMElement.append(leftButtonPanel)
-                              .append(rightButtonPanel)
-                              .append(selfRef.durationTextPanel);
+                              .append(rightButtonPanel);
+
+        if (!selfRef.isDurationHidden) {
+            selfRef.mainDOMElement.append(selfRef.durationTextPanel);
+        }
 
         if (!selfRef.isSeekBarHidden) {
             selfRef.mainDOMElement.append(seekSliderPanel);
