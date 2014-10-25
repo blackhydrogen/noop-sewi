@@ -24,7 +24,8 @@ var sewi = sewi || {};
             'titleView',
             'basicInfoView',
             'resViewerView',
-            'resGalleryView'
+            'resGalleryView',
+            'alertsView'
         ]));
 
         validateArguments.call(selfRef);
@@ -44,6 +45,7 @@ var sewi = sewi || {};
         selfRef.basicInfoView = $(selfRef.basicInfoView);
         selfRef.resViewerView = $(selfRef.resViewerView);
         selfRef.resGalleryView = $(selfRef.resGalleryView);
+        selfRef.alertsView = $(selfRef.alertsView);
 
         if (selfRef.titleView.length != 1) {
             throw new Error('options: One titleView selector/element must be provided.')
@@ -56,6 +58,9 @@ var sewi = sewi || {};
         }
         if (selfRef.resGalleryView.length != 1) {
             throw new Error('options: One resGalleryView selector/element must be provided.')
+        }
+        if (selfRef.alertsView.length != 1) {
+            throw new Error('options: One alertsView selector/element must be provided.')
         }
     }
 
@@ -217,6 +222,22 @@ var sewi = sewi || {};
         selfRef.resGalleryView.children().remove();
 
         selfRef.resGalleryView.append(createErrorScreen('Resource gallery has crashed!', initResGallery.bind(selfRef)));
+    }
+
+    function reportSeriousError() {
+        var selfRef = this;
+
+        if (selfRef.alertsView.hasClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS)) {
+            return;
+        }
+
+        var reloadLink = $(sewi.constants.CONFIGURATOR_RELOAD_LINK_DOM);
+        reloadLink.click(function() {
+            window.location.reload(true);
+        })
+        selfRef.alertsView.text(sewi.constants.CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE)
+                          .append(reloadLink)
+                          .addClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS);
     }
 
     function refreshClicked(event) {
