@@ -117,10 +117,17 @@ var sewi = sewi || {};
         var channelName = ['left-channel','right-channel'];
 
         selfRef.controls.update({duration : duration, currentTime : selfRef.offset});
-
+        
+        var audioAmplitudeGraphs = [];
         for(var i=0; i < numChannels; i++){
             var audioSequence = new sewi.AudioSequence(sampleRate, buffer.getChannelData(i));
             var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], audioSequence);
+            audioAmplitudeGraphs.push(audioAmplitudeGraph);
+        }
+
+        // Link the left channel and right channels graphs together for canvas update
+        if(audioAmplitudeGraphs.length == 2){
+            audioAmplitudeGraphs[0].link(audioAmplitudeGraphs[1]);
         }
     }
 
@@ -278,6 +285,8 @@ var sewi = sewi || {};
         // position of the selection (if equal, the selection is disabled)
         selfRef.selectionStart = 0;
         selfRef.selectionEnd = 0;
+
+        selfRef.allowance = 5;
     }
 
     function setupColorVariables(){
@@ -306,10 +315,10 @@ var sewi = sewi || {};
         // handle focus for copy, paste & cut
         selfRef.hasFocus = true;    
         // a list of editors which are linked to this one
-        selfRef.linkedEditors = [];
-        // movement
-        selfRef.movePos = 0;
-        selfRef.movementActive = false;
+        selfRef.linkedGraph = null;
+        // panning
+        selfRef.panPos = 0;
+
         // zoom
         selfRef.viewResolution = 10; // default 10 seconds
         selfRef.viewPos = 0; // at 0 seconds
@@ -325,35 +334,153 @@ var sewi = sewi || {};
                     'height': selfRef.canvasHeight
                 });
         selfRef.graphDOM.append(selfRef.canvasDOM);
-        
-        // add the mouse listener to the canvas
-  //      this.addEventlistener();
-        
+        addEventListeners.call(this);
         zoomToFit.call(this);
-        updateGraph.call(this);
+        selfRef.updateGraph();
     }
 
-    function draw(){
-        console.log("draw");
+    function addEventListeners(){
         var selfRef = this;
-        var canvasContext = selfRef.canvasDOM[0].getContext('2d');
-        
-        // Clear the canvas
-        clearCanvas.call(this, canvasContext);
-        // Draw background
-        drawBackground.call(this, canvasContext);
-        // Draw the wave form
-        drawWaveForm.call(this, canvasContext);
+        var canvasHTMLElement = selfRef.canvasDOM[0];
+        canvasHTMLElement.onmouseover = canvasMouseOverEvent.bind(this);
+        canvasHTMLElement.onmousedown = canvasMouseDownEvent.bind(this);
+        canvasHTMLElement.onmouseout = canvasMouseOutEvent.bind(this);
+        canvasHTMLElement.onmousemove = canvasMouseMoveEvent.bind(this);
+        canvasHTMLElement.onmouseup = canvasMouseUpEvent.bind(this);
+
     }
+
+    function canvasMouseOverEvent(event){
+        var selfRef = this;
+        selfRef.mouseInside = true;
+        selfRef.draw.call(this);
+    }
+
+    function canvasMouseDownEvent(event){
+        var selfRef = this;
+        var allowance = selfRef.allowance;
+        selfRef.mouseDown = true;
+        
+        var selectionStartPixel = getAbsoluteToPixel.call(this, selfRef.selectionStart);
+        var selectionEndPixel = getAbsoluteToPixel.call(this, selfRef.selectionEnd);
+
+        // is the mouse inside of the selection right now
+        if (selfRef.mouseX > selectionStartPixel + allowance && selfRef.mouseX <= selectionEndPixel - allowance){
+            selfRef.mouseInsideOfSelection = true;
+        }
+        // is the mouse on the left bar of the selection
+        else if (selfRef.mouseX > selectionStartPixel - allowance && selfRef.mouseX < selectionStartPixel + allowance){
+            selfRef.mouseSelectionOfStart = true;
+        }
+        // is the mouse on the right bar of the selection
+        else if (selfRef.mouseX < selectionEndPixel + allowance && selfRef.mouseX > selectionEndPixel - allowance){
+            selfRef.mouseSelectionOfEnd = true;
+        }
+        // if the mouse is somewhere else, start a new selection
+        else{
+            selfRef.selectionStart = getPixelToAbsolute.call(this, selfRef.mouseX);
+            selfRef.selectionEnd = selfRef.selectionStart;
+        }
+        
+        selfRef.draw.call(this);
+        updateLinkedGraph.call(this);
+    }
+
+    function canvasMouseMoveEvent(event){
+        var selfRef = this;
+        var canvasHTMLElement = selfRef.canvasDOM[0];
+        var boundingBox = canvasHTMLElement.getBoundingClientRect();
+        selfRef.previousMouseX = selfRef.mouseX;
+        selfRef.previousMouseY = selfRef.mouseY;
+        selfRef.mouseX = event.clientX - boundingBox.left;
+        selfRef.mouseY = event.clientY - boundingBox.top;
+        var mouseXDelta = selfRef.mouseX - selfRef.previousMouseX;
+
+        var allowance = selfRef.allowance;
+        var selectionStartPixel = getAbsoluteToPixel.call(this, selfRef.selectionStart);
+        var selectionEndPixel = getAbsoluteToPixel.call(this, selfRef.selectionEnd);
+        
+        if (selfRef.mouseDown){
+            // if the mouse is inside of a selection, then move the whole selection
+            if (selfRef.mouseInsideOfSelection){
+                var absDelta = getPixelToAbsolute.call(this, selfRef.mouseX) - getPixelToAbsolute.call(this, selfRef.previousMouseX);
+
+                selfRef.canvasDOM.css({'cursor' : 'grabbing'});
+                // move the selection with the delta
+                selfRef.selectionStart += absDelta;
+                selfRef.selectionEnd += absDelta;
+                //this.eventHost.audioLayerControl.audioSequenceSelectionUpdate();
+
+            }
+            // if the left bar is selected, then move it only
+            else if (selfRef.mouseSelectionOfStart){
+                selfRef.selectionStart = getPixelToAbsolute.call(this, selfRef.mouseX);
+                //this.eventHost.audioLayerControl.audioSequenceSelectionUpdate();
+            }
+            // if the right bar is selected (default during creation of a selection), then move it only
+            else{
+                selfRef.selectionEnd = getPixelToAbsolute.call(this, selfRef.mouseX);
+                //this.eventHost.audioLayerControl.audioSequenceSelectionUpdate();
+            }
+        } 
+
+        
+        if (selfRef.mouseX > selectionStartPixel + allowance && selfRef.mouseX <= selectionEndPixel - allowance){
+            selfRef.canvasDOM.css({'cursor' : 'grab'});
+        } else if ((selfRef.mouseX > selectionStartPixel - allowance && selfRef.mouseX < selectionStartPixel + allowance) || 
+                    (selfRef.mouseX < selectionEndPixel + allowance && selfRef.mouseX > selectionEndPixel - allowance)){
+            selfRef.canvasDOM.css({'cursor' : 'ew-resize'});
+        } else {
+            selfRef.canvasDOM.css({'cursor' : 'default'});
+        }
+        selfRef.draw.call(this);
+        updateLinkedGraph.call(this);
+    }
+
+    function canvasMouseUpEvent(event){
+        var selfRef = this;
+        // swap the selection position if start is bigger then end
+        if (selfRef.selectionStart > selfRef.selectionEnd){
+            var temp = selfRef.selectionStart;
+            selfRef.selectionStart = selfRef.selectionEnd;
+            selfRef.selectionEnd = temp;
+        }
+
+        // reset the selection mouse states for the selection
+        selfRef.mouseInsideOfSelection = false;
+        selfRef.mouseSelectionOfStart = false;
+        selfRef.mouseSelectionOfEnd = false;
+        selfRef.mouseDown = false;
+        selfRef.draw.call(this);
+        updateLinkedGraph.call(this);
+    }
+
+    function canvasMouseOutEvent(event){
+        var selfRef = this;
+        // swap the selection position if start is bigger then end
+        if (selfRef.selectionStart > selfRef.selectionEnd){
+            var temp = selfRef.selectionStart;
+            selfRef.selectionStart = selfRef.selectionEnd;
+            selfRef.selectionEnd = temp;
+        }
+
+        // reset the selection mouse states for the selection
+        selfRef.mouseInsideOfSelection = false;
+        selfRef.mouseSelectionOfStart = false;
+        selfRef.mouseSelectionOfEnd = false;
+        selfRef.mouseDown = false;
+        selfRef.mouseInside = false;
+        selfRef.draw.call(this);
+        updateLinkedGraph.call(this);    
+    }
+
 
     function clearCanvas(canvasContext){
-        console.log("clearCanvas");
         var selfRef = this;
         canvasContext.clearRect(0, 0, selfRef.canvasDOM.width(), selfRef.canvasDOM.height());
     }
 
     function drawBackground(canvasContext){
-        console.log("paintBackground");
         var selfRef = this;
         var colorStop1;
         var colorStop2;
@@ -381,7 +508,6 @@ var sewi = sewi || {};
     }
    
     function drawWaveForm(canvasContext){
-        console.log("drawWaveForm");
         var selfRef = this;
         var center = selfRef.canvasDOM.height() / 2;
         var seq = selfRef.audioSequence;
@@ -439,14 +565,45 @@ var sewi = sewi || {};
         canvasContext.moveTo(0, center);
         canvasContext.lineTo(selfRef.canvasDOM.width(), center);
         canvasContext.stroke(); 
-   }
-
-   function updateGraph(){
-        var selfRef = this;
-        getDataInResolution.call(selfRef);                       
-        draw.call(selfRef);
     }
 
+    function drawSelector(canvasContext){
+        var selfRef = this;
+        var selectionStartPixel = getAbsoluteToPixel.call(this, selfRef.selectionStart);
+        var selectionEndPixel = getAbsoluteToPixel.call(this, selfRef.selectionEnd);
+        
+        if (selfRef.selectionStart !== selfRef.selectionEnd){
+            //Check if the selection is made from front to back or back to front. 
+            var start = (selectionStartPixel < selectionEndPixel) ? selectionStartPixel : selectionEndPixel;
+            var width = (selectionStartPixel < selectionEndPixel) ? selectionEndPixel - selectionStartPixel : selectionStartPixel - selectionEndPixel;
+
+            canvasContext.fillStyle = selfRef.colorSelectionFill;
+            canvasContext.fillRect(start, 0, width, selfRef.canvasHeight);
+
+            canvasContext.strokeStyle = selfRef.colorSelectionStroke;
+            canvasContext.strokeRect(start, 0, width, selfRef.canvasHeight);
+        } else {
+            canvasContext.strokeStyle = selfRef.colorSelectionStroke;               
+            canvasContext.beginPath();
+            canvasContext.moveTo(selectionStartPixel, 0);
+            canvasContext.lineTo(selectionStartPixel, selfRef.canvasHeight);
+            canvasContext.stroke(); 
+        }
+
+    }
+
+    function drawPlaybackLineIndicator(canvasContext){
+        var selfRef = this;
+        var playbackPixelPos = getAbsoluteToPixel.call(this, selfRef.playbackPos);
+        if (playbackPixelPos > 0 && playbackPixelPos < selfRef.canvasWidth){
+            canvasContext.strokeStyle = this.colorSelectionStroke;
+            canvasContext.beginPath();
+            canvasContext.moveTo(playbackPixelPos, 0);
+            canvasContext.lineTo(playbackPixelPos, selfRef.canvasHeight);
+            canvasContext.stroke();
+        }
+    }
+    
     function getDataInResolution(){
         var selfRef = this;
 
@@ -490,8 +647,7 @@ var sewi = sewi || {};
 
             for (var i = from; i <= from + len; ++i){
                 // if outside of the data range
-                if (i < 0 || i >= data.length)
-                {
+                if (i < 0 || i >= data.length){
                     this.visualizationData.push({ y : 0.0, x : x });
                 } else {
                     this.visualizationData.push({y : data[i], x : x});
@@ -517,6 +673,22 @@ var sewi = sewi || {};
         }
         return { min : min, max : max };
     }
+    
+    function getAbsoluteToPixel(absoluteValue){
+        var selfRef = this;
+        var totalSamplesInResolution = selfRef.viewResolution * selfRef.audioSequence.sampleRate;
+        var totalSamplesOffset = selfRef.viewPos * selfRef.audioSequence.sampleRate;
+
+        return (absoluteValue - totalSamplesOffset) / totalSamplesInResolution * selfRef.canvasDOM.width(); 
+    }
+
+    function getPixelToAbsolute(pixelValue){
+        var selfRef = this;
+        var totalSamplesInResolution = selfRef.viewResolution * selfRef.audioSequence.sampleRate;
+        var totalSamplesOffset = selfRef.viewPos * selfRef.audioSequence.sampleRate;
+
+        return Math.round(totalSamplesInResolution / selfRef.canvasDOM.width() * pixelValue + totalSamplesOffset);
+    }
 
     function zoomToFit(){
         var selfRef = this;
@@ -528,6 +700,48 @@ var sewi = sewi || {};
         var selfRef = this;
         selfRef.viewPos = selfRef.selectionStart / selfRef.audioSequence.sampleRate;
         selfRef.viewResolution = (selfRef.selectionEnd - selfRef.selectionStart) / selfRef.audioSequence.sampleRate;
+    }
+   
+    function updateLinkedGraph(){
+        var selfRef = this;
+        var linkedGraph = selfRef.linkedGraph;
+        linkedGraph.selectionStart = selfRef.selectionStart;
+        linkedGraph.selectionEnd = selfRef.selectionEnd;
+
+        if (linkedGraph.viewPos != selfRef.viewPos || linkedGraph.viewResolution != selfRef.viewResolution){
+            linkedGraph.viewPos = selfRef.viewPos;
+            linkedGraph.viewResolution = selfRef.viewResolution;
+        }
+        
+        linkedGraph.updateGraph();
+    }
+
+    sewi.AudioAmplitudeGraph.prototype.draw = function(){
+        var selfRef = this;
+        var canvasContext = selfRef.canvasDOM[0].getContext('2d');
+        
+        // Clear the canvas
+        clearCanvas.call(this, canvasContext);
+        // Draw background
+        drawBackground.call(this, canvasContext);
+        // Draw the wave form
+        drawWaveForm.call(this, canvasContext);
+        // Draw the selector
+        drawSelector.call(this, canvasContext);
+        // Draw the playback line indicator
+        drawPlaybackLineIndicator.call(this, canvasContext);
+    }
+
+    sewi.AudioAmplitudeGraph.prototype.updateGraph = function(){
+        var selfRef = this;
+        getDataInResolution.call(selfRef);                       
+        selfRef.draw.call(selfRef);
+    }
+
+    sewi.AudioAmplitudeGraph.prototype.link = function(otherGraph){
+        var selfRef = this;
+        selfRef.linkedGraph = otherGraph;
+        otherGraph.linkedGraph = selfRef;
     }
 
 })();
