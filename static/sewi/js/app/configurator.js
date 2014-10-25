@@ -193,6 +193,9 @@ var sewi = sewi || {};
 
     function resViewerCrashed() {
         var selfRef = this;
+        // Hide all tooltips
+        $('.tooltip').hide();
+
         // Destructive removal (including all events)
         selfRef.resViewerView.children().remove();
 
