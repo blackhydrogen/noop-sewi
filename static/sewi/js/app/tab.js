@@ -2,11 +2,13 @@ var sewi = sewi || {};
 
 (function(){
     $(window).resize(function(){
-        console.log("window resized");        
+        console.log("window resized");
     });
     // Tab Panel class
-    sewi.TabPanel = function(DOMObject, tabObject, state){
+    sewi.TabPanel = function(resourceViewer, tabObject, state){
 	    var selfRef = this;
+        var DOMObject = resourceViewer.getDOM();
+        selfRef.resourceViewer = resourceViewer;
         selfRef.state = state;
         selfRef.tab = tabObject;
         selfRef.panel = selfRef.setPanelDOM(state);
@@ -480,10 +482,15 @@ sewi.TabPanel.prototype.setPanelDOM = function(state){
 	}
 	return DOM;
 }
+    
+    sewi.TabPanel.prototype.resize = function(){
+        var selfRef = this;
+        selfRef.resourceViewer.resize();
+    }
 
-sewi.TabPanel.prototype.getDOM = function(){
-	return this.panel;
-}
+    sewi.TabPanel.prototype.getDOM = function(){
+	    return this.panel;
+    }
 
 // Tab class
 sewi.Tab = function(tabContainer, id, name, hasDropArea){
@@ -567,12 +574,12 @@ sewi.Tab.prototype.append = function(DOMObject, state){
 			break;
 		default:
 	}
-	selfRef.setPanel(obj.getDOM(), state);
+	selfRef.setPanel(obj, state);
 }
 
-sewi.Tab.prototype.setPanel = function(DOMObject, state){
+sewi.Tab.prototype.setPanel = function(ResourceViewer, state){
 	var selfRef = this;
-	var panel = new sewi.TabPanel(DOMObject, selfRef, state);			
+	var panel = new sewi.TabPanel(ResourceViewer, selfRef, state);			
 	selfRef.tabPanel.append(panel.getDOM());
 	selfRef.panelList[state] = panel;
 }
@@ -699,4 +706,17 @@ sewi.TabContainer = function(){
 	    selfRef.addNewTab("Tab"+selfRef.counter,"", true, false);
 	    selfRef.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
     }
-)();
+
+    sewi.TabContainer.prototype.resize = function(){
+        var selfRef = this;
+        var tabsArrLength = selfRef.tabs.length; 
+        for(var i = 0; i < tabsArrLength; i++){ 
+            var panelList = selfRef.tabs[i].panelList;
+            for(var panel in panelList){
+                if(panelList.hasOwnProperty(panel)){
+                    panel.resize();
+                }
+            } 
+        }
+    }
+})();
