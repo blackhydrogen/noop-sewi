@@ -189,7 +189,7 @@ var sewi = sewi || {};
     function basicInfoLoaded(event, encounter) {
         var selfRef = this;
 
-        setEncounterTitle.call(selfRef, encounter.id, encounter.title);
+        setEncounterTitle.call(selfRef, encounter.id, encounter.name);
     }
 
     function basicInfoCrashed() {
