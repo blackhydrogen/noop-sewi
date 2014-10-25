@@ -20,6 +20,10 @@ var sewi = sewi || {};
         selfRef.isPlaying = false;
         selfRef.id = options.id;
         selfRef.contentDOM = null;
+        selfRef.audioAmplitudeGraphs = [];
+        selfRef.updateInterval = 0.1;
+        selfRef.lastUpdated = 0;
+        selfRef.drawTimer = 0;
         selfRef.init();
         selfRef.initControls();	
     }
@@ -94,8 +98,8 @@ var sewi = sewi || {};
 
     function onComplete(event){
         var selfRef = this;
-        console.log("file loaded");
         var audioData = selfRef.request.response;
+        selfRef.progressBar.setText('generating amplitude wave graph');
         selfRef.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
@@ -118,16 +122,16 @@ var sewi = sewi || {};
 
         selfRef.controls.update({duration : duration, currentTime : selfRef.offset});
         
-        var audioAmplitudeGraphs = [];
+        selfRef.audioAmplitudeGraphs = [];
         for(var i=0; i < numChannels; i++){
             var audioSequence = new sewi.AudioSequence(sampleRate, buffer.getChannelData(i));
             var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], audioSequence);
-            audioAmplitudeGraphs.push(audioAmplitudeGraph);
+            selfRef.audioAmplitudeGraphs.push(audioAmplitudeGraph);
         }
 
         // Link the left channel and right channels graphs together for canvas update
-        if(audioAmplitudeGraphs.length == 2){
-            audioAmplitudeGraphs[0].link(audioAmplitudeGraphs[1]);
+        if(selfRef.audioAmplitudeGraphs.length == 2){
+            selfRef.audioAmplitudeGraphs[0].link(selfRef.audioAmplitudeGraphs[1]);
         }
     }
 
@@ -186,9 +190,19 @@ var sewi = sewi || {};
     sewi.AudioResourceViewer.prototype.updateMediaControl = function(event){
         var selfRef = this;
         if(selfRef.source){
-            if(selfRef.isPlaying){
-                var percent = (((Date.now()-selfRef.startTime)/1000 + selfRef.offset) / selfRef.source.buffer.duration)*100;
-                selfRef.controls.update({position : percent, currentTime : ((Date.now()-selfRef.startTime)/1000 + selfRef.offset) });
+            if(selfRef.isPlaying){ 
+                var currentTime = ((Date.now() - selfRef.startTime) / 1000 + selfRef.offset);
+                var percent = (currentTime / selfRef.source.buffer.duration)*100;
+                selfRef.controls.update({position : percent, currentTime : currentTime });
+                selfRef.drawTimer += (currentTime - selfRef.lastUpdated);
+                
+                if(selfRef.drawTimer > selfRef.updateInterval){
+                    for(var i=0; i < selfRef.audioAmplitudeGraphs.length; i++) {
+                        selfRef.audioAmplitudeGraphs[i].playbackPos =  currentTime;
+                        selfRef.audioAmplitudeGraphs[i].draw();
+                    }
+                    selfRef.drawTimer = 0;
+                }
                 if(percent >= 100){
                     selfRef.isPlaying = false;
                     selfRef.offset = 0;
@@ -197,6 +211,8 @@ var sewi = sewi || {};
                     selfRef.controls.update({position : 0, 
                                             playing : selfRef.isPlaying});
                 }
+                
+                selfRef.lastUpdated = currentTime;
             }
        }
     }
@@ -611,7 +627,9 @@ var sewi = sewi || {};
 
     function drawPlaybackLineIndicator(canvasContext){
         var selfRef = this;
-        var playbackPixelPos = getAbsoluteToPixel.call(this, selfRef.playbackPos);
+        var playbackPixelPos = getAbsoluteToPixel.call(this, selfRef.playbackPos * selfRef.audioSequence.sampleRate);
+        //console.log(selfRef.playbackPos);
+        //console.log(playbackPixelPos);
         if (playbackPixelPos > 0 && playbackPixelPos < selfRef.canvasWidth){
             canvasContext.strokeStyle = this.colorSelectionStroke;
             canvasContext.beginPath();
@@ -664,15 +682,15 @@ var sewi = sewi || {};
             }
             selfRef.plotTechnique = 1;
         } else {
-            var pixelPerData = this.canvasReference.width / len;
+            var pixelPerData = canvasWidth / len;
             var x = 0;
 
             for (var i = from; i <= from + len; ++i){
                 // if outside of the data range
-                if (i < 0 || i >= data.length){
-                    this.visualizationData.push({ y : 0.0, x : x });
+                if (i < 0 || i >= channelData.length){
+                    selfRef.visualizationData.push({ y : 0.0, x : x });
                 } else {
-                    this.visualizationData.push({y : data[i], x : x});
+                    selfRef.visualizationData.push({y : channelData[i], x : x});
                 }
                 x += pixelPerData;
             }
@@ -776,7 +794,9 @@ var sewi = sewi || {};
         var selfRef = this;
         //selfRef.name = name;
         selfRef.sampleRate = sampleRate;
-        selfRef.channelData = channelData;
-
+        selfRef.channelData = [];
+        for(var i = 0; i < channelData.length; i++){
+            selfRef.channelData.push(channelData[i]);
+        }
     }
 })();
