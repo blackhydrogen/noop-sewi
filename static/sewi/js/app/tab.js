@@ -556,7 +556,7 @@ sewi.Tab.prototype.append = function(DOMObject, state){
 			obj = new sewi.VideoResourceViewer({id:id});
 			break;
 		case 'audio':
-			obj = new sewi.AudioResourceViewer();
+			obj = new sewi.AudioResourceViewer({id:id});
 			break;
 		case 'chart':
 			//obj = new sewi.ChartResourceViewer();

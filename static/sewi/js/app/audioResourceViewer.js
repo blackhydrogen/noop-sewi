@@ -1,28 +1,27 @@
 var sewi = sewi || {};
 (function(){
     // Audio Resource Viewer Class
-    sewi.AudioResourceViewer = function(){
+    sewi.AudioResourceViewer = function(options){
         if(!(this instanceof sewi.AudioResourceViewer)){
             return new sewi.AudioResourceViewer();
         }
         sewi.ResourceViewer.call(this);
         var selfRef = this;
-        selfRef.uuid = "U"+Date.now();
-        selfRef.graphUpdateTimer = null;
+        var defaults = {};
+       
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(selfRef, _.pick(options, ['id']));
+
         selfRef.offset = 0;
         selfRef.gainValue = 0;
         selfRef.startTime = 0;
-        selfRef.endTime = 0;
-        selfRef.amplitudeData = [];
-        selfRef.audioContext = null;
-        selfRef.playable = false;
+        selfRef.audioBuffer = null;
         selfRef.isPlaying = false;
+        selfRef.id = options.id;
         selfRef.contentDOM = null;
-        selfRef.graph = $('<div class="audio-graph" id="'+selfRef.uuid+'"></div>');
-        selfRef.errorScreen = new sewi.ErrorScreen();
-        selfRef.progressBar = new sewi.ProgressBar(true);
-        init.call(selfRef);
-        initControls.call(selfRef);	
+        selfRef.init();
+        selfRef.initControls();	
     }
 
     sewi.inherits(sewi.AudioResourceViewer, sewi.ResourceViewer);
@@ -31,7 +30,7 @@ var sewi = sewi || {};
         return $('<source src="'+url+'" type="'+type+'">');
     }
 
-    function init(){
+    sewi.AudioResourceViewer.prototype.init = function(){
         var selfRef = this;
         selfRef.mainDOMElement.addClass('audio-resource-viewer');
         
@@ -44,8 +43,8 @@ var sewi = sewi || {};
         //contextClass = null;	
         if(contextClass){
             selfRef.audioContext =new contextClass();
-            selfRef.progressBar.update(100);
-            selfRef.progressBar.setText('buffering audio clip');
+            selfRef.progressBar = new sewi.ProgressBar(true);
+            selfRef.progressBar.setText('fetching audio clip');
             selfRef.contentDOM = $('<div class="audio-content"></div>');
             selfRef.contentDOM.append(selfRef.progressBar.getDOM());
             selfRef.mainDOMElement.append(selfRef.contentDOM);
@@ -54,88 +53,95 @@ var sewi = sewi || {};
             selfRef.scriptProcessor.connect(selfRef.audioContext.destination);
             selfRef.scriptProcessor.onaudioprocess = selfRef.updateMediaControl.bind(this);
 
-            selfRef.analyserNode = selfRef.audioContext.createAnalyser();
-            selfRef.analyserNode.connect(selfRef.scriptProcessor);
-            selfRef.amplitudeArray = new Uint8Array(selfRef.analyserNode.frequencyBinCount);
-
             selfRef.gainNode = selfRef.audioContext.createGain();
             selfRef.gainNode.connect(selfRef.audioContext.destination);
             selfRef.gainNode.gain.value = 1;
 
-            selfRef.audio = new Audio();
-            //selfRef.audio.preload = true; //Preload will not work properly. The work around solution is found in onCanPlayThrough.
-            selfRef.audio.src = url;
-            selfRef.audio.onloadedmetadata = onLoadedMetaData.bind(this);
-            selfRef.audio.oncanplay = onCanPlay.bind(this);
-            selfRef.audio.onstalled = onStalled.bind(this);
-            selfRef.audio.onended = onEnded.bind(this);
+            selfRef.request = new XMLHttpRequest();
+            selfRef.request.open('GET', url, true);
+            selfRef.request.responseType = 'arraybuffer';
+            selfRef.request.onreadystatechange = onReadyStateChange.bind(this);
 
-            selfRef.audioSource = selfRef.audioContext.createMediaElementSource(selfRef.audio);
-            selfRef.audioSource.connect(selfRef.gainNode);
-            selfRef.audioSource.connect(selfRef.analyserNode);
-            
+            selfRef.request.addEventListener('progress', onProgress.bind(this), false);
+            selfRef.request.addEventListener('load', onComplete.bind(this), false);
+            selfRef.request.addEventListener('abort', onAbort.bind(this), false);
+            selfRef.request.addEventListener('error', onError.bind(this), false);
+            selfRef.request.send();
+
         } else {
-            selfRef.errorScreen.setText('Error: Web Audio API is not supported by the browser.');
-            selfRef.mainDOMElement.append(selfRef.errorScreen.getDOM());
+            var error = new sewi.ErrorScreen();
+            error.setText('Error: Web Audio API is not supported by the browser.');
+            selfRef.mainDOMElement.append(error.getDOM());
         }
 
     }
-  
-    function onEnded(event){
+    
+    function onReadyStateChange(event){
         var selfRef = this;
-        console.log("onEnded:"+selfRef.amplitudeData.length);
-        selfRef.isPlaying = false;
-        selfRef.audio.currentTime = 0;
-        selfRef.controls.update({position: 0, currentTime: 0, playing : selfRef.isPlaying});
-        clearInterval(selfRef.updateTimer);
-    }
-
-    function onStalled(event){
-        var selfRef = this;
-        console.log("onStalled");
-        
-        if(selfRef.contentDOM) 
-            selfRef.contentDOM.remove();
-        
-        selfRef.errorScreen.setText('Error: Audio file is currently unavailable.');
-        selfRef.mainDOMElement.append(selfRef.errorScreen.getDOM());
-    }
-
-    function onCanPlay(event){
-        var selfRef = this;
-        console.log("canPlay");
-        selfRef.progressBar.getDOM().remove();
-        //Have the audio play and pause if you are using preload = true. This is to counter a bug in preload.
-        //selfRef.audio.play();
-        //selfRef.audio.pause();
-        selfRef.contentDOM.append(selfRef.graph);
-        if(!selfRef.g){
-            selfRef.g = new Dygraph(selfRef.graph[0], selfRef.amplitudeData,
-                            {
-                                valueRange: [-1.2, 1.2],
-                                labels: ['Time', 'Amplitude'],
-                                zoomCallback: function(minX, maxX){
-                                        console.log(minX+","+maxX);
-                                        selfRef.startTime = minX;
-                                        selfRef.endTime = maxX;
-                                        selfRef.audio.currentTime = selfRef.startTime;
-                                        var percent = (selfRef.audio.currentTime/selfRef.audio.duration) * 100; 
-                                        selfRef.controls.update({position: percent, currentTime: selfRef.audio.currentTime});
-                                        console.log("zoomed");
-                                    }
-                             });
+        if(selfRef.request.readyState > 2 && selfRef.request.status == 200){
+            //console.log("response:" + selfRef.request.response);
         }
-        selfRef.playable = true;
     }
 
-    function onLoadedMetaData(event){
+    function onProgress(event){
         var selfRef = this;
-        selfRef.startTime = 0;
-        selfRef.endTime = selfRef.audio.duration;
-        selfRef.controls.update({duration : selfRef.audio.duration, currentTime : selfRef.audio.currentTime});
+        if(event.lengthComputable){
+            var percent = (event.loaded/event.total) * 100
+            console.log((event.loaded / event.total) * 100);
+            selfRef.progressBar.update(percent);
+        }
     }
 
-    function initControls(){
+    function onComplete(event){
+        var selfRef = this;
+        console.log("file loaded");
+        var audioData = selfRef.request.response;
+        selfRef.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
+    }
+
+    function onAbort(event){
+        var selfRef = this;
+    }
+
+    function onError(event){
+        var selfRef = this;
+    }
+
+    function onAudioDecodeFinish(buffer){
+        var selfRef = this;
+        selfRef.audioBuffer = buffer;
+        var sampleRate = buffer.sampleRate; // samples per second (float)
+        var length = buffer.length; // audio data in samples (float)
+        var duration = buffer.duration; // in seconds (float)
+        var numChannels = buffer.numberOfChannels; // (unsigned int)
+        var channelName = ['left-channel','right-channel'];
+
+        selfRef.controls.update({duration : duration, currentTime : selfRef.offset});
+
+        for(var i=0; i < numChannels; i++){
+            var audioSequence = new sewi.AudioSequence(sampleRate, buffer.getChannelData(i));
+            var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], audioSequence);
+        }
+    }
+
+    function onAudioDecodeFail(event){
+    
+    }
+
+    function createAmplitudeWaveGraph(channelName, audioSequence){
+        var selfRef = this;
+        var graphDOM = $('<div class="wave-graph '+ channelName+'" id="'+selfRef.id+'" title="'+channelName+'"></div>');
+        selfRef.contentDOM.append(graphDOM);
+        if(selfRef.progressBar){
+            selfRef.progressBar.getDOM().remove();
+            delete selfRef.progressBar;
+        }
+        var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence); 
+
+        return graph;
+    }
+
+    sewi.AudioResourceViewer.prototype.initControls = function(){
         var selfRef = this;
         if(selfRef.audioContext){
             selfRef.controls = new sewi.MediaControls();
@@ -149,18 +155,9 @@ var sewi = sewi || {};
         }
     }
 
-    function updateTimer(){
-        var selfRef = this;
-        //console.log("timer:"+selfRef.amplitudeData.length);
-        selfRef.g.updateOptions({'file' : selfRef.amplitudeData});
-    }
-
     sewi.AudioResourceViewer.prototype.sliderChanged = function(event, position){
         var selfRef = this;
-        var percent = (selfRef.audio.currentTime/selfRef.audio.duration) * 100; 
-        
-        selfRef.audio.currentTime = (position/100) * selfRef.audio.duration;
-        selfRef.controls.update({position: percent, currentTime: selfRef.audio.currentTime});
+        selfRef.offset = (position/100) * selfRef.source.buffer.duration;
     }
 
     sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
@@ -181,57 +178,367 @@ var sewi = sewi || {};
 
     sewi.AudioResourceViewer.prototype.updateMediaControl = function(event){
         var selfRef = this;
-//      console.log(selfRef.amplitudeArray[0]);
-        if(selfRef.isPlaying){
-            selfRef.amplitudeArray = new Uint8Array(selfRef.analyserNode.frequencyBinCount);
-            selfRef.analyserNode.getByteTimeDomainData(selfRef.amplitudeArray);
-            var sum = 0;
-            for(var i = 0; i < selfRef.amplitudeArray.length; i++){
-              //  selfRef.amplitudeData.push([new Date(), (selfRef.amplitudeArray[i]/128) - 1]); 
-                sum += (selfRef.amplitudeArray[i]/128); 
+        if(selfRef.source){
+            if(selfRef.isPlaying){
+                var percent = (((Date.now()-selfRef.startTime)/1000 + selfRef.offset) / selfRef.source.buffer.duration)*100;
+                selfRef.controls.update({position : percent, currentTime : ((Date.now()-selfRef.startTime)/1000 + selfRef.offset) });
+                if(percent >= 100){
+                    selfRef.isPlaying = false;
+                    selfRef.offset = 0;
+                    selfRef.source.disconnect(selfRef.gainNode);
+                    selfRef.source.disconnect(selfRef.scriptProcessor);
+                    selfRef.controls.update({position : 0, 
+                                            playing : selfRef.isPlaying});
+                }
             }
-            //var avg = (sum / selfRef.amplitudeArray.length) - 1;
-            selfRef.amplitudeData.push([selfRef.audio.currentTime, (selfRef.amplitudeArray[0]/128) - 1]); 
-            
-            if(selfRef.endTime - selfRef.audio.currentTime < 0.1){
-                selfRef.audio.pause();
-                selfRef.isPlaying = false;
-                selfRef.audio.currentTime = selfRef.startTime;
-            }
-            var percent = (selfRef.audio.currentTime/selfRef.audio.duration) * 100; 
-            selfRef.controls.update({position: percent, currentTime: selfRef.audio.currentTime, playing: !selfRef.isPlaying});
-        }
+       }
     }
 
     sewi.AudioResourceViewer.prototype.playAudio = function(){
         var selfRef = this;
         console.log('audio playing');
-        if(selfRef.playable && !selfRef.isPlaying){
-            selfRef.audio.play();
+        if(selfRef.audioBuffer){
+            selfRef.source = selfRef.audioContext.createBufferSource();	
+            selfRef.source.buffer = selfRef.audioBuffer;
+            selfRef.source.connect(selfRef.gainNode);
+            selfRef.source.connect(selfRef.scriptProcessor);
+            selfRef.source.onended = selfRef.onAudioFinish.bind(this);
+            selfRef.startTime = Date.now();
+            selfRef.source.start(0, selfRef.offset);
             selfRef.isPlaying = true;
-            if(!selfRef.graphUpdateTimer){
-                selfRef.graphUpdateTimer = setInterval(updateTimer.bind(this), 1000); 
-            }
+            selfRef.controls.update({isPlaying: selfRef.isPlaying});
         }
-        selfRef.controls.update({playing : !selfRef.isPlaying});
     }
 
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
         var selfRef = this;
         console.log('audio paused');
-        if(selfRef.playable && selfRef.isPlaying){
-            selfRef.audio.pause();
+        if(selfRef.source){
             selfRef.isPlaying = false;
+            selfRef.offset += (Date.now() - selfRef.startTime) / 1000;
+            selfRef.source.stop(0);
+            selfRef.controls.update({isPlaying: selfRef.isPlaying});
         }
-        selfRef.controls.update({playing : !selfRef.isPlaying});
     }
 
     sewi.AudioResourceViewer.prototype.onAudioFinish = function(event){
         var selfRef = this;
         console.log("Audio ended");
+        if(selfRef.source){
+            selfRef.source.disconnect(selfRef.gainNode);
+            selfRef.source.disconnect(selfRef.scriptProcessor);
+        }
+    }
+})();
+
+
+// AudioAmplitudeGraph Class
+(function(){
+
+    sewi.AudioAmplitudeGraph = function(graphDOM, audioSequence){
+        var selfRef = this;
+        selfRef.graphDOM = graphDOM;
+        selfRef.name=selfRef.graphDOM.attr('title');
+        selfRef.audioSequence = audioSequence;
+
+        setupCanvasVariables.call(this);
+        setupMouseVariables.call(this);
+        setupColorVariables.call(this);
+        setupMiscVariables.call(this);
+
+        createCanvas.call(this);
     }
 
-    sewi.AudioResourceViewer.prototype.resize = function(){
+    function setupCanvasVariables(){
+        var selfRef = this;
+        //Set the canvas height and width
+        selfRef.canvasHeight = selfRef.graphDOM.height();
+        selfRef.canvasWidth = selfRef.graphDOM.width();
+    }
+
+    function setupMouseVariables(){
+        var selfRef = this;
+        // is the mouse inside of the editor (for background coloring)
+        selfRef.mouseInside = false;
+        // state of the mouse button
+        selfRef.mouseDown = false;
+        // is the mouse clicked inside of the selection
+        selfRef.mouseInsideOfSelection = false;
+
+        // is the start or end bar selected
+        selfRef.mouseSelectionOfStart = false;
+        selfRef.mouseSelectionOfEnd = false;
+
+        // current and previous position of the mouse
+        selfRef.mouseX = 0;
+        selfRef.mouseY = 0;
+        selfRef.previousMouseX = 0;
+        selfRef.previousMouseY = 0;
+
+        // position of the selection (if equal, the selection is disabled)
+        selfRef.selectionStart = 0;
+        selfRef.selectionEnd = 0;
+    }
+
+    function setupColorVariables(){
+        var selfRef = this;
+        // colors when the mouse is outside of the editor box
+        selfRef.colorInactiveTop = "#d7e5c7";
+        selfRef.colorInactiveBottom = "#d7e5c7";
+        // colors when the mouse is inside of the editor box
+        selfRef.colorActiveTop = "#e8f6d8";
+        selfRef.colorActiveBottom = "#e8f6d8";
+        // color when the mouse is pressed during inside of the editor box
+        selfRef.colorMouseDownTop = "#d7e5c7";
+        selfRef.colorMouseDownBottom = "#d7e5c7";
+        // color of the selection frame
+        selfRef.colorSelectionStroke = "rgba(255,0,0,0.5)";
+        selfRef.colorSelectionFill = "rgba(255,0,0,0.2)";
+    }
+
+    function setupMiscVariables(){
+        var selfRef = this;
+
+        selfRef.plotTechnique = 0;
+        selfRef.canvasDOM = null;
+        // temporary optimized visualization data    
+        selfRef.visualizationData = [];
+        // handle focus for copy, paste & cut
+        selfRef.hasFocus = true;    
+        // a list of editors which are linked to this one
+        selfRef.linkedEditors = [];
+        // movement
+        selfRef.movePos = 0;
+        selfRef.movementActive = false;
+        // zoom
+        selfRef.viewResolution = 10; // default 10 seconds
+        selfRef.viewPos = 0; // at 0 seconds
+        // playback
+        selfRef.playbackPos = 0;
+    }
     
+    function createCanvas(){
+        var selfRef = this;
+        selfRef.canvasDOM = $('<canvas></canvas>');
+        selfRef.canvasDOM.attr({
+                    'width' : selfRef.canvasWidth,
+                    'height': selfRef.canvasHeight
+                });
+        selfRef.graphDOM.append(selfRef.canvasDOM);
+        
+        // add the mouse listener to the canvas
+  //      this.addEventlistener();
+        
+        zoomToFit.call(this);
+        updateGraph.call(this);
+    }
+
+    function draw(){
+        console.log("draw");
+        var selfRef = this;
+        var canvasContext = selfRef.canvasDOM[0].getContext('2d');
+        
+        // Clear the canvas
+        clearCanvas.call(this, canvasContext);
+        // Draw background
+        drawBackground.call(this, canvasContext);
+        // Draw the wave form
+        drawWaveForm.call(this, canvasContext);
+    }
+
+    function clearCanvas(canvasContext){
+        console.log("clearCanvas");
+        var selfRef = this;
+        canvasContext.clearRect(0, 0, selfRef.canvasDOM.width(), selfRef.canvasDOM.height());
+    }
+
+    function drawBackground(canvasContext){
+        console.log("paintBackground");
+        var selfRef = this;
+        var colorStop1;
+        var colorStop2;
+        
+        var gradient = canvasContext.createLinearGradient(0, 0, 0, selfRef.canvasDOM.height());        
+        
+        if(selfRef.mouseInside){
+            if(selfRef.mouseDown){
+                colorStop1 = selfRef.colorMouseDownTop;
+                colorStop2 = selfRef.colorMouseDownBottom;
+            } else {
+                colorStop1 = selfRef.colorActiveTop;
+                colorStop2 = selfRef.colorActiveBottom;
+            }
+        } else {
+            colorStop1 = selfRef.colorInactiveTop;
+            colorStop2 = selfRef.colorInactiveBottom;
+        }
+
+        gradient.addColorStop(0, colorStop1);
+        gradient.addColorStop(1, colorStop2);
+
+        canvasContext.fillStyle = gradient;
+        canvasContext.fillRect(0, 0, selfRef.canvasDOM.width(), selfRef.canvasDOM.height());
+    }
+   
+    function drawWaveForm(canvasContext){
+        console.log("drawWaveForm");
+        var selfRef = this;
+        var center = selfRef.canvasDOM.height() / 2;
+        var seq = selfRef.audioSequence;
+        var verticalMultiplier = 1.0;
+        var data = seq.channelData;
+        var canvasWidth = selfRef.canvasDOM.width();
+        //canvasContext.setLineWidth(1);
+        canvasContext.strokeStyle = "rgba(0, 0,0,0.5)";                
+        canvasContext.beginPath();
+        canvasContext.moveTo(0, center);
+
+        // choose the drawing style of the waveform
+        if (selfRef.plotTechnique == 1)
+        {
+            // data per pixel
+            for (var i = 0; i < canvasWidth; ++i)
+            {
+                var peakAtFrame = selfRef.visualizationData[i];
+                canvasContext.moveTo(i + 0.5, center + peakAtFrame.min * verticalMultiplier * -center);
+                canvasContext.lineTo(i + 0.5, (center + peakAtFrame.max * verticalMultiplier * -center) + 1.0);
+            }
+
+        }
+        else if (selfRef.plotTechnique == 2)
+        {
+            var s = 1;
+            var len = selfRef.visualizationData.length;
+            for(var i = 0; i < len; ++i)
+            {
+                var x = selfRef.visualizationData[i].x;
+                var y = center + selfRef.visualizationData[i].y * verticalMultiplier * - center;                   
+
+                canvasContext.lineTo(x, y);
+
+                // draw edges around each data point
+                canvasContext.moveTo(x + s, y - s);
+                canvasContext.lineTo(x + s, y + s);
+                canvasContext.moveTo(x - s, y - s);
+                canvasContext.lineTo(x - s, y + s);
+                canvasContext.moveTo(x - s, y + s);
+                canvasContext.lineTo(x + s, y + s);
+                canvasContext.moveTo(x - s, y - s);
+                canvasContext.lineTo(x + s, y - s);
+
+                canvasContext.moveTo(x, y);
+            }
+        }
+
+        canvasContext.stroke(); 
+
+        // Draw the horizontal line at the center
+        //canvasContext.setLineWidth(1.0);
+        canvasContext.strokeStyle = "rgba(0, 0, 0, 0.5)";                
+        canvasContext.beginPath();
+        canvasContext.moveTo(0, center);
+        canvasContext.lineTo(selfRef.canvasDOM.width(), center);
+        canvasContext.stroke(); 
+   }
+
+   function updateGraph(){
+        var selfRef = this;
+        getDataInResolution.call(selfRef);                       
+        draw.call(selfRef);
+    }
+
+    function getDataInResolution(){
+        var selfRef = this;
+
+        //Reset the data
+        selfRef.visualizationData = [];
+        
+        var offset = selfRef.viewPos;
+        var resolution = selfRef.viewResolution;
+
+        var sampleRate = selfRef.audioSequence.sampleRate;
+        var channelData = selfRef.audioSequence.channelData;
+        var offsetR = sampleRate * offset;
+    
+        // get the offset and length in samples
+        var from = Math.round(offset * sampleRate);
+        var len = Math.round(resolution * sampleRate);
+
+        // Store this as local variable to improve performance
+        var canvasWidth = selfRef.canvasDOM.width();
+
+        // when the spot is to large
+        if (len > canvasWidth){
+            var dataPerPixel = len / canvasWidth;
+            
+            for (var i = 0; i < canvasWidth; ++i){
+                var dataFrom = i * dataPerPixel + offsetR;
+                var dataTo = (i + 1) * dataPerPixel + offsetR + 1; 
+
+                if (dataFrom >= 0 && dataFrom < channelData.length &&
+                        dataTo >= 0 && dataTo < channelData.length){
+                    var peakAtFrame = getPeakInFrame.call(selfRef, dataFrom, dataTo, channelData);
+                    selfRef.visualizationData.push(peakAtFrame);
+                } else {
+                    selfRef.visualizationData.push({ min : 0.0, max : 0.0});
+                }
+            }
+            selfRef.plotTechnique = 1;
+        } else {
+            var pixelPerData = this.canvasReference.width / len;
+            var x = 0;
+
+            for (var i = from; i <= from + len; ++i){
+                // if outside of the data range
+                if (i < 0 || i >= data.length)
+                {
+                    this.visualizationData.push({ y : 0.0, x : x });
+                } else {
+                    this.visualizationData.push({y : data[i], x : x});
+                }
+                x += pixelPerData;
+            }
+            selfRef.plotTechnique = 2;
+        }
+    }
+
+    function getPeakInFrame(dataFrom, dataTo, channelData){
+        var selfRef = this;
+        var fromRounded = Math.round(dataFrom);
+        var toRounded = Math.round(dataTo);
+        var min = 1.0;
+        var max = -1.0;
+
+        for (var i = fromRounded; i < toRounded; ++i){
+            var sample = channelData[i];
+
+            max = (sample > max) ? sample : max;
+            min = (sample < min) ? sample : min;
+        }
+        return { min : min, max : max };
+    }
+
+    function zoomToFit(){
+        var selfRef = this;
+        selfRef.viewPos = 0;
+        selfRef.viewResolution = selfRef.audioSequence.channelData.length / selfRef.audioSequence.sampleRate;
+    }
+
+    function zoomToSelection(){
+        var selfRef = this;
+        selfRef.viewPos = selfRef.selectionStart / selfRef.audioSequence.sampleRate;
+        selfRef.viewResolution = (selfRef.selectionEnd - selfRef.selectionStart) / selfRef.audioSequence.sampleRate;
+    }
+
+})();
+
+//Audio Sequence Class
+(function(){
+    sewi.AudioSequence = function(sampleRate, channelData){
+        var selfRef = this;
+        //selfRef.name = name;
+        selfRef.sampleRate = sampleRate;
+        selfRef.channelData = channelData;
+
     }
 })();
