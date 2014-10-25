@@ -1,4 +1,18 @@
 /* Put your CSS here */
+html, body {
+    min-height: 100%;
+}
+
+body {
+    background: #FFFFFF; /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(211,211,211,1) 0%, rgba(255,255,255,1) 60%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(211,211,211,1)), color-stop(60%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d3d3', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
 
 #sewiContainer {
   min-height: 600px;
@@ -8,6 +22,28 @@
 #beiView, #mainView, #resView {
   height: 100%;
   padding: 0;
+  overflow: hidden;
+}
+
+#beiView, #mainView, #resView {
+  height: 100%;
+  padding: 0;
+  border: 1px #999 solid;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+#mainView,
+#beiView {
+    border-right: none;
+}
+
+#beiView {
+    border-radius: 5px 0 0 5px;
+}
+
+#resView {
+    border-radius: 0 5px 5px 0;
 }
 
 #alerts {
@@ -29,6 +65,7 @@
   margin: 0px;
   padding: 0px;
   min-height: 1px;
+  border: none!important;
 }
 
 .btn-link {
