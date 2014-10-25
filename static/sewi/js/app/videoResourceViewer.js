@@ -1,7 +1,7 @@
 var sewi = sewi || {};
 
 (function() {
-    sewi.MediaControls = function() {
+    sewi.MediaControls = function(options) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.MediaControls))
             return new sewi.MediaControls();
@@ -10,17 +10,28 @@ var sewi = sewi || {};
 
         var selfRef = this;
 
-        selfRef.numOfBufferBars = 0;
+        var defaults = {
+            isSeekHidden: false,
+            extraButtons: {}
+        };
 
-        initDOM.call(selfRef);
-        initEvents.call(selfRef);
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(selfRef, _.pick(options, [
+            'isSeekHidden',
+            'extraButtons'
+        ]));
 
         _.assign(selfRef, {
             isPlaying: false,
             isMuted: false,
             progress: 0.0,
-            duration: 0.0
+            duration: 0.0,
+            numOfBufferBars: 0
         });
+
+        initDOM.call(selfRef);
+        initEvents.call(selfRef);
     }
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
