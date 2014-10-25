@@ -76,9 +76,12 @@ var sewi = sewi || {};
             selfRef.basicInfo = new sewi.BasicEncounterInfoViewer();
             var element = selfRef.basicInfo.getDOM();
 
+            element.on('BEILoaded', basicInfoLoaded.bind(selfRef));
             element.on('Error', basicInfoCrashed.bind(selfRef));
 
             selfRef.basicInfoView.append(element);
+
+            selfRef.basicInfo.load();
         }
 
         var minimizeElement = $('<div class="minimize-button">&lt;&lt;</div>');
@@ -104,14 +107,20 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.ResourceGallery)) {
             selfRef.resGallery = new sewi.ResourceGallery();
             var element = selfRef.resGallery.getDOM();
+            element.on('resourceClick', galleryOpenedResource.bind(selfRef));
             element.on('Error', resGalleryCrashed.bind(selfRef));
 
             selfRef.resGalleryView.append(element);
+
+            selfRef.resGallery.load();
         }
     }
 
     function openResource(galleryElement) {
         var selfRef = this;
+
+        selfRef.isResourceViewerHidden = false;
+        updateViewSizes.call(selfRef);
 
         selfRef.tabs.addObjectToNewTab(galleryElement);
     }
@@ -232,6 +241,12 @@ var sewi = sewi || {};
 
         selfRef.isResourceViewerHidden = true;
         updateViewSizes.call(selfRef);
+    }
+
+    function galleryOpenedResource(event, resourceDOM) {
+        var selfRef = this;
+
+        openResource.call(selfRef, resourceDOM);
     }
 
     // Configurator public methods
