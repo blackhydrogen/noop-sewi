@@ -47,13 +47,13 @@ var sewi = sewi || {};
         var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
         var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
-        var playButtonPanel = innerPanel.clone()
+        var leftButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
         selfRef.durationTextPanel = innerPanel.clone()
                                            .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
                                            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
-        var muteButtonPanel = innerPanel.clone()
-                                        .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
+        var rightButtonPanel = innerPanel.clone()
+                                         .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
                                         .addClass('center');
         var seekBarElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_DOM);
@@ -71,8 +71,8 @@ var sewi = sewi || {};
                                                       selfRef.muteButton,
                                                       sewi.constants.MEDIA_CONTROLS_VOLUME_POPUP_CLASS);
 
-        playButtonPanel.append(selfRef.playPauseButton);
-        muteButtonPanel.append(volumeControl);
+        leftButtonPanel.append(selfRef.playPauseButton);
+        rightButtonPanel.append(volumeControl);
         seekSliderPanel.append(seekBarElement);
 
         seekBarElement.append(seekBarBackgroundElement)
@@ -86,11 +86,19 @@ var sewi = sewi || {};
             durationMins: '--'
         }));
 
-        selfRef.mainDOMElement.append(playButtonPanel)
-                              .append(muteButtonPanel)
+        // Add any extra buttons to the left and right, if any.
+        if (selfRef.extraButtons) {
+            if (selfRef.extraButtons.left) {
+                leftButtonPanel.append(selfRef.extraButtons.left);
+            }
+            if (selfRef.extraButtons.right) {
+                rightButtonPanel.prepend(selfRef.extraButtons.right);
+            }
+        }
+
+        selfRef.mainDOMElement.append(leftButtonPanel)
+                              .append(rightButtonPanel)
                               .append(selfRef.durationTextPanel);
-
-
 
         if (!selfRef.isSeekBarHidden) {
             selfRef.mainDOMElement.append(seekSliderPanel);
