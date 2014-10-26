@@ -1,4 +1,18 @@
 /* Put your CSS here */
+html, body {
+    min-height: 100%;
+}
+
+body {
+    background: #FFFFFF; /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(211,211,211,1) 0%, rgba(255,255,255,1) 60%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(211,211,211,1)), color-stop(60%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(211,211,211,1) 0%,rgba(255,255,255,1) 60%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d3d3', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
 
 #sewiContainer {
   min-height: 600px;
@@ -8,6 +22,40 @@
 #beiView, #mainView, #resView {
   height: 100%;
   padding: 0;
+  overflow: hidden;
+}
+
+#beiView, #mainView, #resView {
+  height: 100%;
+  padding: 0;
+  border: 1px #999 solid;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+#mainView,
+#beiView {
+    border-right: none;
+}
+
+#beiView {
+    border-radius: 5px 0 0 5px;
+}
+
+#resView {
+    border-radius: 0 5px 5px 0;
+}
+
+#alerts {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    margin-left: -200px;
+    width: 400px;
+}
+
+#alerts.active {
+    top: 0px;
 }
 
 .col-sm-0 {
@@ -17,6 +65,18 @@
   margin: 0px;
   padding: 0px;
   min-height: 1px;
+  border: none!important;
+}
+
+.btn-link {
+    padding: 0;
+    border: 0;
+    margin: 0 2px;
+}
+
+.btn-link:focus,
+.btn-link:active:focus {
+    outline: 0;
 }
 
 /* Any 'animated' elements will have a smooth transition */
@@ -44,22 +104,187 @@ div.minimize-button {
 
 .resource-viewer .top-panel {
     position: absolute;
-    top: -40px;
-    left: 0;
-    height: 40px;
-    width: 100%;
+    top: -30px;
+    right: 0;
+    height: 30px;
     background: rgba(0, 0, 0, 0.2);
+    opacity: 0.2;
 }
 
 .resource-viewer:hover .top-panel {
     top: 0;
 }
 
-.resource-viewer .top-panel>button,
-.resource-viewer .top-panel>a {
+.resource-viewer .top-panel:hover {
+    opacity: 1;
+}
+
+.resource-viewer .btn-group {
     float: right;
-    height: 40px;
-    width: 40px;
+}
+
+.resource-viewer .top-panel button,
+.resource-viewer .top-panel a {
+    height: 30px;
+    width: 30px;
+    padding: 5px 8px;
+}
+
+.error-screen{
+    position: absolute;
+    background-color: #111;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+.error-screen>.retry {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    color: white;
+    text-align: center;
+}
+.error-screen>.error-text{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    color: white;
+    text-align: center;
+}
+
+.resource-viewer .progress {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: 50%;
+}
+
+.resource-viewer .progress .progress-bar {
+    transition: width 200ms ease-out 0s;
+}
+
+.resource-viewer .progress .progress-bar-text{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+/* Range input styles */
+
+input[type=range] {
+  display: block;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type=range]:focus,
+input[type=range]:hover,
+input[type=range]:active {
+    background: initial;
+    box-shadow: initial;
+    border-color: initial;
+    box-shadow: initial;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 6px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+input[type="range"]::-moz-range-track {
+    height: 6px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+input[type="range"]::-ms-track {
+    height: 6px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.5);
+    color: transparent; /* don't drawn vertical reference line */
+}
+
+input[type="range"]::-ms-fill-lower,
+input[type="range"]::-ms-fill-upper {
+  background: transparent;
+}
+
+input[type="range"]::-ms-tooltip {
+  display: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: -7px;
+}
+
+input[type=range]::-ms-thumb {
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: 0;
+}
+
+input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: -7px;
+}
+
+/* Vertical range input styles */
+
+.vertical-slider-container {
+  position: relative;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  margin: 0px;
+}
+
+.vertical-slider-popup {
+  width: 30px;
+  border-radius: 5px;
+  background: white;
+  overflow: hidden;
+  display: block;
+  height: 0px;
+  padding: 0;
+  margin-top: 0px;
+  transition: margin-top 0.2s linear,height 0.2s linear,padding 0.2s linear;
+}
+
+.vertical-slider-container:hover .vertical-slider-popup,
+.vertical-slider-popup.active {
+  height: 120px;
+  margin-top: -120px;
+  padding: 10px 0;
+}
+
+.vertical-slider-popup>input[type=range] {
+  transform: translate(-70px, 0) rotate(270deg);
+  width: 100px;
+  height: 30px;
+  transform-origin: 85px 50%;
+}
+
+.vertical-slider-popup>input[type=range]:focus {
+  outline: none;
 }
 
 /* Hide elements in full screen with 'fullscreen-hidden' class */
