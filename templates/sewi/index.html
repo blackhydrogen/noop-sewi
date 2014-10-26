@@ -8,9 +8,11 @@
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/jquery-ui-1.10.3.custom.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/videoResourceViewer.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/imageResourceViewer.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/audioResourceViewer.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/tab.css" %}" /> 
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/tab.css" %}" />
-    {# JavaScript libraries #}
+	{# JavaScript libraries #}
     <script type="text/javascript" src="{% static "sewi/js/lib/lodash.min.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/lib/jquery-1.10.2.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/lib/bootstrap.min.js" %}"></script>
@@ -21,6 +23,8 @@
     <script type="text/javascript" src="{% static "sewi/js/app/configuratorElement.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/app/tab.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/app/videoResourceViewer.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/imageResourceViewer.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/audioResourceViewer.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/app/configurator.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/app/main.js" %}"></script>
   </head>
@@ -29,16 +33,17 @@
       <div id="titleView" class="row">
 
       </div>
-      <div id="sewiContainer" class="row">
-        <div id="beiView" class="col-sm-3 animated">
-		</div>
-		<div id="mainView" class="col-sm-8 animated">
-		</div>
-		<div id="resView" class="col-sm-1 animated">
-		</div>
-	  </div>
-      <div id="alerts" class="alert alert-danger animated"</div>
-	</div>
+	    <div id="sewiContainer" class="row">
+            <div id="beiView" class="col-sm-3 animated">
+            </div>
+            <div id="mainView" class="col-sm-8 animated">
+            </div>
+            <div id="resView" class="col-sm-1 animated">
+            </div>
+         </div>
+        <div id="alerts" class="alert alert-danger animated"</div>
+         
+    </div>
 <script>
 </script>
 </body>
