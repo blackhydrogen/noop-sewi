@@ -1,9 +1,6 @@
 var sewi = sewi || {};
 
 (function(){
-    $(window).resize(function(){
-        console.log("window resized");
-    });
     // Tab Panel class
     sewi.TabPanel = function(resourceViewer, tabObject, state){
         var selfRef = this;
@@ -104,14 +101,15 @@ var sewi = sewi || {};
                 if(_.size(selfRef.tab.panelList) == 3){
                     if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT]){
                     selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
-                } else if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT]) {
-                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, 'panel-right', 'panel-top-right');
+                    } else if(selfRef.tab.panelList[sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT]) {
+                        selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, 'panel-right', 'panel-top-right');
+                    }
+                } else {
+                    selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
                 }
-            } else {
-                selfRef.removePanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 'panel-bottom', 'panel-bottom-left');
+                selfRef.removeSelf();
             }
-            selfRef.removeSelf();       
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
+            selfRef.tab.resize();
         });
 
         $(DOMObject).on('FullscreenToggled', function(){
@@ -466,6 +464,7 @@ var sewi = sewi || {};
                         dropArea.removeClass('panel-indicator-bottom-right');
                     }
                 }
+                selfRef.tab.resize();
             },
         });
     }
@@ -511,15 +510,15 @@ var sewi = sewi || {};
         }
         return DOM;
     }
-        
-        sewi.TabPanel.prototype.resize = function(){
-            var selfRef = this;
-            selfRef.resourceViewer.resize();
-        }
 
-        sewi.TabPanel.prototype.getDOM = function(){
-            return this.panel;
-        }
+    sewi.TabPanel.prototype.resize = function(){
+        var selfRef = this;
+        selfRef.resourceViewer.resize();
+    }
+
+    sewi.TabPanel.prototype.getDOM = function(){
+        return this.panel;
+    }
 
     // Tab class
     sewi.Tab = function(tabContainer, id, name, hasDropArea){
@@ -583,26 +582,26 @@ var sewi = sewi || {};
         }
     }
 
-        sewi.Tab.prototype.append = function(DOMObject, state){
-            var selfRef = this;
-            var id = DOMObject.data('resId');
-            var type = DOMObject.data('resType');
-            var obj;
+    sewi.Tab.prototype.append = function(DOMObject, state){
+        var selfRef = this;
+        var id = DOMObject.data('resId');
+        var type = DOMObject.data('resType');
+        var obj;
         switch(type){
-                    case 'image':
-                        obj = new sewi.ImageResourceViewer();
-                        break;
-                    case 'video':
-                        obj = new sewi.VideoResourceViewer({id:id});
-                        break;
-                    case 'audio':
-                        //obj = new sewi.AudioResourceViewer();
-                        break;
-                    case 'chart':
-                        //obj = new sewi.ChartResourceViewer();
-                        break;
-            }
-            selfRef.setPanel(obj, state);
+            case 'image':
+                obj = new sewi.ImageResourceViewer();
+                break;
+            case 'video':
+                obj = new sewi.VideoResourceViewer({id:id});
+                break;
+            case 'audio':
+                obj = new sewi.AudioResourceViewer({id:id});
+                break;
+            case 'chart':
+                //obj = new sewi.ChartResourceViewer();
+                break;
+        }
+        selfRef.setPanel(obj, state);
     }
 
     sewi.Tab.prototype.setPanel = function(ResourceViewer, state){
@@ -664,6 +663,16 @@ var sewi = sewi || {};
             activeClass: 'panel-drop-area-visible',
             hoverClass: selfRef.DROP_AREA_HOVER_STR
         });
+    }
+
+    sewi.Tab.prototype.resize = function(){
+        var selfRef = this;
+        var panelList = selfRef.panelList;
+        for(var panel in panelList){
+            if(panelList.hasOwnProperty(panel)){
+                panel.resize();
+            }
+        } 
     }
 
     // tab container class
@@ -739,12 +748,7 @@ var sewi = sewi || {};
         var selfRef = this;
         var tabsArrLength = selfRef.tabs.length; 
         for(var i = 0; i < tabsArrLength; i++){ 
-            var panelList = selfRef.tabs[i].panelList;
-            for(var panel in panelList){
-                if(panelList.hasOwnProperty(panel)){
-                    panel.resize();
-                }
-            } 
+            selfRef.tabs[i].resize();
         }
     }
 })();
