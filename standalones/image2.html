@@ -1,4 +1,5 @@
-<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="bootstrap-select.min.css">
 <style>
 	/* Begin Bootstrap over-writes */
 	.image-resource-control-panel input,
@@ -31,6 +32,16 @@
 		position: relative;
 		overflow: hidden;
 	}
+	.image-resource-main-container .image-control-panel {
+		position: absolute;
+		bottom: initial;
+		top: 100%;
+	}
+	.image-resource-main-container .image-control-panel {
+		position: absolute;
+		bottom: 0;
+		top: initial;
+	}
 	.image-resource-image-container {
 		width: 100%;
 		height: 100%;
@@ -42,47 +53,190 @@
 		position: absolute;
 		height: auto;
 	}
-	.image-resource-control-panel {
-		color: white;
-		width: 100%;
-		min-height: 50px;
-		max-height: 150px;
-		background-color: rgba(0, 0, 0, 0.8);
-		position: absolute;
-		overflow: auto;
-		bottom: 0px;
-		left: 0px;
-	}
-	.image-resource-control {
-		margin-right: 10px;
-		float: left;
-		text-align: center;
+
+	.image-control-panel {
+	    width: 100%;
+	    background-color: #eee;
+	    height: 30px;
 	}
 
-	.image-resource-control-group {
-		margin-right: 10px;
-		float: left;
-		text-align: left;
-	}
+.image-control-panel .btn {
+    height: 30px;
+    width: 30px;
+    padding: 4px 7px;
+}
 
-	.image-resource-control-group .image-resource-control {
-		margin-right: initial;
-		float: initial;
-		text-align: initial;
-	}
-	.image-resource-show-hide-button {
-		position: absolute;
-		bottom: 0px;
-		right: 0px;
-		width: 100px;
-		opacity: 0.3;
-	}
-	.image-resource-zoom {
-		width: 45px;
-	}
-	.image-resource-show-hide-button:hover {
-		opacity: 1;
-	}
+.image-control-panel>div.left {
+    float: left;
+    margin-right: 10px;
+}
+
+.image-control-panel>div.right {
+    float: right;
+    margin-left: 10px;
+}
+
+.image-control-panel>div.right.long {
+    width: 100px;
+}
+
+.image-control-panel button.contrast-plus-button {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.image-control-panel .btn.contrast-menu-button.option-selected {
+  border-radius: 4px 0 0 4px;
+}
+
+.image-control-panel button.contrast-plus-button {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.image-control-panel button.recolor-button {
+  width: 40px;
+}
+
+.image-control-panel .btn-group.bootstrap-select button {
+  width: 100%;
+}
+
+.test-container {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.resource-viewer .top-panel {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	background: rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+.resource-viewer .top-panel>button {
+	float: right;
+}
+
+/* Range input styles */
+
+input[type=range] {
+  display: block;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type=range]:focus,
+input[type=range]:hover,
+input[type=range]:active {
+    background: initial;
+    box-shadow: initial;
+    border-color: initial;
+    box-shadow: initial;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 6px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+input[type="range"]::-moz-range-track {
+    height: 6px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+input[type="range"]::-ms-track {
+    height: 6px;
+    border: none;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.5);
+    color: transparent; /* don't drawn vertical reference line */
+}
+
+input[type="range"]::-ms-fill-lower,
+input[type="range"]::-ms-fill-upper {
+  background: transparent;
+}
+
+input[type="range"]::-ms-tooltip {
+  display: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: -7px;
+}
+
+input[type=range]::-ms-thumb {
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: 0;
+}
+
+input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: #fff;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    margin-top: -7px;
+}
+
+/* Vertical range input styles */
+
+.vertical-slider-container {
+  position: relative;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  margin: 0px;
+}
+
+.vertical-slider-popup {
+  width: 30px;
+  border-radius: 5px;
+  background: white;
+  overflow: hidden;
+  display: block;
+  height: 0px;
+  padding: 0;
+  margin-top: 0px;
+  transition: margin-top 0.2s linear,height 0.2s linear,padding 0.2s linear;
+}
+
+.vertical-slider-container:hover .vertical-slider-popup,
+.vertical-slider-popup.active {
+  height: 120px;
+  margin-top: -120px;
+  padding: 10px 0;
+}
+
+.vertical-slider-popup>input[type=range] {
+  transform: translate(-70px, 0) rotate(270deg);
+  width: 100px;
+  height: 30px;
+  transform-origin: 85px 50%;
+}
+
+.vertical-slider-popup>input[type=range]:focus {
+  outline: none;
+}
+
 </style>
 <style type="text/css">
 	/* Don't copy these */
@@ -101,6 +255,7 @@
 <script src="jquery-2.1.1.min.js"></script>
 <!--<script src="qunit-1.15.0.js"></script><!- -  -->
 <script src="bootstrap.min.js"></script>
+<script src="bootstrap-select.min.js"></script>
 <script src="lodash.min.js"></script>
 <script src="common.js"></script>
 <script src="configuratorElement.js"></script>
@@ -108,6 +263,299 @@
 
 <script type="text/javascript">
 var sewi = sewi || {};
+
+(function() {
+    sewi.ImageControls = function(options) {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.ImageControls))
+            return new sewi.ImageControls();
+
+        sewi.ConfiguratorElement.call(this);
+
+        var defaults = {
+            isSeekHidden: false,
+            isDurationHidden: false,
+            extraButtons: {}
+        };
+
+        options = options || {};
+        _.defaults(options, defaults);
+        _.assign(this, _.pick(options, [
+
+        ]));
+
+        _.assign(this, {
+
+        });
+
+        initDOM.call(this);
+        initEvents.call(this);
+    };
+
+    sewi.inherits(sewi.ImageControls, sewi.ConfiguratorElement);
+
+    // ImageControls private methods begin
+    function initDOM() {
+        this.mainDOMElement.addClass('image-control-panel');
+
+        var button = $('<button class="btn btn-default">');
+        var toggleButtonLabel = $('<label class="btn btn-default">');
+        var toggleButton = $('<input type="checkbox">');
+        var slider = $('<input type="range" min="0" max="2" value="1" step="0.1" />');
+        var innerPanel = $('<div>');
+
+        var leftButtonPanel = innerPanel.clone()
+                                        .addClass('left');
+
+        var rightButtonPanel = innerPanel.clone()
+                                         .addClass('right');
+
+        var filterButtonGroup = $('<div class="filter-button-group" data-toggle="buttons">');
+
+        this.brightnessButton = button.clone()
+                                         .addClass('brightness-button')
+                                         .attr('title', 'Brightness')
+                                         .append('<span class="glyphicon glyphicon-cog">');
+        this.contrastButton = button.clone()
+                                       .addClass('contrast-button')
+                                       .attr('title', 'Contrast')
+                                       .append('<span class="glyphicon glyphicon-adjust">');
+        this.contrastPlusButton = button.clone()
+                                       .addClass('contrast-plus-button')
+                                       .attr('title', 'Contrast+')
+                                       .append('<span class="glyphicon glyphicon-adjust">');
+        this.zoomButton = button.clone()
+                                   .addClass('zoom-button')
+                                   .attr('title', 'Reset Zoom')
+                                   .append('<span class="glyphicon glyphicon-zoom-in">');
+        this.zoomToFitButton = button.clone()
+                                   .addClass('fit-button')
+                                   .attr('title', 'Zoom to fit')
+                                   .append('<span class="glyphicon glyphicon-search">');
+
+        this.brightnessSlider = slider.clone()
+                                         .addClass('brightness-slider');
+        this.contrastSlider = slider.clone()
+                                       .addClass('contrast-slider');
+        this.contrastPlusSlider = slider.clone()
+                                       .addClass('contrast-plus-slider')
+                                       .attr({
+            max: "100",
+            value: "0"
+        });
+        this.zoomSlider = slider.clone()
+                                   .addClass('zoom-slider')
+                                   .attr({
+            max: "200",
+            min: "20",
+            value: "100",
+            step: "1"
+        });
+
+        var recolorFilterGroup = $('<optgroup label="Colorize" data-max-options="1">')
+                                  .append('<option value="1.1">Grayscale</option>')
+                                  .append('<option value="1.2">Flame</option>')
+                                  .append('<option value="1.3">Spectrum</option>')
+                                  .append('<option value="1.4">HSV</option>');
+
+        var advancedFilterGroup = $('<optgroup label="Advanced Filters">')
+                                  .append('<option value="2.1">Invert</option>')
+                                  .append('<option value="2.2">Difference</option>')
+                                  .append('<option value="2.3">Auto Contrast</option>');
+
+        this.filterMenu = $('<select class="dropup" multiple role="menu" title="Filters" data-style="btn-default filter-menu-button">')
+               .append(recolorFilterGroup)
+               .append(advancedFilterGroup);
+
+        this.contrastPlusMenu = $('<select class="dropup" multiple role="menu" title="Contrast+" data-style="btn-default contrast-menu-button" data-max-options="1">')
+               .append('<option value="1">Shadows</option>')
+               .append('<option value="2">Midtones</option>')
+               .append('<option value="3">Highlights</option>');
+
+        var brightnessControl = sewi.createVerticalSlider(this.brightnessSlider, this.brightnessButton);
+        var contrastControl = sewi.createVerticalSlider(this.contrastSlider, this.contrastButton);
+        this.contrastPlusControl = sewi.createVerticalSlider(this.contrastPlusSlider, this.contrastPlusButton).addClass('hidden');
+        var zoomControl = sewi.createVerticalSlider(this.zoomSlider, this.zoomButton);
+
+        leftButtonPanel.append(brightnessControl)
+                       .append(contrastControl)
+                       .append(this.filterMenu)
+                       .append(this.contrastPlusMenu)
+                       .append(this.contrastPlusControl);
+
+        rightButtonPanel.append(this.zoomToFitButton)
+                        .append(zoomControl);
+
+        this.mainDOMElement.append(leftButtonPanel)
+                              .append(rightButtonPanel);
+
+        this.filterMenu.selectpicker({
+          countSelectedText: 'Filters',
+          selectedTextFormat: 'count > 0',
+          width: '75px',
+		  dropupAuto: false,
+        });
+
+        this.contrastPlusMenu.selectpicker({
+          countSelectedText: 'Contrast+',
+          selectedTextFormat: 'count > 0',
+          width: '95px',
+		  dropupAuto: false,
+        });
+
+        this.mainDOMElement.find('button').tooltip();
+    }
+
+    function initEvents() {
+		this.brightnessSlider.on('input', brightnessChanged.bind(this));
+		this.contrastSlider.on('input', contrastChanged.bind(this));
+        this.brightnessButton.click(brightnessReset.bind(this));
+        this.contrastButton.click(contrastReset.bind(this));
+		this.zoomSlider.on('input', zoomLevelChanged.bind(this));
+        this.zoomButton.click(zoomLevelReset.bind(this));
+		this.zoomToFitButton.click(zoomToFit.bind(this));
+        this.filterMenu.change(filtersChanged.bind(this));
+        this.contrastPlusMenu.change(filtersChanged.bind(this));
+		this.contrastPlusMenu.change(contrastPlusMenuSelectionChanged.bind(this));
+		this.contrastPlusSlider.change(contrastPlusLevelChanged.bind(this));
+    }
+
+	function brightnessChanged() {
+		this.trigger('BrightnessChanged', this.brightnessSlider.val());
+	}
+
+	function contrastChanged() {
+		this.trigger('ContrastChanged', this.contrastSlider.val());
+	}
+
+	function brightnessReset() {
+		this.brightnessSlider.val(1);
+		brightnessChanged.call(this);
+	}
+
+	function contrastReset() {
+		this.contrastSlider.val(1);
+		constrastChanged.call(this);
+	}
+
+	function zoomLevelChanged() {
+		this.trigger('ZoomChanged', this.zoomSlider.val());
+	}
+
+	function zoomLevelReset() {
+		this.zoomSlider.val(100);
+		zoomLevelChanged.call(this);
+	}
+
+	function zoomToFit() {
+		this.trigger('ZoomToFitRequested');
+	}
+
+	function filtersChanged() {
+		var filterValues = this.filterMenu.val();
+		var contrastPlusValues = this.contrastPlusMenu.val();
+
+		var colorValue = 0;
+		var advancedFilters = [];
+		var contrastPlusValue = 0;
+
+		if (filterValues != null) {
+			for (var i = 0; i < filterValues.length; i++) {
+				var value = filterValues[i].split('.');
+
+				var group = parseInt(value[0]);
+				var filter = parseInt(value[1]);
+
+				if (group == 1) {
+					colorValue = filter;
+				} else {
+					advancedFilters.push(filter);
+				}
+			}
+		}
+
+		// Ensure at least grayscale is selected when Auto Contrast is used
+		if (_.contains(advancedFilters, 3) && colorValue == 0) {
+			filterValues.unshift('1.1');
+			this.filterMenu.selectpicker('val', filterValues);
+			colorValue = 1;
+		}
+
+		var filterSettings = {};
+
+		switch (colorValue) {
+			case 1:
+				filterSettings.colorFilter = 'grayscale';
+				break;
+			case 2:
+				filterSettings.colorFilter = 'fire';
+				break;
+			case 3:
+				filterSettings.colorFilter = 'spectrum';
+				break;
+			case 4:
+				filterSettings.colorFilter = 'hsv';
+				break;
+			default:
+				filterSettings.colorFilter = 'none';
+		}
+
+		filterSettings.invert = _.contains(advancedFilters, 1);
+		filterSettings.difference = _.contains(advancedFilters, 2);
+		filterSettings.autoContrast = _.contains(advancedFilters, 3);
+
+		if (contrastPlusValues != null) {
+			contrastPlusValue = parseInt(contrastPlusValues[0]);
+		}
+		switch (contrastPlusValue) {
+			case 1:
+				filterSettings.contrastLevelMode = 'shadows';
+				break;
+			case 2:
+				filterSettings.contrastLevelMode = 'midtones';
+				break;
+			case 3:
+				filterSettings.contrastLevelMode = 'highlights';
+				break;
+			default:
+				filterSettings.contrastLevelMode = 'none';
+		}
+
+		this.trigger('FiltersChanged', filterSettings);
+	}
+
+	function contrastPlusMenuSelectionChanged() {
+		var value = this.contrastPlusMenu.val();
+          if (value != null) {
+            this.contrastPlusControl.removeClass('hidden');
+            this.mainDOMElement.find('.contrast-menu-button')
+                			   .addClass('option-selected');
+          } else {
+            this.mainDOMElement.find('.contrast-menu-button')
+                   			   .removeClass('option-selected');
+            this.contrastPlusControl.addClass('hidden');
+          }
+	}
+
+	function contrastPlusLevelChanged() {
+		this.trigger('ContrastPlusLevelChanged', this.contrastPlusSlider.val());
+	}
+
+	sewi.ImageControls.prototype.update = function(options) {
+		options = options || {};
+
+		if (!_.isUndefined(options.zoomSettings)) {
+			this.zoomSlider.attr({
+				max: options.zoomSettings.max,
+				min: options.zoomSettings.min,
+			});
+		}
+
+		if (!_.isUndefined(options.zoomLevel)) {
+			this.zoomSlider.val(options.zoomLevel);
+		}
+	}
+})();
 
 sewi.ImageResourceViewer = function() {
 	sewi.ResourceViewer.call(this);
@@ -134,93 +582,12 @@ sewi.ImageResourceViewer = function() {
 		.appendTo(mainContainer);
 			var imageElement = $('<img src="original.png" class="image-resource-image">')
 			.appendTo(imageContainer);
-		var controlsContainer = $('<div class="image-resource-control-panel animated"></div>')
-		.appendTo(mainContainer);
-			var controlGroup1 = $('<div class="image-resource-control-group"></div>')
-			.appendTo(controlsContainer);
-				var brightnessControlContainer = $('<span class="image-resource-control"></span>')
-				.appendTo(controlGroup1)
-					var brightnessControlLabel = $('<label>Brightness</label>')
-					.appendTo(brightnessControlContainer);
-						var brightnessControl = $('<input type="range" class="image-resource-brightness" min="0" max="2.5" step="0.1">')
-						.appendTo(brightnessControlLabel);
-				controlGroup1.append($("<br>"));
-				var contrastControlContainer = $('<span class="image-resource-control"></span>')
-				.appendTo(controlGroup1)
-					var contrastControlLabel = $('<label>Contrast</label>')
-					.appendTo(contrastControlContainer);
-						var contrastControl = $('<input type="range" class="image-resource-contrast" min="0" max="2" step="0.1">')
-						.appendTo(contrastControlLabel);
-			var controlGroup2 = $('<div class="image-resource-control-group"></div>')
-			.appendTo(controlsContainer);
-				var grayscaleControlContainer = $('<span class="image-resource-control"></span>')
-				.appendTo(controlGroup2)
-					var grayscaleControlLabel = $('<label>Grayscale</label>')
-					.appendTo(grayscaleControlContainer);
-						var grayscaleControl = $('<input type="checkbox" class="image-resource-grayscale">')
-						.prependTo(grayscaleControlLabel);
-				controlGroup2.append($("<br>"));
-				var differenceControlContainer = $('<span class="image-resource-control"></span>')
-				.appendTo(controlGroup2)
-					var differenceControlLabel = $('<label>Difference</label>')
-					.appendTo(differenceControlContainer);
-						var differenceControl = $('<input type="checkbox" class="image-resource-difference">')
-						.prependTo(differenceControlLabel);
-				controlGroup2.append($("<br>"));
-				var invertControlContainer = $('<span class="image-resource-control"></span>')
-				.appendTo(controlGroup2)
-					var invertControlLabel = $('<label>Invert</label>')
-					.appendTo(invertControlContainer);
-						var invertControl = $('<input type="checkbox" class="image-resource-invert">')
-						.prependTo(invertControlLabel);
-			var falseColorControlContainer = $('<span class="image-resource-control"></span>')
-			.appendTo(controlsContainer)
-			.html("False Color<br>")
-				var falseColorControl = $('<select class="image-resource-false-color"></select>')
-				.appendTo(falseColorControlContainer);
-					setupFalseColorControl(falseColorControl);
-			var zoomControlContainer = $('<span class="image-resource-control"></span>')
-			.appendTo(controlsContainer)
-			.html('Zoom&nbsp;');
-				var zoomControl = $('<input type="number" class="image-resource-zoom" min="10" max="200" step="10">')
-				.appendTo(zoomControlContainer);
-				zoomControlContainer.append($('<span>&nbsp;%</span><br>'));
-				var zoom100PercentButton = $('<input type="button" class="image-resource-zoom-100" value="100%">')
-				.appendTo(zoomControlContainer);
-				var zoomFitButton = $('<input type="button" class="image-resource-zoom-fit" value="Fit">')
-				.appendTo(zoomControlContainer);
-			var histogramEqualizeControlContainer = $('<span class="image-resource-control"></span>')
-			.appendTo(controlsContainer)
-				var histogramEqualizeControlLabel = $('<label>Histogram Eqaulize</label>')
-				.appendTo(histogramEqualizeControlContainer);
-					var histogramEqualizeControl = $('<input type="checkbox" class="image-resource-historgram-equalize">')
-					.prependTo(histogramEqualizeControlLabel);
-			var selectiveStretchingControlContainer = $('<span class="image-resource-control"></span>')
-			.appendTo(controlsContainer)
-			.html("Selective Contrast Stretching<br>");
-				var selectiveStretchingRegionControlLabel = $('<label>Region&nbsp;</label>')
-				.appendTo(selectiveStretchingControlContainer);
-					var selectiveStretchingRegionControl = $('<select class="image-resource-selective-stretching-region"></select>')
-					.appendTo(selectiveStretchingRegionControlLabel);
-						var selectiveStretchingRegionControlOption1 = $('<option value="">(None)</option>')
-						.appendTo(selectiveStretchingRegionControl);
-						var selectiveStretchingRegionControlOption1 = $('<option value="0-80">Dark Regions</option>')
-						.appendTo(selectiveStretchingRegionControl);
-						var selectiveStretchingRegionControlOption2 = $('<option value="81-174">Middle Regions</option>')
-						.appendTo(selectiveStretchingRegionControl);
-						var selectiveStretchingRegionControlOption3 = $('<option value="175-255">Light Regions</option>')
-						.appendTo(selectiveStretchingRegionControl);
-				selectiveStretchingControlContainer.append("<br>");
-				var selectiveStretchingIntensityControlLabel = $('<label>Intensity</label>')
-				.appendTo(selectiveStretchingControlContainer);
-					var selectiveStretchingIntensityControl = $('<input type="range" class="image-resource-contrast" min="1" max="2" step="0.1" value="1">')
-					.appendTo(selectiveStretchingIntensityControlLabel);
-			var resetControlContainer = $('<span class="image-resource-control"></span>')
-			.appendTo(controlsContainer);
-				var resetControl = $('<input type="button" value="Reset All Filters" class="image-resource-reset-button">')
-				.appendTo(resetControlContainer);
-		var showHideControlsButton = $('<input type="button" value="Hide Controls" class="image-resource-show-hide-button">')
-		.appendTo(mainContainer);
+
+	selfref.brightness = 1;
+	selfref.contrast = 1;
+
+	selfref.controls = new sewi.ImageControls();
+	mainContainer.append(selfref.controls.getDOM());
 
 	function loadImage() {
 			$.ajax({
@@ -307,7 +674,7 @@ sewi.ImageResourceViewer = function() {
 			if(toApplyFalseColorFilter) {
 				applyFalseColorFilterToPixelData(canvasData.data, falseColorControl.children(":selected").val());
 			}
-			
+
 			t2 = new Date().getTime(); console.log("APPLY FILTER TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
 			canvasElement[0].getContext("2d").putImageData(canvasData, 0, 0);
@@ -447,10 +814,20 @@ sewi.ImageResourceViewer = function() {
 		}
 	}
 
+	function applyInbuiltImageBrightness(event, brightness) {
+		selfref.brightness = brightness;
+		applyInbuiltImageFilters();
+	}
+
+	function applyInbuiltImageContrast(event, contrast) {
+		selfref.contrast = contrast;
+		applyInbuiltImageFilters();
+	}
+
 	function applyInbuiltImageFilters() {
 		imageElement.css("-webkit-filter",
-			"brightness(" + brightnessControl.val() + ")"
-			+ "contrast(" + contrastControl.val() + ")"
+			"brightness(" + selfref.brightness + ")"
+			+ "contrast(" + selfref.contrast + ")"
 		);
 	}
 
@@ -461,38 +838,40 @@ sewi.ImageResourceViewer = function() {
 			);
 		})
 
-		brightnessControl.on("input", applyInbuiltImageFilters);
-		contrastControl.on("input", applyInbuiltImageFilters);
-		invertControl.on("change", applyCustomImageFilters);
-		differenceControl.on("change", applyCustomImageFilters);
-		grayscaleControl.on("change", applyCustomImageFilters);
-		falseColorControl.on("change", applyCustomImageFilters);
-		histogramEqualizeControl.on("change", applyCustomImageFilters);
-		selectiveStretchingRegionControl.on("change", applyCustomImageFilters);
-		selectiveStretchingIntensityControl.on("input", applyCustomImageFilters);
+		selfref.controls.on("BrightnessChanged", applyInbuiltImageBrightness);
+		selfref.controls.on("ContrastChanged", applyInbuiltImageContrast);
+		selfref.controls.on("FiltersChanged", function(event, settings) { console.log(settings); });
+		selfref.controls.on("ContrastPlusLevelChanged", function(event, level) { console.log(level); });
 
-		resetControl.on("click", function() {
-			brightnessControl.val(1);
-			contrastControl.val(1);
-			invertControl.prop("checked", false);
-			differenceControl.prop("checked", false);
-			grayscaleControl.prop("checked", false);
-			falseColorControl.val("");
-			applyCustomImageFilters();
-			applyInbuiltImageFilters();
-			setImageZoomToFit();
-		})
+		// differenceControl.on("change", applyCustomImageFilters);
+		// grayscaleControl.on("change", applyCustomImageFilters);
+		// falseColorControl.on("change", applyCustomImageFilters);
+		// histogramEqualizeControl.on("change", applyCustomImageFilters);
+		// selectiveStretchingRegionControl.on("change", applyCustomImageFilters);
+		// selectiveStretchingIntensityControl.on("input", applyCustomImageFilters);
 
-		showHideControlsButton.on("click", function() {
-			if($(this).val() == "Hide Controls") {
-				controlsContainer.css("bottom", -controlsContainer.height());
-				$(this).val("Show Controls");
-			}
-			else {
-				controlsContainer.css("bottom", 0);
-				$(this).val("Hide Controls");	
-			}
-		});
+		// resetControl.on("click", function() {
+		// 	brightnessControl.val(1);
+		// 	contrastControl.val(1);
+		// 	invertControl.prop("checked", false);
+		// 	differenceControl.prop("checked", false);
+		// 	grayscaleControl.prop("checked", false);
+		// 	falseColorControl.val("");
+		// 	applyCustomImageFilters();
+		// 	applyInbuiltImageFilters();
+		// 	setImageZoomToFit();
+		// })
+
+		// showHideControlsButton.on("click", function() {
+		// 	if($(this).val() == "Hide Controls") {
+		// 		controlsContainer.css("bottom", -controlsContainer.height());
+		// 		$(this).val("Show Controls");
+		// 	}
+		// 	else {
+		// 		controlsContainer.css("bottom", 0);
+		// 		$(this).val("Hide Controls");
+		// 	}
+		// });
 
 		imageElement.one("load", function() {
 			originalImageInfo.width = imageElement.prop("naturalWidth");
@@ -507,22 +886,23 @@ sewi.ImageResourceViewer = function() {
 		var imagePanZoomWidget;
 
 		imageElement.on("zoomchange", function(event, newZoomPercentage) {
-			zoomControl.val(newZoomPercentage);
+			selfref.controls.update({
+				zoomLevel: newZoomPercentage
+			});
 		});
-		
+
 		imageElement.one("load", function() {
-			zoomControl.val("100"); // zoomchange may not fire if the target is not resized during the widget construction
 			imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
 		});
 
-		zoomControl.on("change", function() {
-			imagePanZoomWidget.setTargetZoom(zoomControl.val());
+		selfref.controls.on("ZoomChanged", function(event, zoomLevel) {
+			imagePanZoomWidget.setTargetZoom(zoomLevel);
 		});
-		zoom100PercentButton.on("click", function() {
-			imagePanZoomWidget.setTargetZoom(100);
-			imagePanZoomWidget.centreTargetOnContainer();
-		});
-		zoomFitButton.on("click", function() {
+		// zoom100PercentButton.on("click", function() {
+		//	imagePanZoomWidget.setTargetZoom(100);
+		//	imagePanZoomWidget.centreTargetOnContainer();
+		// });
+		selfref.controls.on("ZoomToFitRequested", function() {
 			imagePanZoomWidget.setTargetZoomToFit();
 		});
 	}
@@ -665,7 +1045,7 @@ sewi.ImageResourceViewer = function() {
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
-				
+
 				assert.equal(imageElement.width(), 700, "Width");
 				assert.equal(imageElement.height(), 663, "Height");
 				assert.equal(imageElement.position().left, -5, "Left");
@@ -694,7 +1074,7 @@ sewi.ImageResourceViewer = function() {
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
-				
+
 				assert.equal(imageElement.width(), 700, "Width");
 				assert.equal(imageElement.height(), 663, "Height");
 				assert.equal(imageElement.position().left, -5, "Left");
@@ -723,7 +1103,7 @@ sewi.ImageResourceViewer = function() {
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
-				
+
 				assert.equal(imageElement.width(), 700, "Width");
 				assert.equal(imageElement.height(), 663, "Height");
 				assert.equal(imageElement.position().left, -5, "Left");
@@ -752,7 +1132,7 @@ sewi.ImageResourceViewer = function() {
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
-				
+
 				assert.equal(imageElement.width(), 700, "Width");
 				assert.equal(imageElement.height(), 663, "Height");
 				assert.equal(imageElement.position().left, 5, "Left");
@@ -781,7 +1161,7 @@ sewi.ImageResourceViewer = function() {
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
-				
+
 				assert.equal(imageElement.width(), 700, "Width");
 				assert.equal(imageElement.height(), 663, "Height");
 				assert.equal(imageElement.position().left, 5, "Left");
@@ -810,7 +1190,7 @@ sewi.ImageResourceViewer = function() {
 
 			zoom100PercentButton.trigger("click");
 			setTimeout(function() {
-				
+
 				assert.equal(imageElement.width(), 700, "Width");
 				assert.equal(imageElement.height(), 663, "Height");
 				assert.equal(imageElement.position().left, 5, "Left");
@@ -1085,8 +1465,8 @@ $(function() {
 	var t1 = new Date().getTime();
 	var theComponent = new sewi.ImageResourceViewer();
 	console.log("TIME: " + (new Date().getTime() - t1));
-	theComponent.load();
 	$("body").prepend(theComponent.getDOM());
+	theComponent.load();
 
 	$(".image-resource-grayscale").parent().tooltip({
 		html: true,
@@ -1131,36 +1511,5 @@ $(function() {
 <p id="debug"></p>
 <div id="qunit"></div>
 <input type="checkbox" id="ffgg">
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
-<p>hi</p>
 <p>hi</p>
 </body>
