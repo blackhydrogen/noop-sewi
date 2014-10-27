@@ -6,6 +6,10 @@
   font-style: normal;
 }
 
+video {
+    background: black;
+}
+
 .video-resource-container {
     width: 100%;
     height: 100%;
@@ -15,9 +19,6 @@
 
 .video-content {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100%;
     overflow: hidden;
     cursor: none;
@@ -28,15 +29,16 @@
     cursor: initial;
 }
 
-.video-content video {
-    position: relative;
-    width: 100%;
-    height: 100%;
+.video-boundary {
+    position: absolute;
+}
+
+.video-container {
+    position: absolute;
 }
 
 .media-control-panel {
     width: 100%;
-    overflow: hidden;
     background-color: #eee;
     height: 30px;
 }
@@ -67,13 +69,6 @@
     content: '\e003'
 }
 
-.media-control-panel input[type=range] {
-    display: inline-block;
-    height: 30px;
-    background: initial;
-    -webkit-appearance: none;
-}
-
 .media-control-panel>div.left {
     float: left;
     margin-right: 10px;
@@ -99,36 +94,48 @@
     color: #555;
 }
 
-.media-control-panel input[type=range]:focus,
-.media-control-panel input[type=range]:hover,
-.media-control-panel input[type=range]:active {
-    background: initial;
-    box-shadow: initial;
-    border-color: initial;
-    box-shadow: initial;
+.media-control-panel .seek-bar {
+    position: relative;
+    margin: 5px 0;
+    overflow: hidden;
+    border-radius: 2px;
+    height: 20px;
+}
+.media-control-panel .seek-bar .seek-bar-background {
+    position: absolute;
+    background-color: #ccc;
+    background: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
 }
 
-.media-control-panel input[type=range]::-webkit-slider-runnable-track {
-    height: 5px;
-    border: none;
-    border-radius: 2px;
-    background: #aaa;
+.media-control-panel .seek-bar .seek-bar-buffers {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.media-control-panel .seek-bar .seek-bar-buffers .buffer {
+    position: absolute;
+    background-color: #428BCA;
+    height: 100%;
+}
+
+.media-control-panel .seek-bar input[type=range].progress-slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
 .media-control-panel input[type=range].progress-slider::-webkit-slider-runnable-track {
     height: 20px;
-}
-
-.media-control-panel input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 20px;
-    width: 10px;
-    background: #fff;
-    border: 1px #ccc solid;
-    border-radius: 2px;
-    margin-top: -7px;
+    background: transparent;
 }
 
 .media-control-panel input[type=range].progress-slider::-webkit-slider-thumb {
     margin-top: 0;
+}
+
+.media-control-panel .volume-popup {
+    background-color: #eee;
 }
