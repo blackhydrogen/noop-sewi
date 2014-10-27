@@ -123,7 +123,7 @@ sewi.ImageResourceViewer = function() {
 	mainContainer.addClass("image-resource-main-container");
 		var imageContainer = $('<div class="image-resource-image-container"></div>')
 		.appendTo(mainContainer);
-			var imageElement = $('<img src="sfc.png" class="image-resource-image">')
+			var imageElement = $('<img src="poor_histogram.png" class="image-resource-image">')
 			.appendTo(imageContainer);
 		var controlsContainer = $('<div class="image-resource-control-panel animated"></div>')
 		.appendTo(mainContainer);
@@ -153,9 +153,9 @@ sewi.ImageResourceViewer = function() {
 				controlGroup2.append($("<br>"));
 				var differenceControlContainer = $('<span class="image-resource-control"></span>')
 				.appendTo(controlGroup2)
-					var differenceControlLabel = $('<label>Difference</label>')
+					var differenceControlLabel = $('<label title="diffw">Difference</label>')
 					.appendTo(differenceControlContainer);
-						var differenceControl = $('<input type="checkbox" class="image-resource-difference">')
+						var differenceControl = $('<input type="checkbox" class="image-resource-difference" title="diff">')
 						.prependTo(differenceControlLabel);
 				controlGroup2.append($("<br>"));
 				var invertControlContainer = $('<span class="image-resource-control"></span>')
@@ -483,29 +483,28 @@ sewi.ImageResourceViewer = function() {
 	function setupZoomControls() {
 		var imagePanZoomWidget;
 
-		imageElement.on("zoomchange", function() {
-			zoomControl.val( imagePanZoomWidget.getTargetZoom(imagePanZoomWidget) );
+		imageElement.on("zoomchange", function(event, newZoomPercentage) {
+			zoomControl.val(newZoomPercentage);
 		});
 		
 		imageElement.one("load", function() {
 			imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
-			imagePanZoomWidget.setTargetZoomToFit(imagePanZoomWidget);
 		});
 
 		zoomControl.on("change", function() {
-			imagePanZoomWidget.setTargetZoom(imagePanZoomWidget, zoomControl.val());
+			imagePanZoomWidget.setTargetZoom(zoomControl.val());
 		});
 		zoom100PercentButton.on("click", function() {
-			imagePanZoomWidget.setTargetZoom(imagePanZoomWidget, 100);
-			imagePanZoomWidget.centreTargetOnContainer(imagePanZoomWidget);
+			imagePanZoomWidget.setTargetZoom(100);
+			imagePanZoomWidget.centreTargetOnContainer();
 		});
 		zoomFitButton.on("click", function() {
-			imagePanZoomWidget.setTargetZoomToFit(imagePanZoomWidget);
+			imagePanZoomWidget.setTargetZoomToFit();
 		});
 	}
 
 	selfref.resizeCallback = function() {
-		setoriginalImageInfo();
+		// setoriginalImageInfo();
 	}
 
 	/*
