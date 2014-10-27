@@ -15,7 +15,7 @@
 	}
 
 	.tooltip-inner {
-    	max-width: 250px;
+		max-width: 250px;
 	}
 
 	.tooltip.in {
@@ -221,6 +221,20 @@ sewi.ImageResourceViewer = function() {
 				.appendTo(resetControlContainer);
 		var showHideControlsButton = $('<input type="button" value="Hide Controls" class="image-resource-show-hide-button">')
 		.appendTo(mainContainer);
+
+	function loadImage() {
+			$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			async: true,
+			url: videoResourceURL
+		}).done(function(data) {
+			console.log('Video data retrieved.');
+			selfRef.video = data;
+			selfRef.isDataLoaded = true;
+			selfRef.mainDOMElement.trigger('DataLoaded');
+		});
+	}
 
 	function setupFalseColorControl(selectComponent) {
 		var capitalizeFirstCharacter = function(string) {
