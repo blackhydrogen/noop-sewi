@@ -36,6 +36,4 @@ $(function() {
   tempDrag4.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag4);
 
-  var audioPlayer = new sewi.AudioResourceViewer();
-//  $('#resView').append(audioPlayer.getDOM());
 });

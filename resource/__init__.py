@@ -1,3 +1,4 @@
 from base_resource import BaseResource
 from image_resource import ImageResource
 from video_resource import VideoResource
+from audio_resource import AudioResource
