@@ -738,7 +738,7 @@ var sewi = sewi || {};
         return this.container;
     }
 
-    sewi.TabContainer.prototype.addObjectToNewTab = function(id, type, DOMObject){
+    sewi.TabContainer.prototype.addObjectToNewTab = function(DOMObject){
         var selfRef = this;
         selfRef.addNewTab("Tab"+selfRef.counter,"", true, false);
         selfRef.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
