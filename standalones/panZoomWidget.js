@@ -1,6 +1,10 @@
 var sewi = sewi || {};
 
 sewi.PanZoomWidget = function(panZoomTarget, panZoomContainer, targetOriginalWidth, targetOriginalHeight) {
+	// Safeguard if function is called without `new` keyword
+	if (!(this instanceof sewi.PanZoomWidget))
+		return new sewi.PanZoomWidget();
+	
 	this.container = panZoomContainer;
 	this.target = panZoomTarget;
 	this.targetDimensions = { // Dimensions of the target in different zoom states
