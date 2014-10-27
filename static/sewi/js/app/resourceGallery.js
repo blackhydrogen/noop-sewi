@@ -55,7 +55,6 @@ sewi.ResourceGallery.prototype.loadResources = function() {
 
         selfRef.container.append(resourceElement);
     }
-
 }
 
 sewi.ResourceGallery.prototype.update = function() {

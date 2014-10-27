@@ -4,34 +4,36 @@ $(function() {
       basicInfoView: '#beiView',
       resViewerView: '#mainView',
       resGalleryView: '#resView',
-      titleView: '#titleView'
+      titleView: '#titleView',
+      alertsView: '#alerts',
   });
 
-  var tempDrag = $('<div id="draggable" data-resId="123" data-resType="Image">Some words</div>');
+  var tempDrag = $('<div id="draggable" data-res-id="A123" data-res-type="image">Some words</div>');
   tempDrag.css('background-color', 'red');
   tempDrag.css('width', '100px');
   tempDrag.css('height', '100px');
   tempDrag.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag);
 
-  var tempDrag2 = $('<div id="draggable" data-resId="124">Some more words</div>');
+  var tempDrag2 = $('<div id="draggable" data-res-id="A124" data-res-type="video">Some more words</div>');
   tempDrag2.css('background-color', 'green');
   tempDrag2.css('width', '100px');
   tempDrag2.css('height', '100px');
   tempDrag2.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag2);
   
-  var tempDrag3 = $('<div id="draggable" data-resId="125">Some more more words</div>');
+  var tempDrag3 = $('<div id="draggable" data-res-id="G125" data-res-type="audio">Some more more words</div>');
   tempDrag3.css('background-color', 'blue');
   tempDrag3.css('width', '100px');
   tempDrag3.css('height', '200px');
   tempDrag3.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag3);
   
-  var tempDrag4 = $('<div id="draggable" data-resId="126" data-resType="Image">Some more more words</div>');
+  var tempDrag4 = $('<div id="draggable" data-res-id="126" data-resType="Image">Some more more words</div>');
   tempDrag4.css('background-color', 'yellow');
   tempDrag4.css('width', '200px');
   tempDrag4.css('height', '200px');
   tempDrag4.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag4);
+
 });

@@ -1,7 +1,7 @@
 import json
 from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render
-from resource import ImageResource, VideoResource
+from resource import ImageResource, VideoResource, AudioResource
 
 import logging
 
@@ -28,3 +28,9 @@ def get_video(request, video_id):
 
 def get_video_thumbnail(request, video_id):
     pass
+
+def get_audio(request, audio_id):
+    logger.info('Retrieving Audio ID: ' + audio_id)
+    audio_resource = AudioResource(audio_id)
+    data = json.dumps(audio_resource.get_info())
+    return HttpResponse(data, mimetype='application/json')
