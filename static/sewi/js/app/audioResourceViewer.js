@@ -15,7 +15,9 @@ var sewi = sewi || {};
 
         selfRef.offset = 0;
         selfRef.gainValue = 0;
+        selfRef.beginTime = 0;
         selfRef.startTime = 0;
+        selfRef.endTime = 0;
         selfRef.audioBuffer = null;
         selfRef.isPlaying = false;
         selfRef.id = options.id;
@@ -120,6 +122,8 @@ var sewi = sewi || {};
         var numChannels = buffer.numberOfChannels; // (unsigned int)
         var channelName = ['left-channel','right-channel'];
 
+        selfRef.startTime = 0;
+        selfRef.endTime = duration;
         selfRef.controls.update({duration : duration, currentTime : selfRef.offset});
         
         selfRef.audioAmplitudeGraphs = [];
@@ -141,15 +145,23 @@ var sewi = sewi || {};
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
         var selfRef = this;
-        var graphDOM = $('<div class="wave-graph '+ channelName+'" id="'+selfRef.id+'" title="'+channelName+'"></div>');
+        var graphDOM = $('<div class="wave-graph '+channelName+'" id="'+selfRef.id+'" title="'+channelName+'"></div>');
         selfRef.contentDOM.append(graphDOM);
         if(selfRef.progressBar){
             selfRef.progressBar.getDOM().remove();
             delete selfRef.progressBar;
         }
-        var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence); 
+        var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence, selfRef); 
 
         return graph;
+    }
+
+    function updateGraphPlaybackPosition(positionInSec){
+        var selfRef = this;
+        for(var i=0; i < selfRef.audioAmplitudeGraphs.length; i++) {
+            selfRef.audioAmplitudeGraphs[i].playbackPos = positionInSec;
+            selfRef.audioAmplitudeGraphs[i].draw();
+        }
     }
 
     sewi.AudioResourceViewer.prototype.initControls = function(){
@@ -169,6 +181,9 @@ var sewi = sewi || {};
     sewi.AudioResourceViewer.prototype.sliderChanged = function(event, position){
         var selfRef = this;
         selfRef.offset = (position/100) * selfRef.source.buffer.duration;
+        selfRef.lastUpdated = selfRef.offset;
+        selfRef.drawTimer = 0;
+        updateGraphPlaybackPosition.call(this, selfRef.offset);
     }
 
     sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
@@ -191,18 +206,17 @@ var sewi = sewi || {};
         var selfRef = this;
         if(selfRef.source){
             if(selfRef.isPlaying){ 
-                var currentTime = ((Date.now() - selfRef.startTime) / 1000 + selfRef.offset);
+                var currentTime = ((Date.now() - selfRef.beginTime) / 1000 + selfRef.offset);
                 var percent = (currentTime / selfRef.source.buffer.duration)*100;
                 selfRef.controls.update({position : percent, currentTime : currentTime });
                 selfRef.drawTimer += (currentTime - selfRef.lastUpdated);
                 
+                //Update the graph at 10 fps
                 if(selfRef.drawTimer > selfRef.updateInterval){
-                    for(var i=0; i < selfRef.audioAmplitudeGraphs.length; i++) {
-                        selfRef.audioAmplitudeGraphs[i].playbackPos =  currentTime;
-                        selfRef.audioAmplitudeGraphs[i].draw();
-                    }
+                    updateGraphPlaybackPosition.call(this, currentTime);
                     selfRef.drawTimer = 0;
                 }
+
                 if(percent >= 100){
                     selfRef.isPlaying = false;
                     selfRef.offset = 0;
@@ -226,10 +240,11 @@ var sewi = sewi || {};
             selfRef.source.connect(selfRef.gainNode);
             selfRef.source.connect(selfRef.scriptProcessor);
             selfRef.source.onended = selfRef.onAudioFinish.bind(this);
-            selfRef.startTime = Date.now();
+            selfRef.beginTime = Date.now();
             selfRef.source.start(0, selfRef.offset);
             selfRef.isPlaying = true;
             selfRef.controls.update({isPlaying: selfRef.isPlaying});
+            updateGraphPlaybackPosition.call(this, selfRef.offset);        
         }
     }
 
@@ -238,7 +253,7 @@ var sewi = sewi || {};
         console.log('audio paused');
         if(selfRef.source){
             selfRef.isPlaying = false;
-            selfRef.offset += (Date.now() - selfRef.startTime) / 1000;
+            selfRef.offset += (Date.now() - selfRef.beginTime) / 1000;
             selfRef.source.stop(0);
             selfRef.controls.update({isPlaying: selfRef.isPlaying});
         }
@@ -265,8 +280,9 @@ var sewi = sewi || {};
 // AudioAmplitudeGraph Class
 (function(){
 
-    sewi.AudioAmplitudeGraph = function(graphDOM, audioSequence){
+    sewi.AudioAmplitudeGraph = function(graphDOM, audioSequence, resourceViewer){
         var selfRef = this;
+        selfRef.resourceViewer = resourceViewer;
         selfRef.graphDOM = graphDOM;
         selfRef.name=selfRef.graphDOM.attr('title');
         selfRef.audioSequence = audioSequence;
@@ -432,18 +448,17 @@ var sewi = sewi || {};
                 // move the selection with the delta
                 selfRef.selectionStart += absDelta;
                 selfRef.selectionEnd += absDelta;
-                //this.eventHost.audioLayerControl.audioSequenceSelectionUpdate();
-
+                updateResourceViewer.call(this);
             }
             // if the left bar is selected, then move it only
             else if (selfRef.mouseSelectionOfStart){
                 selfRef.selectionStart = getPixelToAbsolute.call(this, selfRef.mouseX);
-                //this.eventHost.audioLayerControl.audioSequenceSelectionUpdate();
+                updateResourceViewer.call(this);
             }
             // if the right bar is selected (default during creation of a selection), then move it only
             else{
                 selfRef.selectionEnd = getPixelToAbsolute.call(this, selfRef.mouseX);
-                //this.eventHost.audioLayerControl.audioSequenceSelectionUpdate();
+                updateResourceViewer.call(this);
             }
         } 
 
@@ -458,6 +473,17 @@ var sewi = sewi || {};
         }
         selfRef.draw.call(this);
         updateLinkedGraph.call(this);
+    }
+
+    function updateResourceViewer(){
+        var selfRef = this;
+        var resourceViewer = selfRef.resourceViewer;
+        resourceViewer.startTime = selfRef.selectionStart / selfRef.audioSequence.sampleRate;
+        resourceViewer.endTime = selfRef.selectionEnd / selfRef.audioSequence.sampleRate; 
+        console.log(selfRef.selectionStart);
+        resourceViewer.offset = resourceViewer.startTime;
+        resourceViewer.lastUpdated = resourceViewer.startTime;
+        resourceViewer.drawTimer = 0;
     }
 
     function canvasMouseUpEvent(event){
@@ -633,7 +659,6 @@ var sewi = sewi || {};
     function drawPlaybackLineIndicator(canvasContext){
         var selfRef = this;
         var playbackPixelPos = getAbsoluteToPixel.call(this, selfRef.playbackPos * selfRef.audioSequence.sampleRate);
-        
         if (playbackPixelPos > 0 && playbackPixelPos < selfRef.canvasWidth){
             canvasContext.strokeStyle = this.colorSelectionStroke;
             canvasContext.beginPath();
