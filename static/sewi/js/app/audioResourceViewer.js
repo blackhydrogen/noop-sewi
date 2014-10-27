@@ -26,6 +26,8 @@ var sewi = sewi || {};
         selfRef.updateInterval = 0.1;
         selfRef.lastUpdated = 0;
         selfRef.drawTimer = 0;
+        selfRef.sliderValueChanged = false;
+
         selfRef.init();
         selfRef.initControls();	
     }
@@ -184,6 +186,9 @@ var sewi = sewi || {};
         selfRef.lastUpdated = selfRef.offset;
         selfRef.drawTimer = 0;
         updateGraphPlaybackPosition.call(this, selfRef.offset);
+        if(selfRef.isPlaying){
+            selfRef.sliderValueChanged = true;
+        }
     }
 
     sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
@@ -206,29 +211,41 @@ var sewi = sewi || {};
         var selfRef = this;
         if(selfRef.source){
             if(selfRef.isPlaying){ 
-                var currentTime = ((Date.now() - selfRef.beginTime) / 1000 + selfRef.offset);
-                var percent = (currentTime / selfRef.source.buffer.duration)*100;
-                selfRef.controls.update({position : percent, currentTime : currentTime });
-                selfRef.drawTimer += (currentTime - selfRef.lastUpdated);
-                
-                //Update the graph at 10 fps
-                if(selfRef.drawTimer > selfRef.updateInterval){
-                    updateGraphPlaybackPosition.call(this, currentTime);
-                    selfRef.drawTimer = 0;
-                }
+                if(!selfRef.sliderValueChanged){
+                    var duration = selfRef.source.buffer.duration;
+                    var currentTime = ((Date.now() - selfRef.beginTime) / 1000 + selfRef.offset);
+                    var percent = (currentTime / duration)*100;
+                    selfRef.controls.update({position : percent, currentTime : currentTime });
+                    selfRef.drawTimer += (currentTime - selfRef.lastUpdated);
+                    
+            //        console.log('drawTimer:'+selfRef.drawTimer+' lastUpdated:'+selfRef.lastUpdated+' currentTime:'+currentTime);
+                    //Update the graph at 10 fps
+                    if(selfRef.drawTimer > selfRef.updateInterval){
+                        updateGraphPlaybackPosition.call(this, currentTime);
+                        selfRef.drawTimer = 0;
+                    }
+                    selfRef.lastUpdated = currentTime;
 
-                if(percent >= 100){
-                    selfRef.isPlaying = false;
-                    selfRef.offset = 0;
-                    selfRef.source.disconnect(selfRef.gainNode);
-                    selfRef.source.disconnect(selfRef.scriptProcessor);
-                    selfRef.controls.update({position : 0, 
-                                            playing : selfRef.isPlaying});
+                    if(selfRef.endTime - currentTime < 0.01){
+                        selfRef.source.stop(0);
+                        selfRef.isPlaying = false;
+                        selfRef.offset = selfRef.startTime;
+                        selfRef.source.disconnect(selfRef.gainNode);
+                        selfRef.source.disconnect(selfRef.scriptProcessor);
+                        selfRef.controls.update({position : (selfRef.offset / duration) * 100, 
+                                                playing : selfRef.isPlaying});
+                        
+                        selfRef.lastUpdated = selfRef.offset;
+                        selfRef.drawTimer = 0;
+                        updateGraphPlaybackPosition.call(this, selfRef.offset);
+                    }  
+                } else {
+                    selfRef.pauseAudio();
+                    selfRef.playAudio();
+                    selfRef.sliderValueChanged = false;
                 }
-                
-                selfRef.lastUpdated = currentTime;
             }
-       }
+        }
     }
 
     sewi.AudioResourceViewer.prototype.playAudio = function(){
