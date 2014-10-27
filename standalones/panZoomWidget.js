@@ -18,6 +18,10 @@ sewi.PanZoomWidget = function(panZoomTarget, panZoomContainer, targetOriginalWid
 
 	this.calculateTargetDimensions(targetOriginalWidth, targetOriginalHeight);
 
+	this.container.css({
+		cursor: "-webkit-grab"
+	});
+
 	this.container.on("mousewheel.PanZoomWidget", this.calculateTargetZoomFromMousewheel.bind(this));
 	this.container.on("mousedown.PanZoomWidget", this.setupPanningVariables.bind(this));
 
@@ -202,11 +206,27 @@ sewi.PanZoomWidget.prototype.setupPanningVariables = function(event) {
 
 	this.container.off("mousewheel.PanZoomWidget"); //Don't allow the user to move and zoom
 
+	this.container.css({
+		cursor: "-webkit-grabbing"
+	});
+
+	$("body").css({
+		cursor: "-webkit-grabbing"
+	});
+
 	$("body").on("mousemove.PanZoomWidget", this.moveTargetToCursor.bind(this));
 
 	$("body").one("mouseup.PanZoomWidget", (function(event) {
 		this.container.on("mousewheel.PanZoomWidget", this.calculateTargetZoomFromMousewheel.bind(this));
 		$("body").off("mousemove.PanZoomWidget");
+
+		$("body").css({
+			cursor: "auto"
+		});
+		
+		this.container.css({
+			cursor: "-webkit-grab"
+		});
 	}).bind(this));
 }
 
