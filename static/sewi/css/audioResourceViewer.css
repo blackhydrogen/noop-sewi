@@ -1,0 +1,46 @@
+.audio-control{
+	position: absolute;
+	bottom: 0px;
+}
+
+.audio-resource-viewer{
+    background-color: #808080;
+    height:100%;
+    width: 100%;
+}
+.audio-resource-viewer>.media-control-panel{
+    position: absolute;
+    bottom: 0px;
+}
+.audio-resource-viewer>.audio-content>.progress{
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: 50%;
+}
+
+.audio-content{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 30px);
+}
+.wave-graph{
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    background-color: white;
+}
+
+.wave-graph>canvas{
+    border: 1px solid #b8d599;
+}
+
+.left-channel{
+    top: 0%;
+}
+
+.right-channel{
+    top: 50%;
+}
+
+
