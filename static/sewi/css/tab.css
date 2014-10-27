@@ -1,0 +1,451 @@
+@keyframes indicatorKeyFrames{
+	0%{width: 20%; height: 20%; top: 40%; left: 40%; }
+	100%{ width: 100%; height: 100%; top: 0px ; left: 0px;}
+}
+
+@keyframes indicatorRightKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@keyframes indicatorLeftKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@keyframes indicatorTopKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
+@keyframes indicatorBottomKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
+@-webkit-keyframes indicatorKeyFrames{
+	0%{width: 20%; height: 20%; top: 40%; left: 40%; }
+	100%{ width: 100%; height: 100%; top: 0px ; left: 0px;}
+}
+
+@-webkit-keyframes indicatorRightKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@-webkit-keyframes indicatorLeftKeyFrames{
+	0%	{width: 0%;}
+	100%{width: 50%;}
+}
+
+@-webkit-keyframes indicatorTopKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
+@-webkit-keyframes indicatorBottomKeyFrames{
+	0%	{height: 0%;}
+	100%{height: 50%;}
+}
+
+.tab-container{
+	background-color: #AAA;
+	width: 100%;
+	height: 100%;
+}
+
+.tab-content{
+	position: relative;
+	background-color: #FFF;
+	border-left: 1px #DDD solid;
+	border-right: 1px #DDD solid;
+	border-bottom: 1px #DDD solid;
+	height: calc(100% - 42px);
+}
+
+.nav-tabs>li>a.add-tab-button{
+	background-color: #FFF;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #DDD #DDD transparent;
+}
+
+.nav-tabs>li>a.add-tab-button:hover{
+	cursor: grab;
+}
+
+.tab-container>.nav-tabs>li.tab-button>a>span{
+	margin-left: 90%;
+}
+
+.tab-container>.nav-tabs>li.tab-button>a>span:hover{
+	color: red;
+	cursor: grab;
+}
+.tab-container>.nav-tabs>li.tab-button{
+	width: 20%;
+}
+
+.tab-content >.tab-pane{
+	width: 100%;
+	height: 100%;
+}
+
+.panel-content{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index: 0;
+}
+
+.panel-indicator{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	animation: indicatorKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-right{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 100%;
+	top: 0;
+	right: 0;
+	animation: indicatorRightKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-left{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	animation: indicatorRightKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-top{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 100%;
+	height: 50%;
+	top: 0;
+	left: 0;
+	animation: indicatorTopKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorTopKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+
+.panel-indicator-bottom{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 100%;
+	height: 50%;
+	bottom: 0;
+	left: 0;
+	animation: indicatorBottomKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorBottomKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-bottom-left{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	bottom: 0;
+	left: 0;
+	animation: indicatorBottomKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorBottomKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-top-left{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	top: 0;
+	left: 0;
+	animation: indicatorTopKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorTopKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-bottom-right{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	bottom: 0;
+	right: 0;
+	animation: indicatorBottomKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorBottomKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-top-right{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	top: 0;
+	right: 0;
+	animation: indicatorTopKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorTopKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-right-top{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	top: 0;
+	right: 0;
+	animation: indicatorRightKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-left-top{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	top: 0;
+	left: 0;
+	animation: indicatorLeftKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorLeftKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-right-bottom{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	bottom: 0;
+	right: 0;
+	animation: indicatorRightKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorRightKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-indicator-left-bottom{
+	position: absolute;
+	background-color: #50D0E1;
+	opacity: 0.6;
+	border-style: solid;
+	border-width: 3px;
+	border-radius: 3px;
+	border-color: #0522FF;
+	width: 50%;
+	height: 50%;
+	bottom: 0;
+	left: 0;
+	animation: indicatorLeftKeyFrames 0.2s ease-out;
+	animation-fill-mode: forwards;
+	-webkit-animation: indicatorLeftKeyFrames 0.2s ease-out;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.panel-drop-area{
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.panel-drop-area-full{
+	height: 100%;
+	width: 100%;
+}
+
+.panel-drop-area-top{
+	top: 0;
+	left: 25%;
+	height: 30%;
+	width: 50%;
+}
+
+.panel-drop-area-bottom{
+	bottom: 0;
+	left: 25%;
+	height: 30%;
+	width: 50%;
+}
+
+.panel-drop-area-left{
+	left: 0px;
+	top: 0px;
+	width: 25%;
+	height: 100%;
+}
+
+.panel-drop-area-right{
+	top: 0px;
+	right: 0px;
+	width: 25%;
+	height: 100%;
+}
+
+.panel-drop-area-visible{
+	opacity: 0.2;
+}
+
+.panel-drop-area-hover{
+	opacity: 0.4;
+}
+
+.panel{
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+.panel-full{
+	width: 100%;
+	height: 100%;
+}
+
+.panel-right{
+	left: 50%;
+	width: 50%;
+	height: 100%;
+}
+
+.panel-left{
+	right: 50%;
+	width: 50%;
+	height: 100%;
+}
+
+.panel-top{
+	bottom: 50%;
+	width: 100%;
+	height: 50%;
+}
+
+.panel-bottom{
+	top: 50%;
+	width: 100%;
+	height: 50%;
+}
+
+.panel-top-right{
+	bottom: 50%;
+	left: 50%;
+	width: 50%;
+	height: 50%;
+}
+
+.panel-top-left{
+	bottom: 50%;
+	right: 50%;
+	width: 50%;
+	height: 50%;
+}
+
+.panel-bottom-right{
+	top: 50%;
+	left: 50%;
+	width: 50%;
+	height: 50%;
+}
+
+.panel-bottom-left{
+	top: 50%;
+	right: 50%;
+	width: 50%;
+	height: 50%;
+}
+
+.dummy-obj{
+	width: 100%;
+	height: 100%;
+	background-color: yellow;
+	border-style: solid;
+	border-width: 5px;
+	border-color: black;
+}

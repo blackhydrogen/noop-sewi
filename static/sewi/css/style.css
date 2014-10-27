@@ -1,4 +1,54 @@
 /* Put your CSS here */
-.ember-application {
-    margin: 20px;
+
+#sewiContainer {
+  min-height: 600px;
+  height: 0;
+}
+
+#beiView, #mainView, #resView {
+  height: 100%;
+  padding: 0;
+}
+
+.col-sm-0 {
+  width: 0px;
+  float: left;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  min-height: 1px;
+}
+
+/* Any 'animated' elements will have a smooth transition */
+.animated {
+  transition: all 200ms ease-in-out 0s;
+}
+
+.resource-viewer .top-panel {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.resource-viewer .top-panel>button {
+    float: right;
+}
+
+/* Hide elements in full screen with 'fullscreen-hidden' class */
+:-webkit-full-screen .fullscreen-hidden {
+    display: none;
+}
+
+:-moz-full-screen .fullscreen-hidden {
+    display: none;
+}
+
+:-ms-full-screen .fullscreen-hidden {
+    display: none;
+}
+
+:fullscreen .fullscreen-hidden {
+    display: none;
 }

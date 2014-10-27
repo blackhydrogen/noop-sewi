@@ -1,0 +1,45 @@
+.image-resource-container {
+	position: relative;
+	overflow: hidden;
+}
+.image-resource-image-container {
+	width: 100%;
+	height: 100%;
+	background: #333333;
+	overflow: hidden;
+	position: relative;
+}
+.image-resource-image {
+	position: absolute;
+	height: auto;
+}
+.image-resource-control-panel {
+	color: white;
+	width: 100%;
+	min-height: 50px;
+	max-height: 150px;
+	background-color: rgba(0, 0, 0, 0.8);
+	position: absolute;
+	overflow: auto;
+	bottom: 0px;
+	left: 0px;
+}
+.image-resource-control {
+	margin-right: 10px;
+	float: left;
+	text-align: center;
+	height: 100%;
+}
+.image-resource-show-hide-button {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	width: 100px;
+	opacity: 0.3;
+}
+.image-resource-zoom {
+	width: 45px;
+}
+.image-resource-show-hide-button:hover {
+	opacity: 1;
+}

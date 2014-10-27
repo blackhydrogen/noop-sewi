@@ -4,30 +4,41 @@
   <head>
     <title>Sana Single Encounter Web Interface</title>
     <meta charset="utf-8" />
-
+    {# CSS #}
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/jquery-ui-1.10.3.custom.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/videoResourceViewer.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
-
-    <script type="text/javascript" src="{% static "sewi/js/lodash.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/jquery-1.10.2.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/jquery-ui.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/Chart.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/app.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/tests/runner.js" %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/css/tab.css" %}" />
+    {# JavaScript libraries #}
+    <script type="text/javascript" src="{% static "sewi/js/lib/lodash.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/jquery-1.10.2.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/lib/Chart.min.js" %}"></script>
+    {# SEWI JavaScript files #}
+    <script type="text/javascript" src="{% static "sewi/js/app/common.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/configuratorElement.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/tab.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/videoResourceViewer.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/configurator.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/app/main.js" %}"></script>
   </head>
   <body>
     <div class="container">
-      <div class="col-sm-2">
-        sidebar
+      <div id="titleView" class="row">
+
       </div>
-      <div class="col-sm-8">
-        center
-      </div>
-      <div class="col-sm-2">
-        right
-      </div>
-    </div>
-  </body>
+      <div id="sewiContainer" class="row">
+        <div id="beiView" class="col-sm-3 animated">
+		</div>
+		<div id="mainView" class="col-sm-8 animated">
+		</div>
+		<div id="resView" class="col-sm-1 animated">
+		</div>
+	  </div>
+	</div>
+<script>
+</script>
+</body>
 </html>

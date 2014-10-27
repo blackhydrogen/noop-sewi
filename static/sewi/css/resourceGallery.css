@@ -1,0 +1,37 @@
+
+        .resource {
+            border: solid 2.9px;
+            background-color: #d4dbe0;
+            color: white;
+            width: 77px;
+            margin-bottom: -3px;
+            float: left;
+            cursor: pointer;
+        }
+
+        .resource:hover {
+           
+            background-color: #adb9c4;
+           
+        }
+        .resource-explorer-container {
+            width: 70px;
+            height: 200px;
+
+        }
+        .media-thumbnail{
+        	width:65px; 
+        	height:65px;
+            padding: 4px;
+        }
+        .clear{
+            clear:both;
+        }
+        .media-body{
+            width: 66px;
+overflow-wrap: break-word;
+margin-right: 5px;
+margin-left: 2px;
+font-size: 0.82em;
+color: #000;
+        }
