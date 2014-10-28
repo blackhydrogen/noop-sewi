@@ -8,7 +8,7 @@ $(function() {
       alertsView: '#alerts',
   });
 
-  /*var tempDrag = $('<div id="draggable" data-res-id="A123" data-res-type="image">Some words</div>');
+  var tempDrag = $('<div id="draggable" data-res-id="A123" data-res-type="image">Some words</div>');
   tempDrag.css('background-color', 'red');
   tempDrag.css('width', '100px');
   tempDrag.css('height', '100px');
@@ -35,6 +35,5 @@ $(function() {
   tempDrag4.css('height', '200px');
   tempDrag4.draggable({revert : 'invalid', helper:'clone'});
   $('#resView').append(tempDrag4);
-  */
 
 });
