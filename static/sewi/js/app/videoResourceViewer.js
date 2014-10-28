@@ -393,7 +393,20 @@ var sewi = sewi || {};
 
     function initControls() {
         var selfRef = this;
-        selfRef.controls = new sewi.MediaControls();
+
+        selfRef.resetZoomButton = $(sewi.constants.VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM);
+        selfRef.zoomToFitButton = $(sewi.constants.VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM);
+        selfRef.zoomSlider = $(sewi.constants.VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM);
+
+        var zoomControl = sewi.createVerticalSlider(selfRef.zoomSlider, selfRef.resetZoomButton);
+
+        selfRef.controls = new sewi.MediaControls({
+            extraButtons: {
+                right: [
+                    selfRef.zoomToFitButton, zoomControl
+                ]
+            }
+        });
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
         selfRef.mainDOMElement.append(selfRef.controlPanelElement);
