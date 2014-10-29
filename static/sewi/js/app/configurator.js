@@ -7,7 +7,6 @@ var sewi = sewi || {};
             return new sewi.Configurator(options);
 
         var defaults = {
-            animated: true,
             isBasicInfoMinimized: false,
             isResourceViewerHidden: true,
             title: 'Loading',
@@ -17,7 +16,6 @@ var sewi = sewi || {};
         options = options || {};
         _.defaults(options, defaults);
         _.assign(this, _.pick(options, [
-            'animated',
             'isBasicInfoMinimized',
             'isResourceViewerHidden',
             'titleView',
