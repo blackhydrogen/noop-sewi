@@ -267,7 +267,7 @@ var sewi = sewi || {};
     function galleryOpenedResource(event, resourceDOM) {
         var selfRef = this;
 
-        openResource.call(selfRef, resourceDOM);
+        openResource.call(selfRef, $(resourceDOM));
     }
 
     // Configurator public methods
