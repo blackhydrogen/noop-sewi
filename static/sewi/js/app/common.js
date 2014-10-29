@@ -91,6 +91,7 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM: '<div class="video-boundary"></div>',
         VIDEO_RESOURCE_VIEWER_CONTAINER_DOM: '<div class="video-container"></div>',
         VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE: 'Loading Video',
+        VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load video, please close and re-open video',
         VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM: '<button class="btn btn-default"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" />',

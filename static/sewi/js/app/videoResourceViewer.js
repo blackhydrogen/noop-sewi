@@ -428,6 +428,7 @@ var sewi = sewi || {};
         selfRef.videoElement.on('timeupdate seeked', updateTime.bind(selfRef));
         selfRef.videoElement.on('play pause', updatePlayingStatus.bind(selfRef));
         selfRef.videoElement.on('volumechange', updateVolume.bind(selfRef));
+        selfRef.videoElement.on('error', playbackFailed.bind(selfRef));
     }
 
     function attachControlsEventHandlers() {
@@ -587,6 +588,30 @@ var sewi = sewi || {};
         selfRef.controls.update(options);
     }
 
+    function playbackFailed(event) {
+        var selfRef = this;
+
+        var errorCode = event.target.error.code;
+
+        switch(errorCode) {
+            case event.target.error.MEDIA_ERR_ABORTED:
+
+                //break;
+            case event.target.error.MEDIA_ERR_NETWORK:
+
+                //break;
+            case event.target.error.MEDIA_ERR_DECODE:
+
+                //break;
+            case event.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+
+                //break;
+            default:
+                this.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_LOAD_FAILED_MESSAGE);
+                break;
+        }
+    }
+
     function showControlsTemporarily() {
         var selfRef = this;
         selfRef.contentElement.addClass('active');
@@ -647,7 +672,8 @@ var sewi = sewi || {};
             type: 'GET',
             async: true,
             url: videoResourceURL
-        }).done(retrieveVideo.bind(selfRef));
+        }).done(retrieveVideo.bind(selfRef))
+          .fail(loadFailed.bind(selfRef));
     }
 
     function retrieveVideo(videoData) {
@@ -662,11 +688,18 @@ var sewi = sewi || {};
             src: selfRef.videoData.url,
             type: selfRef.videoData.type,
         });
-        videoSourceElement.appendTo(selfRef.videoElement);
 
         selfRef.updateProgressBar(80, sewi.constants.VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE);
 
+        videoSourceElement.appendTo(selfRef.videoElement);
+
         selfRef.addDownloadButton(selfRef.videoData.url);
+    }
+
+    function loadFailed() {
+        var selfRef = this;
+
+        selfRef.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE);
     }
 
     // VideoResourceViewer public methods
