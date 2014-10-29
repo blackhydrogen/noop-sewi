@@ -30,6 +30,7 @@ var sewi = sewi || {};
         initBasicInfo.call(this);
         initResViewer.call(this);
         initResGallery.call(this);
+        initResizeTracking.call(this);
 
         return this;
     }
@@ -111,6 +112,18 @@ var sewi = sewi || {};
 
             this.resGallery.load();
         }
+    }
+
+    function initResizeTracking() {
+        var windowElement = $(window);
+
+        this.basicInfoView.on('transitionend', this.basicInfo.resize.bind(this.basicInfo));
+        this.resViewerView.on('transitionend', this.resViewer.resize.bind(this.resViewer));
+        this.resGalleryView.on('transitionend', this.resGallery.resize.bind(this.resGallery));
+
+        windowElement.on('resize', this.basicInfo.resize.bind(this.basicInfo));
+        windowElement.on('resize', this.resViewer.resize.bind(this.resViewer));
+        windowElement.on('resize', this.resGallery.resize.bind(this.resGallery));
     }
 
     function openResource(galleryElement) {
