@@ -109,16 +109,21 @@ var sewi = sewi || {};
                 }
                 selfRef.removeSelf();
             }
-            selfRef.tab.resize();
         });
+        
+        this.panel.one('webkitTransitionEnd otransitionend msTransitionEnd transitionend', function(event){
+                console.log("transition ended");
+                //console.log(this);
+                //selfRef.tab.resize();
+            });
 
-        $(DOMObject).on('FullscreenToggled', function(){
-            var requestFullscreen = this.requestFullscreen || 
-                                    this.mozRequestFullScreen || 
-                                    this.webkitRequestFullscreen || 
-                                    this.msRequestFullscreen;
-            requestFullscreen.call(this);
-        });
+        DOMObject.on('FullscreenToggled', function(){
+                var requestFullscreen = this.requestFullscreen || 
+                                        this.mozRequestFullScreen || 
+                                        this.webkitRequestFullscreen || 
+                                        this.msRequestFullscreen;
+                requestFullscreen.call(this);
+            });
     }
 
     sewi.TabPanel.prototype.removeSelf = function(){
@@ -136,6 +141,7 @@ var sewi = sewi || {};
         selfRef.tab.panelList[oldPosition].getDOM().addClass(addCSSClass).removeClass(removeCSSClass);
         selfRef.tab.panelList[oldPosition].state = newPosition;
         selfRef.tab.panelList[newPosition] = selfRef.tab.panelList[oldPosition];
+        selfRef.tab.panelList[newPosition].one();
         delete selfRef.tab.panelList[oldPosition];
     }
 
@@ -376,7 +382,6 @@ var sewi = sewi || {};
         dropArea.droppable({
             drop: function(event, ui){
                 event.preventDefault();
-                console.log(ui.draggable);
                 if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.FULL){
                     if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT){
                         selfRef.addPanel(sewi.constants.TAB_PANEL_POSITIONS.LEFT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, ui.draggable);
@@ -670,7 +675,7 @@ var sewi = sewi || {};
         var panelList = selfRef.panelList;
         for(var panel in panelList){
             if(panelList.hasOwnProperty(panel)){
-                panel.resize();
+                panelList[panel].resize();
             }
         } 
     }
@@ -738,7 +743,7 @@ var sewi = sewi || {};
         return this.container;
     }
 
-    sewi.TabContainer.prototype.addObjectToNewTab = function(DOMObject){
+    sewi.TabContainer.prototype.addObjectToNewTab = function(id, type, DOMObject){
         var selfRef = this;
         selfRef.addNewTab("Tab"+selfRef.counter,"", true, false);
         selfRef.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
