@@ -117,13 +117,18 @@ var sewi = sewi || {};
     function initResizeTracking() {
         var windowElement = $(window);
 
-        this.basicInfoView.on('transitionend', this.basicInfo.resize.bind(this.basicInfo));
-        this.resViewerView.on('transitionend', this.resViewer.resize.bind(this.resViewer));
-        this.resGalleryView.on('transitionend', this.resGallery.resize.bind(this.resGallery));
-
-        windowElement.on('resize', this.basicInfo.resize.bind(this.basicInfo));
-        windowElement.on('resize', this.resViewer.resize.bind(this.resViewer));
-        windowElement.on('resize', this.resGallery.resize.bind(this.resGallery));
+        if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
+            this.basicInfoView.on('transitionend', this.basicInfo.resize.bind(this.basicInfo));
+            windowElement.on('resize', this.basicInfo.resize.bind(this.basicInfo));
+        }
+        if (_.isFunction(sewi.TabContainer)) {
+            this.resViewerView.on('transitionend', this.tabs.resize.bind(this.resViewer));
+            windowElement.on('resize', this.tabs.resize.bind(this.resViewer));
+        }
+        if (_.isFunction(sewi.ResourceGallery)) {
+            this.resGalleryView.on('transitionend', this.resGallery.resize.bind(this.resGallery));
+            windowElement.on('resize', this.resGallery.resize.bind(this.resGallery));
+        }
     }
 
     function openResource(galleryElement) {
