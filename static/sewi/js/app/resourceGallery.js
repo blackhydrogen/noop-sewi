@@ -15,17 +15,15 @@ sewi.ResourceGallery = function() {
 
   selfRef.metaData = [];
   selfRef.metaData.push('24/11/2013');
-
-  selfRef.container = $('#resView');
-  selfRef.container.append($('<div>')
-    .addClass(sewi.constants.RESOURCE_GALLERY_DOM_CLASS));
+  selfRef.mainDOMElement
+    .addClass(sewi.constants.RESOURCE_GALLERY_DOM_CLASS);
 }
 
 sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
 
 sewi.ResourceGallery.prototype.load = function() {
   var selfRef = this;
-  var resourceContainer = selfRef.container.find('.'+ sewi.constants.RESOURCE_GALLERY_DOM_CLASS);
+  var resourceContainer = selfRef.mainDOMElement;
   for (var i = 0; i < selfRef.resources.length; i++) {
     var path = selfRef.resources[i];
     var resourceElement = $('<div>')
@@ -59,7 +57,7 @@ sewi.ResourceGallery.prototype.load = function() {
 
 sewi.ResourceGallery.prototype.addScrollbar = function() {
   var selfRef = this;
-  selfRef.container.find('.'+ sewi.constants.RESOURCE_GALLERY_DOM_CLASS).slimScroll({
+  selfRef.mainDOMElement.find('.'+ sewi.constants.RESOURCE_GALLERY_DOM_CLASS).slimScroll({
     color: '#000',
     width: '100%',
     size: '4px',
@@ -69,12 +67,12 @@ sewi.ResourceGallery.prototype.addScrollbar = function() {
 
 sewi.ResourceGallery.prototype.addTooltips = function() {
   var selfRef = this;
-  selfRef.container.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).tooltip({
+  selfRef.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).tooltip({
     html: true,
     trigger: 'hover'
   });
 }
 
 sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
-  event.data.container.trigger('resourceClick', this);
+  event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
 }

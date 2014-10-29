@@ -68,6 +68,11 @@ var sewi = sewi || {};
         PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
 
+        //Resource Gallery Constants
+        RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
+        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
+        RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
+        RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
