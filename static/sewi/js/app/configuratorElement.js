@@ -37,12 +37,12 @@ var sewi = sewi || {};
 	/**
 	 * Loads all remaining resources (including those that fire off events)
 	 */
-	sewi.ResourceViewer.prototype.load = _.noop;
+	sewi.ConfiguratorElement.prototype.load = _.noop;
 
 	/**
 	 * Inform the ConfiguratorElement that it has been resized.
 	 */
-	sewi.ResourceViewer.prototype.resize = _.noop;
+	sewi.ConfiguratorElement.prototype.resize = _.noop;
 })();
 
 (function(){
