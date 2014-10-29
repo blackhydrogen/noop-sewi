@@ -393,10 +393,30 @@ var sewi = sewi || {};
 
     function initControls() {
         var selfRef = this;
-        selfRef.controls = new sewi.MediaControls();
+
+        selfRef.resetZoomButton = $(sewi.constants.VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM);
+        selfRef.zoomToFitButton = $(sewi.constants.VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM);
+        selfRef.zoomSlider = $(sewi.constants.VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM);
+
+        var zoomControl = sewi.createVerticalSlider(selfRef.zoomSlider, selfRef.resetZoomButton);
+
+        selfRef.controls = new sewi.MediaControls({
+            extraButtons: {
+                right: [
+                    selfRef.zoomToFitButton, zoomControl
+                ]
+            }
+        });
 
         selfRef.controlPanelElement = selfRef.controls.getDOM();
         selfRef.mainDOMElement.append(selfRef.controlPanelElement);
+    }
+
+    function initPanZoomWidget(videoWidth, videoHeight) {
+        var selfRef = this;
+
+        selfRef.panZoomWidget = new sewi.PanZoomWidget(selfRef.videoContainerElement, selfRef.contentElement, videoWidth, videoHeight);
+        selfRef.videoContainerElement.on("zoomchange", updateZoomLevel.bind(selfRef));
     }
 
     function attachVideoEventHandlers() {
@@ -408,6 +428,7 @@ var sewi = sewi || {};
         selfRef.videoElement.on('timeupdate seeked', updateTime.bind(selfRef));
         selfRef.videoElement.on('play pause', updatePlayingStatus.bind(selfRef));
         selfRef.videoElement.on('volumechange', updateVolume.bind(selfRef));
+        selfRef.videoElement.on('error', playbackFailed.bind(selfRef));
     }
 
     function attachControlsEventHandlers() {
@@ -418,6 +439,10 @@ var sewi = sewi || {};
         selfRef.controlPanelElement.on('Unmuted', unmuteEvent.bind(selfRef));
         selfRef.controlPanelElement.on('PositionChanged', positionEvent.bind(selfRef));
         selfRef.controlPanelElement.on('VolumeChanged', volumeEvent.bind(selfRef));
+
+        selfRef.zoomSlider.on('input change', zoomLevelChanged.bind(selfRef));
+        selfRef.resetZoomButton.click(zoomLevelReset.bind(selfRef));
+        selfRef.zoomToFitButton.click(zoomToFitRequested.bind(selfRef));
     }
 
     function setUpInactivityEventHandlers() {
@@ -532,10 +557,7 @@ var sewi = sewi || {};
         //setBoundarySize.call(selfRef, { width: videoWidth, height: videoHeight });
 
         if (_.isUndefined(selfRef.panZoomWidget)) {
-            selfRef.panZoomWidget = new sewi.PanZoomWidget(selfRef.videoContainerElement, selfRef.contentElement, videoWidth, videoHeight);
-            selfRef.panZoomWidget.centreTargetOnContainer(selfRef.panZoomWidget);
-        } else {
-            console.log('updateDimensions() called');
+            initPanZoomWidget.call(selfRef, videoWidth, videoHeight);
         }
     }
 
@@ -566,6 +588,30 @@ var sewi = sewi || {};
         selfRef.controls.update(options);
     }
 
+    function playbackFailed(event) {
+        var selfRef = this;
+
+        var errorCode = event.target.error.code;
+
+        switch(errorCode) {
+            case event.target.error.MEDIA_ERR_ABORTED:
+
+                //break;
+            case event.target.error.MEDIA_ERR_NETWORK:
+
+                //break;
+            case event.target.error.MEDIA_ERR_DECODE:
+
+                //break;
+            case event.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+
+                //break;
+            default:
+                this.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_LOAD_FAILED_MESSAGE);
+                break;
+        }
+    }
+
     function showControlsTemporarily() {
         var selfRef = this;
         selfRef.contentElement.addClass('active');
@@ -580,8 +626,42 @@ var sewi = sewi || {};
         selfRef.contentElement.removeClass('active');
     }
 
+    function updateZoomLevel(event, zoomLevel) {
+        var selfRef = this;
+
+        selfRef.zoomSlider.val(zoomLevel);
+    }
+
+    function zoomLevelChanged() {
+        var selfRef = this;
+        var zoomLevel = parseInt(selfRef.zoomSlider.val());
+
+        if (!_.isUndefined(selfRef.panZoomWidget)) {
+            selfRef.panZoomWidget.setTargetZoom(zoomLevel);
+        } else {
+            selfRef.zoomSlider.val(100);
+        }
+    }
+
+    function zoomLevelReset() {
+        var selfRef = this;
+
+        selfRef.zoomSlider.val(100);
+        zoomLevelChanged.call(selfRef);
+    }
+
+    function zoomToFitRequested() {
+        var selfRef = this;
+
+        if (!_.isUndefined(selfRef.panZoomWidget)) {
+            selfRef.panZoomWidget.setTargetZoomToFit();
+            selfRef.panZoomWidget.centreTargetOnContainer();
+        }
+    }
+
     // Load video information from the server
     function loadVideoData() {
+        console.log('loading');
         var selfRef = this;
         var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + selfRef.id;
 
@@ -592,7 +672,8 @@ var sewi = sewi || {};
             type: 'GET',
             async: true,
             url: videoResourceURL
-        }).done(retrieveVideo.bind(selfRef));
+        }).done(retrieveVideo.bind(selfRef))
+          .fail(loadFailed.bind(selfRef));
     }
 
     function retrieveVideo(videoData) {
@@ -607,11 +688,18 @@ var sewi = sewi || {};
             src: selfRef.videoData.url,
             type: selfRef.videoData.type,
         });
-        videoSourceElement.appendTo(selfRef.videoElement);
 
         selfRef.updateProgressBar(80, sewi.constants.VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE);
 
+        videoSourceElement.appendTo(selfRef.videoElement);
+
         selfRef.addDownloadButton(selfRef.videoData.url);
+    }
+
+    function loadFailed() {
+        var selfRef = this;
+
+        selfRef.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE);
     }
 
     // VideoResourceViewer public methods
