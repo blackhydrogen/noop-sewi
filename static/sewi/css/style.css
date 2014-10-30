@@ -1,4 +1,57 @@
-/* Put your CSS here */
+/* Start of custom font definition */
+
+@font-face {
+	font-family: 'SEWI Icon Font';
+	src:url('../fonts/sewi-icon-font.eot');
+	src:url('../fonts/sewi-icon-font.eot#iefix') format('embedded-opentype'),
+		url('../fonts/sewi-icon-font.woff') format('woff'),
+		url('../fonts/sewi-icon-font.ttf') format('truetype'),
+		url('../fonts/sewi-icon-font.svg#SEWI-Icon-Font') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.sewi-icon, [class^="sewi-icon-"], [class*=" sewi-icon-"] {
+	font-family: 'SEWI Icon Font';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.sewi-icon-zoom-to-full:before {
+	content: "\e601";
+}
+.sewi-icon-graph-select-none:before {
+	content: "\e603";
+}
+.sewi-icon-graph-select-part:before {
+	content: "\e604";
+}
+.sewi-icon-graph-select-all:before {
+	content: "\e605";
+}
+.sewi-icon-zoom-to-fit:before {
+	content: "\e606";
+}
+.sewi-icon-zoom:before {
+	content: "\f002";
+}
+.sewi-icon-brightness-medium:before {
+	content: "\e600";
+}
+.sewi-icon-contrast:before {
+	content: "\e602";
+}
+
+/* End of custom font definition */
+
 html, body {
     min-height: 100%;
 }
@@ -100,6 +153,19 @@ div.minimize-button {
     width: 100%;
     overflow: hidden;
     position: relative;
+}
+
+.resource-viewer *::selection{
+    background: transparent;
+}
+
+.resource-viewer .placeholder {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: visible;
 }
 
 .resource-viewer .top-panel {
@@ -311,26 +377,4 @@ input[type=range]::-moz-range-thumb {
 
 :fullscreen .fullscreen-hidden {
     display: none;
-}
-
-.error-screen{
-    position: absolute;
-    background-color: #000;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-}
-.error-screen>.error-text{
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    color: white;
-    text-align: center;
-}
-
-.progress-bar-text{
-    position: absolute;
-    width: 100%;
-    text-align: center;
 }

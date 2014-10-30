@@ -117,6 +117,7 @@ var sewi = sewi || {};
 		sewi.ConfiguratorElement.call(this);
 
 		setupDOM.call(this);
+		addPlaceholder.call(this);
 		addButtons.call(this);
 		addErrorScreen.call(this);
 		addProgressBar.call(this);
@@ -125,9 +126,14 @@ var sewi = sewi || {};
 
 	// ResourceViewer private methods
 	function setupDOM() {
-		this.mainDOMOuterContainer = $("<div></div>");
+		this.mainDOMOuterContainer = $(sewi.constants.RESOURCE_VIEWER_BASIC_DOM);
         this.mainDOMOuterContainer.addClass(sewi.constants.RESOURCE_VIEWER_CLASS)
                                   .append(this.mainDOMElement);
+	}
+
+	function addPlaceholder() {
+		this.placeholderContainer = $(sewi.constants.RESOURCE_VIEWER_PLACEHOLDER_DOM);
+		this.mainDOMOuterContainer.append(this.placeholderContainer);
 	}
 
 	function addButtons() {
@@ -189,7 +195,7 @@ var sewi = sewi || {};
 		var errorScreenElement = this.errorScreen.getDOM();
 
 		this.errorScreen.setText(errorText);
-		this.mainDOMOuterContainer.append(errorScreenElement);
+		this.placeholderContainer.append(errorScreenElement);
 	}
 
 	sewi.ResourceViewer.prototype.hideError = function() {
@@ -204,7 +210,7 @@ var sewi = sewi || {};
 		this.progressBar.setText(progressText);
 		this.progressBar.update(0);
 
-		this.mainDOMOuterContainer.append(progressBarElement);
+		this.placeholderContainer.append(progressBarElement);
 	}
 
 	sewi.ResourceViewer.prototype.updateProgressBar = function(percent, progressText) {
