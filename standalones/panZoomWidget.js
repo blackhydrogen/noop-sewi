@@ -164,7 +164,7 @@ sewi.PanZoomWidget.prototype.updateTargetWidth = function(newTargetWidth, cursor
 		left: newTargetPositionX
 	});
 
-	this.target.trigger("zoomchange", this.getTargetZoom());
+	this.target.trigger("zoomChanged", this.getCurrentZoomLevel());
 }
 
 sewi.PanZoomWidget.prototype.setZoomLevelToZoomToFit = function() {

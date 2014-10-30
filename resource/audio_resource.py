@@ -1,8 +1,8 @@
-import os, sys, pygst
-pygst.require('0.10')
+import os, sys
+#pygst.require('0.10')
 from . import BaseResource
 from mds.core.models import Observation, Concept
-import gst, gobject
+#import gst, gobject
 import logging
 logger = logging.getLogger('mds.sewi')
 
