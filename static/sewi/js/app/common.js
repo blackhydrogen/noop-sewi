@@ -63,10 +63,11 @@ var sewi = sewi || {};
         ERROR_SCREEN_TEXT_DOM: '<div class="error-text"></div>',
 
         //Progress Constants
-        PROGRESS_CLASS: 'progress',
-        PROGRESS_BAR_DOM: '<div class="progress-bar" role="progressbar"></div>',
+        PROGRESS_BAR_DOM: '<div class="progress"></div>',
+        PROGRESS_BAR_AMOUNT_DOM: '<div class="progress-bar" role="progressbar"></div>',
         PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
+        PROGRESS_BAR_BACKDROP_CLASS: 'progress-bar-backdrop',
 
         //Resource Gallery Constants
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
