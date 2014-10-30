@@ -93,15 +93,19 @@ var sewi = sewi || {};
 		var selfRef = this;
 		if (_.isUndefined(animated)) animated = true;
 
-        selfRef.progressBarElement = $(sewi.constants.PROGRESS_BAR_DOM);
+		selfRef.progressBarElement = $(sewi.constants.PROGRESS_BAR_DOM);
+        selfRef.progressBarAmountElement = $(sewi.constants.PROGRESS_BAR_AMOUNT_DOM);
         selfRef.textElement = $(sewi.constants.PROGRESS_BAR_TEXT_DOM);
 
         if (animated) {
-            selfRef.progressBarElement.addClass(sewi.constants.PROGRESS_BAR_ANIMATED_CLASS)
+            selfRef.progressBarAmountElement.addClass(sewi.constants.PROGRESS_BAR_ANIMATED_CLASS)
         }
-        selfRef.mainDOMElement.append(selfRef.progressBarElement)
-							  .append(selfRef.textElement)
-							  .addClass(sewi.constants.PROGRESS_CLASS);
+
+        selfRef.progressBarElement.append(selfRef.progressBarAmountElement)
+								  .append(selfRef.textElement);
+
+		selfRef.mainDOMElement.append(selfRef.progressBarElement)
+							  .addClass(sewi.constants.PROGRESS_BAR_BACKDROP_CLASS)
     }
 
     sewi.ProgressBar.prototype.update = function(percent){
@@ -112,7 +116,7 @@ var sewi = sewi || {};
         } else if(percent > 100 || percent < 0){
             console.error(methodName + ': parameter is out of range');
         } else {
-            selfRef.progressBarElement.css('width', percent+'%');
+            selfRef.progressBarAmountElement.css('width', percent+'%');
         }
     }
 
