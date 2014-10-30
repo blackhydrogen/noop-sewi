@@ -115,19 +115,31 @@ var sewi = sewi || {};
     }
 
     function initResizeTracking() {
-        var windowElement = $(window);
-
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
-            this.basicInfoView.on('transitionend', this.basicInfo.resize.bind(this.basicInfo));
-            windowElement.on('resize', this.basicInfo.resize.bind(this.basicInfo));
+            reportResize(this.basicInfoView, this.basicInfo);
         }
         if (_.isFunction(sewi.TabContainer)) {
-            this.resViewerView.on('transitionend', this.tabs.resize.bind(this.resViewer));
-            windowElement.on('resize', this.tabs.resize.bind(this.resViewer));
+            reportResize(this.resViewerView, this.tabs);
         }
         if (_.isFunction(sewi.ResourceGallery)) {
-            this.resGalleryView.on('transitionend', this.resGallery.resize.bind(this.resGallery));
-            windowElement.on('resize', this.resGallery.resize.bind(this.resGallery));
+            reportResize(this.resGalleryView, this.resGallery);
+        }
+    }
+
+    function reportResize(view, configuratorElement) {
+        var windowElement = $(window);
+
+        view.on('transitionend', resizeIfSizeChanged.bind(configuratorElement));
+        windowElement.resize(configuratorElement.resize.bind(configuratorElement));
+    }
+
+    function resizeIfSizeChanged(event) {
+        if (event.target == event.currentTarget) {
+            var propertyName = event.originalEvent.propertyName;
+            var callback = event.data;
+            if (propertyName == 'width' || propertyName == 'height') {
+                this.resize();
+            }
         }
     }
 
