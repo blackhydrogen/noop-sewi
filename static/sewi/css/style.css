@@ -159,15 +159,6 @@ div.minimize-button {
     background: transparent;
 }
 
-.resource-viewer .placeholder {
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	overflow: visible;
-}
-
 .resource-viewer .top-panel {
     position: absolute;
     top: -30px;
