@@ -1,4 +1,48 @@
-/* Put your CSS here */
+/* Start of custom font definition */
+
+@font-face {
+	font-family: 'Sewi-Icon-Font';
+	src:url('../fonts/Sewi-Icon-Font.eot?-p5jbvh');
+	src:url('../fonts/Sewi-Icon-Font.eot?#iefix-p5jbvh') format('embedded-opentype'),
+		url('../fonts/Sewi-Icon-Font.woff?-p5jbvh') format('woff'),
+		url('../fonts/Sewi-Icon-Font.ttf?-p5jbvh') format('truetype'),
+		url('../fonts/Sewi-Icon-Font.svg?-p5jbvh#Sewi-Icon-Font') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="custom-icon-"], [class*=" custom-icon-"] {
+	font-family: 'Sewi-Icon-Font';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.custom-icon-zoom-to-fit:before {
+	content: "\e603";
+}
+.custom-icon-zoom:before {
+	content: "\f002";
+}
+.custom-icon-brightness-medium:before {
+	content: "\e600";
+}
+.custom-icon-brightness-contrast:before {
+	content: "\e601";
+}
+.custom-icon-contrast:before {
+	content: "\e602";
+}
+
+/* End of custom font definition */
+
 html, body {
     min-height: 100%;
 }
