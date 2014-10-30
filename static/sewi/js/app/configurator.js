@@ -148,7 +148,7 @@ var sewi = sewi || {};
         this.isResourceViewerHidden = false;
         updateViewSizes.call(this);
 
-        this.tabs.addObjectToNewTab(galleryElement);
+        this.tabs.addObjectToNewTab($(galleryElement));
     }
 
     function updateViewSizes() {
@@ -275,8 +275,7 @@ var sewi = sewi || {};
     }
 
     function galleryOpenedResource(event, resourceDOM) {
-
-        openResource.call(this, $(resourceDOM));
+        openResource.call(this, resourceDOM);
     }
 
     // Configurator public methods
