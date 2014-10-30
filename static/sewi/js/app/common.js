@@ -76,6 +76,8 @@ var sewi = sewi || {};
         RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
 
         //Resource Viewer Constants
+        RESOURCE_VIEWER_BASIC_DOM: '<div></div>',
+        RESOURCE_VIEWER_PLACEHOLDER_DOM: '<div class="placeholder"></div>',
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
