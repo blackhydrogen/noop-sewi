@@ -14,6 +14,15 @@
 		border-color: initial;
 	}
 
+	.tooltip-inner {
+		max-width: 250px;
+	}
+
+	.tooltip.in {
+		opacity: 1;
+		filter: alpha(opacity=100);
+	}
+
 	/* End Bootstrap over-writes */
 
 	.image-resource-main-container {
@@ -123,7 +132,7 @@ sewi.ImageResourceViewer = function() {
 	mainContainer.addClass("image-resource-main-container");
 		var imageContainer = $('<div class="image-resource-image-container"></div>')
 		.appendTo(mainContainer);
-			var imageElement = $('<img src="sfc.png" class="image-resource-image">')
+			var imageElement = $('<img src="original.png" class="image-resource-image">')
 			.appendTo(imageContainer);
 		var controlsContainer = $('<div class="image-resource-control-panel animated"></div>')
 		.appendTo(mainContainer);
@@ -212,6 +221,20 @@ sewi.ImageResourceViewer = function() {
 				.appendTo(resetControlContainer);
 		var showHideControlsButton = $('<input type="button" value="Hide Controls" class="image-resource-show-hide-button">')
 		.appendTo(mainContainer);
+
+	function loadImage() {
+			$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			async: true,
+			url: videoResourceURL
+		}).done(function(data) {
+			console.log('Video data retrieved.');
+			selfRef.video = data;
+			selfRef.isDataLoaded = true;
+			selfRef.mainDOMElement.trigger('DataLoaded');
+		});
+	}
 
 	function setupFalseColorControl(selectComponent) {
 		var capitalizeFirstCharacter = function(string) {
@@ -483,29 +506,29 @@ sewi.ImageResourceViewer = function() {
 	function setupZoomControls() {
 		var imagePanZoomWidget;
 
-		imageElement.on("zoomchange", function() {
-			zoomControl.val( imagePanZoomWidget.getTargetZoom(imagePanZoomWidget) );
+		imageElement.on("zoomchange", function(event, newZoomPercentage) {
+			zoomControl.val(newZoomPercentage);
 		});
 		
 		imageElement.one("load", function() {
+			zoomControl.val("100"); // zoomchange may not fire if the target is not resized during the widget construction
 			imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
-			imagePanZoomWidget.setTargetZoomToFit(imagePanZoomWidget);
 		});
 
 		zoomControl.on("change", function() {
-			imagePanZoomWidget.setTargetZoom(imagePanZoomWidget, zoomControl.val());
+			imagePanZoomWidget.setTargetZoom(zoomControl.val());
 		});
 		zoom100PercentButton.on("click", function() {
-			imagePanZoomWidget.setTargetZoom(imagePanZoomWidget, 100);
-			imagePanZoomWidget.centreTargetOnContainer(imagePanZoomWidget);
+			imagePanZoomWidget.setTargetZoom(100);
+			imagePanZoomWidget.centreTargetOnContainer();
 		});
 		zoomFitButton.on("click", function() {
-			imagePanZoomWidget.setTargetZoomToFit(imagePanZoomWidget);
+			imagePanZoomWidget.setTargetZoomToFit();
 		});
 	}
 
 	selfref.resizeCallback = function() {
-		setoriginalImageInfo();
+		// setoriginalImageInfo();
 	}
 
 	/*
@@ -1064,6 +1087,42 @@ $(function() {
 	console.log("TIME: " + (new Date().getTime() - t1));
 	theComponent.load();
 	$("body").prepend(theComponent.getDOM());
+
+	$(".image-resource-grayscale").parent().tooltip({
+		html: true,
+		title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="tooltip_grayscale.png">',
+		container: "body"
+	});
+
+	$(".image-resource-difference").parent().tooltip({
+		html: true,
+		title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="tooltip_difference.png">',
+		container: "body"
+	});
+
+	$(".image-resource-invert").parent().tooltip({
+		html: true,
+		title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="tooltip_invert.png">',
+		container: "body"
+	});
+
+	$(".image-resource-historgram-equalize").parent().tooltip({
+		html: true,
+		title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="tooltip_histogram_equalization.png">',
+		container: "body"
+	});
+
+	$(".image-resource-false-color").parent().tooltip({
+		html: true,
+		title: 'Artifically colors a grayscale image with a predefined color spectrum. This filter may highlight hard-to-see differences in the shades of gray of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_flame.png">',
+		container: "body"
+	});
+
+	$(".image-resource-selective-stretching-region").parent().parent().tooltip({
+		html: true,
+		title: 'Artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="tooltip_contrast_stretch_middle.png">',
+		container: "body"
+	});
 });
 
 </script>
@@ -1071,6 +1130,7 @@ $(function() {
 <body>
 <p id="debug"></p>
 <div id="qunit"></div>
+<input type="checkbox" id="ffgg">
 <p>hi</p>
 <p>hi</p>
 <p>hi</p>

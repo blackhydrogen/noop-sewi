@@ -31,6 +31,18 @@ var sewi = sewi || {};
 	sewi.ConfiguratorElement.prototype.on = function() {
 		this.mainDOMElement.on.apply(this.mainDOMElement, arguments);
 	}
+
+	// Unimplemented methods, must be overridden by subclasses
+
+	/**
+	 * Loads all remaining resources (including those that fire off events)
+	 */
+	sewi.ConfiguratorElement.prototype.load = _.noop;
+
+	/**
+	 * Inform the ConfiguratorElement that it has been resized.
+	 */
+	sewi.ConfiguratorElement.prototype.resize = _.noop;
 })();
 
 (function(){
@@ -241,9 +253,4 @@ var sewi = sewi || {};
 
 		progressBarElement.detach();
 	}
-
-	// Unimplemented methods, must be overridden by subclasses
-
-	sewi.ResourceViewer.prototype.load = _.noop;
-	sewi.ResourceViewer.prototype.resize = _.noop;
 })();

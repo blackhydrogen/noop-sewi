@@ -68,6 +68,11 @@ var sewi = sewi || {};
         PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
 
+        //Resource Gallery Constants
+        RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
+        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
+        RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
+        RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
@@ -91,6 +96,10 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM: '<div class="video-boundary"></div>',
         VIDEO_RESOURCE_VIEWER_CONTAINER_DOM: '<div class="video-container"></div>',
         VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE: 'Loading Video',
+        VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load video, please close and re-open video',
+        VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM: '<button class="btn btn-default"></button>',
+        VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default"></button>',
+        VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" />',
 
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
