@@ -110,20 +110,39 @@ var sewi = sewi || {};
                 selfRef.removeSelf();
             }
         });
-        
-        this.panel.one('webkitTransitionEnd otransitionend msTransitionEnd transitionend', function(event){
-                console.log("transition ended");
-                //console.log(this);
-                //selfRef.tab.resize();
-            });
 
-        DOMObject.on('FullscreenToggled', function(){
-                var requestFullscreen = this.requestFullscreen || 
-                                        this.mozRequestFullScreen || 
-                                        this.webkitRequestFullscreen || 
-                                        this.msRequestFullscreen;
-                requestFullscreen.call(this);
-            });
+        
+        this.panel.on(whichTransitionEvent(), function(event){
+            var propertyName = event.originalEvent.propertyName;
+            if(propertyName == "width" || propertyName == "height"){
+                selfRef.tab.resize();
+            }
+        });
+        
+        $(DOMObject).on('FullscreenToggled', function(){
+            var requestFullscreen = this.requestFullscreen || 
+                                    this.mozRequestFullScreen || 
+                                    this.webkitRequestFullscreen || 
+                                    this.msRequestFullscreen;
+            requestFullscreen.call(this);
+        });
+    }
+
+    function whichTransitionEvent(){
+        var el = document.createElement('fakeelement');
+        var transitions = {
+            'WebkitTransition' :'webkitTransitionEnd',
+            'MozTransition'    :'transitionend',
+            'MSTransition'     :'msTransitionEnd',
+            'OTransition'      :'oTransitionEnd',
+            'transition'       :'transitionEnd'
+        }
+
+        for(var t in transitions){
+            if( el.style[t] !== undefined ){
+                return transitions[t];
+            }
+        }
     }
 
     sewi.TabPanel.prototype.removeSelf = function(){
@@ -132,7 +151,9 @@ var sewi = sewi || {};
         for(var i = 0; i < len; i++){
             selfRef.indicators[i].remove(); 
         }
-        delete selfRef.tab.panelList[selfRef.state];
+        //delete selfRef.tab.panelList[selfRef.state];
+        console.log("delete");
+        console.log(selfRef);
         selfRef.panel.remove();     
     }
 
@@ -141,7 +162,6 @@ var sewi = sewi || {};
         selfRef.tab.panelList[oldPosition].getDOM().addClass(addCSSClass).removeClass(removeCSSClass);
         selfRef.tab.panelList[oldPosition].state = newPosition;
         selfRef.tab.panelList[newPosition] = selfRef.tab.panelList[oldPosition];
-        selfRef.tab.panelList[newPosition].one();
         delete selfRef.tab.panelList[oldPosition];
     }
 
@@ -382,6 +402,7 @@ var sewi = sewi || {};
         dropArea.droppable({
             drop: function(event, ui){
                 event.preventDefault();
+                console.log(ui.draggable);
                 if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.FULL){
                     if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT){
                         selfRef.addPanel(sewi.constants.TAB_PANEL_POSITIONS.LEFT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, ui.draggable);
@@ -469,7 +490,6 @@ var sewi = sewi || {};
                         dropArea.removeClass('panel-indicator-bottom-right');
                     }
                 }
-                selfRef.tab.resize();
             },
         });
     }
@@ -518,6 +538,7 @@ var sewi = sewi || {};
 
     sewi.TabPanel.prototype.resize = function(){
         var selfRef = this;
+        console.log("tab panel resize called");
         selfRef.resourceViewer.resize();
     }
 
@@ -675,6 +696,7 @@ var sewi = sewi || {};
         var panelList = selfRef.panelList;
         for(var panel in panelList){
             if(panelList.hasOwnProperty(panel)){
+                //console.log(panelList[panel]);
                 panelList[panel].resize();
             }
         } 
