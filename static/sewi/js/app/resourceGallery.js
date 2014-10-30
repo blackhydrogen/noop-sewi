@@ -5,13 +5,13 @@ sewi.ResourceGallery = function() {
   sewi.ConfiguratorElement.call(this);
 
   selfRef.resources = [];
-  selfRef.resources.push('/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg');
+  selfRef.resources.push('/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg');
 
   selfRef.resourceHeaders = [];
-  selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub', 'X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub', 'X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub');
+  selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub');
 
   selfRef.resourceTypes = [];
-  selfRef.resourceTypes.push('image', 'image', 'video', 'audio');
+  selfRef.resourceTypes.push('image', 'ecg', 'video', 'audio');
 
   selfRef.metaData = [];
   selfRef.metaData.push('24/11/2013');
@@ -36,9 +36,9 @@ sewi.ResourceGallery.prototype.load = function() {
         helper: 'clone',
         revert: 'invalid',
         appendTo: 'body',
-        start: function(e, ui){
-         ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS)
-         .removeClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS);
+        start: function(e, ui) {
+          ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS)
+            .removeClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS);
         }
       });
 
@@ -59,7 +59,7 @@ sewi.ResourceGallery.prototype.load = function() {
 
 sewi.ResourceGallery.prototype.addScrollbar = function() {
   var selfRef = this;
-  selfRef.mainDOMElement.find('.'+ sewi.constants.RESOURCE_GALLERY_DOM_CLASS).slimScroll({
+  selfRef.mainDOMElement.slimScroll({
     color: '#000',
     width: '100%',
     size: '4px',
@@ -69,10 +69,9 @@ sewi.ResourceGallery.prototype.addScrollbar = function() {
 
 sewi.ResourceGallery.prototype.addTooltips = function() {
   var selfRef = this;
-  console.log(this); 
   selfRef.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).tooltip({
     container: 'body',
-    title:  ('Recorded on:' + selfRef.metaData[0]),
+    title: ('Recorded on:' + selfRef.metaData[0]),
     placement: 'left'
   });
 }

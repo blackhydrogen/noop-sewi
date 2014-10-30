@@ -13,9 +13,9 @@
 }
 
 .media-thumbnail {
-  width: 96%;
-height: 70%;
-padding: 4px;
+    width: 96%;
+    padding: 4px;
+    height: 70px;
 }
 
 .clear {
@@ -31,13 +31,9 @@ padding: 4px;
     margin-bottom: 5px;
 }
 
-.tooltip{
-  z-index: 20000
-}
-
-.resource-dragged{
+.resource-dragged {
     border: solid 2.9px;
     background-color: #d4dbe0;
     color: white;
-    width: 100px;
+    width: 90px;
 }
