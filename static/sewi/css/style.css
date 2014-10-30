@@ -102,6 +102,10 @@ div.minimize-button {
     position: relative;
 }
 
+.resource-viewer *::selection{
+    background: transparent;
+}
+
 .resource-viewer .top-panel {
     position: absolute;
     top: -30px;
