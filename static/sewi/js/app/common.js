@@ -73,6 +73,7 @@ var sewi = sewi || {};
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
         RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
         RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
+        RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS: 'resource-dragged',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_CLASS: 'resource-viewer',

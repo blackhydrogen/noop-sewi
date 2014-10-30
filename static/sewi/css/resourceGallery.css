@@ -2,11 +2,10 @@
     border: solid 2.9px;
     background-color: #d4dbe0;
     color: white;
-    width: 100px;
+    width: 100%;
     margin-bottom: -3px;
     float: left;
     cursor: pointer;
-    height: 90px;
 }
 
 .resource:hover {
@@ -14,9 +13,9 @@
 }
 
 .media-thumbnail {
-    width: 96%;
-    height: 70px;
-    padding: 4px;
+  width: 96%;
+height: 70%;
+padding: 4px;
 }
 
 .clear {
@@ -24,10 +23,21 @@
 }
 
 .media-header {
-    width: 90px;
+    width: 90%;
     overflow-wrap: break-word;
     text-align: center;
     font-size: 0.82em;
     color: #000;
     margin-bottom: 5px;
+}
+
+.tooltip{
+  z-index: 20000
+}
+
+.resource-dragged{
+    border: solid 2.9px;
+    background-color: #d4dbe0;
+    color: white;
+    width: 100px;
 }
