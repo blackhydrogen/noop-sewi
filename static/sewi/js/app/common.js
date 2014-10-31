@@ -64,18 +64,22 @@ var sewi = sewi || {};
         ERROR_SCREEN_TEXT_DOM: '<div class="error-text"></div>',
 
         //Progress Constants
-        PROGRESS_CLASS: 'progress',
-        PROGRESS_BAR_DOM: '<div class="progress-bar" role="progressbar"></div>',
+        PROGRESS_BAR_DOM: '<div class="progress"></div>',
+        PROGRESS_BAR_AMOUNT_DOM: '<div class="progress-bar" role="progressbar"></div>',
         PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
+        PROGRESS_BAR_BACKDROP_CLASS: 'progress-bar-backdrop',
 
         //Resource Gallery Constants
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
         RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
         RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
+        RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS: 'resource-dragged',
 
         //Resource Viewer Constants
+        RESOURCE_VIEWER_BASIC_DOM: '<div></div>',
+        RESOURCE_VIEWER_PLACEHOLDER_DOM: '<div class="placeholder"></div>',
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
