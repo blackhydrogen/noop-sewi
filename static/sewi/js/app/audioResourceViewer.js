@@ -157,9 +157,9 @@ var sewi = sewi || {};
 
     function createMediaButtons(){
         var buttons = [];
-        var zoomToFitBtn = $('<button type="button" class="btn btn-default" id="zoomToFit">Fit</button>');
-        var zoomToSelectionBtn = $('<button type="button" class="btn btn-default" id="zoomToSelection">Selection</button>');
-        var clearSelectionBtn = $('<button type="button" class="btn btn-default" id="clearSelection">Clear</button>');
+        var zoomToFitBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>');
+        var zoomToSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-part" id="zoomToSelection"></button>');
+        var clearSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-none" id="clearSelection"></button>');
         zoomToFitBtn.on('click', zoomToFitBtnClickEvent.bind(this));
         zoomToSelectionBtn.on('click', zoomToSelectionBtnClickEvent.bind(this));
         clearSelectionBtn.on('click', clearSelectionBtnClickEvent.bind(this));
