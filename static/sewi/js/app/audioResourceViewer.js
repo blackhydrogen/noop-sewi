@@ -18,6 +18,7 @@ var sewi = sewi || {};
         this.beginTime = 0;
         this.startTime = 0;
         this.endTime = 0;
+        this.duration = 0;
         this.audioBuffer = null;
         this.isPlaying = false;
         this.id = options.id;
@@ -114,6 +115,7 @@ var sewi = sewi || {};
         var numChannels = buffer.numberOfChannels; // (unsigned int)
         var channelName = ['left-channel','right-channel'];
 
+        this.duration = duration;
         this.startTime = 0;
         this.endTime = duration;
         this.controls.update({duration : duration, currentTime : this.offset});
@@ -132,6 +134,7 @@ var sewi = sewi || {};
         
         this.scrollBar = new sewi.ScrollBar();
         this.contentDOM.append(this.scrollBar.getDOM());
+        this.scrollBar.setWidthScale(1);
     }
 
     function onAudioDecodeFail(event){}
@@ -174,20 +177,31 @@ var sewi = sewi || {};
             this.audioAmplitudeGraphs[i].zoomToFit();
             this.audioAmplitudeGraphs[i].updateGraph();
         }
+        this.startTime = 0;
+        this.endTime = this.duration;
+        this.scrollBar.setWidthScale(1);
     }
 
     function zoomToSelectionBtnClickEvent(event){
-        for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
-            this.audioAmplitudeGraphs[i].zoomToSelection();
-            this.audioAmplitudeGraphs[i].updateGraph();
-        } 
+        if(this.audioAmplitudeGraphs[0]){
+            if(this.audioAmplitudeGraphs[0].hasSelectedRegion()){
+                for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
+                    this.audioAmplitudeGraphs[i].zoomToSelection();
+                    this.audioAmplitudeGraphs[i].updateGraph();
+                }
+                this.scrollBar.setWidthScale(this.audioAmplitudeGraphs[0].viewResolution / this.duration);
+                this.scrollBar.setLeft(this.audioAmplitudeGraphs[0].viewPos / this.duration);
+            }
+        }
     }
 
     function clearSelectionBtnClickEvent(event){
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
             this.audioAmplitudeGraphs[i].clearSelection();
             this.audioAmplitudeGraphs[i].updateGraph();
-        }  
+        } 
+        this.startTime = this.audioAmplitudeGraphs[0].viewPos;
+        this.endTime = this.audioAmplitudeGraphs[0].viewPos + this.audioAmplitudeGraphs[0].viewResolution;
     }
 
     sewi.AudioResourceViewer.prototype.initControls = function(){
@@ -829,6 +843,9 @@ var sewi = sewi || {};
         otherGraph.linkedGraph = this;
     }
 
+    sewi.AudioAmplitudeGraph.prototype.hasSelectedRegion = function(){
+        return this.selectionStart === this.selectionEnd ? false : true;
+    }
 })();
 
 //Audio Sequence Class
