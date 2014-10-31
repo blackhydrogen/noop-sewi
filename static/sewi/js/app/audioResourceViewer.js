@@ -124,11 +124,14 @@ var sewi = sewi || {};
             var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], audioSequence);
             this.audioAmplitudeGraphs.push(audioAmplitudeGraph);
         }
-
+        
         // Link the left channel and right channels graphs together for canvas update
         if(this.audioAmplitudeGraphs.length == 2){
             this.audioAmplitudeGraphs[0].link(this.audioAmplitudeGraphs[1]);
         }
+        
+        this.scrollBar = new sewi.ScrollBar();
+        this.contentDOM.append(this.scrollBar.getDOM());
     }
 
     function onAudioDecodeFail(event){}
@@ -287,7 +290,9 @@ var sewi = sewi || {};
     }
 
     sewi.AudioResourceViewer.prototype.resize = function(){
+        console.log("audio resource viewer resized");
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
+            this.audioAmplitudeGraphs[i].updateCanvasDimensions();
             this.audioAmplitudeGraphs[i].updateGraph();
         }
     }
@@ -426,11 +431,11 @@ var sewi = sewi || {};
         else{
             this.selectionStart = getPixelToAbsolute.call(this, this.mouseX);
             this.selectionEnd = this.selectionStart;
-            this.resourceViewer.offsetChanged(this.selectionStart / this.audioSequence.sampleRate);
         }
         
         this.draw.call(this);
         updateLinkedGraph.call(this);
+        console.log(this.selectionStart +","+ this.selectionEnd);
     }
 
     function canvasMouseMoveEvent(event){
@@ -485,12 +490,13 @@ var sewi = sewi || {};
         var resourceViewer = this.resourceViewer;
         var start = this.selectionStart > this.selectionEnd ? this.selectionEnd : this.selectionStart;
         var end = this.selectionStart > this.selectionEnd ? this.selectionStart : this.selectionEnd;
-        
-        resourceViewer.startTime = start / this.audioSequence.sampleRate;
-        resourceViewer.endTime = end / this.audioSequence.sampleRate; 
-        resourceViewer.offset = resourceViewer.startTime;
-        resourceViewer.lastUpdated = resourceViewer.startTime;
-        resourceViewer.drawTimer = 0;
+        if(start !== end){ 
+            resourceViewer.startTime = start / this.audioSequence.sampleRate;
+            resourceViewer.endTime = end / this.audioSequence.sampleRate; 
+            resourceViewer.offset = resourceViewer.startTime;
+            resourceViewer.lastUpdated = resourceViewer.startTime;
+            resourceViewer.drawTimer = 0;
+        }
     }
 
     function canvasMouseUpEvent(event){
@@ -509,6 +515,7 @@ var sewi = sewi || {};
         
         //this.zoomToSelection();
         //this.updateGraph();
+        this.resourceViewer.offsetChanged(this.selectionStart / this.audioSequence.sampleRate);
         updateLinkedGraph.call(this)
     }
 
@@ -640,14 +647,13 @@ var sewi = sewi || {};
 
             canvasContext.strokeStyle = this.colorSelectionStroke;
             canvasContext.strokeRect(start, 0, width, this.canvasHeight);
-        } else {
-            this.selectionStart = 0;
-            this.selectionEnd = 0;
-         //   canvasContext.strokeStyle = this.colorSelectionStroke;               
-         //   canvasContext.beginPath();
-         //   canvasContext.moveTo(selectionStartPixel, 0);
-         //   canvasContext.lineTo(selectionStartPixel, this.canvasHeight);
-         //   canvasContext.stroke(); 
+
+        } else if(this.playbackPos === this.selectionStart){
+                canvasContext.strokeStyle = this.colorSelectionStroke;               
+                canvasContext.beginPath();
+                canvasContext.moveTo(selectionStartPixel, 0);
+                canvasContext.lineTo(selectionStartPixel, this.canvasHeight);
+                canvasContext.stroke(); 
         }
 
     }
@@ -802,6 +808,15 @@ var sewi = sewi || {};
         drawPlaybackLineIndicator.call(this, canvasContext);
         // Draw text
         drawText.call(this, canvasContext);
+    }
+
+    sewi.AudioAmplitudeGraph.prototype.updateCanvasDimensions = function(){
+        this.canvasHeight = this.graphDOM.height();
+        this.canvasWidth = this.graphDOM.width();
+        this.canvasDOM.attr({
+                    'width' : this.canvasWidth,
+                    'height': this.canvasHeight
+                });
     }
 
     sewi.AudioAmplitudeGraph.prototype.updateGraph = function(){
