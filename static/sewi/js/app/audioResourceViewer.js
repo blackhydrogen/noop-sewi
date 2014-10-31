@@ -135,9 +135,10 @@ var sewi = sewi || {};
         this.scrollBar = new sewi.ScrollBar();
         this.contentDOM.append(this.scrollBar.getDOM());
         this.scrollBar.setWidthScale(1);
+        this.scrollBar.on('move', scrollBarMove.bind(this));
     }
 
-    function onAudioDecodeFail(event){}
+    function onAudioDecodeFail(event){ }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
         var graphDOM = $('<div class="wave-graph '+channelName+'" id="'+this.id+'" title="'+channelName+'"></div>');
@@ -190,7 +191,7 @@ var sewi = sewi || {};
                     this.audioAmplitudeGraphs[i].updateGraph();
                 }
                 this.scrollBar.setWidthScale(this.audioAmplitudeGraphs[0].viewResolution / this.duration);
-                this.scrollBar.setLeft(this.audioAmplitudeGraphs[0].viewPos / this.duration);
+                this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
             }
         }
     }
@@ -202,6 +203,14 @@ var sewi = sewi || {};
         } 
         this.startTime = this.audioAmplitudeGraphs[0].viewPos;
         this.endTime = this.audioAmplitudeGraphs[0].viewPos + this.audioAmplitudeGraphs[0].viewResolution;
+    }
+
+    function scrollBarMove(event){
+        var pos = this.scrollBar.getPosition();
+        for(var i =0; i < this.audioAmplitudeGraphs.length; i++){
+            this.audioAmplitudeGraphs[i].viewPos = pos * (this.duration - this.audioAmplitudeGraphs[i].viewResolution);
+            this.audioAmplitudeGraphs[i].updateGraph();
+        }
     }
 
     sewi.AudioResourceViewer.prototype.initControls = function(){
@@ -496,6 +505,7 @@ var sewi = sewi || {};
         } else {
             this.canvasDOM.css({'cursor' : 'default'});
         }
+
         this.draw.call(this);
         updateLinkedGraph.call(this);
     }
