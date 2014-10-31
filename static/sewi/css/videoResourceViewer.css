@@ -49,7 +49,7 @@ video {
     padding: 0;
 }
 
-.media-control-panel button:before {
+.media-control-panel button.video-icon {
     font-family: 'VideoIcons';
 }
 
@@ -138,4 +138,16 @@ video {
 
 .media-control-panel .volume-popup {
     background-color: #eee;
+}
+
+.media-control-panel button.zoom-button:before {
+    content: "\f002";
+}
+
+.media-control-panel button.zoom-button:hover:before {
+    content: "\e601";
+}
+
+.media-control-panel button.zoom-to-fit-button:before {
+    content: "\e606";
 }
