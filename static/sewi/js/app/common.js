@@ -57,6 +57,7 @@ var sewi = sewi || {};
         TAB_MAX_NUM_TABS: 5,
         TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
         TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
+        TAB_PREVIOUS_DROP_AREA : {NONE: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4},
 
         //Error Screen Constants
         ERROR_SCREEN_CLASS: 'error-screen',
