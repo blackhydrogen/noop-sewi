@@ -57,19 +57,29 @@ var sewi = sewi || {};
         TAB_MAX_NUM_TABS: 5,
         TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
         TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
+        TAB_PREVIOUS_DROP_AREA : {NONE: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4},
 
         //Error Screen Constants
         ERROR_SCREEN_CLASS: 'error-screen',
         ERROR_SCREEN_TEXT_DOM: '<div class="error-text"></div>',
 
         //Progress Constants
-        PROGRESS_CLASS: 'progress',
-        PROGRESS_BAR_DOM: '<div class="progress-bar" role="progressbar"></div>',
+        PROGRESS_BAR_DOM: '<div class="progress"></div>',
+        PROGRESS_BAR_AMOUNT_DOM: '<div class="progress-bar" role="progressbar"></div>',
         PROGRESS_BAR_TEXT_DOM: '<div class="progress-bar-text"></div>',
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
+        PROGRESS_BAR_BACKDROP_CLASS: 'progress-bar-backdrop',
 
+        //Resource Gallery Constants
+        RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
+        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
+        RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
+        RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
+        RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS: 'resource-dragged',
 
         //Resource Viewer Constants
+        RESOURCE_VIEWER_BASIC_DOM: '<div></div>',
+        RESOURCE_VIEWER_PLACEHOLDER_DOM: '<div class="placeholder"></div>',
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
@@ -91,6 +101,10 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_BOUNDARY_DOM: '<div class="video-boundary"></div>',
         VIDEO_RESOURCE_VIEWER_CONTAINER_DOM: '<div class="video-container"></div>',
         VIDEO_RESOURCE_VIEWER_LOADING_VIDEO_MESSAGE: 'Loading Video',
+        VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load video, please close and re-open video',
+        VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM: '<button class="btn btn-default"></button>',
+        VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default"></button>',
+        VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" />',
 
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
