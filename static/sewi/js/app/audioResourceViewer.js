@@ -35,7 +35,7 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.AudioResourceViewer, sewi.ResourceViewer);
 
-    sewi.AudioResourceViewer.prototype.load = function(url, type){
+    sewi.AudioResourceViewer.prototype.load = function(){
         return $('<source src="'+url+'" type="'+type+'">');
     }
 
@@ -109,10 +109,10 @@ var sewi = sewi || {};
 
     function onAudioDecodeFinish(buffer){
         this.audioBuffer = buffer;
-        var sampleRate = buffer.sampleRate; // samples per second (float)
-        var length = buffer.length; // audio data in samples (float)
-        var duration = buffer.duration; // in seconds (float)
-        var numChannels = buffer.numberOfChannels; // (unsigned int)
+        var sampleRate = buffer.sampleRate; 
+        var length = buffer.length; 
+        var duration = buffer.duration; 
+        var numChannels = buffer.numberOfChannels;
         var channelName = ['left-channel','right-channel'];
 
         this.duration = duration;
@@ -154,8 +154,16 @@ var sewi = sewi || {};
 
     function updateGraphPlaybackPosition(positionInSec){
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
-            this.audioAmplitudeGraphs[i].playbackPos = positionInSec;
-            this.audioAmplitudeGraphs[i].draw();
+            var graph = this.audioAmplitudeGraphs[i];
+            graph.playbackPos = positionInSec;
+            if(graph.playbackPos > graph.viewPos + graph.viewResolution){
+                graph.viewPos = graph.playbackPos;
+                if(graph.viewPos + graph.viewResolution > this.duration){
+                    graph.viewPos = this.duration - graph.viewResolution;
+                }
+                graph.updateGraph();
+            }
+            graph.draw();
         }
     }
 
@@ -174,6 +182,7 @@ var sewi = sewi || {};
     }
     
     function zoomToFitBtnClickEvent(event){
+        event.preventDefault();
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
             this.audioAmplitudeGraphs[i].zoomToFit();
             this.audioAmplitudeGraphs[i].updateGraph();
@@ -184,6 +193,7 @@ var sewi = sewi || {};
     }
 
     function zoomToSelectionBtnClickEvent(event){
+        event.preventDefault();
         if(this.audioAmplitudeGraphs[0]){
             if(this.audioAmplitudeGraphs[0].hasSelectedRegion()){
                 for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
@@ -197,15 +207,17 @@ var sewi = sewi || {};
     }
 
     function clearSelectionBtnClickEvent(event){
+        event.preventDefault();
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
             this.audioAmplitudeGraphs[i].clearSelection();
             this.audioAmplitudeGraphs[i].updateGraph();
         } 
-        this.startTime = this.audioAmplitudeGraphs[0].viewPos;
-        this.endTime = this.audioAmplitudeGraphs[0].viewPos + this.audioAmplitudeGraphs[0].viewResolution;
+        this.startTime = 0;
+        this.endTime = this.duration;
     }
 
     function scrollBarMove(event){
+        event.preventDefault();
         var pos = this.scrollBar.getPosition();
         for(var i =0; i < this.audioAmplitudeGraphs.length; i++){
             this.audioAmplitudeGraphs[i].viewPos = pos * (this.duration - this.audioAmplitudeGraphs[i].viewResolution);
@@ -228,13 +240,13 @@ var sewi = sewi || {};
     }
 
     sewi.AudioResourceViewer.prototype.offsetChanged = function(position){
+        if(this.isPlaying){
+            this.offsetValueChanged = true;
+        }
         this.offset = position;
         this.lastUpdated = this.offset;
         this.drawTimer = 0;
         updateGraphPlaybackPosition.call(this, this.offset);
-        if(this.isPlaying){
-            this.offsetValueChanged = true;
-        }
     }
 
     sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
@@ -252,37 +264,36 @@ var sewi = sewi || {};
 
     sewi.AudioResourceViewer.prototype.updateMediaControl = function(event){ 
         if(this.source){
-            if(this.isPlaying){ 
+            if(this.isPlaying){
                 if(!this.offsetValueChanged){
                     var duration = this.source.buffer.duration;
                     var currentTime = ((Date.now() - this.beginTime) / 1000 + this.offset);
                     var percent = (currentTime / duration)*100;
-                    this.controls.update({position : percent, currentTime : currentTime });
+                    this.controls.update({position : percent, 
+                                        currentTime : currentTime });
                     this.drawTimer += (currentTime - this.lastUpdated);
                     
                     //Update the graph at 10 fps
                     if(this.drawTimer > this.updateInterval){
                         updateGraphPlaybackPosition.call(this, currentTime);
+                        this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
                         this.drawTimer = 0;
                     }
                     this.lastUpdated = currentTime;
 
                     if(this.endTime - currentTime < 0.01){
-                        this.source.stop(0);
-                        this.isPlaying = false;
+                        this.pauseAudio();
                         this.offset = this.startTime;
-                        this.source.disconnect(this.gainNode);
-                        this.source.disconnect(this.scriptProcessor);
-                        this.controls.update({position : (this.offset / duration) * 100, 
-                                                playing : this.isPlaying});
+                        this.controls.update({position : (this.offset / duration) * 100});
                         
                         this.lastUpdated = this.offset;
                         this.drawTimer = 0;
                         updateGraphPlaybackPosition.call(this, this.offset);
+                        this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
                     }  
                 } else {
                     this.pauseAudio();
-                    this.playAudio();
+                    //this.playAudio();
                     this.offsetValueChanged = false;
                 }
             }
@@ -298,25 +309,30 @@ var sewi = sewi || {};
             this.beginTime = Date.now();
             this.source.start(0, this.offset);
             this.isPlaying = true;
-            this.controls.update({isPlaying: this.isPlaying});
+            this.controls.update({playing: !this.isPlaying});
             updateGraphPlaybackPosition.call(this, this.offset);        
         }
     }
 
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
         if(this.source){
-            this.isPlaying = false;
             this.offset += (Date.now() - this.beginTime) / 1000;
             this.source.stop(0);
-            this.controls.update({isPlaying: this.isPlaying});
+            this.source.disconnect(this.gainNode);
+            this.source.disconnect(this.scriptProcessor);
+            this.isPlaying = false;
+            this.controls.update({playing: !this.isPlaying});
         }
     }
 
     sewi.AudioResourceViewer.prototype.resize = function(){
-        console.log("audio resource viewer resized");
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
             this.audioAmplitudeGraphs[i].updateCanvasDimensions();
             this.audioAmplitudeGraphs[i].updateGraph();
+        }
+    
+        if(this.scrollBar){
+            this.scrollBar.resize();
         }
     }
 })();
@@ -372,17 +388,17 @@ var sewi = sewi || {};
 
     function setupColorVariables(){
         // colors when the mouse is outside of the editor box
-        this.colorInactiveTop = "#d7e5c7";
-        this.colorInactiveBottom = "#d7e5c7";
+        this.colorInactiveTop = "#AAA";
+        this.colorInactiveBottom = "#AAA";
         // colors when the mouse is inside of the editor box
-        this.colorActiveTop = "#e8f6d8";
-        this.colorActiveBottom = "#e8f6d8";
+        this.colorActiveTop = "#BBB";
+        this.colorActiveBottom = "#BBB";
         // color when the mouse is pressed during inside of the editor box
-        this.colorMouseDownTop = "#d7e5c7";
-        this.colorMouseDownBottom = "#d7e5c7";
+        this.colorMouseDownTop = "#AAA";
+        this.colorMouseDownBottom = "#AAA";
         // color of the selection frame
-        this.colorSelectionStroke = "rgba(255,0,0,0.5)";
-        this.colorSelectionFill = "rgba(255,0,0,0.2)";
+        this.colorSelectionStroke = "rgba(0,0,255,0.5)";
+        this.colorSelectionFill = "rgba(0,0,255,0.2)";
     }
 
     function setupMiscVariables(){
@@ -479,7 +495,7 @@ var sewi = sewi || {};
             if (this.mouseInsideOfSelection){
                 var absDelta = getPixelToAbsolute.call(this, this.mouseX) - getPixelToAbsolute.call(this, this.previousMouseX);
 
-                this.canvasDOM.css({'cursor' : 'grabbing'});
+                this.canvasDOM.css({'cursor' : '-webkit-grabbing'});
                 // move the selection with the delta
                 this.selectionStart += absDelta;
                 this.selectionEnd += absDelta;
@@ -498,7 +514,7 @@ var sewi = sewi || {};
         } 
         
         if (this.mouseX > selectionStartPixel + allowance && this.mouseX <= selectionEndPixel - allowance){
-            this.canvasDOM.css({'cursor' : 'grab'});
+            this.canvasDOM.css({'cursor' : '-webkit-grab'});
         } else if ((this.mouseX > selectionStartPixel - allowance && this.mouseX < selectionStartPixel + allowance) || 
                     (this.mouseX < selectionEndPixel + allowance && this.mouseX > selectionEndPixel - allowance)){
             this.canvasDOM.css({'cursor' : 'ew-resize'});
@@ -520,6 +536,8 @@ var sewi = sewi || {};
             resourceViewer.offset = resourceViewer.startTime;
             resourceViewer.lastUpdated = resourceViewer.startTime;
             resourceViewer.drawTimer = 0;
+            resourceViewer.controls.update({currentTime : resourceViewer.offset, 
+                                            position : resourceViewer.offset / this.audioSequence.duration});
         }
     }
 
@@ -537,8 +555,6 @@ var sewi = sewi || {};
         this.mouseSelectionOfEnd = false;
         this.mouseDown = false;
         
-        //this.zoomToSelection();
-        //this.updateGraph();
         this.resourceViewer.offsetChanged(this.selectionStart / this.audioSequence.sampleRate);
         updateLinkedGraph.call(this)
     }
@@ -568,8 +584,6 @@ var sewi = sewi || {};
         this.mouseSelectionOfEnd = false;
         this.mouseDown = false;
         
-        //this.zoomToFit();
-        //this.updateGraph();
         updateLinkedGraph.call(this)
     }
 
@@ -610,7 +624,7 @@ var sewi = sewi || {};
         var data = seq.channelData;
         var canvasWidth = this.canvasDOM.width();
         //canvasContext.setLineWidth(1);
-        canvasContext.strokeStyle = "rgba(0,0,0,0.5)";                
+        canvasContext.strokeStyle = "rgba(102,102,255,0.9)";                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
 
