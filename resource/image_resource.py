@@ -1,26 +1,52 @@
 from . import BaseResource
+from mds.core.models import Observation, Concept
+
+import logging
+logger = logging.getLogger('mds.sewi')
 
 class ImageResource(BaseResource):
-    """A representation of an image Resource.
+    """A representation of an image resource.
     """
 
+    __ERROR_RESOURCE_NOT_IMAGE = 'Resource is not an image.'
+    __IMAGE_TYPE_STRING = 'image'
+
     def __init__(self, resource_id):
-        # TODO: Load resource from ID
-        pass
+        self.__observation = Observation.objects.get(uuid=resource_id)
+
+        self.__concept = self.__observation.concept
+        if not self.is_video_concept(self.__concept):
+            raise ValueError(self.__ERROR_RESOURCE_NOT_IMAGE)
+        logger.debug('Image resource successfully retrieved: %s' % resource_id)
+
+        self.__url = self.__observation.value_complex.url
+        self.__mimetype = self.__concept.mimetype
+
+    @classmethod
+    def is_image_concept(cls, concept):
+        return cls.__IMAGE_TYPE_STRING in concept.mimetype
 
     def get_info(self):
         return {
-            "path": "path/to/an/image.jpg",
-            "type": "image"
+            'url': self.get_content(),
+            'type': self.get_type()
         }
 
     def get_content(self):
-        # TODO: return image data
-        pass
+        return self.__url;
 
     def get_type(self):
-        return "image"
+        return self.__mimetype
 
     def generate_thumbnail(self):
-        # TODO: Generate thumbnail and return binary
-        pass
+        binaryData = StringIO.StringIO()
+
+        image = Image.open(self.__url)
+        image.thumbnail((100, 100))
+        image.convert("RGB").save(binaryData, "JPEG")
+
+        base64Data = base64.b64encode(binaryData.getvalue())
+
+        thumbnailUrl = "data:image/jpeg;base64," + base64Data
+
+        return thumbnailUrl

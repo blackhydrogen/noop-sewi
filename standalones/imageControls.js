@@ -84,24 +84,24 @@ sewi.ImageControls.prototype.initDOM = function() {
 		});
 
 	var recolorFilterGroup = $('<optgroup label="Colorize" data-max-options="1">')
-		.append('<option class="grayscale-option" value="1.1">Grayscale</option>')
-		.append('<option class="flame-option" value="1.2">Flame</option>')
-		.append('<option class="spectrum-option" value="1.3">Spectrum</option>')
-		.append('<option class="hsv-option" value="1.4">HSV</option>');
+		.append('<option class="grayscale-option" value="colorize.grayscale">Grayscale</option>')
+		.append('<option class="flame-option" value="colorize.flame">Flame</option>')
+		.append('<option class="spectrum-option" value="colorize.rainbow">Rainbow</option>')
+		.append('<option class="hsv-option" value="colorize.spectrum">Spectrum</option>');
 
 	var advancedFilterGroup = $('<optgroup label="Advanced Filters">')
-		.append('<option class="invert-option" value="2.1">Invert</option>')
-		.append('<option class="difference-option" value="2.2">Difference</option>')
-		.append('<option class="autoContrast-option" value="2.3">Auto Contrast</option>');
+		.append('<option class="invert-option" value="filter.invert">Invert</option>')
+		.append('<option class="difference-option" value="filter.difference">Difference</option>')
+		.append('<option class="autoContrast-option" value="filter.autoContrast">Auto Contrast</option>');
 
 	this.filterMenu = $('<select class="dropup" multiple role="menu" title="Filters" data-style="btn-default filter-menu-button">')
 		.append(recolorFilterGroup)
 		.append(advancedFilterGroup);
 
-	this.contrastPlusMenu = $('<select class="dropup" multiple role="menu" title="Stretch" data-style="btn-default contrast-menu-button" data-max-options="1">')
-		.append('<option value="1">Shadows</option>')
-		.append('<option value="2">Midtones</option>')
-		.append('<option value="3">Highlights</option>');
+	this.contrastPlusMenu = $('<select class="dropup" multiple role="menu" title="C. Stretch" data-style="btn-default contrast-menu-button" data-max-options="1">')
+		.append('<option value="shadows">Shadows</option>')
+		.append('<option value="midtones">Midtones</option>')
+		.append('<option value="highlights">Highlights</option>');
 
 	var brightnessControl = sewi.createVerticalSlider(this.brightnessSlider, this.brightnessButton);
 	var contrastControl = sewi.createVerticalSlider(this.contrastSlider, this.contrastButton);
@@ -132,65 +132,78 @@ sewi.ImageControls.prototype.initDOM = function() {
 		width: '95px',
 		dropupAuto: false,
 	});
-
-	this.mainDOMElement.find('button').tooltip();
 }
 
 sewi.ImageControls.prototype.initEvents = function() {
 	this.brightnessSlider.on('input', this.brightnessChanged.bind(this));	
 	this.contrastSlider.on('input', this.contrastChanged.bind(this));
-	this.brightnessButton.click(this.brightnessReset.bind(this));
-	this.contrastButton.click(this.contrastReset.bind(this));
+	this.brightnessButton.on('click', this.brightnessReset.bind(this));
+	this.contrastButton.on('click', this.contrastReset.bind(this));
 	this.zoomSlider.on('input', this.zoomLevelChanged.bind(this));
-	this.zoomButton.click(this.zoomLevelReset.bind(this));
-	this.zoomToFitButton.click(this.zoomToFit.bind(this));
-	this.filterMenu.change(this.filtersChanged.bind(this));
-	this.contrastPlusMenu.change(this.contrastPlusMenuSelectionChanged.bind(this));
-	this.contrastPlusMenu.change(this.filtersChanged.bind(this));
-	this.contrastPlusSlider.change(this.filtersChanged.bind(this));
+	this.zoomButton.on('click', this.zoomLevelReset.bind(this));
+	this.zoomToFitButton.on('click', this.zoomToFit.bind(this));
+	this.filterMenu.on('change', this.filtersChanged.bind(this));
+	this.contrastPlusMenu.on('change', this.contrastPlusMenuSelectionChanged.bind(this));
+	this.contrastPlusMenu.on('change', this.filtersChanged.bind(this));
+	this.contrastPlusSlider.on('change', this.filtersChanged.bind(this));
 }
 
 sewi.ImageControls.prototype.initTooltips = function() {
 	this.mainDOMElement.find(".grayscale-option").tooltip({
 		html: true,
-		title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="tooltip_grayscale.png">',
-		container: "body",
-		placement: "right"
-	});
-
-	this.mainDOMElement.find(".difference-option").tooltip({
-		html: true,
-		title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="tooltip_difference.png">',
-		container: $("body"),
-		placement: "right"
-	});
-
-	this.mainDOMElement.find(".invert-option").tooltip({
-		html: true,
-		title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="tooltip_invert.png">',
-		container: "body",
-		placement: "right"
-	});
-
-	this.mainDOMElement.find(".autoContrast-option").tooltip({
-		html: true,
-		title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="tooltip_histogram_equalization.png">',
+		title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="tooltip_grayscale.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".flame-option").tooltip({
 		html: true,
-		title: 'Artifically colors a grayscale image with a predefined color spectrum. This filter may highlight hard-to-see differences in the shades of gray of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_flame.png">',
+		title: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_flame.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
-	this.mainDOMElement.find(".contrast-plus-button").tooltip({
+	this.mainDOMElement.find(".spectrum-option").tooltip({
 		html: true,
-		title: 'Artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="tooltip_contrast_stretch_middle.png">',
+		title: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_spectrum.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
+	});
+
+	this.mainDOMElement.find(".hsv-option").tooltip({
+		html: true,
+		title: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_hsv.png" height="100px" width="200px">',
+		container: "body",
+		placement: "right"
+	});
+
+	this.mainDOMElement.find(".difference-option").tooltip({
+		html: true,
+		title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="tooltip_difference.png" height="100px" width="200px">',
+		container: $("body"),
+		placement: "right"
+	});
+
+	this.mainDOMElement.find(".invert-option").tooltip({
+		html: true,
+		title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="tooltip_invert.png" height="100px" width="200px">',
+		container: "body",
+		placement: "right"
+	});
+
+	this.mainDOMElement.find(".autoContrast-option").tooltip({
+		html: true,
+		title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="tooltip_histogram_equalization.png" height="100px" width="200px">',
+		container: "body",
+		placement: "right"
+	});
+
+	this.mainDOMElement.find(".contrast-menu-button").removeAttr("title");
+	this.mainDOMElement.find(".contrast-menu-button").tooltip({
+		html: true,
+		title: 'Artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
+		container: "body",
+		placement: "top"
 	});
 }
 
@@ -226,80 +239,50 @@ sewi.ImageControls.prototype.zoomToFit = function() {
 }
 
 sewi.ImageControls.prototype.filtersChanged = function() {
-	var filterValues = this.filterMenu.val();
-	var contrastPlusValues = this.contrastPlusMenu.val();
+	var filterMenuValues = this.filterMenu.val() || [];
+	var contrastStretchMenuValues = this.contrastPlusMenu.val() || [];
 
-	var colorValue = 0;
-	var advancedFilters = [];
-	var contrastPlusValue = 0;
+	var filterSettingsReturnObject = {
+		colorize: "none",
+		difference: false,
+		invert: false,
+		autoContrast: false,
+		contrastStretchMode: "none",
+		contrastStretchValue: 1
+	};
 
-	if (filterValues != null) {
-		for (var i = 0; i < filterValues.length; i++) {
-			var value = filterValues[i].split('.');
-
-			var group = parseInt(value[0]);
-			var filter = parseInt(value[1]);
-
-			if (group == 1) {
-				colorValue = filter;
-			} else {
-				advancedFilters.push(filter);
-			}
-		}
+	// Figure out colorize
+	if(filterMenuValues.length != 0 && filterMenuValues[0].indexOf("colorize.") != -1) {
+		filterSettingsReturnObject.colorize = filterMenuValues[0].substr(9); //remove the leading "colorize."
+		filterMenuValues.shift();
 	}
 
-	// Ensure at least grayscale is selected when Auto Contrast or contrast+ is used
-	if ((_.contains(advancedFilters, 3) || contrastPlusValues != null) && colorValue == 0) {
-		if(filterValues == null)
-			filterValues = [];
-		filterValues.unshift('1.1');
-		this.filterMenu.selectpicker('val', filterValues);
-		colorValue = 1;
+	// Figure out filters (invert, difference, autoContrast). What's left in the filterMenuValues array should be strings starting with "filter."
+	while(filterMenuValues.length != 0) {
+		var chosenFilter = filterMenuValues[0].substr(7); //remove the leading "filter."
+		filterSettingsReturnObject[chosenFilter] = true;
+		filterMenuValues.shift();
 	}
 
-	var filterSettings = {};
-
-	switch (colorValue) {
-		case 1:
-			filterSettings.colorFilter = 'grayscale';
-			break;
-		case 2:
-			filterSettings.colorFilter = 'fire';
-			break;
-		case 3:
-			filterSettings.colorFilter = 'spectrum';
-			break;
-		case 4:
-			filterSettings.colorFilter = 'hsv';
-			break;
-		default:
-			filterSettings.colorFilter = 'none';
+	// Figure out the contrast stretch filter
+	if (contrastStretchMenuValues.length != 0) {
+		filterSettingsReturnObject.contrastStretchMode = contrastStretchMenuValues[0];
+		filterSettingsReturnObject.contrastStretchValue = parseFloat(this.contrastPlusSlider.val());
 	}
 
-	filterSettings.invert = _.contains(advancedFilters, 1);
-	filterSettings.difference = _.contains(advancedFilters, 2);
-	filterSettings.autoContrast = _.contains(advancedFilters, 3);
+	// Ensure that at least grayscale is selected when Auto Contrast or Contrast Stretch is used
+	// (false-colors - e.g. flame - are implicitly grayscale, so they satisfy the condition)
+	if (filterSettingsReturnObject.colorize === "none" && 
+		(filterSettingsReturnObject.autoContrast || filterSettingsReturnObject.contrastStretchMode !== "none")) {
+		filterSettingsReturnObject.colorize = "grayscale";
 
-	if (contrastPlusValues != null) {
-		contrastPlusValue = parseInt(contrastPlusValues[0]);
-	}
-	switch (contrastPlusValue) {
-		case 1:
-			filterSettings.contrastLevelMode = '0-80';
-			break;
-		case 2:
-			filterSettings.contrastLevelMode = '81-174';
-			break;
-		case 3:
-			filterSettings.contrastLevelMode = '175-255';
-			break;
-		default:
-			filterSettings.contrastLevelMode = 'none';
+		// Propagate the changes to the UI
+		var newFilterMenuValues = this.filterMenu.val();
+		newFilterMenuValues.unshift("colorize.grayscale");
+		this.filterMenu.selectpicker('val', newFilterMenuValues);
 	}
 
-	filterSettings.contrastLevelValue = parseFloat(this.contrastPlusSlider.val());
-
-	this.trigger('filtersChanged', filterSettings);
+	this.trigger('filtersChanged', filterSettingsReturnObject);
 }
 
 sewi.ImageControls.prototype.contrastPlusMenuSelectionChanged = function() {
