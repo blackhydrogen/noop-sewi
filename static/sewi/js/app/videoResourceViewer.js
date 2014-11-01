@@ -43,7 +43,6 @@ var sewi = sewi || {};
     function initDOM() {
         this.mainDOMElement.addClass(sewi.constants.MEDIA_CONTROLS_DOM_CLASS);
 
-        var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
         var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
         var leftButtonPanel = innerPanel.clone()
@@ -56,10 +55,8 @@ var sewi = sewi || {};
         var seekBarBackgroundElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM);
         this.seekBarBufferContainer = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM);
 
-        this.playPauseButton = button.clone()
-                                        .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
-        this.muteButton = button.clone()
-                                   .addClass(sewi.constants.MEDIA_CONTROLS_MUTE_CLASS);
+        this.playPauseButton = $(sewi.constants.MEDIA_CONTROLS_PLAY_BUTTON_DOM);
+        this.muteButton = $(sewi.constants.MEDIA_CONTROLS_MUTE_BUTTON_DOM);
         this.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         this.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
@@ -314,6 +311,31 @@ var sewi = sewi || {};
             setNumberOfBufferBars.call(this, numOfBuffers);
             setBufferBarPositions.call(this, positions);
 
+        }
+    }
+
+    sewi.MediaControls.prototype.showTooltips = function() {
+        // Defer initialization of tooltips until required.
+        // This saves on initialization time.
+
+        var elements = this.mainDOMElement.find('[title]');
+        console.log(elements);
+
+        if (this.initializedTooltips) {
+            elements.tooltip('enable');
+        } else {
+            elements.tooltip({
+                container: 'body'
+            });
+            this.initializedTooltips = true;
+        }
+    }
+
+    sewi.MediaControls.prototype.hideTooltips = function() {
+        var elements = this.mainDOMElement.children('[title]');
+
+        if (this.initializedTooltips) {
+            elements.tooltip('disable');
         }
     }
 
@@ -660,6 +682,14 @@ var sewi = sewi || {};
         }
 
         return this;
+    }
+
+    sewi.VideoResourceViewer.prototype.showTooltips = function() {
+        this.controls.showTooltips();
+    }
+
+    sewi.VideoResourceViewer.prototype.hideTooltips = function() {
+        this.controls.hideTooltips();
     }
 
 })();
