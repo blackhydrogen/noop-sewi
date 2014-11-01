@@ -362,9 +362,7 @@ var sewi = sewi || {};
 
         validateArguments.call(this);
         initDOM.call(this);
-        initControls.call(this);
         attachVideoEventHandlers.call(this);
-        attachControlsEventHandlers.call(this);
         setUpInactivityEventHandlers.call(this);
 
         return this;
@@ -403,11 +401,15 @@ var sewi = sewi || {};
 
         var zoomControl = sewi.createVerticalSlider(this.zoomSlider, this.resetZoomButton);
 
+        var zoomButtons = [];
+        if (this.panZoomWidget.fitSizeEqualsOriginalSize() == false) {
+            zoomButtons.push(this.zoomToFitButton);
+        }
+        zoomButtons.push(zoomControl);
+
         this.controls = new sewi.MediaControls({
             extraButtons: {
-                right: [
-                    this.zoomToFitButton, zoomControl
-                ]
+                right: zoomButtons
             }
         });
 
@@ -421,17 +423,18 @@ var sewi = sewi || {};
     }
 
     function attachVideoEventHandlers() {
-        this.videoElement.on('durationchange', updateDuration.bind(this));
-        this.videoElement.on('loadedmetadata', updateDimensions.bind(this));
-        this.videoElement.on('timeupdate progress', updateBufferedProgress.bind(this));
         this.videoElement.on('canplay', this.hideProgressBar.bind(this));
-        this.videoElement.on('timeupdate seeked', updateTime.bind(this));
-        this.videoElement.on('play pause', updatePlayingStatus.bind(this));
-        this.videoElement.on('volumechange', updateVolume.bind(this));
+        this.videoElement.on('loadedmetadata', updateDimensions.bind(this));
         this.videoElement.on('error', playbackFailed.bind(this));
     }
 
     function attachControlsEventHandlers() {
+        this.videoElement.on('durationchange', updateDuration.bind(this));
+        this.videoElement.on('timeupdate seeked', updateTime.bind(this));
+        this.videoElement.on('timeupdate progress', updateBufferedProgress.bind(this));
+        this.videoElement.on('play pause', updatePlayingStatus.bind(this));
+        this.videoElement.on('volumechange', updateVolume.bind(this));
+
         this.controlPanelElement.on('Playing', playEvent.bind(this));
         this.controlPanelElement.on('Paused', pauseEvent.bind(this));
         this.controlPanelElement.on('Muted', muteEvent.bind(this));
@@ -543,6 +546,10 @@ var sewi = sewi || {};
 
         if (_.isUndefined(this.panZoomWidget)) {
             initPanZoomWidget.call(this, videoWidth, videoHeight);
+
+            initControls.call(this);
+            attachControlsEventHandlers.call(this);
+            updateDuration.call(this);
         }
     }
 
