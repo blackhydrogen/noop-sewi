@@ -39,5 +39,5 @@ def get_audio(request, audio_id):
 def get_encounter_info(request, encounter_id):
     logger.info('Getting Basic Encounter Information: ' + encounter_id)
     basic_encounter_info = BasicEncounterInformation(encounter_id)
-    data = json.dumps(basic_encounter_info.get_content())
+    data = json.dumps(basic_encounter_info.get_content(), indent=4)
     return HttpResponse(data, mimetype='application/json')
