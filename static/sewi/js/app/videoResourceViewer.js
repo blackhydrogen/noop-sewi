@@ -182,13 +182,15 @@ var sewi = sewi || {};
 
     // MediaControls public methods
     sewi.MediaControls.prototype.togglePlay = function() {
-        if (this.isPlaying) {
+        var isPlaying = this.isPlaying;
+
+        this.update({ playing: !this.isPlaying });
+
+        if (isPlaying) {
             this.mainDOMElement.trigger('Paused');
         } else {
             this.mainDOMElement.trigger('Playing');
         }
-
-        this.update({ playing: !this.isPlaying });
 
         return this;
     }
