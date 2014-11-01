@@ -28,21 +28,38 @@ var sewi = sewi || {};
         this.lastUpdated = 0;
         this.drawTimer = 0;
         this.offsetValueChanged = false;
-
-        this.init();
-        this.initControls();	
+        this.url = "";
+        this.loadSuccess = false;
     }
 
     sewi.inherits(sewi.AudioResourceViewer, sewi.ResourceViewer);
 
     sewi.AudioResourceViewer.prototype.load = function(){
-        return $('<source src="'+url+'" type="'+type+'">');
+             
+        loadAudioURL.call(this);
+    }
+    
+    function loadAudioURL(){
+        var audioResourceEndPoint = sewi.constants.AUDIO_RESOURCE_URL + this.id;
+
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: audioResourceEndPoint,
+        }).done(retrieveAudio.bind(this));
     }
 
-    sewi.AudioResourceViewer.prototype.init = function(){
+    function retrieveAudio(data){
+        this.loadedSuccess = true;
+        this.url = data.url;
+        init.call(this);
+        initControls.call(this);	
+    }
+
+    function init(){
         this.mainDOMElement.addClass('audio-resource-viewer');
         
-        var url = '/static/sewi/media/Early_Riser.mp3';
+        //this.url = '/media/core/observation/Early_Riser.mp3';
         var contextClass = (window.AudioContext || 
                             window.webkitAudioContext || 
                             window.mozAudioContext || 
@@ -66,7 +83,7 @@ var sewi = sewi || {};
             this.gainNode.gain.value = 1;
 
             this.request = new XMLHttpRequest();
-            this.request.open('GET', url, true);
+            this.request.open('GET', this.url, true);
             this.request.responseType = 'arraybuffer';
             this.request.onreadystatechange = onReadyStateChange.bind(this);
 
@@ -225,7 +242,7 @@ var sewi = sewi || {};
         }
     }
 
-    sewi.AudioResourceViewer.prototype.initControls = function(){
+    function initControls(){
         if(this.audioContext){
             var buttons = createMediaButtons.call(this);
             this.controls = new sewi.MediaControls({ isSeekBarHidden : true, 

@@ -12,17 +12,15 @@ class AudioResource(BaseResource):
     __AUDIO_TYPE_STRING = 'audio'
 
     def __init__(self, resource_id):
-        #self.__observation = Observation.objects.get(uuid=resource_id)
+        self.__observation = Observation.objects.get(uuid=resource_id)
         
-        #self.__concept = self.__observation.concept
-        #if not self.is_audio_concept(self.__concept):
-        #    raise ValueError(self.__ERROR_RESOURCE_NOT_AUDIO)
-        #logger.debug('Audio observation successfully retrieved: %s' % resource_id)
+        self.__concept = self.__observation.concept
+        if not self.is_audio_concept(self.__concept):
+            raise ValueError(self.__ERROR_RESOURCE_NOT_AUDIO)
+        logger.debug('Audio observation successfully retrieved: %s' % resource_id)
 
-        #self.__url = self.__observation.value_complex.url
-        #self.__mimetype = self.__concept.mimetype
-        self.peaks = []
-        pass
+        self.__url = self.__observation.value_complex.url
+        self.__mimetype = self.__concept.mimetype
 
     @classmethod
     def is_audio_concept(cls, concept):
@@ -35,12 +33,10 @@ class AudioResource(BaseResource):
         }
 
     def get_content(self):
-        #return self.__url;
-        return "content"
+        return self.__url;
 
     def get_type(self):
-        #return self.__mimetype
-        return "type"
+        return self.__mimetype
 
     def generate_thumbnail(self):
         # TODO: Generate a thumbnail

@@ -106,6 +106,9 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-to-fit-button"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" />',
 
+        //Audio Resource Constants
+        AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
+
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
         MEDIA_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
