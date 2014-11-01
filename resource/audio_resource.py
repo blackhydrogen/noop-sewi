@@ -1,5 +1,8 @@
+import os, sys
+#pygst.require('0.10')
 from . import BaseResource
 from mds.core.models import Observation, Concept
+#import gst, gobject
 import logging
 logger = logging.getLogger('mds.sewi')
 
@@ -32,6 +35,7 @@ class AudioResource(BaseResource):
         return {
             'url': self.get_content(),
             'type': self.get_type(),
+            'amplitude': self.generate_amplitude()
         }
 
     def get_content(self):
@@ -46,3 +50,23 @@ class AudioResource(BaseResource):
         # TODO: Generate a thumbnail
         return '/'
     
+    def generate_amplitude(self):
+        return "amplitude"
+
+    def get_peaks(self, file_name):
+        pipeline_txt = ('filesrc location="%s" ! decodebin ! audioconvert ! audio/x-raw-int,channels=1,rate=44100,endianness=1234, width=32,depth=32,signed=(bool)True ! level name=level interval=40000000 ! fakesink' % filename)
+        pipeline = gst.parse_launch(pipeline_txt)
+        level = pipeline.get_by_name('level')
+        bus = pipeline.get_bus()
+        bus.add_signal_watch()
+        bus.connect('message', self.show_peak, self);
+
+    def show_peak(self, bus, message):
+        stop = False
+        if message.type == gst.MESSAGE_EOS:
+            pipeline.set_state(gst.STATE_NULL)
+            stop = True
+        elif message.src is level and message.structure.has_key('peak'):
+            self.peaks.append(message.structure['peak'][0]);
+
+        return stop
