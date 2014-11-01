@@ -1,66 +1,81 @@
 var sewi = sewi || {};
+
 sewi.ResourceGallery = function() {
-    var selfRef = this;
+  var selfRef = this;
+  sewi.ConfiguratorElement.call(this);
 
-    selfRef.resources = [];
-    selfRef.resources.push('Sample Resources/hands.jpg', 'Sample Resources/ecg.jpg', 'Sample Resources/video.jpg');
-    
-    selfRef.resourceHeaders = [];
-    selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub');
+  selfRef.resources = [];
+  selfRef.resources.push('/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg');
 
-    selfRef.resourceTypes = [];
-    selfRef.resourceTypes.push('img', 'img', 'video');
+  selfRef.resourceHeaders = [];
+  selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub');
 
-    selfRef.metaData = [];
-    selfRef.metaData.push('24/11/2013');
-    
-    selfRef.container = $('<div>').addClass('resource-explorer-container').attr('id', 'scrollable-div');
-    selfRef.loadResources();
+  selfRef.resourceTypes = [];
+  selfRef.resourceTypes.push('image', 'ecg', 'video', 'audio');
 
-    selfRef.container.find('.resource-explorer-container').slimScroll({
-        color: '#000',
-        width: '72px',
-        size: '4px',
-        height: '350px'
-    });
-
-    selfRef.container.find('.resource').tooltip({
-        html: true
-    });
+  selfRef.metaData = [];
+  selfRef.metaData.push('24/11/2013');
+  selfRef.mainDOMElement
+    .addClass(sewi.constants.RESOURCE_GALLERY_DOM_CLASS);
 }
 
-sewi.ResourceGallery.prototype.loadResources = function() {
-    var selfRef = this;
-    for (var i = 0; i < selfRef.resources.length; i++) {
-        var path = selfRef.resources[i];
-        var resourceElement = $('<div>')
-            .addClass('resource')
-            .attr('data-res-id', i)
-            .attr('data-res-type', selfRef.resourceTypes[i])
-            .attr('rel', 'tooltip')
-            .attr('data-placement', 'left')
-            .attr('title', 'Recorded on:' + selfRef.metaData[0])
-        .draggable({
-            helper: 'clone'
-        });
+sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
 
-        resourceElement.on('dblclick', getResourceDom);
+sewi.ResourceGallery.prototype.load = function() {
+  var selfRef = this;
+  var resourceContainer = selfRef.mainDOMElement;
+  for (var i = 0; i < selfRef.resources.length; i++) {
+    var path = selfRef.resources[i];
+    var resourceElement = $('<div>')
+      .addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS)
+      .attr('id', 'draggable')
+      .attr('data-res-id', i)
+      .attr('data-res-type', selfRef.resourceTypes[i])
+      .attr('data-container', 'body')
+      .draggable({
+        helper: 'clone',
+        revert: 'invalid',
+        appendTo: 'body',
+        start: function(e, ui) {
+          ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS)
+            .removeClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS);
+        }
+      });
 
-        resourceElement.append(
-            $('<img>').attr('src', path).addClass('media-thumbnail')
-        ).append(
-            $('<p>').text(selfRef.resourceHeaders[i]).addClass('media-body')
-        );
+    resourceElement.append(
+      $('<img>').attr('src', path).addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS)
+    ).append(
+      $('<p>').text(selfRef.resourceHeaders[i]).addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS)
+    );
 
+    resourceElement.on('dblclick', selfRef, selfRef.getResourceDOM);
+    resourceContainer.append(resourceElement);
+  }
 
-        selfRef.container.append(resourceElement);
-    }
+  selfRef.addScrollbar();
+  selfRef.addTooltips();
+
 }
 
-sewi.ResourceGallery.prototype.update = function() {
-    var selfRef = this;
+sewi.ResourceGallery.prototype.addScrollbar = function() {
+  var selfRef = this;
+  selfRef.mainDOMElement.slimScroll({
+    color: '#000',
+    width: '100%',
+    size: '4px',
+    height: '100%'
+  });
 }
 
-sewi.ResourceGallery.prototype.getResourceDom = function() {
-    $(document).trigger('resourceClick', [$(this)]);
+sewi.ResourceGallery.prototype.addTooltips = function() {
+  var selfRef = this;
+  selfRef.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).tooltip({
+    container: 'body',
+    title: ('Recorded on:' + selfRef.metaData[0]),
+    placement: 'left'
+  });
+}
+
+sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
+  event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
 }
