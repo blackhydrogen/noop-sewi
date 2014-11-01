@@ -1,5 +1,17 @@
 from abc import ABCMeta, abstractmethod
 
+class abstractclassmethod(classmethod):
+    """Abstract class method decorator
+
+    Derived from Python 3
+    """
+
+    __isabstractmethod__ = True
+
+    def __init__(self, callable):
+        callable.__isabstractmethod__ = True
+        super(abstractclassmethod, self).__init__(callable)
+
 class BaseResource(object):
     """Abstract class definition for all Resources.
 
@@ -26,6 +38,12 @@ class BaseResource(object):
     """
     @abstractmethod
     def get_type(self):
+        pass
+
+    """Returns whether an observation can be read with the resource
+    """
+    @abstractclassmethod
+    def is_valid_observation(cls, observation):
         pass
 
     """Generates and returns a small image representation of the resource
