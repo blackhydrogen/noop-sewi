@@ -36,20 +36,17 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
+    // Helper function that formats the text for the duration
     var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
 
     // MediaControls private methods begin
     function initDOM() {
         this.mainDOMElement.addClass(sewi.constants.MEDIA_CONTROLS_DOM_CLASS);
 
-        var button = $(sewi.constants.MEDIA_CONTROLS_BUTTON_DOM);
         var innerPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM);
 
         var leftButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
-        this.durationTextPanel = innerPanel.clone()
-                                           .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
-                                           .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
         var rightButtonPanel = innerPanel.clone()
                                          .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
@@ -58,10 +55,8 @@ var sewi = sewi || {};
         var seekBarBackgroundElement = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM);
         this.seekBarBufferContainer = $(sewi.constants.MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM);
 
-        this.playPauseButton = button.clone()
-                                        .addClass(sewi.constants.MEDIA_CONTROLS_PLAY_CLASS);
-        this.muteButton = button.clone()
-                                   .addClass(sewi.constants.MEDIA_CONTROLS_MUTE_CLASS);
+        this.playPauseButton = $(sewi.constants.MEDIA_CONTROLS_PLAY_BUTTON_DOM);
+        this.muteButton = $(sewi.constants.MEDIA_CONTROLS_MUTE_BUTTON_DOM);
         this.volumeSlider = $(sewi.constants.MEDIA_CONTROLS_VOLUME_SLIDER_DOM);
         this.progressSlider = $(sewi.constants.MEDIA_CONTROLS_PROGRESS_SLIDER_DOM);
 
@@ -77,13 +72,19 @@ var sewi = sewi || {};
                       .append(this.seekBarBufferContainer)
                       .append(this.progressSlider);
 
-        this.durationTextPanel.text(generateDurationText({
-            currentSecs: '--',
-            currentMins: '--',
-            durationSecs: '--',
-            durationMins: '--'
-        }));
+        initExtraButtons.call(this, leftButtonPanel, rightButtonPanel);
 
+        this.mainDOMElement.append(leftButtonPanel)
+                           .append(rightButtonPanel);
+
+        initDurationText.call(this);
+
+        if (!this.isSeekBarHidden) {
+            this.mainDOMElement.append(seekSliderPanel);
+        }
+    }
+    
+    function initExtraButtons(leftButtonPanel, rightButtonPanel) {
         // Add any extra buttons to the left and right, if any.
         if (this.extraButtons) {
             if (this.extraButtons.left) {
@@ -93,16 +94,23 @@ var sewi = sewi || {};
                 rightButtonPanel.prepend(this.extraButtons.right);
             }
         }
+    }
 
-        this.mainDOMElement.append(leftButtonPanel)
-                              .append(rightButtonPanel);
+    function initDurationText() {
+
+        this.durationTextPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM)
+            .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
+
+        this.durationTextPanel.text(generateDurationText({
+            currentSecs: '--',
+            currentMins: '--',
+            durationSecs: '--',
+            durationMins: '--'
+        }));
 
         if (!this.isDurationHidden) {
             this.mainDOMElement.append(this.durationTextPanel);
-        }
-
-        if (!this.isSeekBarHidden) {
-            this.mainDOMElement.append(seekSliderPanel);
         }
     }
 
@@ -171,13 +179,15 @@ var sewi = sewi || {};
 
     // MediaControls public methods
     sewi.MediaControls.prototype.togglePlay = function() {
-        if (this.isPlaying) {
+        var isPlaying = this.isPlaying;
+
+        this.update({ playing: !this.isPlaying });
+
+        if (isPlaying) {
             this.mainDOMElement.trigger('Paused');
         } else {
             this.mainDOMElement.trigger('Playing');
         }
-
-        this.update({ playing: !this.isPlaying });
 
         return this;
     }
@@ -243,9 +253,14 @@ var sewi = sewi || {};
 
         if (!_.isUndefined(options.duration)) {
             this.duration = options.duration;
+            if (_.isUndefined(this.currentTime)) {
+                options.currentTime = options.currentTime || 0;
+            }
         }
 
         if (!_.isUndefined(options.currentTime)) {
+            this.currentTime = options.currentTime;
+
             var currentMins = Math.floor(options.currentTime / 60);
             var currentSecs = Math.floor(options.currentTime % 60);
 
@@ -299,6 +314,31 @@ var sewi = sewi || {};
         }
     }
 
+    sewi.MediaControls.prototype.showTooltips = function() {
+        // Defer initialization of tooltips until required.
+        // This saves on initialization time.
+
+        var elements = this.mainDOMElement.find('[title]');
+        console.log(elements);
+
+        if (this.initializedTooltips) {
+            elements.tooltip('enable');
+        } else {
+            elements.tooltip({
+                container: 'body'
+            });
+            this.initializedTooltips = true;
+        }
+    }
+
+    sewi.MediaControls.prototype.hideTooltips = function() {
+        var elements = this.mainDOMElement.children('[title]');
+
+        if (this.initializedTooltips) {
+            elements.tooltip('disable');
+        }
+    }
+
 })();
 
 (function(){
@@ -322,9 +362,7 @@ var sewi = sewi || {};
 
         validateArguments.call(this);
         initDOM.call(this);
-        initControls.call(this);
         attachVideoEventHandlers.call(this);
-        attachControlsEventHandlers.call(this);
         setUpInactivityEventHandlers.call(this);
 
         return this;
@@ -363,11 +401,15 @@ var sewi = sewi || {};
 
         var zoomControl = sewi.createVerticalSlider(this.zoomSlider, this.resetZoomButton);
 
+        var zoomButtons = [];
+        if (this.panZoomWidget.fitSizeEqualsOriginalSize() == false) {
+            zoomButtons.push(this.zoomToFitButton);
+        }
+        zoomButtons.push(zoomControl);
+
         this.controls = new sewi.MediaControls({
             extraButtons: {
-                right: [
-                    this.zoomToFitButton, zoomControl
-                ]
+                right: zoomButtons
             }
         });
 
@@ -381,17 +423,18 @@ var sewi = sewi || {};
     }
 
     function attachVideoEventHandlers() {
-        this.videoElement.on('durationchange', updateDuration.bind(this));
-        this.videoElement.on('loadedmetadata', updateDimensions.bind(this));
-        this.videoElement.on('timeupdate progress', updateBufferedProgress.bind(this));
         this.videoElement.on('canplay', this.hideProgressBar.bind(this));
-        this.videoElement.on('timeupdate seeked', updateTime.bind(this));
-        this.videoElement.on('play pause', updatePlayingStatus.bind(this));
-        this.videoElement.on('volumechange', updateVolume.bind(this));
+        this.videoElement.on('loadedmetadata', updateDimensions.bind(this));
         this.videoElement.on('error', playbackFailed.bind(this));
     }
 
     function attachControlsEventHandlers() {
+        this.videoElement.on('durationchange', updateDuration.bind(this));
+        this.videoElement.on('timeupdate seeked', updateTime.bind(this));
+        this.videoElement.on('timeupdate progress', updateBufferedProgress.bind(this));
+        this.videoElement.on('play pause', updatePlayingStatus.bind(this));
+        this.videoElement.on('volumechange', updateVolume.bind(this));
+
         this.controlPanelElement.on('Playing', playEvent.bind(this));
         this.controlPanelElement.on('Paused', pauseEvent.bind(this));
         this.controlPanelElement.on('Muted', muteEvent.bind(this));
@@ -406,37 +449,6 @@ var sewi = sewi || {};
 
     function setUpInactivityEventHandlers() {
         this.mainDOMElement.mousemove(showControlsTemporarily.bind(this));
-    }
-
-    function setBoundarySize(videoSize) {
-        if (!_.isObject(videoSize)){
-            videoSize = getSize(this.videoContainer);
-        }
-
-        var boundaryLeft;
-        var boundaryRight;
-        var boundaryTop;
-        var boundaryBottom;
-
-        boundaryLeft = boundaryRight = -videoSize.width / 2;
-        boundaryTop = boundaryBottom = -videoSize.height / 2;
-
-        this.boundaryElement.css({
-            left: boundaryLeft,
-            right: boundaryRight,
-            top: boundaryTop,
-            bottom: boundaryBottom
-        });
-
-        // Reset the boundary containment
-        //this.videoContainerElement.draggable('option', 'containment', this.boundaryElement)
-    }
-
-    function getSize(element) {
-        return {
-            width: $(element).width(),
-            height: $(element).height()
-        }
     }
 
     function playEvent() {
@@ -503,6 +515,10 @@ var sewi = sewi || {};
 
         if (_.isUndefined(this.panZoomWidget)) {
             initPanZoomWidget.call(this, videoWidth, videoHeight);
+
+            initControls.call(this);
+            attachControlsEventHandlers.call(this);
+            updateDuration.call(this);
         }
     }
 
@@ -551,17 +567,25 @@ var sewi = sewi || {};
         }
     }
 
-    function showControlsTemporarily() {
-        this.contentElement.addClass('active');
-        if (this.hideTimerId) {
-            clearTimeout(this.hideTimerId);
-            delete this.hideTimerId;
+    function showControlsTemporarily(event) {
+        // Bugfix: Some browsers trigger mousemove event when the mouse is perfectly still.
+        if (this.lastMouseX != event.clientX ||
+            this.lastMouseY != event.clientY) {
+
+            this.lastMouseX = event.clientX;
+            this.lastMouseY = event.clientY;
+
+            this.mainDOMElement.addClass('active');
+            if (this.hideTimerId) {
+                clearTimeout(this.hideTimerId);
+                delete this.hideTimerId;
+            }
+            this.hideTimerId = _.delay(hideControls.bind(this), 2000);
         }
-        this.hideTimerId = _.delay(hideControls.bind(this), 2000);
     }
 
     function hideControls() {
-        this.contentElement.removeClass('active');
+        this.mainDOMElement.removeClass('active');
     }
 
     function updateZoomLevel(event, zoomLevel) {
@@ -634,6 +658,20 @@ var sewi = sewi || {};
         }
 
         return this;
+    }
+
+    sewi.VideoResourceViewer.prototype.resize = function() {
+        if (this.panZoomWidget) {
+            this.panZoomWidget.centreTargetOnContainer();
+        }
+    }
+
+    sewi.VideoResourceViewer.prototype.showTooltips = function() {
+        this.controls.showTooltips();
+    }
+
+    sewi.VideoResourceViewer.prototype.hideTooltips = function() {
+        this.controls.hideTooltips();
     }
 
 })();
