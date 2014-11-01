@@ -660,6 +660,12 @@ var sewi = sewi || {};
         return this;
     }
 
+    sewi.VideoResourceViewer.prototype.resize = function() {
+        if (this.panZoomWidget) {
+            this.panZoomWidget.centreTargetOnContainer();
+        }
+    }
+
     sewi.VideoResourceViewer.prototype.showTooltips = function() {
         this.controls.showTooltips();
     }
