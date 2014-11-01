@@ -6,7 +6,9 @@
   font-style: normal;
 }
 
-video {
+/* Video Resource Styles */
+
+.video-resource-container video {
     background: black;
 }
 
@@ -17,25 +19,29 @@ video {
     background-color: grey;
 }
 
-.video-content {
+.video-resource-container .video-content {
     position: relative;
     height: 100%;
     overflow: hidden;
     cursor: none;
 }
 
-.video-content.active {
-    height: calc(100% - 30px);
-    cursor: initial;
-}
-
-.video-boundary {
-    position: absolute;
-}
-
 .video-container {
     position: absolute;
 }
+
+.video-resource-container .media-control-panel {
+    position: absolute;
+    left: 0;
+    bottom: -30px;
+    transition: bottom 200ms ease-in-out 0s;
+}
+
+.video-resource-container.active .media-control-panel {
+    bottom: 0px;
+}
+
+/* Media Control Panel Styles */
 
 .media-control-panel {
     width: 100%;
