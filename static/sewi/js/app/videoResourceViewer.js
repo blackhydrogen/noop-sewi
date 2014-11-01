@@ -243,9 +243,14 @@ var sewi = sewi || {};
 
         if (!_.isUndefined(options.duration)) {
             this.duration = options.duration;
+            if (_.isUndefined(this.currentTime)) {
+                options.currentTime = options.currentTime || 0;
+            }
         }
 
         if (!_.isUndefined(options.currentTime)) {
+            this.currentTime = options.currentTime;
+
             var currentMins = Math.floor(options.currentTime / 60);
             var currentSecs = Math.floor(options.currentTime % 60);
 
