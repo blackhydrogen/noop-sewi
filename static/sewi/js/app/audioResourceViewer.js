@@ -137,14 +137,17 @@ var sewi = sewi || {};
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
-    function onAbort(event){ }
+    function onAbort(event){
+        event.preventDefault(); 
+    }
 
-    function onError(event){ }
+    function onError(event){ 
+        event.preventDefault(); 
+    }
 
     function onAudioDecodeFinish(buffer){
         this.audioBuffer = buffer;
         var sampleRate = buffer.sampleRate; 
-        var length = buffer.length; 
         var duration = buffer.duration; 
         var numChannels = buffer.numberOfChannels;
         var channelName = ['left-channel','right-channel'];
@@ -172,7 +175,9 @@ var sewi = sewi || {};
         this.scrollBar.on('move', scrollBarMove.bind(this));
     }
 
-    function onAudioDecodeFail(event){ }
+    function onAudioDecodeFail(event){
+        event.preventDefault();
+    }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
         var graphDOM = $('<div class="wave-graph '+channelName+'" id="'+this.id+'" title="'+channelName+'"></div>');
@@ -187,7 +192,6 @@ var sewi = sewi || {};
     }
 
     function updateGraphPlaybackPosition(positionInSec){
-        console.log("updateGraphPlaybackPosition:"+positionInSec);
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
             var graph = this.audioAmplitudeGraphs[i];
             graph.playbackPos = positionInSec;
@@ -281,6 +285,7 @@ var sewi = sewi || {};
         this.offset = position;
         this.lastUpdated = this.offset;
         this.drawTimer = 0;
+        this.controls.update({currentTime : this.offset});
         updateGraphPlaybackPosition.call(this, this.offset);
     };
 
@@ -524,7 +529,6 @@ var sewi = sewi || {};
         this.previousMouseY = this.mouseY;
         this.mouseX = event.clientX - boundingBox.left;
         this.mouseY = event.clientY - boundingBox.top;
-        var mouseXDelta = this.mouseX - this.previousMouseX;
 
         var allowance = this.allowance;
         var selectionStartPixel = getAbsoluteToPixel.call(this, this.selectionStart);
@@ -661,11 +665,9 @@ var sewi = sewi || {};
     }
    
     function drawWaveForm(canvasContext){
-    var i = 0;
+        var i = 0;
         var center = this.canvasDOM.height() / 2;
-        var seq = this.audioSequence;
         var verticalMultiplier = 1.0;
-        var data = seq.channelData;
         var canvasWidth = this.canvasDOM.width();
         //canvasContext.setLineWidth(1);
         canvasContext.strokeStyle = "rgba(102,102,255,0.9)";                
@@ -767,7 +769,7 @@ var sewi = sewi || {};
     }
     
     function getDataInResolution(){
-    var i = 0;
+        var i = 0;
         //Reset the data
         this.visualizationData = [];
         
