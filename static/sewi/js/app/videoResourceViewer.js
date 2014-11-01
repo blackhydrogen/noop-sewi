@@ -556,17 +556,25 @@ var sewi = sewi || {};
         }
     }
 
-    function showControlsTemporarily() {
-        this.contentElement.addClass('active');
-        if (this.hideTimerId) {
-            clearTimeout(this.hideTimerId);
-            delete this.hideTimerId;
+    function showControlsTemporarily(event) {
+        // Bugfix: Some browsers trigger mousemove event when the mouse is perfectly still.
+        if (this.lastMouseX != event.clientX ||
+            this.lastMouseY != event.clientY) {
+
+            this.lastMouseX = event.clientX;
+            this.lastMouseY = event.clientY;
+
+            this.mainDOMElement.addClass('active');
+            if (this.hideTimerId) {
+                clearTimeout(this.hideTimerId);
+                delete this.hideTimerId;
+            }
+            this.hideTimerId = _.delay(hideControls.bind(this), 2000);
         }
-        this.hideTimerId = _.delay(hideControls.bind(this), 2000);
     }
 
     function hideControls() {
-        this.contentElement.removeClass('active');
+        this.mainDOMElement.removeClass('active');
     }
 
     function updateZoomLevel(event, zoomLevel) {
