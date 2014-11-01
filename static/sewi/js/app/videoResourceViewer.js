@@ -36,6 +36,7 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
+    // Helper function that formats the text for the duration
     var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
 
     // MediaControls private methods begin
@@ -47,9 +48,6 @@ var sewi = sewi || {};
 
         var leftButtonPanel = innerPanel.clone()
                                         .addClass(sewi.constants.MEDIA_CONTROLS_LEFT_PANEL_CLASS);
-        this.durationTextPanel = innerPanel.clone()
-                                           .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
-                                           .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
         var rightButtonPanel = innerPanel.clone()
                                          .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS);
         var seekSliderPanel = innerPanel.clone()
@@ -77,13 +75,19 @@ var sewi = sewi || {};
                       .append(this.seekBarBufferContainer)
                       .append(this.progressSlider);
 
-        this.durationTextPanel.text(generateDurationText({
-            currentSecs: '--',
-            currentMins: '--',
-            durationSecs: '--',
-            durationMins: '--'
-        }));
+        initExtraButtons.call(this, leftButtonPanel, rightButtonPanel);
 
+        this.mainDOMElement.append(leftButtonPanel)
+                           .append(rightButtonPanel);
+
+        initDurationText.call(this);
+
+        if (!this.isSeekBarHidden) {
+            this.mainDOMElement.append(seekSliderPanel);
+        }
+    }
+    
+    function initExtraButtons(leftButtonPanel, rightButtonPanel) {
         // Add any extra buttons to the left and right, if any.
         if (this.extraButtons) {
             if (this.extraButtons.left) {
@@ -93,16 +97,23 @@ var sewi = sewi || {};
                 rightButtonPanel.prepend(this.extraButtons.right);
             }
         }
+    }
 
-        this.mainDOMElement.append(leftButtonPanel)
-                              .append(rightButtonPanel);
+    function initDurationText() {
+
+        this.durationTextPanel = $(sewi.constants.MEDIA_CONTROLS_INNER_PANEL_DOM)
+            .addClass(sewi.constants.MEDIA_CONTROLS_RIGHT_PANEL_CLASS)
+            .addClass(sewi.constants.MEDIA_CONTROLS_DURATION_CLASS);
+
+        this.durationTextPanel.text(generateDurationText({
+            currentSecs: '--',
+            currentMins: '--',
+            durationSecs: '--',
+            durationMins: '--'
+        }));
 
         if (!this.isDurationHidden) {
             this.mainDOMElement.append(this.durationTextPanel);
-        }
-
-        if (!this.isSeekBarHidden) {
-            this.mainDOMElement.append(seekSliderPanel);
         }
     }
 
