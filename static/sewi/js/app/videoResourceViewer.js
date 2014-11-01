@@ -451,37 +451,6 @@ var sewi = sewi || {};
         this.mainDOMElement.mousemove(showControlsTemporarily.bind(this));
     }
 
-    function setBoundarySize(videoSize) {
-        if (!_.isObject(videoSize)){
-            videoSize = getSize(this.videoContainer);
-        }
-
-        var boundaryLeft;
-        var boundaryRight;
-        var boundaryTop;
-        var boundaryBottom;
-
-        boundaryLeft = boundaryRight = -videoSize.width / 2;
-        boundaryTop = boundaryBottom = -videoSize.height / 2;
-
-        this.boundaryElement.css({
-            left: boundaryLeft,
-            right: boundaryRight,
-            top: boundaryTop,
-            bottom: boundaryBottom
-        });
-
-        // Reset the boundary containment
-        //this.videoContainerElement.draggable('option', 'containment', this.boundaryElement)
-    }
-
-    function getSize(element) {
-        return {
-            width: $(element).width(),
-            height: $(element).height()
-        }
-    }
-
     function playEvent() {
         this.videoElement[0].play();
     }
