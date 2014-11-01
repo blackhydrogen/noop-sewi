@@ -95,7 +95,7 @@ sewi.PanZoomWidget.prototype.getMaximumimZoomLevel = function() {
 }
 
 sewi.PanZoomWidget.prototype.fitSizeEqualsOriginalSize = function() {
-	return this.targetDimensions.fitToContainer == this.targetDimensions.original;
+	return this.targetDimensions.fitToContainer.width == this.targetDimensions.original.width;
 }
 
 sewi.PanZoomWidget.prototype.setCurrentZoomLevel = function(zoomPercentage) {
