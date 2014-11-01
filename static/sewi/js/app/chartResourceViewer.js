@@ -2,31 +2,34 @@ var sewi = sewi || {};
 
 $(function() {
   // Safeguard if function is called without `new` keyword
-  sewi.chartResourceViewer = function(options) {
+  sewi.ChartResourceViewer = function(options) {
 
-    var selfRef = this;
-    initDOM.call(selfRef);
-    initEvents.call(selfRef);
-    generateChartData(createChart).call(selfRef);
-    initChartComponents.call(selfRef);
+    sewi.ResourceViewer.call(this);
+    initDOM.call(this);
+    initEvents.call(this);
+    initChartComponents.call(this);
+    generateChartData.call(this);
+
   }
 
+  sewi.inherits(sewi.ChartResourceViewer, sewi.ResourceViewer);
+
   function initDOM() {
-    var selfRef = this;
-    selfRef.mainDOMElement.addClass('time-series-graph-container').attr('id', 'timechartContainer');
+
+    this.mainDOMElement.addClass('time-series-graph-container');
 
     var legend = $('<div>').addClass('legend-container').attr('id', 'legend');
     var chart = $('<div>').addClass('main-graph').attr('id', 'ecg');
 
     // appending chart and legend to timeChartContainer
-    selfRef.mainDOMElement.append(legend).append(chart);
+    this.mainDOMElement.append(legend).append(chart);
 
     //option to show/hide the rangeSelector
     var options = $('<div>').attr('id', 'options').addClass('chart-options');
-    selfRef.rangeSelector = $('<input>').attr('type', 'checkbox').attr('id', 'rangeSelector');
-    options.append(selfRef.rangeSelector);
+    this.rangeSelector = $('<input>').attr('type', 'checkbox').attr('id', 'rangeSelector');
+    options.append(this.rangeSelector);
 
-    var rangeSelectorLabel = $('<label>').attr('for', 'rangeSelector').html('Show range selector').addClass('chart-option');
+    var rangeSelectorLabel = $('<label>').attr('for', 'rangeSelector').html('Range selector').addClass('chart-option');
     options.append(rangeSelectorLabel);
 
     //options to calculate R-R interval and clear the list of selected points. 
@@ -34,60 +37,158 @@ $(function() {
     options.append(textBox);
 
     //option to clear the points selected
-    selfRef.clearButton = $('<button>').addClass('chart-option').attr('id', 'clearSelectedPoints').html('Clear all selected points');
-    options.append(selfRef.clearButton);
-    selfRef.mainDOMElement.append(options);
+    this.clearButton = $('<button>').addClass('chart-option').attr('id', 'clearSelectedPoints').html('Clear all selected points');
+    options.append(this.clearButton);
+    this.mainDOMElement.append(options);
   }
 
   function initEvents() {
-    var selfRef = this;
-    selfRef.clearButton.click(clearButtonClicked.bind(selfRef));
-    selfRef.rangeSelector.on('change', rangeSelectorChanged.bind(selfRef));
+
+    this.clearButton.click(clearButtonClicked.bind(this));
+    this.rangeSelector.on('change', rangeSelectorChanged.bind(this));
   }
 
   function initChartComponents() {
-    var selfRef = this;
-    selfRef.highlightedPoints = [];
-    selfRef.peaks = [];
+
+    this.highlightedPoints = [];
+    this.peaks = [];
   }
 
   function clearButtonClicked() {
-    var selfRef = this;
-    selfRef.highlightedPoints = [];
-    selfRef.peaks = [];
+
+    this.highlightedPoints = [];
+    this.peaks = [];
     $('#rrInterval').val("");
-    selfRef.graph.updateOptions({
-      dateWindow: selfRef.graph.xAxisRange()
+    this.graph.updateOptions({
+      dateWindow: this.graph.xAxisRange()
     });
   }
 
   function rangeSelectorChanged() {
-    var selfRef = this;
+
     if ($(this.rangeSelector).is(":checked"))
-      selfRef.graph.updateOptions({
+      this.graph.updateOptions({
         showRangeSelector: true
       });
     else
-      selfRef.graph.updateOptions({
+      this.graph.updateOptions({
         showRangeSelector: false
       });
   }
 
-  function generateChartData(callback) {
+  function formatLegendDisplay(ms) {
+    return '<b style="color:#c90696">Time: </b>' + ms;
+  }
+
+  function sorter(a, b) {
+    return a - b;
+  }
+
+  function isValidPoint(x) {
+    return (this.clickedX && x == this.clickedX);
+  }
+
+  function generateChartData() {
+    var selfRef = this;
+    selfRef.graphData = [];
     var data = "";
-    $.get("data.csv", function(allText) {
-
-      var allTextLines = allText.split(/\r\n|\n/);
-
-      for (var i = 0; i < allTextLines.length; i++) {
-        data += allTextLines[i] + '\n';
-      }
-      callback(data);
+    $.get("/static/sewi/js/app/Sample Resources/data.csv", function(csvText) {
+      var allTextLines = csvText.split(/\r\n|\n/);
+      $.each(allTextLines, function(index, value) {
+        data += value + '\n';
+        selfRef.graphData.push(value.split(','));
+      });
+      selfRef.createChart(data);
     });
+  }
+
+  sewi.ChartResourceViewer.prototype.chartPointClicked = function(context, p) {
+    if (this.isHighlightedPoint(p)) {
+      this.unHighlightPoint(p);
+
+    } else {
+      this.highlightedPoints.push(p);
+      this.peaks.push(p.xval);
+      this.highlightPoint(context, p);
+    }
+
+    if (this.peaks.length > 1) {
+      // if more than one peak has been selected, find the R-R Interval using the peaks
+      var rrInterval = this.calculateRRInterval();
+
+      $('#rrInterval').val((rrInterval / 1000).toFixed(2) + ' sec');
+    } else {
+      $('#rrInterval').val('');
+    }
 
   }
 
-  function highlightPoint(context, x, y) {
+  sewi.ChartResourceViewer.prototype.isHighlightedPoint = function(p) {
+    var index = this.peaks.indexOf(p.xval);
+    return (index >= 0);
+  }
+
+  sewi.ChartResourceViewer.prototype.highlightNearestPeak = function(context, x) {
+    var indexOfClickedPoint = this.binarySearch(x);
+    var start = indexOfClickedPoint - 25;
+    var end = indexOfClickedPoint + 25;
+    this.chartPointClicked(context, this.findClosestPeak(start, end));
+  }
+
+  sewi.ChartResourceViewer.prototype.findClosestPeak = function(start, end) {
+    var ymax = 0;
+    var xmax = 0;
+    var index = start;
+    while (index <= end) {
+      var y = parseFloat(this.graphData[index][1]);
+      if (y > ymax) {
+        ymax = y;
+        xmax = parseInt(this.graphData[index][0]);
+      }
+      index++;
+    }
+    console.log(xmax + ' ' + ymax);
+    return {
+      'xval': xmax,
+      'yval': ymax
+    };
+
+  }
+
+  sewi.ChartResourceViewer.prototype.binarySearch = function(x) {
+    var data = this.graphData;
+
+    var minIndex = 0;
+    var maxIndex = data.length - 1;
+    var currentIndex;
+    var currentElement;
+
+    while (minIndex <= maxIndex) {
+      currentIndex = (minIndex + maxIndex) / 2 | 0;
+      currentElement = parseInt(data[currentIndex][0]);
+
+      if (currentElement < x) {
+        minIndex = currentIndex + 1;
+      } else if (currentElement > x) {
+        maxIndex = currentIndex - 1;
+      } else {
+        return currentIndex;
+      }
+    }
+    return -1;
+
+  }
+
+  sewi.ChartResourceViewer.prototype.highlightAllPoints = function(context) {
+    var selfRef = this;
+    $.each(selfRef.highlightedPoints, function(index, value) {
+      selfRef.highlightPoint(context, value);
+    });
+  }
+
+  sewi.ChartResourceViewer.prototype.highlightPoint = function(context, p) {
+    var x = this.graph.toDomXCoord(p.xval),
+      y = this.graph.toDomYCoord(p.yval);
     context.fillStyle = "#000";
     context.beginPath();
     context.arc(x, y, 3, 0, 2 * Math.PI, false);
@@ -95,19 +196,46 @@ $(function() {
     context.closePath();
   }
 
-  var unHighlightPoint = function(p) {
-    for (var index = 0; index < highlightedPoints.length; index++) {
-      if (highlightedPoints[index].xval == p.xval) {
-        highlightedPoints.splice(index, 1);
+  /**
+   * Remove the point from the list of highlighted points.
+   * The graph is automatically re-rendered when the point is unhighlighted.
+   **/
+  sewi.ChartResourceViewer.prototype.unHighlightPoint = function(point) {
+
+    for (var index = 0; index < this.highlightedPoints.length; index++) {
+      if (this.highlightedPoints[index].xval == point.xval) {
+        this.highlightedPoints.splice(index, 1);
         break;
       }
     }
+    this.peaks.splice(this.peaks.indexOf(point.xval), 1);
   }
 
-  function createChart(result) {
+  /**
+   * R-R Interval is calculated as follows :
+   * 1.Sort all the points selected by increasing x-coordinate.
+   * 2.Sum up the difference between adjacent points.
+   * 3.Return the average difference.
+   **/
+  sewi.ChartResourceViewer.prototype.calculateRRInterval = function() {
+
+    var selfRef = this;
+    selfRef.peaks.sort(sorter);
+    var sumOfRRIntervals = 0;
+
+    $.each(selfRef.peaks, function(index) {
+      if (index != selfRef.peaks.length - 1)
+        sumOfRRIntervals += selfRef.peaks[index + 1] - selfRef.peaks[index];
+    });
+
+    return sumOfRRIntervals / (selfRef.peaks.length - 1);
+  }
+
+  sewi.ChartResourceViewer.prototype.createChart = function(data) {
+    var selfRef = this;
     selfRef.graph = new Dygraph(
-      document.getElementById("ecg"),
-      result, {
+      $("#ecg")[0],
+      data, {
         title: ' ',
         animatedZooms: true,
         panEdgeFraction: 0.01,
@@ -117,78 +245,35 @@ $(function() {
         colors: ['#c90696'],
         highlightCircleSize: 4,
         hideOverlayOnMouseOut: false,
+        xlabel: 'Time',
+        ylabel: 'Value',
         labels: ['time', 'Value'],
         xRangePad: 2,
-        labelsDiv: document.getElementById("legend"),
+        labelsDiv: $("#legend")[0],
+        dateWindow: [2900, 5200],
         axes: {
           x: {
-            valueFormatter: function(ms) {
-              return '<b style="color:#c90696">Time: </b>' + ms;
-            }
+            valueFormatter: formatLegendDisplay
           }
         },
 
         pointClickCallback: function(e, p) {
-          var index = peaks.indexOf(p.xval);
-
-          if (index >= 0) {
-            peaks.splice(index, 1);
-            unHighlightPoint(p);
-
-          } else {
-            var context = e.toElement.getContext('2d');
-            highlightedPoints.push(p);
-            peaks.push(p.xval);
-            var x = selfRef.graph.toDomXCoord(p.xval),
-              y = selfRef.graph.toDomYCoord(p.yval);
-            highlightPoint(context, x, y);
-          }
-
-          if (peaks.length > 1) {
-            // if more than one peak has been selected, sort them and find the rrInterval
-
-            var sorter = function(a, b) {
-              return a - b;
-            }
-
-            peaks.sort(sorter);
-
-            var diff = 0;
-            $.each(peaks, function(index) {
-              if (index != peaks.length - 1)
-                diff += peaks[index + 1] - peaks[index];
-            });
-
-            // rrInterval = diff between the peaks
-            var rrInterval = (diff / (peaks.length - 1));
-            // convert to decimal and round off to 2 decimal places
-            rrInterval = (rrInterval / 1000).toFixed(2);
-            $('#rrInterval').val(rrInterval + ' sec');
-          } else {
-            $('#rrInterval').val('');
-          }
-
+          selfRef.clickedX = p.xval;
+          selfRef.chartPointClicked(e.toElement.getContext('2d'), p);
         },
+
         highlightCallback: function(e, x, p) {
-          var context = e.toElement.getContext('2d');
-
-          $.each(highlightedPoints, function(index) {
-            var x = selfRef.graph.toDomXCoord(highlightedPoints[index].xval),
-              y = selfRef.graph.toDomYCoord(highlightedPoints[index].yval);
-            highlightPoint(context, x, y);
-          });
-
+          selfRef.highlightAllPoints(e.toElement.getContext('2d'));
         },
 
         drawCallback: function(g) {
-          var context = g.canvas_.getContext('2d');
-          $.each(highlightedPoints, function(index) {
-            var x = g.toDomXCoord(highlightedPoints[index].xval),
-              y = g.toDomYCoord(highlightedPoints[index].yval);
-            highlightPoint(context, x, y);
-          });
+          selfRef.highlightAllPoints(g.canvas_.getContext('2d'));
         },
-        dateWindow: [2900, 5200],
+
+        clickCallback: function(e, x, points) {
+          if (!isValidPoint.call(selfRef, x))
+            selfRef.highlightNearestPeak(e.toElement.getContext('2d'), x);
+        }
       }
     );
   }
