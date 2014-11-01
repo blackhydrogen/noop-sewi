@@ -133,11 +133,13 @@ var sewi = sewi || {};
 	function addButtons() {
 		var closeButton = $(sewi.constants.RESOURCE_VIEWER_CLOSE_BUTTON_DOM);
 		var fullscreenButton = $(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM);
+		var tooltipsButton = $(sewi.constants.RESOURCE_VIEWER_TOOLTIPS_BUTTON_DOM);
 
 		this.buttonGroup = $(sewi.constants.RESOURCE_VIEWER_BUTTON_GROUP_DOM);
 		this.panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
 
-		this.buttonGroup.append(fullscreenButton)
+		this.buttonGroup.append(tooltipsButton)
+			.append(fullscreenButton)
 			.append(closeButton);
 
 		this.panel.append(this.buttonGroup);
@@ -146,6 +148,7 @@ var sewi = sewi || {};
 
 		closeButton.click(closeButtonClicked.bind(this));
 		fullscreenButton.click(fullscreenButtonClicked.bind(this));
+		tooltipsButton.click(tooltipsButtonClicked.bind(this));
 	}
 
 	function addErrorScreen() {
@@ -162,6 +165,16 @@ var sewi = sewi || {};
 
 	function fullscreenButtonClicked() {
 		this.trigger('FullscreenToggled');
+	}
+
+	function tooltipsButtonClicked(event) {
+		var tooltipsButton = $(event.target);
+		var wasActive = tooltipsButton.hasClass('active');
+		if (wasActive) {
+			this.hideTooltips();
+		} else {
+			this.showTooltips();
+		}
 	}
 
 	// Overrides getDOM of ConfiguratorElement
@@ -222,4 +235,9 @@ var sewi = sewi || {};
 
 		progressBarElement.detach();
 	}
+
+	// Unimplemented methods; these should be overridden by implemented ResourceViewers
+
+	sewi.ResourceViewer.prototype.showTooltips = _.noop;
+	sewi.ResourceViewer.prototype.hideTooltips = _.noop;
 })();
