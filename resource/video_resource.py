@@ -15,17 +15,18 @@ class VideoResource(BaseResource):
     def __init__(self, resource_id):
         self.__observation = Observation.objects.get(uuid=resource_id)
 
-        self.__concept = self.__observation.concept
-        if not self.is_video_concept(self.__concept):
+        if not self.is_valid_observation(self.__observation):
             raise ValueError(self.__ERROR_RESOURCE_NOT_VIDEO)
+        
+        self.__concept = self.__observation.concept
         logger.debug('Video observation successfully retrieved: %s' % resource_id)
 
         self.__url = self.__observation.value_complex.url
         self.__mimetype = self.__concept.mimetype
 
     @classmethod
-    def is_video_concept(cls, concept):
-        return cls.__VIDEO_TYPE_STRING in concept.mimetype
+    def is_valid_observation(cls, observation):
+        return cls.__VIDEO_TYPE_STRING in observation.concept.mimetype
 
     def get_info(self):
         return {

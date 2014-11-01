@@ -7,7 +7,7 @@ urlpatterns = patterns(
   url(r'^test$', views.test_page, name='test_page'),
   # Encounter
   # TODO: Uncomment the following to retrieve the encounter with the ID
-  #url(r'^encounter/(?P<encounter_id>\w+)/?$', views.get_encounter, name='get_encounter')
+  url(r'^encounter/(?P<encounter_id>[\w-]+)/?$', views.get_encounter, name='get_encounter'),
   #url(r'^encounter/(?P<encounter_id>\w+)/resourceList?$', views.get_encounter_resources, name='get_encounter_resources')
   url(r'^encounter/(?P<encounter_id>[-\w]+)/basicInfo?$', views.get_encounter_info, name='get_encounter_info'),
   # Images
