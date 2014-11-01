@@ -42,7 +42,7 @@ class ImageResource(BaseResource):
         binaryData = StringIO.StringIO()
 
         image = Image.open(self.__url)
-        image.thumbnail((100, 100))
+        image.thumbnail((100, 100), Image.ANTIALIAS)
         image.convert("RGB").save(binaryData, "JPEG")
 
         base64Data = base64.b64encode(binaryData.getvalue())
