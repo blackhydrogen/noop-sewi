@@ -44,6 +44,11 @@ var sewi = sewi || {};
         this.loadSuccess = false;
         this.progressBar = null;
         
+        //Control Buttons
+        this.zoomToFitBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>');
+        this.zoomToSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-part" id="zoomToSelection"></button>');
+        this.clearSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-none" id="clearSelection"></button>');
+        
         //Web audio API objects
         this.audioContext = null;
         this.scriptProcessor = null;
@@ -208,18 +213,26 @@ var sewi = sewi || {};
 
     function createMediaButtons(){
         var buttons = [];
-        var zoomToFitBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>');
-        var zoomToSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-part" id="zoomToSelection"></button>');
-        var clearSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-none" id="clearSelection"></button>');
-        zoomToFitBtn.on('click', zoomToFitBtnClickEvent.bind(this));
-        zoomToSelectionBtn.on('click', zoomToSelectionBtnClickEvent.bind(this));
-        clearSelectionBtn.on('click', clearSelectionBtnClickEvent.bind(this));
-        buttons.push(zoomToFitBtn);
-        buttons.push(zoomToSelectionBtn);
-        buttons.push(clearSelectionBtn);
+        this.zoomToFitBtn.on('click', zoomToFitBtnClickEvent.bind(this));
+        this.zoomToSelectionBtn.on('click', zoomToSelectionBtnClickEvent.bind(this));
+        this.clearSelectionBtn.on('click', clearSelectionBtnClickEvent.bind(this));
+        buttons.push(this.zoomToFitBtn);
+        buttons.push(this.zoomToSelectionBtn);
+        buttons.push(this.clearSelectionBtn);
         return buttons;
     }
+
     
+    function createToolTips(){
+       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit'});
+       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection'});
+       this.clearSelectionBtn.tooltip({title : 'Clear the Selection'});
+    }
+
+    function destroyToolTips(){
+    
+    }
+
     function zoomToFitBtnClickEvent(event){
         event.preventDefault();
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
@@ -275,6 +288,7 @@ var sewi = sewi || {};
             this.controls.on('Unmuted', this.volumeUnmuted.bind(this));
             this.controls.on('Muted', this.volumeMuted.bind(this));
             this.mainDOMElement.append(this.controls.getDOM());
+            createToolTips.call(this);
         }
     }
 
