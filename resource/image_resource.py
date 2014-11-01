@@ -1,5 +1,8 @@
 from . import BaseResource
 from mds.core.models import Observation, Concept
+import Image
+import StringIO
+import base64
 
 import logging
 logger = logging.getLogger('mds.sewi')
