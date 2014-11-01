@@ -2,6 +2,7 @@ import json
 from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render
 from resource import ImageResource, VideoResource, AudioResource
+from basic_encounter_information import BasicEncounterInformation
 
 import logging
 
@@ -33,4 +34,10 @@ def get_audio(request, audio_id):
     logger.info('Retrieving Audio ID: ' + audio_id)
     audio_resource = AudioResource(audio_id)
     data = json.dumps(audio_resource.get_info())
+    return HttpResponse(data, mimetype='application/json')
+
+def get_encounter_info(request, encounter_id):
+    logger.info('Getting Basic Encounter Information: ' + encounter_id)
+    basic_encounter_info = BasicEncounterInformation(encounter_id)
+    data = json.dumps(basic_encounter_info.get_content(), indent=4)
     return HttpResponse(data, mimetype='application/json')
