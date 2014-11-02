@@ -43,7 +43,6 @@ var sewi = sewi || {};
         this.offsetValueChanged = false;
         this.url = "";
         this.loadSuccess = false;
-        this.progressBar = null;
         
         //Control Buttons
         this.zoomToFitBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>');
@@ -88,10 +87,8 @@ var sewi = sewi || {};
         //contextClass = null;  
         if(contextClass){
             this.audioContext =new contextClass();
-            this.progressBar = new sewi.ProgressBar(true);
-            this.progressBar.setText('fetching audio clip');
+            this.showProgressBar('fetching audio clip');
             this.contentDOM = $('<div class="audio-content"></div>');
-            this.contentDOM.append(this.progressBar.getDOM());
             this.mainDOMElement.append(this.contentDOM);
             
             this.scriptProcessor = this.audioContext.createScriptProcessor(512, 1, 1); 
@@ -114,9 +111,7 @@ var sewi = sewi || {};
             this.request.send();
 
         } else {
-            var error = new sewi.ErrorScreen();
-            error.setText('Error: Web Audio API is not supported by the browser.');
-            this.mainDOMElement.append(error.getDOM());
+            this.showError('Error: Web Audio API is not supported by the browser.');
         }
 
     }
@@ -132,14 +127,14 @@ var sewi = sewi || {};
         event.preventDefault();        
         if(event.lengthComputable){
             var percent = (event.loaded/event.total) * 100;
-            this.progressBar.update(percent);
+            this.updateProgressBar(percent);
         }
     }
 
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.progressBar.setText('generating amplitude wave graph');
+        this.updateProgressBar(100, 'generating amplitude wave graph');
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
