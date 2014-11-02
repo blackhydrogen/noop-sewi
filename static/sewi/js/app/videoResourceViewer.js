@@ -620,6 +620,14 @@ var sewi = sewi || {};
         }
     }
 
+    // Retrieve all elements that have tooltips
+    function getOwnElements() {
+        var elements = this.zoomToFitButton.add(this.resetZoomButton)
+                                           .add(this.zoomSlider);
+
+        return elements;
+    }
+
     // Load video information from the server
     function loadVideoData() {
         var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + this.id;
@@ -674,10 +682,18 @@ var sewi = sewi || {};
 
     sewi.VideoResourceViewer.prototype.showTooltips = function() {
         this.controls.showTooltips();
+        var elements = getOwnElements.call(this);
+
+        elements.tooltip({
+            container: 'body'
+        });
     }
 
     sewi.VideoResourceViewer.prototype.hideTooltips = function() {
         this.controls.hideTooltips();
+        var elements = getOwnElements.call(this);
+
+        elements.tooltip('destroy');
     }
 
 })();
