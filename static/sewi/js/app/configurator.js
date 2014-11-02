@@ -9,8 +9,8 @@ var sewi = sewi || {};
         var defaults = {
             isBasicInfoMinimized: false,
             isResourceViewerHidden: true,
-            title: 'Loading',
-            subtitle: 'Please wait'
+            title: sewi.constants.CONFIGURATOR_DEFAULT_TITLE,
+            subtitle: sewi.constants.CONFIGURATOR_DEFAULT_SUBTITLE
         };
 
         options = options || {};
@@ -46,29 +46,29 @@ var sewi = sewi || {};
         this.alertsView = $(this.alertsView);
 
         if (this.titleView.length != 1) {
-            throw new Error('options: One titleView selector/element must be provided.')
+            throw new Error(sewi.constants.CONFIGURATOR_TITLEVIEW_EXCEPTION_MESSAGE);
         }
         if (this.basicInfoView.length != 1) {
-            throw new Error('options: One basicInfoView selector/element must be provided.')
+            throw new Error(sewi.constants.CONFIGURATOR_BASICINFOVIEW_EXCEPTION_MESSAGE);
         }
         if (this.resViewerView.length != 1) {
-            throw new Error('options: One resViewerView selector/element must be provided.')
+            throw new Error(sewi.constants.CONFIGURATOR_RESVIEWERVIEW_EXCEPTION_MESSAGE);
         }
         if (this.resGalleryView.length != 1) {
-            throw new Error('options: One resGalleryView selector/element must be provided.')
+            throw new Error(sewi.constants.CONFIGURATOR_RESGALLERYVIEW_EXCEPTION_MESSAGE);
         }
         if (this.alertsView.length != 1) {
-            throw new Error('options: One alertsView selector/element must be provided.')
+            throw new Error(sewi.constants.CONFIGURATOR_ALERTSVIEW_EXCEPTION_MESSAGE);
         }
         if (_.isString(this.encounterId) === false) {
-            throw new Error('options: encounterId must be a valid string.');
+            throw new Error(sewi.constants.CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE);
         }
     }
 
     function initTitle(options) {
 
-        this.titleDOM = $('<h1>');
-        this.subtitleDOM = $('<small>');
+        this.titleDOM = $(sewi.constants.CONFIGURATOR_TITLE_DOM);
+        this.subtitleDOM = $(sewi.constants.CONFIGURATOR_SUBTITLE_DOM);
         this.titleView.append(this.titleDOM);
 
         this.setTitle(options.title, options.subtitle);
@@ -90,7 +90,7 @@ var sewi = sewi || {};
             this.basicInfo.load();
         }
 
-        var minimizeElement = $('<div class="minimize-button">&lt;&lt;</div>');
+        var minimizeElement = $(sewi.constants.CONFIGURATOR_MINIMIZE_DOM);
         this.basicInfoView.append(minimizeElement);
         minimizeElement.click(minimizeToggled.bind(this));
     }
@@ -195,7 +195,7 @@ var sewi = sewi || {};
     function setEncounterTitle(id, name) {
 
         var title = name;
-        var subtitle = "Encounter #" + id;
+        var subtitle = sewi.constants.CONFIGURATOR_TITLE_PREFIX + id;
         this.setTitle(title, subtitle);
     }
 
@@ -226,7 +226,7 @@ var sewi = sewi || {};
                 // Destructive removal (including all events)
         this.basicInfoView.children().remove();
 
-        this.basicInfoView.append(createErrorScreen('Basic Info has crashed!', initBasicInfo.bind(this)));
+        this.basicInfoView.append(createErrorScreen(sewi.constants.CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE, initBasicInfo.bind(this)));
     }
 
     function resViewerCrashed() {
@@ -236,14 +236,14 @@ var sewi = sewi || {};
         // Destructive removal (including all events)
         this.resViewerView.children().remove();
 
-        this.resViewerView.append(createErrorScreen('Resource viewer has crashed!', initResViewer.bind(this)));
+        this.resViewerView.append(createErrorScreen(sewi.constants.CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE, initResViewer.bind(this)));
     }
 
     function resGalleryCrashed() {
         // Destructive removal (including all events)
         this.resGalleryView.children().remove();
 
-        this.resGalleryView.append(createErrorScreen('Resource gallery has crashed!', initResGallery.bind(this)));
+        this.resGalleryView.append(createErrorScreen(sewi.constants.CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE, initResGallery.bind(this)));
     }
 
     function reportSeriousError() {
