@@ -1,6 +1,9 @@
 var sewi = sewi || {};
 
 (function() {
+    /**
+     * Defines a control panel suitable for controlling
+     */
     sewi.MediaControls = function(options) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.MediaControls))

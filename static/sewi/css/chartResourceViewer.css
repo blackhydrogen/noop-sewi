@@ -14,8 +14,43 @@
 }
 .chart-options{
 	margin: 20px;
-}	
+}
 
 .chart-option{
 	margin: 5px;
+}
+
+/* Image Control Panel Start */
+
+.chart-control-panel {
+	width: 100%;
+	background-color: #eee;
+	height: 30px;
+	position: absolute;
+	bottom: 0;
+}
+
+.chart-control-panel .btn {
+	height: 30px;
+	width: 30px;
+	padding: 4px 7px;
+}
+
+.chart-control-panel>div.left {
+	float: left;
+	margin-right: 10px;
+}
+
+.chart-control-panel>div.right {
+	float: right;
+	margin-left: 10px;
+}
+
+.chart-control-panel .selectpicker {
+	width: 100%;
+}
+
+.chart-control-panel .timing-display {
+	width: 60px;
+	height: 30px;
 }

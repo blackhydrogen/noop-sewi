@@ -129,6 +129,19 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
 
+        //Chart Controls Constants
+        CHART_CONTROLS_DOM_CLASS: 'chart-control-panel',
+        CHART_CONTROLS_INNER_PANEL_DOM: '<div></div>',
+        CHART_CONTROLS_LEFT_PANEL_CLASS: 'left',
+        CHART_CONTROLS_RIGHT_PANEL_CLASS: 'right',
+        CHART_CONTROLS_OPTIONS_DROPDOWN_DOM: '<select multiple class="dropup" data-style="btn-default options-dropdown" title="Options"></select>',
+        CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS: 'options-dropdown',
+        CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM: '<option value="rangeSelector">Range Selector</option>',
+        CHART_CONTROLS_RESET_SELECTION_BUTTON_DOM: '<option value="resetSelection">Reset Selection</option>',
+        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<input type="text" class="timing-display" readonly />',
+        CHART_CONTROLS_RANGE_SELECTOR_VALUE: 'rangeSelector',
+        CHART_CONTROLS_RESET_SELECTION_VALUE: 'resetSelection',
+
         //Configurator Constants
         CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',
         CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM: '<p></p>',

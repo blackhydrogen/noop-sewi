@@ -1,5 +1,122 @@
 var sewi = sewi || {};
 
+// ChartControls definition
+$(function() {
+    /** [ChartControls description] */
+    sewi.ChartControls = function(options) {
+        // Safeguard if function is called without `new` keyword
+        if (!(this instanceof sewi.ChartControls))
+            return new sewi.ChartControls();
+
+        sewi.ConfiguratorElement.call(this);
+
+        this.isRangeSelectorShown = false;
+
+        initDOM.call(this);
+        initEvents.call(this);
+    };
+
+    sewi.inherits(sewi.ChartControls, sewi.ConfiguratorElement);
+
+    function initDOM() {
+        var innerPanel = $(sewi.constants.CHART_CONTROLS_INNER_PANEL_DOM);
+        var leftPanel = innerPanel.clone()
+                                  .addClass(sewi.constants.CHART_CONTROLS_LEFT_PANEL_CLASS);
+        var rightPanel = innerPanel.clone()
+                                  .addClass(sewi.constants.CHART_CONTROLS_RIGHT_PANEL_CLASS);
+
+
+        this.optionsMenu = $(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_DOM)
+                                 .append(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM)
+                                 .append(sewi.constants.CHART_CONTROLS_RESET_SELECTION_BUTTON_DOM);
+
+        this.timingDisplay = $(sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_DOM);
+
+        leftPanel.append(this.optionsMenu);
+        rightPanel.append(this.timingDisplay);
+
+        this.mainDOMElement.append(rightPanel)
+                           .append(leftPanel)
+                           .addClass(sewi.constants.CHART_CONTROLS_DOM_CLASS);
+
+        this.optionsMenu.selectpicker({
+            title: 'Options',
+            countSelectedText: 'Options',
+            selectedTextFormat: 'count > 0',
+            width: '100px',
+            dropupAuto: false,
+        });
+    }
+
+    function initEvents() {
+        this.optionsMenu.change(selectionChanged.bind(this));
+        this.timingDisplay.focus(timingDisplayFocused.bind(this));
+    }
+
+    function getOwnElements() {
+        var elements = this.mainDOMElement.find(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS);
+
+        return elements;
+    }
+
+    function selectionChanged() {
+        var selectionOptions = this.optionsMenu.val() || [];
+        var isRangeSelectorShown = false;
+        var isSelectionReset = false;
+
+        // Get selected options
+        if (!_.isEmpty(selectionOptions)) {
+            isRangeSelectorShown = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
+
+            isSelectionReset = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_SELECTION_VALUE);
+        }
+
+        // Ensure that non-checkable selections remain un-checked
+        var newOptions = [];
+        if (isRangeSelectorShown) {
+            newOptions.push(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
+        }
+
+        this.optionsMenu.selectpicker('val', newOptions);
+
+        // Ensure the event is only triggered when the range selector's state has to change
+        var hasRangeSelectorChangedState = isRangeSelectorShown !== this.isRangeSelectorShown;
+
+        if (hasRangeSelectorChangedState) {
+            // Display or hide range selector as necessary
+            if (isRangeSelectorShown) {
+                this.trigger('rangeSelectorShown');
+            } else {
+                this.trigger('rangeSelectorHidden');
+            }
+
+            this.isRangeSelectorShown = isRangeSelectorShown;
+        }
+
+        // Reset selection is necessary
+        if (isSelectionReset) {
+            this.trigger('selectionReset');
+        }
+    }
+
+    function timingDisplayFocused() {
+        // Auto-select the entire text field for the user to easily copy
+        this.timingDisplay.select();
+    }
+
+    sewi.ChartControls.prototype.update = function(options) {
+        options = options || {};
+
+        if (!_.isUndefined(options.timing)) {
+            if (options.timing > 0) {
+                this.timingDisplay.val(options.timing.toFixed(2) + 's');
+            } else {
+                this.timingDisplay.val('');
+            }
+        }
+    };
+});
+
 $(function() {
 
   sewi.ChartControls = function(options) {
