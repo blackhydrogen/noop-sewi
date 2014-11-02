@@ -77,9 +77,12 @@ sewi.PanZoomWidget.prototype.calculateTargetDimensions = function(originalWidth,
 	this.targetDimensions.maximumZoom.height = this.targetDimensions.original.height * 2;
 }
 
-// Recalculate the targetDimensions of the target - used when the container is resized.
-sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function() {
-	this.calculateTargetDimensions(this.targetDimensions.original.width, this.targetDimensions.original.height);
+// Recalculate the targetDimensions of the target - used when the container and/or the target is resized.
+sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function(originalWidth, originalHeight) {
+	if(originalWidth == undefined)
+		this.calculateTargetDimensions(this.targetDimensions.original.width, this.targetDimensions.original.height);
+	else
+		this.calculateTargetDimensions(originalWidth, originalHeight);
 }
 
 sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {

@@ -276,6 +276,9 @@ sewi.ImageResourceViewer = function(options) {
 	}
 
 	selfref.load = function() {
+		selfref.showProgressBar();
+		selfref.updateProgressBar(100);
+
 		imageElement.one("load", function() {
 			originalImageInfo.width = imageElement.prop("naturalWidth");
 			originalImageInfo.height = imageElement.prop("naturalHeight");
@@ -294,6 +297,8 @@ sewi.ImageResourceViewer = function(options) {
 			});
 
 			setupZoomControls();
+
+			selfref.hideProgressBar()
 		});
 
 		loadImage();
@@ -318,13 +323,23 @@ sewi.ImageResourceViewer = function(options) {
 
 		imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
 	}
-
-	selfref.resize = function() {
-		// setoriginalImageInfo();
-	}
 };
 
 sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
+
+sewi.ImageResourceViewer.prototype.resize = function() {
+	console.log("resze");
+	//this.imagePanZoomWidget.recalculateTargetDimensions();
+}
+
+sewi.ImageResourceViewer.prototype.showTooltips = function() {
+	this.controls.enableTooltips();
+}
+
+sewi.ImageResourceViewer.prototype.hideTooltips = function() {
+	this.controls.disableTooltips();
+}
+
 
 
 
@@ -342,7 +357,6 @@ sewi.ImageControls = function(options) {
 
 	this.initDOM();
 	this.initEvents();
-	this.initTooltips();
 };
 
 sewi.inherits(sewi.ImageControls, sewi.ConfiguratorElement);
@@ -485,7 +499,18 @@ sewi.ImageControls.prototype.initEvents = function() {
 	this.contrastPlusSlider.on('change', this.filtersChanged.bind(this));
 }
 
-sewi.ImageControls.prototype.initTooltips = function() {
+sewi.ImageControls.prototype.disableTooltips = function() {
+	this.mainDOMElement.find(".grayscale-option").tooltip('destroy');
+	this.mainDOMElement.find(".flame-option").tooltip('destroy');
+	this.mainDOMElement.find(".spectrum-option").tooltip('destroy');
+	this.mainDOMElement.find(".hsv-option").tooltip('destroy');
+	this.mainDOMElement.find(".difference-option").tooltip('destroy');
+	this.mainDOMElement.find(".invert-option").tooltip('destroy');
+	this.mainDOMElement.find(".autoContrast-option").tooltip('destroy');
+	this.mainDOMElement.find(".contrast-menu-button").tooltip('destroy');
+}
+
+sewi.ImageControls.prototype.enableTooltips = function() {
 	this.mainDOMElement.find(".grayscale-option").tooltip({
 		html: true,
 		title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="' + sewi.staticPath +'images/image_tooltip_grayscale.png" height="100px" width="200px">',
