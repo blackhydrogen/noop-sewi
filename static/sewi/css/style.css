@@ -141,6 +141,14 @@ body {
 	pointer-events: none;
 }
 
+.tooltip.in {
+	opacity: 1;
+}
+
+.tooltip-inner {
+	max-width: 250px;
+}
+
 div.minimize-button {
     position: absolute;
     right: 0;
