@@ -22,7 +22,8 @@ var sewi = sewi || {};
             'basicInfoView',
             'resViewerView',
             'resGalleryView',
-            'alertsView'
+            'alertsView',
+            'encounterId'
         ]));
 
         validateArguments.call(this);
@@ -59,6 +60,9 @@ var sewi = sewi || {};
         if (this.alertsView.length != 1) {
             throw new Error('options: One alertsView selector/element must be provided.')
         }
+        if (_.isString(this.encounterId) === false) {
+            throw new Error('options: encounterId must be a valid string.');
+        }
     }
 
     function initTitle(options) {
@@ -73,7 +77,9 @@ var sewi = sewi || {};
     function initBasicInfo() {
 
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
-            this.basicInfo = new sewi.BasicEncounterInfoViewer();
+            this.basicInfo = new sewi.BasicEncounterInfoViewer({
+                encounterId: this.encounterId
+            });
             var element = this.basicInfo.getDOM();
 
             element.on('BEILoaded', basicInfoLoaded.bind(this));
@@ -103,7 +109,9 @@ var sewi = sewi || {};
     function initResGallery() {
 
         if (_.isFunction(sewi.ResourceGallery)) {
-            this.resGallery = new sewi.ResourceGallery();
+            this.resGallery = new sewi.ResourceGallery({
+                encounterId: this.encounterId
+            });
             var element = this.resGallery.getDOM();
             element.on('resourceClick', galleryOpenedResource.bind(this));
             element.on('Error', resGalleryCrashed.bind(this));
