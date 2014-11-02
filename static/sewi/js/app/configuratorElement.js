@@ -174,8 +174,10 @@ var sewi = sewi || {};
 		var isActive = tooltipsButtonTracker.is(':checked');
 		if (isActive) {
 			this.showTooltips();
+			tooltipsButtonTracker.parent().addClass('btn-primary');
 		} else {
 			this.hideTooltips();
+			tooltipsButtonTracker.parent().removeClass('btn-primary');
 		}
 	}
 
