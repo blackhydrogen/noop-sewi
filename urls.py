@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = patterns(
   'sewi.views',
-  url(r'^$', views.main_page, name='main_page'),
+  # Test endpoints
+  #url(r'^$', views.main_page, name='main_page'),
   url(r'^test$', views.test_page, name='test_page'),
   # Encounter
   # TODO: Uncomment the following to retrieve the encounter with the ID
