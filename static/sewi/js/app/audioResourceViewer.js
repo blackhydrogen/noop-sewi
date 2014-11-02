@@ -1,3 +1,4 @@
+// Created by: Le Beier
 var sewi = sewi || {};
 (function(){
     // Audio Resource Viewer Class
@@ -42,7 +43,6 @@ var sewi = sewi || {};
         this.offsetValueChanged = false;
         this.url = "";
         this.loadSuccess = false;
-        this.progressBar = null;
         
         //Control Buttons
         this.zoomToFitBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>');
@@ -87,15 +87,13 @@ var sewi = sewi || {};
         //contextClass = null;  
         if(contextClass){
             this.audioContext =new contextClass();
-            this.progressBar = new sewi.ProgressBar(true);
-            this.progressBar.setText('fetching audio clip');
+            this.showProgressBar('fetching audio clip');
             this.contentDOM = $('<div class="audio-content"></div>');
-            this.contentDOM.append(this.progressBar.getDOM());
             this.mainDOMElement.append(this.contentDOM);
             
             this.scriptProcessor = this.audioContext.createScriptProcessor(512, 1, 1); 
             this.scriptProcessor.connect(this.audioContext.destination);
-            this.scriptProcessor.onaudioprocess = this.updateMediaControl.bind(this);
+            this.scriptProcessor.onaudioprocess = updateMediaControl.bind(this);
 
             this.gainNode = this.audioContext.createGain();
             this.gainNode.connect(this.audioContext.destination);
@@ -113,9 +111,7 @@ var sewi = sewi || {};
             this.request.send();
 
         } else {
-            var error = new sewi.ErrorScreen();
-            error.setText('Error: Web Audio API is not supported by the browser.');
-            this.mainDOMElement.append(error.getDOM());
+            this.showError('Error: Web Audio API is not supported by the browser.');
         }
 
     }
@@ -131,14 +127,14 @@ var sewi = sewi || {};
         event.preventDefault();        
         if(event.lengthComputable){
             var percent = (event.loaded/event.total) * 100;
-            this.progressBar.update(percent);
+            this.updateProgressBar(percent);
         }
     }
 
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.progressBar.setText('generating amplitude wave graph');
+        this.updateProgressBar(100, 'generating amplitude wave graph');
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
@@ -224,13 +220,18 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit'});
-       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection'});
-       this.clearSelectionBtn.tooltip({title : 'Clear the Selection'});
-    }
+       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit: zoom out to view the entire wave.',
+                                    container: 'body'});
+       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection: zoom to the selected region.',
+                                        container: 'body'});
+       this.clearSelectionBtn.tooltip({title : 'Clear the Selection: clear the highlighted region and reset playback duration to 100%.',
+                                        container: 'body'});
+    }               
 
     function destroyToolTips(){
-    
+       this.zoomToFitBtn.tooltip('destroy');
+       this.zoomToSelectionBtn.tooltip('destroy');
+       this.clearSelectionBtn.tooltip('destroy'); 
     }
 
     function zoomToFitBtnClickEvent(event){
@@ -242,6 +243,7 @@ var sewi = sewi || {};
         this.startTime = 0;
         this.endTime = this.duration;
         this.scrollBar.setWidthScale(1);
+        this.scrollBar.setPosition(0);
     }
 
     function zoomToSelectionBtnClickEvent(event){
@@ -253,7 +255,7 @@ var sewi = sewi || {};
                     this.audioAmplitudeGraphs[i].updateGraph();
                 }
                 this.scrollBar.setWidthScale(this.audioAmplitudeGraphs[0].viewResolution / this.duration);
-                this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
+                this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / (this.duration - this.audioAmplitudeGraphs[0].viewResolution));
             }
         }
     }
@@ -279,6 +281,7 @@ var sewi = sewi || {};
 
     function initControls(){
         if(this.audioContext){
+            this.addDownloadButton(this.url);
             var buttons = createMediaButtons.call(this);
             this.controls = new sewi.MediaControls({ isSeekBarHidden : true, 
                                                     extraButtons : { left : buttons } });
@@ -288,38 +291,11 @@ var sewi = sewi || {};
             this.controls.on('Unmuted', this.volumeUnmuted.bind(this));
             this.controls.on('Muted', this.volumeMuted.bind(this));
             this.mainDOMElement.append(this.controls.getDOM());
-            createToolTips.call(this);
+            
         }
     }
 
-    sewi.AudioResourceViewer.prototype.offsetChanged = function(position){
-        if(this.isPlaying){
-            this.offsetValueChanged = true;
-        }
-        this.offset = position;
-        this.lastUpdated = this.offset;
-        this.drawTimer = 0;
-        this.controls.update({currentTime : this.offset});
-        updateGraphPlaybackPosition.call(this, this.offset);
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
-        event.preventDefault();
-        this.gainNode.gain.value = volume;
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
-        event.preventDefault();
-        this.gainNode.gain.value = this.gainValue;
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
-        event.preventDefault();
-        this.gainValue = this.gainNode.gain.value;
-        this.gainNode.gain.value = 0;
-    };
-
-    sewi.AudioResourceViewer.prototype.updateMediaControl = function(event){ 
+    function updateMediaControl(event){ 
         event.preventDefault();
         if(this.source && this.isPlaying){
             if(!this.offsetValueChanged){
@@ -355,7 +331,45 @@ var sewi = sewi || {};
                 this.offsetValueChanged = false;
             }
         }
+    }
+    
+    sewi.AudioResourceViewer.prototype.showTooltips = function(){
+        createToolTips.call(this);
+        this.controls.showTooltips();
     };
+
+    sewi.AudioResourceViewer.prototype.hideTooltips = function(){
+        destroyToolTips.call(this);
+        this.controls.hideTooltips();
+    };
+
+    sewi.AudioResourceViewer.prototype.offsetChanged = function(position){
+        if(this.isPlaying){
+            this.offsetValueChanged = true;
+        }
+        this.offset = position;
+        this.lastUpdated = this.offset;
+        this.drawTimer = 0;
+        this.controls.update({currentTime : this.offset});
+        updateGraphPlaybackPosition.call(this, this.offset);
+    };
+
+    sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
+        event.preventDefault();
+        this.gainNode.gain.value = volume;
+    };
+
+    sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
+        event.preventDefault();
+        this.gainNode.gain.value = this.gainValue;
+    };
+
+    sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
+        event.preventDefault();
+        this.gainValue = this.gainNode.gain.value;
+        this.gainNode.gain.value = 0;
+    };
+
 
     sewi.AudioResourceViewer.prototype.playAudio = function(){
         if(this.audioBuffer){
