@@ -114,9 +114,11 @@ var sewi = sewi || {};
 
         
         this.panel.on(whichTransitionEvent(), function(event){
-            var propertyName = event.originalEvent.propertyName;
-            if(propertyName == "width" || propertyName == "height"){
-                selfRef.tab.resize();
+            if(event.currentTarget === event.Target){
+                var propertyName = event.originalEvent.propertyName;
+                if(propertyName == "width" || propertyName == "height"){
+                    selfRef.tab.resize();
+                }
             }
         });
         
