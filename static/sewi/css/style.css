@@ -152,6 +152,10 @@ div.minimize-button {
     border-radius: 0 0 0 5px;
 }
 
+label.btn input {
+	display: none;
+}
+
 .resource-viewer {
     height: 100%;
     width: 100%;
@@ -184,8 +188,7 @@ div.minimize-button {
     float: right;
 }
 
-.resource-viewer .top-panel button,
-.resource-viewer .top-panel a {
+.resource-viewer .top-panel .btn {
     height: 30px;
     width: 30px;
     padding: 5px 8px;

@@ -134,21 +134,23 @@ var sewi = sewi || {};
 		var closeButton = $(sewi.constants.RESOURCE_VIEWER_CLOSE_BUTTON_DOM);
 		var fullscreenButton = $(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM);
 		var tooltipsButton = $(sewi.constants.RESOURCE_VIEWER_TOOLTIPS_BUTTON_DOM);
+		var tooltipsButtonTracker = $(sewi.constants.RESOURCE_VIEWER_TOOLTIPS_BUTTON_TRACKER_DOM);
 
 		this.buttonGroup = $(sewi.constants.RESOURCE_VIEWER_BUTTON_GROUP_DOM);
 		this.panel = $(sewi.constants.RESOURCE_VIEWER_PANEL_DOM);
 
 		this.buttonGroup.append(tooltipsButton)
-			.append(fullscreenButton)
-			.append(closeButton);
+						.append(fullscreenButton)
+						.append(closeButton);
 
+		tooltipsButton.prepend(tooltipsButtonTracker);
 		this.panel.append(this.buttonGroup);
 
 		this.mainDOMOuterContainer.append(this.panel);
 
 		closeButton.click(closeButtonClicked.bind(this));
 		fullscreenButton.click(fullscreenButtonClicked.bind(this));
-		tooltipsButton.click(tooltipsButtonClicked.bind(this));
+		tooltipsButtonTracker.change(tooltipsButtonClicked.bind(this));
 	}
 
 	function addErrorScreen() {
@@ -168,12 +170,12 @@ var sewi = sewi || {};
 	}
 
 	function tooltipsButtonClicked(event) {
-		var tooltipsButton = $(event.target);
-		var wasActive = tooltipsButton.hasClass('active');
-		if (wasActive) {
-			this.hideTooltips();
-		} else {
+		var tooltipsButtonTracker = $(event.target);
+		var isActive = tooltipsButtonTracker.is(':checked');
+		if (isActive) {
 			this.showTooltips();
+		} else {
+			this.hideTooltips();
 		}
 	}
 
