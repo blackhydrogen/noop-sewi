@@ -71,11 +71,14 @@ var sewi = sewi || {};
         PROGRESS_BAR_BACKDROP_CLASS: 'progress-bar-backdrop',
 
         //Resource Gallery Constants
+        RESOURCE_GALLERY_URL_BASE: '/sewi/encounter/',
+        RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
         RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
         RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
         RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_BASIC_DOM: '<div></div>',

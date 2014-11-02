@@ -1,8 +1,10 @@
 var sewi = sewi || {};
 
-sewi.ResourceGallery = function() {
+sewi.ResourceGallery = function(options) {
   var selfRef = this;
   sewi.ConfiguratorElement.call(this);
+  selfRef.encounterID = options['encounterId'];
+  console.log(selfRef.encounterID);
 
   selfRef.resources = [];
   selfRef.resources.push('/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg');
@@ -23,6 +25,36 @@ sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
 
 sewi.ResourceGallery.prototype.load = function() {
   var selfRef = this;
+   if (!this.isLoaded) {
+            loadResourceGallery.call(this);
+      }
+
+    return this;
+}
+
+function loadResourceGallery(){
+  var resourceGalleryURL = sewi.constants.RESOURCE_GALLERY_URL_BASE + this.encounterId + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
+  $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            async: true,
+            url: resourceGalleryURL
+        }).done(retrieveResources.bind(this))
+          .fail(loadFailed.bind(this));
+}
+
+    function loadFailed() {
+        this.showError(sewi.constants.RESOURCE_GALLERY_LOAD_ERROR_MESSAGE);
+    }
+
+    function retrieveResources(resourceGalleryData){
+      var decodedResourceGallery = JSON.parse(resourceGalleryData);
+
+
+    }
+
+    function toDo(){
+
   var resourceContainer = selfRef.mainDOMElement;
   for (var i = 0; i < selfRef.resources.length; i++) {
     var path = selfRef.resources[i];
