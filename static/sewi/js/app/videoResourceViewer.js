@@ -83,7 +83,7 @@ var sewi = sewi || {};
             this.mainDOMElement.append(seekSliderPanel);
         }
     }
-    
+
     function initExtraButtons(leftButtonPanel, rightButtonPanel) {
         // Add any extra buttons to the left and right, if any.
         if (this.extraButtons) {
@@ -149,6 +149,14 @@ var sewi = sewi || {};
             left:  positions[index].left,
             right: positions[index].right
         });
+    }
+
+    function getOwnElements() {
+        var elements = this.playPauseButton.add(this.muteButton)
+                                           .add(this.volumeSlider)
+                                           .add(this.progressSlider);
+
+        return elements;
     }
 
     function playPauseClicked() {
@@ -318,12 +326,9 @@ var sewi = sewi || {};
         // Defer initialization of tooltips until required.
         // This saves on initialization time.
 
-        var elements = this.mainDOMElement.find('[title]');
-        console.log(elements);
+        var elements = getOwnElements.call(this);
 
-        if (this.initializedTooltips) {
-            elements.tooltip('enable');
-        } else {
+        if (!this.initializedTooltips) {
             elements.tooltip({
                 container: 'body'
             });
@@ -332,10 +337,11 @@ var sewi = sewi || {};
     }
 
     sewi.MediaControls.prototype.hideTooltips = function() {
-        var elements = this.mainDOMElement.children('[title]');
+        var elements = getOwnElements.call(this);
 
         if (this.initializedTooltips) {
-            elements.tooltip('disable');
+            elements.tooltip('destroy');
+            this.initializedTooltips = false;
         }
     }
 
@@ -614,6 +620,14 @@ var sewi = sewi || {};
         }
     }
 
+    // Retrieve all elements that have tooltips
+    function getOwnElements() {
+        var elements = this.zoomToFitButton.add(this.resetZoomButton)
+                                           .add(this.zoomSlider);
+
+        return elements;
+    }
+
     // Load video information from the server
     function loadVideoData() {
         var videoResourceURL = sewi.constants.VIDEO_RESOURCE_URL + this.id;
@@ -668,10 +682,18 @@ var sewi = sewi || {};
 
     sewi.VideoResourceViewer.prototype.showTooltips = function() {
         this.controls.showTooltips();
+        var elements = getOwnElements.call(this);
+
+        elements.tooltip({
+            container: 'body'
+        });
     }
 
     sewi.VideoResourceViewer.prototype.hideTooltips = function() {
         this.controls.hideTooltips();
+        var elements = getOwnElements.call(this);
+
+        elements.tooltip('destroy');
     }
 
 })();

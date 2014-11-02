@@ -106,7 +106,7 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load video, please close and re-open video',
         VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-button" title="Reset zoom"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-to-fit-button" title="Zoom to fit"></button>',
-        VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" />',
+        VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" title="Adjust zoom level" data-placement="left" />',
 
         //Audio Resource Constants
         AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
@@ -122,9 +122,9 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_PLAY_BUTTON_DOM: '<button class="btn btn-default video-icon play-button" title="Play/Pause"></button>',
         MEDIA_CONTROLS_VOLUME_POPUP_CLASS: 'volume-popup',
         MEDIA_CONTROLS_MUTE_BUTTON_DOM: '<button class="btn btn-default video-icon mute-button" title="Toggle mute"></button>',
-        MEDIA_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" />',
-        MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" />',
-        MEDIA_CONTROLS_SEEK_BAR_DOM: '<div class="seek-bar" title="Seek"></div>',
+        MEDIA_CONTROLS_VOLUME_SLIDER_DOM: '<input class="volume-slider" type="range" min="0.0" max="1.0" value="1.0" step="0.01" title="Adjust volume" data-placement="left" />',
+        MEDIA_CONTROLS_PROGRESS_SLIDER_DOM: '<input class="progress-slider" type="range" min="0.0" max="100.0" value="0" step="0.1" title="Seek" />',
+        MEDIA_CONTROLS_SEEK_BAR_DOM: '<div class="seek-bar"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
