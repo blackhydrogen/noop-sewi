@@ -10,6 +10,7 @@ import logging
 logger = logging.getLogger('mds.sewi')
 
 def is_valid_encounter(encounter_id):
+    #TODO: Add logic to verify encounter
     return True
 
 # Create your views here.
