@@ -342,7 +342,9 @@ sewi.inherits(sewi.ImageControls, sewi.ConfiguratorElement);
 
 // ImageControls private methods begin
 sewi.ImageControls.prototype.initDOM = function() {
-	this.mainDOMElement.addClass('image-control-panel');
+	this.mainDOMElement
+		.addClass('image-control-panel')
+		.addClass('animated');
 
 	var button = $('<button class="btn btn-default">');
 	var toggleButtonLabel = $('<label class="btn btn-default">');
