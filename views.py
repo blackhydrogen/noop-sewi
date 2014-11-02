@@ -1,17 +1,14 @@
 import json
 from django.templatetags.static import static
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotFound, HttpResponseForbidden
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseForbidden, Http404
+from django.shortcuts import render, get_object_or_404
 from resource import ImageResource, VideoResource, AudioResource
 from basic_encounter_information import BasicEncounterInformation
+from mds.core.models import Encounter
 
 import logging
 
 logger = logging.getLogger('mds.sewi')
-
-def is_valid_encounter(encounter_id):
-    #TODO: Add logic to verify encounter
-    return True
 
 # Create your views here.
 def main_page(request):
@@ -21,10 +18,11 @@ def test_page(request):
     return render(request, 'sewi/testRunner.html')
 
 def get_encounter(request, encounter_id):
-    if is_valid_encounter(encounter_id):
-        return render(request, 'sewi/index.html', {
-            "encounter_id": encounter_id
-        })
+    #encounter = get_object_or_404(Encounter, uuid=encounter_id)
+    # TODO: Uncomment above line to enable encounter checking
+    return render(request, 'sewi/index.html', {
+        "encounter_id": encounter_id
+    })
 
 def get_image(request, image_id):
     logger.info("Retrieving Image ID: " + image_id)
