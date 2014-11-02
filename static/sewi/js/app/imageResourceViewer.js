@@ -289,6 +289,10 @@ sewi.ImageResourceViewer = function(options) {
 
 			mainContainer.append(selfref.controls.getDOM());
 
+			selfref.addDownloadButton(function() {
+				return imageElement.attr("src");
+			});
+
 			setupZoomControls();
 		});
 
