@@ -89,11 +89,11 @@ sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {
 	return Math.round(100 * this.target.width() / this.targetDimensions.original.width);
 }
 
-sewi.PanZoomWidget.prototype.getMinimumimZoomLevel = function() {
+sewi.PanZoomWidget.prototype.getMinimumZoomLevel = function() {
 	return Math.round(100 * this.targetDimensions.minimumZoom.width / this.targetDimensions.original.width);
 }
 
-sewi.PanZoomWidget.prototype.getMaximumimZoomLevel = function() {
+sewi.PanZoomWidget.prototype.getMaximumZoomLevel = function() {
 	return Math.round(100 * this.targetDimensions.maximumZoom.width / this.targetDimensions.original.width);
 }
 

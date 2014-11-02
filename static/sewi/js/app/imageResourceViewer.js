@@ -305,7 +305,7 @@ sewi.ImageResourceViewer = function(options) {
 	};
 
 	function setupZoomControls() {
-		var imagePanZoomWidget;
+		selfref.imagePanZoomWidget;
 
 		imageElement.on("zoomChanged", function(event, newZoomPercentage) {
 			selfref.controls.update({
@@ -314,22 +314,21 @@ sewi.ImageResourceViewer = function(options) {
 		});
 
 		selfref.controls.on("zoomChanged", function(event, zoomLevel) {
-			imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
+			selfref.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
 		});
 
 		selfref.controls.on("zoomToFitRequested", function() {
-			imagePanZoomWidget.setZoomLevelToZoomToFit();
+			selfref.imagePanZoomWidget.setZoomLevelToZoomToFit();
 		});
 
-		imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
+		selfref.imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
 	}
 };
 
 sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
 
 sewi.ImageResourceViewer.prototype.resize = function() {
-	console.log("resze");
-	//this.imagePanZoomWidget.recalculateTargetDimensions();
+	this.imagePanZoomWidget.recalculateTargetDimensions();
 }
 
 sewi.ImageResourceViewer.prototype.showTooltips = function() {
