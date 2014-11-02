@@ -286,6 +286,7 @@ var sewi = sewi || {};
 
     function initControls(){
         if(this.audioContext){
+            this.addDownloadButton(this.url);
             var buttons = createMediaButtons.call(this);
             this.controls = new sewi.MediaControls({ isSeekBarHidden : true, 
                                                     extraButtons : { left : buttons } });
