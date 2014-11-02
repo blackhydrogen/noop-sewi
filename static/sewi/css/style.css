@@ -149,6 +149,10 @@ body {
 	max-width: 250px;
 }
 
+.tooltip span.underline {
+  text-decoration: underline;
+}
+
 div.minimize-button {
     position: absolute;
     right: 0;
