@@ -130,7 +130,7 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
 
         //Configurator Constants
-        CONFIGURATOR_TITLE_DOM: '<h1>',
+        CONFIGURATOR_TITLE_DOM: '<h2>',
         CONFIGURATOR_SUBTITLE_DOM: '<small>',
         CONFIGURATOR_TITLE_PREFIX: 'Encounter #',
         CONFIGURATOR_DEFAULT_TITLE: 'Loading',
