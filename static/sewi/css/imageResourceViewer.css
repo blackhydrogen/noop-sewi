@@ -12,8 +12,11 @@
 }
 .image-resource-main-container .image-control-panel {
 	position: absolute;
-	bottom: 0;
+	bottom: -30px;
 	top: initial;
+}
+.image-resource-main-container:hover .image-control-panel {
+	bottom: 0px;
 }
 .image-resource-image-container {
 	width: 100%;
@@ -34,7 +37,6 @@
 	background-color: #eee;
 	height: 30px;
 }
-
 .image-control-panel .btn {
 	height: 30px;
 	width: 30px;
