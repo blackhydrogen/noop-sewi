@@ -45,7 +45,7 @@ def get_video(request, video_id):
     return HttpResponse(data, mimetype='application/json')
 
 def get_video_thumbnail(request, video_id):
-    logger.info('Retrieving Video ID: ' + video_id)
+    logger.info('Retrieving Video Thumbnail: ' + video_id)
     video_resource = VideoResource(video_id)
     thumb_data = video_resource.generate_thumbnail()
     return HttpResponse(thumb_data, mimetype='text/plain')

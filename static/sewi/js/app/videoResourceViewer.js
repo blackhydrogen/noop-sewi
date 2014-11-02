@@ -408,10 +408,12 @@ var sewi = sewi || {};
         var zoomControl = sewi.createVerticalSlider(this.zoomSlider, this.resetZoomButton);
 
         var zoomButtons = [];
-        if (this.panZoomWidget.fitSizeEqualsOriginalSize() == false) {
-            zoomButtons.push(this.zoomToFitButton);
-        }
+        zoomButtons.push(this.zoomToFitButton);
         zoomButtons.push(zoomControl);
+
+        // Ensure that the bounds of the zoom slider conform to the possible zoom levels of the PanZoomWidget
+        this.zoomSlider.attr('min', this.panZoomWidget.getMinimumZoomLevel());
+        this.zoomSlider.attr('max', this.panZoomWidget.getMaximumZoomLevel());
 
         this.controls = new sewi.MediaControls({
             extraButtons: {
@@ -602,7 +604,7 @@ var sewi = sewi || {};
         var zoomLevel = parseInt(this.zoomSlider.val());
 
         if (!_.isUndefined(this.panZoomWidget)) {
-            this.panZoomWidget.setTargetZoom(zoomLevel);
+            this.panZoomWidget.setCurrentZoomLevel(zoomLevel);
         } else {
             this.zoomSlider.val(100);
         }
@@ -615,8 +617,7 @@ var sewi = sewi || {};
 
     function zoomToFitRequested() {
         if (!_.isUndefined(this.panZoomWidget)) {
-            this.panZoomWidget.setTargetZoomToFit();
-            this.panZoomWidget.centreTargetOnContainer();
+            this.panZoomWidget.setZoomLevelToZoomToFit();
         }
     }
 
