@@ -1,3 +1,4 @@
+// Created by: Le Beier
 var sewi = sewi || {};
 (function(){
     // Audio Resource Viewer Class
@@ -247,6 +248,7 @@ var sewi = sewi || {};
         this.startTime = 0;
         this.endTime = this.duration;
         this.scrollBar.setWidthScale(1);
+        this.scrollBar.setPosition(0);
     }
 
     function zoomToSelectionBtnClickEvent(event){
@@ -258,7 +260,7 @@ var sewi = sewi || {};
                     this.audioAmplitudeGraphs[i].updateGraph();
                 }
                 this.scrollBar.setWidthScale(this.audioAmplitudeGraphs[0].viewResolution / this.duration);
-                this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
+                this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / (this.duration - this.audioAmplitudeGraphs[0].viewResolution));
             }
         }
     }
