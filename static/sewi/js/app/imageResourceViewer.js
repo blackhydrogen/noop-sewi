@@ -363,12 +363,12 @@ sewi.ImageControls.prototype.initDOM = function() {
 	this.brightnessButton = button
 		.clone()
 		.addClass('brightness-button')
-		.append('<span class="glyphicon glyphicon-asterisk">');
+		.append('<span class="sewi-icon-brightness-medium">');
 
 	this.contrastButton = button
 		.clone()
 		.addClass('contrast-button')
-		.append('<span class="glyphicon glyphicon-adjust">');
+		.append('<span class="sewi-icon-contrast">');
 
 	this.contrastPlusButton = button
 		.clone()
@@ -378,12 +378,12 @@ sewi.ImageControls.prototype.initDOM = function() {
 	this.zoomButton = button
 		.clone()
 		.addClass('zoom-button')
-		.append('<span class="glyphicon glyphicon-zoom-in">');
+		.append('<span class="sewi-icon-zoom-to-full">');
 
 	this.zoomToFitButton = button
 		.clone()
 		.addClass('fit-button')
-		.append('<span class="glyphicon glyphicon-search">');
+		.append('<span class="sewi-icon-zoom-to-fit">');
 
 	this.brightnessSlider = slider
 		.clone()
@@ -479,49 +479,49 @@ sewi.ImageControls.prototype.initEvents = function() {
 sewi.ImageControls.prototype.initTooltips = function() {
 	this.mainDOMElement.find(".grayscale-option").tooltip({
 		html: true,
-		title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="tooltip_grayscale.png" height="100px" width="200px">',
+		title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="' + sewi.staticPath +'images/image_tooltip_grayscale.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".flame-option").tooltip({
 		html: true,
-		title: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_flame.png" height="100px" width="200px">',
+		title: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_flame.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".spectrum-option").tooltip({
 		html: true,
-		title: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_spectrum.png" height="100px" width="200px">',
+		title: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_rainbow.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".hsv-option").tooltip({
 		html: true,
-		title: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="tooltip_false_color_hsv.png" height="100px" width="200px">',
+		title: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_spectrum.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".difference-option").tooltip({
 		html: true,
-		title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="tooltip_difference.png" height="100px" width="200px">',
+		title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_difference.png" height="100px" width="200px">',
 		container: $("body"),
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".invert-option").tooltip({
 		html: true,
-		title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="tooltip_invert.png" height="100px" width="200px">',
+		title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="' + sewi.staticPath +'images/image_tooltip_invert.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
 
 	this.mainDOMElement.find(".autoContrast-option").tooltip({
 		html: true,
-		title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="tooltip_histogram_equalization.png" height="100px" width="200px">',
+		title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="' + sewi.staticPath +'images/image_tooltip_histogram_equalization.png" height="100px" width="200px">',
 		container: "body",
 		placement: "right"
 	});
@@ -529,7 +529,7 @@ sewi.ImageControls.prototype.initTooltips = function() {
 	this.mainDOMElement.find(".contrast-menu-button").removeAttr("title");
 	this.mainDOMElement.find(".contrast-menu-button").tooltip({
 		html: true,
-		title: 'Artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
+		title: '<span class="underline">Contrast Stretching</span><br>This filter artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="' + sewi.staticPath +'images/image_tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
 		container: "body",
 		placement: "top"
 	});
