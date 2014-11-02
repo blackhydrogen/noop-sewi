@@ -95,7 +95,7 @@ var sewi = sewi || {};
             
             this.scriptProcessor = this.audioContext.createScriptProcessor(512, 1, 1); 
             this.scriptProcessor.connect(this.audioContext.destination);
-            this.scriptProcessor.onaudioprocess = this.updateMediaControl.bind(this);
+            this.scriptProcessor.onaudioprocess = updateMediaControl.bind(this);
 
             this.gainNode = this.audioContext.createGain();
             this.gainNode.connect(this.audioContext.destination);
@@ -224,13 +224,18 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit'});
-       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection'});
-       this.clearSelectionBtn.tooltip({title : 'Clear the Selection'});
-    }
+       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit: zoom out to view the entire wave.',
+                                    container: 'body'});
+       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection: zoom to the selected region.',
+                                        container: 'body'});
+       this.clearSelectionBtn.tooltip({title : 'Clear the Selection: clear the highlighted region and reset playback duration to 100%.',
+                                        container: 'body'});
+    }               
 
     function destroyToolTips(){
-    
+       this.zoomToFitBtn.tooltip('destroy');
+       this.zoomToSelectionBtn.tooltip('destroy');
+       this.clearSelectionBtn.tooltip('destroy'); 
     }
 
     function zoomToFitBtnClickEvent(event){
@@ -288,38 +293,11 @@ var sewi = sewi || {};
             this.controls.on('Unmuted', this.volumeUnmuted.bind(this));
             this.controls.on('Muted', this.volumeMuted.bind(this));
             this.mainDOMElement.append(this.controls.getDOM());
-            createToolTips.call(this);
+            
         }
     }
 
-    sewi.AudioResourceViewer.prototype.offsetChanged = function(position){
-        if(this.isPlaying){
-            this.offsetValueChanged = true;
-        }
-        this.offset = position;
-        this.lastUpdated = this.offset;
-        this.drawTimer = 0;
-        this.controls.update({currentTime : this.offset});
-        updateGraphPlaybackPosition.call(this, this.offset);
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
-        event.preventDefault();
-        this.gainNode.gain.value = volume;
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
-        event.preventDefault();
-        this.gainNode.gain.value = this.gainValue;
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
-        event.preventDefault();
-        this.gainValue = this.gainNode.gain.value;
-        this.gainNode.gain.value = 0;
-    };
-
-    sewi.AudioResourceViewer.prototype.updateMediaControl = function(event){ 
+    function updateMediaControl(event){ 
         event.preventDefault();
         if(this.source && this.isPlaying){
             if(!this.offsetValueChanged){
@@ -355,7 +333,45 @@ var sewi = sewi || {};
                 this.offsetValueChanged = false;
             }
         }
+    }
+    
+    sewi.AudioResourceViewer.prototype.showTooltips = function(){
+        createToolTips.call(this);
+        this.controls.showTooltips();
     };
+
+    sewi.AudioResourceViewer.prototype.hideTooltips = function(){
+        destroyToolTips.call(this);
+        this.controls.hideTooltips();
+    };
+
+    sewi.AudioResourceViewer.prototype.offsetChanged = function(position){
+        if(this.isPlaying){
+            this.offsetValueChanged = true;
+        }
+        this.offset = position;
+        this.lastUpdated = this.offset;
+        this.drawTimer = 0;
+        this.controls.update({currentTime : this.offset});
+        updateGraphPlaybackPosition.call(this, this.offset);
+    };
+
+    sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
+        event.preventDefault();
+        this.gainNode.gain.value = volume;
+    };
+
+    sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
+        event.preventDefault();
+        this.gainNode.gain.value = this.gainValue;
+    };
+
+    sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
+        event.preventDefault();
+        this.gainValue = this.gainNode.gain.value;
+        this.gainNode.gain.value = 0;
+    };
+
 
     sewi.AudioResourceViewer.prototype.playAudio = function(){
         if(this.audioBuffer){
