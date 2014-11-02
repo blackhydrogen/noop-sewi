@@ -408,9 +408,7 @@ var sewi = sewi || {};
         var zoomControl = sewi.createVerticalSlider(this.zoomSlider, this.resetZoomButton);
 
         var zoomButtons = [];
-        if (this.panZoomWidget.fitSizeEqualsOriginalSize() == false) {
-            zoomButtons.push(this.zoomToFitButton);
-        }
+        zoomButtons.push(this.zoomToFitButton);
         zoomButtons.push(zoomControl);
 
         this.controls = new sewi.MediaControls({
