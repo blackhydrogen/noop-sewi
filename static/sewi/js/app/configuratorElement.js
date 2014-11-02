@@ -186,9 +186,9 @@ var sewi = sewi || {};
 	    return this.mainDOMOuterContainer;
 	}
 
-	sewi.ResourceViewer.prototype.addDownloadButton = function(url) {
-		if (!_.isString(url)) {
-			throw new ValueError('URL must be a string');
+	sewi.ResourceViewer.prototype.addDownloadButton = function(urlOrFunction) {
+		if (!_.isString(urlOrFunction) && !_.isFunction(urlOrFunction)) {
+			throw new ValueError('URL must be a string or function');
 		}
 
 		if (this.panel.has(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS).length) {
@@ -196,8 +196,14 @@ var sewi = sewi || {};
 		}
 
 		var downloadButton = $(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM);
+		
 		downloadButton.addClass(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS)
-					  .attr('href', url);
+			.on('click', function() {
+				if(_.isString(urlOrFunction))
+					downloadButton.attr('href', urlOrFunction);
+				else
+					downloadButton.attr('href', urlOrFunction());
+			});
 
 		this.buttonGroup.prepend(downloadButton);
 	}
