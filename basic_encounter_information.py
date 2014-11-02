@@ -9,11 +9,11 @@ class BasicEncounterInformation():
 	"""A representation of a the basic encounter information.
 	"""
 
-	def __init__(self, resource_id):
-		self.__resource_id = resource_id
+	def __init__(self, encounter_id):
+		self.__encounter_id = encounter_id
 
 	def get_content(self):
-		encounterObservations = list(Observation.objects.filter(encounter=self.__resource_id))
+		encounterObservations = list(Observation.objects.filter(encounter=self.__encounter_id))
 		encounterObservations.sort(key=lambda observation: observation.node, cmp=alphanum)
 
 		content = [
