@@ -602,7 +602,7 @@ var sewi = sewi || {};
         var zoomLevel = parseInt(this.zoomSlider.val());
 
         if (!_.isUndefined(this.panZoomWidget)) {
-            this.panZoomWidget.setTargetZoom(zoomLevel);
+            this.panZoomWidget.setCurrentZoomLevel(zoomLevel);
         } else {
             this.zoomSlider.val(100);
         }
@@ -615,8 +615,7 @@ var sewi = sewi || {};
 
     function zoomToFitRequested() {
         if (!_.isUndefined(this.panZoomWidget)) {
-            this.panZoomWidget.setTargetZoomToFit();
-            this.panZoomWidget.centreTargetOnContainer();
+            this.panZoomWidget.setZoomLevelToZoomToFit();
         }
     }
 
