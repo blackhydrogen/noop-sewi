@@ -411,6 +411,10 @@ var sewi = sewi || {};
         zoomButtons.push(this.zoomToFitButton);
         zoomButtons.push(zoomControl);
 
+        // Ensure that the bounds of the zoom slider conform to the possible zoom levels of the PanZoomWidget
+        this.zoomSlider.attr('min', this.panZoomWidget.getMinimumZoomLevel());
+        this.zoomSlider.attr('max', this.panZoomWidget.getMaximumZoomLevel());
+
         this.controls = new sewi.MediaControls({
             extraButtons: {
                 right: zoomButtons
