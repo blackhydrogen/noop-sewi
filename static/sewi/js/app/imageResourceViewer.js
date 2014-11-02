@@ -9,7 +9,7 @@ sewi.ImageResourceViewer = function(options) {
 		width: 0,
 		height: 0,
 		url: "",
-		id: options.id
+		id: "5c0b79a3-8b74-41a8-8a66-f3a6c6033408"//options.id
 	};
 
 	var selfref = this;
@@ -36,8 +36,7 @@ sewi.ImageResourceViewer = function(options) {
 	selfref.brightness = 1;
 	selfref.contrast = 1;
 
-	selfref.controls = new sewi.ImageControls();
-	mainContainer.append(selfref.controls.getDOM());
+	selfref.controls;
 
 	function loadImage() {
 		$.ajax({
@@ -46,7 +45,7 @@ sewi.ImageResourceViewer = function(options) {
 			async: true,
 			url: '/sewi/resources/image/' + originalImageInfo.id,
 		}).done(function(data) {
-			;
+			imageElement.prop("src", data.url);
 		});
 	}
 
@@ -277,17 +276,23 @@ sewi.ImageResourceViewer = function(options) {
 	}
 
 	selfref.load = function() {
-		selfref.controls.on("brightnessChanged", applyInbuiltImageBrightness);
-		selfref.controls.on("contrastChanged", applyInbuiltImageContrast);
-		selfref.controls.on("filtersChanged", function(event, settings) { applyCustomImageFilters(settings); });
-
 		imageElement.one("load", function() {
 			originalImageInfo.width = imageElement.prop("naturalWidth");
 			originalImageInfo.height = imageElement.prop("naturalHeight");
 			originalImageInfo.url = imageElement.prop("src");
 
+			selfref.controls = new sewi.ImageControls();
+			
+			selfref.controls.on("brightnessChanged", applyInbuiltImageBrightness);
+			selfref.controls.on("contrastChanged", applyInbuiltImageContrast);
+			selfref.controls.on("filtersChanged", function(event, settings) { applyCustomImageFilters(settings); });
+
+			mainContainer.append(selfref.controls.getDOM());
+
 			setupZoomControls();
 		});
+
+		loadImage();
 	};
 
 	function setupZoomControls() {
@@ -299,10 +304,6 @@ sewi.ImageResourceViewer = function(options) {
 			});
 		});
 
-		imageElement.one("load", function() {
-			imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
-		});
-
 		selfref.controls.on("zoomChanged", function(event, zoomLevel) {
 			imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
 		});
@@ -310,6 +311,8 @@ sewi.ImageResourceViewer = function(options) {
 		selfref.controls.on("zoomToFitRequested", function() {
 			imagePanZoomWidget.setZoomLevelToZoomToFit();
 		});
+
+		imagePanZoomWidget = new sewi.PanZoomWidget(imageElement, imageContainer);
 	}
 
 	selfref.resize = function() {
