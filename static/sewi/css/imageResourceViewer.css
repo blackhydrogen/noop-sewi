@@ -1,79 +1,80 @@
-/* Begin Bootstrap over-writes */
-.image-resource-control-panel input,
-.image-resource-control-panel select {
-  color: #000;
-}
-
-.image-resource-control-panel input[type=range]:focus,
-.image-resource-control-panel input[type=range]:hover,
-.image-resource-control-panel input[type=range]:active {
-  background: initial;
-  box-shadow: initial;
-  border-color: initial;
-}
-
-/* End Bootstrap over-writes */
 
 .image-resource-main-container {
-  height: 100%;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+	height: 100%;
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+}
+.image-resource-main-container .image-control-panel {
+	position: absolute;
+	bottom: initial;
+	top: 100%;
+}
+.image-resource-main-container .image-control-panel {
+	position: absolute;
+	bottom: 0;
+	top: initial;
 }
 .image-resource-image-container {
-  width: 100%;
-  height: 100%;
-  background: #333;
-  overflow: hidden;
-  position: relative;
+	width: 100%;
+	height: 100%;
+	background: #333;
+	overflow: hidden;
+	position: relative;
 }
 .image-resource-image {
-  position: absolute;
-  height: auto;
-}
-.image-resource-control-panel {
-  color: white;
-  width: 100%;
-  min-height: 50px;
-  max-height: 150px;
-  background-color: rgba(0, 0, 0, 0.8);
-  position: absolute;
-  overflow: auto;
-  bottom: 0px;
-  left: 0px;
-}
-.image-resource-control {
-  margin-right: 10px;
-  float: left;
-  text-align: center;
+	position: absolute;
+	height: auto;
 }
 
-.image-resource-control-group {
-  margin-right: 10px;
-  float: left;
-  text-align: left;
+/* Image Control Panel Start */
+
+.image-control-panel {
+	width: 100%;
+	background-color: #eee;
+	height: 30px;
 }
 
-.image-resource-control-group .image-resource-control {
-  margin-right: initial;
-  float: initial;
-  text-align: initial;
+.image-control-panel .btn {
+	height: 30px;
+	width: 30px;
+	padding: 4px 7px;
 }
-.image-resource-show-hide-button {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 100px;
-  opacity: 0.3;
+
+.image-control-panel>div.left {
+	float: left;
+	margin-right: 10px;
 }
-.image-resource-zoom {
-  width: 45px;
+
+.image-control-panel>div.right {
+	float: right;
+	margin-left: 10px;
 }
-.image-resource-show-hide-button:hover {
-<<<<<<< HEAD
-	opacity: 1;
+
+.image-control-panel>div.right.long {
+	width: 100px;
 }
-=======
-  opacity: 1;
+
+.image-control-panel button.contrast-plus-button {
+	border-left: none;
+	border-radius: 0 4px 4px 0;
 }
->>>>>>> origin/master
+
+.image-control-panel .btn.contrast-menu-button.option-selected {
+	border-radius: 4px 0 0 4px;
+}
+
+.image-control-panel button.contrast-plus-button {
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+}
+
+.image-control-panel button.recolor-button {
+	width: 40px;
+}
+
+.image-control-panel .btn-group.bootstrap-select button {
+	width: 100%;
+}
+
+/* Image Control Panel End */

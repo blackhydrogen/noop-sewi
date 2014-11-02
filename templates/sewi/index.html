@@ -14,6 +14,13 @@
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/audioResourceViewer.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/tab.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
+    {# Generated vars #}
+    <script type="text/javascript">
+        var sewi = {
+            staticPath: "{% static "sewi/" %}",
+            encounterId: "{{ encounter_id }}"
+        };
+    </script>
 	{# JavaScript libraries #}
     <script type="text/javascript" src="{% static "sewi/js/lib/lodash.min.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/lib/jquery-2.1.0.js" %}"></script>

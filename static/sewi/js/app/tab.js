@@ -114,9 +114,11 @@ var sewi = sewi || {};
 
         
         this.panel.on(whichTransitionEvent(), function(event){
-            var propertyName = event.originalEvent.propertyName;
-            if(propertyName == "width" || propertyName == "height"){
-                selfRef.tab.resize();
+            if(event.currentTarget === event.Target){
+                var propertyName = event.originalEvent.propertyName;
+                if(propertyName == "width" || propertyName == "height"){
+                    selfRef.tab.resize();
+                }
             }
         });
         
@@ -626,10 +628,10 @@ var sewi = sewi || {};
         var selfRef = this;
         var id = DOMObject.data('resId');
         var type = DOMObject.data('resType');
-        var obj;
+        var obj = null;
         switch(type){
             case 'image':
-                obj = new sewi.ImageResourceViewer();
+                obj = new sewi.ImageResourceViewer({id:id});
                 break;
             case 'video':
                 obj = new sewi.VideoResourceViewer({id:id});
@@ -638,10 +640,14 @@ var sewi = sewi || {};
                 obj = new sewi.AudioResourceViewer({id:id});
                 break;
             case 'chart':
-                //obj = new sewi.ChartResourceViewer();
+                obj = new sewi.ChartResourceViewer({id:id});
                 break;
         }
-        selfRef.setPanel(obj, state);
+        
+        if(obj){
+            obj.load();
+            selfRef.setPanel(obj, state);
+        }
     }
 
     sewi.Tab.prototype.setPanel = function(ResourceViewer, state){
