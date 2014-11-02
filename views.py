@@ -17,9 +17,15 @@ def test_page(request):
 
 def get_image(request, image_id):
     logger.info("Retrieving Image ID: " + image_id)
-    image_resource = ImageResource("some-udid-here")
+    image_resource = ImageResource(image_id)
     data = json.dumps(image_resource.get_info())
     return HttpResponse(data, mimetype='application/json')
+
+def get_image_thumbnail(request, image_id):
+    logger.info('Retrieving Image Thumbnail: ' + image_id)
+    image_resource = ImageResource(image_id)
+    thumb_data = image_resource.generate_thumbnail()
+    return HttpResponse(thumb_data, mimetype='text/plain')
 
 def get_video(request, video_id):
     logger.info('Retrieving Video ID: ' + video_id)
