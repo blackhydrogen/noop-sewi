@@ -1,9 +1,12 @@
 var sewi = sewi || {};
 
+$(function(){
+
+
 sewi.ResourceGallery = function(options) {
   var selfRef = this;
   sewi.ConfiguratorElement.call(this);
-  selfRef.encounterID = options['encounterId'];
+  selfRef.encounterID = '77d09b28-abed-4a6a-b48b-6b368bd2fdb3';
   console.log(selfRef.encounterID);
 
   selfRef.resources = [];
@@ -24,36 +27,50 @@ sewi.ResourceGallery = function(options) {
 sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
 
 sewi.ResourceGallery.prototype.load = function() {
-  var selfRef = this;
-   if (!this.isLoaded) {
-            loadResourceGallery.call(this);
-      }
 
-    return this;
+    loadResourceGallery.call(this);
+  
+
+  return this;
 }
 
-function loadResourceGallery(){
-  var resourceGalleryURL = sewi.constants.RESOURCE_GALLERY_URL_BASE + this.encounterId + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
+function loadResourceGallery() {
+  var resourceGalleryURL = sewi.constants.RESOURCE_GALLERY_URL_BASE + this.encounterID + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
+  console.log(resourceGalleryURL);
   $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            async: true,
-            url: resourceGalleryURL
-        }).done(retrieveResources.bind(this))
-          .fail(loadFailed.bind(this));
+      dataType: 'json',
+      type: 'GET',
+      async: true,
+      url: resourceGalleryURL
+    }).done(generateThumbnails.bind(this))
+    .fail(loadFailed.bind(this));
 }
 
-    function loadFailed() {
-        this.showError(sewi.constants.RESOURCE_GALLERY_LOAD_ERROR_MESSAGE);
-    }
+function loadFailed() {
+  this.showError(sewi.constants.RESOURCE_GALLERY_LOAD_ERROR_MESSAGE);
+}
 
-    function retrieveResources(resourceGalleryData){
-      var decodedResourceGallery = JSON.parse(resourceGalleryData);
+function generateThumbnails(){
+   var selfRef = this;
+  $.each(resourceGalleryData, function(index, value){
+    value['url']
+  }
+
+}
+
+function retrieveResources(resourceGalleryData) {
+  var selfRef = this;
+  $.each(resourceGalleryData, function(index, value){
+    selfRef.resourceHeaders.push(value['name']);
+    selfRef.resourceMetaData.push(value['date']);
 
 
-    }
+  });
+  //var decodedResourceGallery = JSON.parse(resourceGalleryData);
 
-    function toDo(){
+}
+
+function toDo() {
 
   var resourceContainer = selfRef.mainDOMElement;
   for (var i = 0; i < selfRef.resources.length; i++) {
@@ -111,3 +128,4 @@ sewi.ResourceGallery.prototype.addTooltips = function() {
 sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
   event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
 }
+});
