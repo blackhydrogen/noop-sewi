@@ -1,8 +1,7 @@
 from . import BaseResource
 from mds.core.models import Observation, Concept
-import Image
-import StringIO
-import base64
+from django.conf import settings
+import Image, StringIO, base64
 
 import logging
 logger = logging.getLogger('mds.sewi')
@@ -18,7 +17,7 @@ class ImageResource(BaseResource):
         self.__observation = Observation.objects.get(uuid=resource_id)
 
         self.__concept = self.__observation.concept
-        if not self.is_video_concept(self.__concept):
+        if not self.is_image_concept(self.__concept):
             raise ValueError(self.__ERROR_RESOURCE_NOT_IMAGE)
         logger.debug('Image resource successfully retrieved: %s' % resource_id)
 
@@ -44,8 +43,8 @@ class ImageResource(BaseResource):
     def generate_thumbnail(self):
         binaryData = StringIO.StringIO()
 
-        image = Image.open(self.__url)
-        image.thumbnail((100, 100), Image.ANTIALIAS)
+        image = Image.open(settings.MEDIA_ROOT + self.__observation.value_complex.name)
+        image.thumbnail((90, 90), Image.ANTIALIAS)
         image.convert("RGB").save(binaryData, "JPEG")
 
         base64Data = base64.b64encode(binaryData.getvalue())
