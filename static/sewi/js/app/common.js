@@ -111,6 +111,9 @@ var sewi = sewi || {};
         //Audio Resource Constants
         AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
 
+        //Chart Resource Constants
+        CHART_RESOURCE_URL: '/sewi/resources/chart/',
+
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
         MEDIA_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',

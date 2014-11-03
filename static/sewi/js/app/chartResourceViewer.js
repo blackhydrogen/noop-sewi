@@ -2,132 +2,140 @@ var sewi = sewi || {};
 
 // ChartControls definition
 $(function() {
-    /** [ChartControls description] */
-    sewi.ChartControls = function(options) {
-        // Safeguard if function is called without `new` keyword
-        if (!(this instanceof sewi.ChartControls))
-            return new sewi.ChartControls();
+  /** [ChartControls description] */
+  sewi.ChartControls = function(options) {
+    // Safeguard if function is called without `new` keyword
+    if (!(this instanceof sewi.ChartControls))
+      return new sewi.ChartControls();
 
-        sewi.ConfiguratorElement.call(this);
+    sewi.ConfiguratorElement.call(this);
 
-        this.isRangeSelectorShown = false;
+    this.isRangeSelectorShown = false;
 
-        initDOM.call(this);
-        initEvents.call(this);
-    };
+    initDOM.call(this);
+    initEvents.call(this);
+  };
 
-    sewi.inherits(sewi.ChartControls, sewi.ConfiguratorElement);
+  sewi.inherits(sewi.ChartControls, sewi.ConfiguratorElement);
 
-    function initDOM() {
-        var innerPanel = $(sewi.constants.CHART_CONTROLS_INNER_PANEL_DOM);
-        var leftPanel = innerPanel.clone()
-                                  .addClass(sewi.constants.CHART_CONTROLS_LEFT_PANEL_CLASS);
-        var rightPanel = innerPanel.clone()
-                                  .addClass(sewi.constants.CHART_CONTROLS_RIGHT_PANEL_CLASS);
+  function initDOM() {
+    var innerPanel = $(sewi.constants.CHART_CONTROLS_INNER_PANEL_DOM);
+    var leftPanel = innerPanel.clone()
+      .addClass(sewi.constants.CHART_CONTROLS_LEFT_PANEL_CLASS);
+    var rightPanel = innerPanel.clone()
+      .addClass(sewi.constants.CHART_CONTROLS_RIGHT_PANEL_CLASS);
 
 
-        this.optionsMenu = $(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_DOM)
-                                 .append(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM)
-                                 .append(sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM)
-                                 .append(sewi.constants.CHART_CONTROLS_ZOOM_OUT_OPTION_DOM);
+    this.optionsMenu = $(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_DOM)
+      .append(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM)
+      .append(sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM)
+      .append(sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM)
+      .append(sewi.constants.CHART_CONTROLS_ZOOM_OUT_OPTION_DOM);
 
-        this.timingDisplayLabel = $(sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_DOM);
-        this.timingDisplay = this.timingDisplayLabel.children('input');
+    this.timingDisplayLabel = $(sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_DOM);
+    this.timingDisplay = this.timingDisplayLabel.children('input');
 
-        leftPanel.append(this.optionsMenu);
-        rightPanel.append(this.timingDisplayLabel).append(this.timingDisplay);
+    leftPanel.append(this.optionsMenu);
+    rightPanel.append(this.timingDisplayLabel).append(this.timingDisplay);
 
-        this.mainDOMElement.append(rightPanel)
-                           .append(leftPanel)
-                           .addClass(sewi.constants.CHART_CONTROLS_DOM_CLASS);
+    this.mainDOMElement.append(rightPanel)
+      .append(leftPanel)
+      .addClass(sewi.constants.CHART_CONTROLS_DOM_CLASS);
 
-        this.optionsMenu.selectpicker({
-            title: 'Options',
-            countSelectedText: 'Options',
-            selectedTextFormat: 'count > 0',
-            width: '100px',
-            dropupAuto: false,
-        });
-        this.timingDisplayLabel.tooltip({
-          appendTo: 'body',
-        });
+    this.optionsMenu.selectpicker({
+      title: 'Options',
+      countSelectedText: 'Options',
+      selectedTextFormat: 'count > 0',
+      width: '100px',
+      dropupAuto: false,
+    });
+    this.timingDisplayLabel.tooltip({
+      appendTo: 'body',
+    });
+  }
+
+  function initEvents() {
+    this.optionsMenu.change(selectionChanged.bind(this));
+    this.timingDisplay.focus(timingDisplayFocused.bind(this));
+  }
+
+  function getOwnElements() {
+    var elements = this.mainDOMElement.find(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS);
+    return elements;
+  }
+
+  function selectionChanged() {
+    var selectionOptions = this.optionsMenu.val() || [];
+    var isRangeSelectorShown = false;
+    var isResetAllPoints = false;
+    var isResetShownPoints = false;
+    var isZoomOut = false;
+    // Get selected options
+    if (!_.isEmpty(selectionOptions)) {
+      isRangeSelectorShown = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
+      isZoomOut = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_ZOOM_OUT_VALUE);
+      isResetAllPoints = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_VALUE);
+      isResetShownPoints = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_VALUE);
     }
 
-    function initEvents() {
-        this.optionsMenu.change(selectionChanged.bind(this));
-        this.timingDisplay.focus(timingDisplayFocused.bind(this));
+    // Ensure that non-checkable selections remain un-checked
+    var newOptions = [];
+    if (isRangeSelectorShown) {
+      newOptions.push(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
     }
 
-    function getOwnElements() {
-        var elements = this.mainDOMElement.find(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS);
-        return elements;
+    this.optionsMenu.selectpicker('val', newOptions);
+
+    // Ensure the event is only triggered when the range selector's state has to change
+    var hasRangeSelectorChangedState = isRangeSelectorShown !== this.isRangeSelectorShown;
+
+    if (hasRangeSelectorChangedState) {
+      // Display or hide range selector as necessary
+      if (isRangeSelectorShown) {
+        this.trigger('rangeSelectorShown');
+      } else {
+        this.trigger('rangeSelectorHidden');
+      }
+
+      this.isRangeSelectorShown = isRangeSelectorShown;
     }
 
-    function selectionChanged() {
-        var selectionOptions = this.optionsMenu.val() || [];
-        var isRangeSelectorShown = false;
-        var isSelectionReset = false;
-        var isZoomOut = false;
-        // Get selected options
-        if (!_.isEmpty(selectionOptions)) {
-            isRangeSelectorShown = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
-            isZoomOut = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_ZOOM_OUT_VALUE);
-            isSelectionReset = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_VALUE);
-        }
-
-        // Ensure that non-checkable selections remain un-checked
-        var newOptions = [];
-        if (isRangeSelectorShown) {
-            newOptions.push(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
-        }
-
-        this.optionsMenu.selectpicker('val', newOptions);
-
-        // Ensure the event is only triggered when the range selector's state has to change
-        var hasRangeSelectorChangedState = isRangeSelectorShown !== this.isRangeSelectorShown;
-
-        if (hasRangeSelectorChangedState) {
-            // Display or hide range selector as necessary
-            if (isRangeSelectorShown) {
-                this.trigger('rangeSelectorShown');
-            } else {
-                this.trigger('rangeSelectorHidden');
-            }
-
-            this.isRangeSelectorShown = isRangeSelectorShown;
-        }
-
-        // Reset selection as necessary
-        if (isSelectionReset) {
-            this.timingDisplay.val('');
-            this.trigger('selectionReset');
-        }
-
-        //Zoom out graph
-        if(isZoomOut){
-          this.trigger('zoomOutGraph');
-        }
+    // Reset all as necessary
+    if (isResetAllPoints) {
+      this.timingDisplay.val('');
+      this.trigger('allPointsReset');
     }
 
-    function timingDisplayFocused() {
-        // Auto-select the entire text field for the user to easily copy
-        this.timingDisplay.select();
+    // Reset points currently shown as necessary
+    if (isResetShownPoints) {
+      this.trigger('shownPointsReset');
     }
 
-    sewi.ChartControls.prototype.update = function(options) {
-        options = options || {};
+    //Zoom out graph
+    if (isZoomOut) {
+      this.trigger('zoomOutGraph');
+    }
+  }
 
-        if (!_.isUndefined(options.timing)) {
-            if (options.timing > 0) {
-                var timingInSec = this.roundOffToNearestSeconds(options.timing);
-                this.timingDisplay.val(timingInSec + 's');
-            } else {
-                this.timingDisplay.val('');
-            }
-        }
-    };
+  function timingDisplayFocused() {
+    // Auto-select the entire text field for the user to easily copy
+    this.timingDisplay.select();
+  }
 
-    sewi.ChartControls.prototype.roundOffToNearestSeconds = function(value) {
+  sewi.ChartControls.prototype.update = function(options) {
+    options = options || {};
+
+    if (!_.isUndefined(options.timing)) {
+      if (options.timing > 0) {
+        var timingInSec = this.roundOffToNearestSeconds(options.timing);
+        this.timingDisplay.val(timingInSec + 's');
+      } else {
+        this.timingDisplay.val('');
+      }
+    }
+  };
+
+  sewi.ChartControls.prototype.roundOffToNearestSeconds = function(value) {
     return (value / 1000).toFixed(2);
   }
 });
@@ -141,15 +149,34 @@ $(function() {
       return new sewi.ChartResourceViewer();
 
     sewi.ResourceViewer.call(this);
+
+    var defaults = {};
+
+    /*options = options || {};
+    _.defaults(options, defaults);
+    _.assign(this, _.pick(options, [
+        'id',
+    ]));*/
+    this.id = 'e3925503-3f28-4d98-851f-88f263ce969c';
+
     initDOM.call(this);
     initControls.call(this);
     initEventHandlers.call(this);
     initChartComponents.call(this);
-    generateChartData.call(this);
 
   }
 
   sewi.inherits(sewi.ChartResourceViewer, sewi.ResourceViewer);
+
+  sewi.ChartResourceViewer.prototype.load = function(){
+    var chartResourceEndPoint = sewi.constants.CHART_RESOURCE_URL + this.id;
+
+    $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: chartResourceEndPoint,
+        }).done(generateChartData.bind(this));
+  }
 
   function initDOM() {
 
@@ -169,11 +196,13 @@ $(function() {
 
   function initEventHandlers() {
 
-    this.controlPanelElement.on('selectionReset', clearSelectedPoints.bind(this));
+    this.controlPanelElement.on('allPointsReset', clearAllPoints.bind(this));
+    this.controlPanelElement.on('shownPointsReset', clearShownPoints.bind(this));
+
     this.controlPanelElement.on('rangeSelectorShown', showRangeSelector.bind(this));
     this.controlPanelElement.on('rangeSelectorHidden', hideRangeSelector.bind(this));
     this.controlPanelElement.on('zoomOutGraph', zoomOutGraph.bind(this));
-    this.chartContainer.on('ZoomedOnY', highlightPointsAboveMinY.bind(this));
+    this.chartContainer.on('zoomedOnY', highlightPointsAboveMinY.bind(this));
 
   }
 
@@ -181,15 +210,32 @@ $(function() {
 
     this.highlightedPoints = [];
     this.peaks = [];
-    this.xMin = 0;
-    this.xMax = 2000;
   }
 
-  function clearSelectedPoints() {
+  /**
+   * Resets all points that have been previously selected by the user
+   **/
+  function clearAllPoints() {
 
     this.highlightedPoints = [];
     this.peaks = [];
-    this.clearAllSelectedPoints();
+    this.redrawGraph();
+  }
+
+  /**
+   * Resets points within the current range of the graph visible to the user
+   **/
+  function clearShownPoints() {
+    var selfRef = this;
+    var clone = selfRef.highlightedPoints.slice(0);
+    $.each(clone, function(index, value) {
+      if (value['xval'] <= selfRef.xMax && value['xval'] >= selfRef.xMin && value['yval'] <= selfRef.yMax && value['yval'] >= selfRef.yMin) {
+        selfRef.unHighlightPoint(value);
+      }
+
+    });
+    selfRef.redrawGraph();
+
   }
 
   function showRangeSelector() {
@@ -204,38 +250,38 @@ $(function() {
     });
   }
 
-  function zoomOutGraph(){
-    if(this.graph.isZoomed())
-    this.graph.resetZoom();
+  function zoomOutGraph() {
+    if (this.graph.isZoomed())
+      this.graph.resetZoom();
   }
 
   function highlightPointsAboveMinY() {
+    console.log("dk");
 
     var yRange = this.graph.yAxisRange();
     var yMin = yRange[0];
     var yMax = yRange[1];
-    var indexMin = parseInt(this.xMin/this.samplingRate);
-    var indexMax = parseInt(this.xMax/this.samplingRate);
-    var averagePeakInterval = parseInt((800/this.samplingRate)/2);
+    var indexMin = parseInt(this.xMin / this.samplingRate);
+    var indexMax = parseInt(this.xMax / this.samplingRate);
+    var averagePeakInterval = parseInt((800 / this.samplingRate) / 2);
     var start = indexMin;
-    while(start <= indexMax){
-      var point = this.findPeakInRegion(start,start+40);
-    
+    while (start <= indexMax) {
+      var point = this.findPeakInRegion(start, start + 40);
+
       if (point != -1) {
-        if (parseFloat(point['yval']) > yMin && parseFloat(point['yval']) < yMax){
-            if(!this.isHighlightedPoint(point)){
+        if (parseFloat(point['yval']) > yMin && parseFloat(point['yval']) < yMax) {
+          if (!this.isHighlightedPoint(point)) {
             this.highlightedPoints.push(point);
             this.peaks.push(point.xval);
             this.highlightPoint(point);
           }
         }
-        start+=averagePeakInterval;
+        start += averagePeakInterval;
+      } else {
+        start += 40;
       }
-      else{
-      start+=40;
     }
-    } 
-   this.updateTimeInterval();
+    this.updateTimeInterval();
   }
 
   function formatLegend(ms) {
@@ -250,31 +296,26 @@ $(function() {
     return (this.clickedX && x == this.clickedX);
   }
 
-  function generateChartData() {
+  function generateChartData(data) {
     var selfRef = this;
     selfRef.graphData = [];
-    var data = "";
-    $.get("/static/sewi/js/app/Sample Resources/data.csv", function(csvText) {
+    var parsedCSV = "";
+
+    $.get(data.url, function(csvText) {
       var allTextLines = csvText.split(/\r\n|\n/);
       $.each(allTextLines, function(index, value) {
-        if(index==1){
-          selfRef.samplingRate = value[0] - allTextLines[index-1][0];
+        if (index == 1) {
+          selfRef.samplingRate = value[0] - allTextLines[index - 1][0];
         }
-        data += value + '\n';
+        parsedCSV += value + '\n';
         selfRef.graphData.push(value.split(','));
       });
-      selfRef.createChart(data);
+      selfRef.createChart(parsedCSV);
     });
   }
 
   sewi.ChartResourceViewer.prototype.resize = function() {
     this.graph.resize();
-    console.log("here");
-  }
-
-  sewi.ChartResourceViewer.prototype.clearAllSelectedPoints = function() {
-    this.redrawGraph();
-
   }
 
   sewi.ChartResourceViewer.prototype.redrawGraph = function() {
@@ -299,13 +340,17 @@ $(function() {
     this.updateTimeInterval();
   }
 
-  sewi.ChartResourceViewer.prototype.updateTimeInterval = function(){
+  sewi.ChartResourceViewer.prototype.updateTimeInterval = function() {
     if (this.peaks.length > 1) {
       // if more than one peak has been selected, find the R-R Interval using the peaks
       var rrInterval = this.calculateRRInterval();
-      this.controls.update({'timing': rrInterval});
+      this.controls.update({
+        'timing': rrInterval
+      });
     } else {
-      this.controls.update({'timing': ''});
+      this.controls.update({
+        'timing': ''
+      });
     }
 
   }
@@ -338,12 +383,10 @@ $(function() {
     var xSecondMax = 0;
     var index = start;
 
-    if(end>=maxX/this.samplingRate)
-      end=maxX/this.samplingRate;
+    if (end >= maxX / this.samplingRate)
+      end = maxX / this.samplingRate;
 
     while (index < end) {
-      if(index < 0 || index > 7499)
-      console.log(index + ' ' + start + ' ' + end);
       var y = parseFloat(this.graphData[index][1]);
       if (y > ymax) {
         ymax = y;
@@ -415,20 +458,11 @@ $(function() {
 
         zoomCallback: function() {
           var currXRange = selfRef.graph.xAxisRange();
-          var extreme = selfRef.graph.xAxisExtremes();
 
-          if (!(selfRef.graph.isZoomed())) {
-            selfRef.xMin = extreme[0];
-            selfRef.xMax = extreme[1];
+          if (selfRef.xMin == currXRange[0] && selfRef.xMax == currXRange[1] && selfRef.graph.isZoomed())
+            selfRef.chartContainer.trigger('zoomedOnY');
+          selfRef.setCurrAxisRanges(currXRange, selfRef.graph.yAxisRange());
 
-          } else {
-            if (selfRef.xMin == currXRange[0] && selfRef.xMax == currXRange[1])
-              selfRef.chartContainer.trigger('ZoomedOnY');
-            else {
-              selfRef.xMin = currXRange[0];
-              selfRef.xMax = currXRange[1];
-            }
-          }
         },
 
         pointClickCallback: function(e, p) {
@@ -441,7 +475,10 @@ $(function() {
           selfRef.highlightAllPoints();
         },
 
-        drawCallback: function(g) {
+        drawCallback: function(g, is_initial) {
+          if (is_initial) {
+            selfRef.setCurrAxisRanges(g.xAxisRange(), g.yAxisRange());
+          }
           selfRef.highlightAllPoints();
         },
 
@@ -453,19 +490,28 @@ $(function() {
     );
   }
 
-   /**
+  sewi.ChartResourceViewer.prototype.setCurrAxisRanges = function(xRange, yRange) {
+    this.xMin = xRange[0];
+    this.xMax = xRange[1];
+
+    this.yMin = yRange[0];
+    this.yMax = yRange[1];
+
+  }
+
+  /**
    * Remove the point from the list of highlighted points.
    **/
 
-  sewi.ChartResourceViewer.prototype.unHighlightPoint = function(point) {
+  sewi.ChartResourceViewer.prototype.unHighlightPoint = function(p) {
 
     for (var index = 0; index < this.highlightedPoints.length; index++) {
-      if (this.highlightedPoints[index].xval == point.xval) {
+      if (this.highlightedPoints[index].xval == p.xval) {
         this.highlightedPoints.splice(index, 1);
         break;
       }
     }
-    this.peaks.splice(this.peaks.indexOf(point.xval), 1);
+    this.peaks.splice(this.peaks.indexOf(p.xval), 1);
   }
 
   /**
