@@ -146,7 +146,7 @@ var sewi = sewi || {};
         //Configurator Constants
         CONFIGURATOR_TITLE_DOM: '<h2>',
         CONFIGURATOR_SUBTITLE_DOM: '<small>',
-        CONFIGURATOR_TITLE_PREFIX: 'Encounter #',
+        CONFIGURATOR_TITLE_PREFIX: 'ID #',
         CONFIGURATOR_DEFAULT_TITLE: 'Loading',
         CONFIGURATOR_DEFAULT_SUBTITLE: 'Please wait',
         CONFIGURATOR_MINIMIZE_DOM: '<div class="minimize-button">&lt;&lt;</div>',

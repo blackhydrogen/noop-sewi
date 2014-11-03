@@ -1,12 +1,8 @@
 .basic-encounter-info-container {
-	height: 600px;
-	width: 300px;
-	position: relative;
-	overflow: hidden;
+	height: 100%;
+	width: 100%;
 }
-.basic-encounter-info-contents {
-	min-width: 100%;
-}
+
 .basic-counter-info-header {
 	background: #666666;
 	color: white;
@@ -15,6 +11,7 @@
 	padding-right: 10px;
 	margin-bottom: 3px;
 }
+
 .basic-counter-info-value {
 	padding-left: 10px;
 	padding-right: 10px;
