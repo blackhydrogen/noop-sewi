@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from resource import ImageResource, VideoResource, AudioResource
 from basic_encounter_information import BasicEncounterInformation
 from mds.core.models import Encounter
+from resource_gallery import ResourceGallery
 
 import logging
 
@@ -64,4 +65,10 @@ def get_encounter_info(request, encounter_id):
     logger.info('Getting Basic Encounter Information: ' + encounter_id)
     basic_encounter_info = BasicEncounterInformation(encounter_id)
     data = json.dumps(basic_encounter_info.get_content(), indent=4)
+    return HttpResponse(data, mimetype='application/json')
+
+def get_encounter_resources(request, encounter_id):
+    logger.info('Retreiving resources for Encounter ID: ' + encounter_id)
+    resource_gallery = ResourceGallery(encounter_id)
+    data = json.dumps(resource_gallery.get_info())
     return HttpResponse(data, mimetype='application/json')
