@@ -3,7 +3,7 @@
 	width: 100%;
 }
 
-.basic-counter-info-header {
+.basic-encounter-info-header {
 	background: #666666;
 	color: white;
 	font-weight: bold;
@@ -12,8 +12,16 @@
 	margin-bottom: 3px;
 }
 
-.basic-counter-info-value {
+.basic-encounter-info-entry {
 	padding-left: 10px;
 	padding-right: 10px;
 	margin-bottom: 3px;
+}
+
+.basic-encounter-info-entry-key {
+	font-weight: bold;
+}
+
+.basic-encounter-info-entry-value {
+
 }
