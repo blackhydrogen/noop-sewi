@@ -137,10 +137,14 @@ var sewi = sewi || {};
         CHART_CONTROLS_OPTIONS_DROPDOWN_DOM: '<select multiple class="dropup" data-style="btn-default options-dropdown" title="Options"></select>',
         CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS: 'options-dropdown',
         CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM: '<option value="rangeSelector">Range Selector</option>',
-        CHART_CONTROLS_RESET_SELECTION_BUTTON_DOM: '<option value="resetSelection">Reset Selection</option>',
-        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<input type="text" class="timing-display" readonly />',
+        CHART_CONTROLS_RESET_SELECTION_BUTTON_DOM: '<option value="resetSelection">Reset all points</option>',
+        CHART_CONTROLS_RESET_SELECTION_BUTTON_DOM: '<option value="resetSelection">Reset shown points</option>',
+        CHART_CONTROLS_ZOOM_OUT_OPTION_DOM: '<option value="zoomOutChart">Zoom Out</option>',
+        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label"> Interval <input type="text" class="timing-display" readonly /></label>',
+        CHART_CONTROLS_TIMING_DISPLAY_LABEL_CLASS: 'timing-display-label',
         CHART_CONTROLS_RANGE_SELECTOR_VALUE: 'rangeSelector',
         CHART_CONTROLS_RESET_SELECTION_VALUE: 'resetSelection',
+        CHART_CONTROLS_ZOOM_OUT_VALUE: 'zoomOutChart',
 
         //Configurator Constants
         CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',

@@ -11,7 +11,7 @@ sewi.ResourceGallery = function() {
   selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub');
 
   selfRef.resourceTypes = [];
-  selfRef.resourceTypes.push('image', 'ecg', 'video', 'audio');
+  selfRef.resourceTypes.push('image', 'chart', 'video', 'audio');
 
   selfRef.metaData = [];
   selfRef.metaData.push('24/11/2013');
