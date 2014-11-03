@@ -64,7 +64,7 @@ def get_audio_thumbnail(request, audio_id):
 def get_encounter_info(request, encounter_id):
     logger.info('Getting Basic Encounter Information: ' + encounter_id)
     basic_encounter_info = BasicEncounterInformation(encounter_id)
-    data = json.dumps(basic_encounter_info.get_content(), indent=4)
+    data = json.dumps(basic_encounter_info.get_content())
     return HttpResponse(data, mimetype='application/json')
 
 def get_encounter_resources(request, encounter_id):
