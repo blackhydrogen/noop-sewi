@@ -4,11 +4,12 @@ var sewi = sewi || {};
 	sewi.BasicEncounterInfoViewer = function(options) {
 		sewi.ConfiguratorElement.call(this);
 
+		this.encounterId = options.encounterId;
+
 		this.mainDOMElement
 			.addClass("basic-encounter-info-container")
 			.append("<div class='basic-encounter-info-contents'></div>")
 		
-		console.log(this.mainDOMElement.children(".basic-encounter-info-contents"));
 		this.mainDOMElement.children(".basic-encounter-info-contents")
 		.slimScroll({
 			color: '#000',
@@ -27,8 +28,8 @@ var sewi = sewi || {};
 			dataType: 'json',
 			type: 'GET',
 			async: true,
-			url: location.href + "basicInfo",
-		}).done(this.processInfo.bind(this));
+			url: "/sewi/encounter/" + this.encounterId + "/basicInfo",
+		}).done(this.processInfo.bind(this))
 	}
 
 	sewi.BasicEncounterInfoViewer.prototype.processInfo = function(encounterData) {
