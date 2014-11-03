@@ -2,6 +2,9 @@ var sewi = sewi || {};
 
 (function() {
 	sewi.BasicEncounterInfoViewer = function(options) {
+		if(!(this instanceof sewi.BasicEncounterInfoViewer)){
+            return new sewi.BasicEncounterInfoViewer();
+        }
 		sewi.ConfiguratorElement.call(this);
 
 		this.encounterId = options.encounterId;
