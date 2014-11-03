@@ -49,6 +49,9 @@ var sewi = sewi || {};
 
     /** Declare all constants in this object. */
     sewi.constants = {
+        // Encounter URL Constants
+        ENCOUNTER_BASE_URL: '/sewi/encounter/',
+
         //Vertical Slider Constants
         VERTICAL_SLIDER_CONTAINER_DOM: '<div class="vertical-slider-container"></div>',
         VERTICAL_SLIDER_POPUP_DOM: '<div class="vertical-slider-popup animated"></div>',
@@ -73,6 +76,14 @@ var sewi = sewi || {};
         //Resource constants
         RESOURCE_INFO_RESOURCE_ID: 'data-res-id',
         RESOURCE_INFO_RESOURCE_TYPE: 'data-res-type',
+
+        //Basic Encounter Information Viewer Constants
+        BEI_MAIN_DOM_CLASS: 'basic-encounter-info-container',
+        BEI_BASIC_INFO_URL_SUFFIX: '/basicInfo',
+        BEI_HEADER_DOM: '<div class="basic-encounter-info-header"></div>',
+        BEI_ENTRY_DOM: '<div class="basic-encounter-info-entry"></div>',
+        BEI_ENTRY_KEY_DOM: '<span class="basic-encounter-info-entry-key"></span>',
+        BEI_ENTRY_VALUE_DOM: '<span class="basic-encounter-info-entry-value"></span>',
 
         //Resource Gallery Constants
         RESOURCE_GALLERY_URL_BASE: '/sewi/encounter/',

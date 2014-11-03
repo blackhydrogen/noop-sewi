@@ -6,18 +6,8 @@ var sewi = sewi || {};
 
 		this.encounterId = options.encounterId;
 
-		this.mainDOMElement
-			.addClass("basic-encounter-info-container")
-			.append("<div class='basic-encounter-info-contents'></div>")
+		this.mainDOMElement.addClass(sewi.constants.BEI_MAIN_DOM_CLASS)
 		
-		this.mainDOMElement.children(".basic-encounter-info-contents")
-		.slimScroll({
-			color: '#000',
-			size: '4px',
-			width: "100%",
-			height: "100%"
-		});
-
 		this.loadInfo();
 	}
 
@@ -28,25 +18,39 @@ var sewi = sewi || {};
 			dataType: 'json',
 			type: 'GET',
 			async: true,
-			url: "/sewi/encounter/" + this.encounterId + "/basicInfo",
+			url: sewi.constants.ENCOUNTER_BASE_URL + this.encounterId + sewi.constants.BEI_BASIC_INFO_URL_SUFFIX,
 		}).done(this.processInfo.bind(this))
 	}
 
 	sewi.BasicEncounterInfoViewer.prototype.processInfo = function(encounterData) {
 		this.trigger("BEILoaded", {
-			"id": encounterData[1][1][1],
-			"name": encounterData[1][2][1] + ", " + encounterData[1][3][1]
+			id: encounterData[1][1][1],
+			name: encounterData[1][2][1] + ", " + encounterData[1][3][1]
 		});
 
 		for(var i = 0; i < encounterData.length; i++) {
-			$("<div class='basic-counter-info-header'>" + encounterData[i][0][1] + "</div>")
-				.appendTo(this.mainDOMElement.find(".basic-encounter-info-contents"));
+			$(sewi.constants.BEI_HEADER_DOM)
+				.html(encounterData[i][0][1])
+				.appendTo(this.mainDOMElement);
 
 			for(var j = 1; j < encounterData[i].length; j++) {
-				$("<div class='basic-counter-info-value'><strong>" + encounterData[i][j][0] + "</strong>: " + encounterData[i][j][1] + "</div>")
-					.appendTo(this.mainDOMElement.find(".basic-encounter-info-contents"));
+				$(sewi.constants.BEI_ENTRY_DOM)
+					.append(
+						$(sewi.constants.BEI_ENTRY_KEY_DOM).html(encounterData[i][j][0])
+					)
+					.append(
+						$(sewi.constants.BEI_ENTRY_VALUE_DOM).html(encounterData[i][j][1])
+					)
+					.appendTo(this.mainDOMElement);
 			}
 		}
+
+		this.mainDOMElement.slimScroll({
+			color: '#000',
+			size: '4px',
+			width: "100%",
+			height: "100%"
+		});
 
 		this.fixMainDomElementWidth();
 	}
