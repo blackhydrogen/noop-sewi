@@ -1,131 +1,123 @@
 var sewi = sewi || {};
 
-$(function(){
+$(function() {
 
 
-sewi.ResourceGallery = function(options) {
-  var selfRef = this;
-  sewi.ConfiguratorElement.call(this);
-  selfRef.encounterID = '77d09b28-abed-4a6a-b48b-6b368bd2fdb3';
-  console.log(selfRef.encounterID);
+  sewi.ResourceGallery = function(options) {
 
-  selfRef.resources = [];
-  selfRef.resources.push('/static/sewi/js/app/Sample Resources/hands.jpg', '/static/sewi/js/app/Sample Resources/ecg.jpg', '/static/sewi/js/app/Sample Resources/video.jpg', '/static/sewi/js/app/Sample Resources/video.jpg');
+    sewi.ConfiguratorElement.call(this);
+    initDOM.call(this);
+    this.encounterID = options['encounterId'];
+    this.resources = [];
 
-  selfRef.resourceHeaders = [];
-  selfRef.resourceHeaders.push('X-Ray-Stub', 'ECG-Stub', 'Video-Stub', 'Audio-Stub');
+  }
 
-  selfRef.resourceTypes = [];
-  selfRef.resourceTypes.push('image', 'chart', 'video', 'audio');
+  sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
 
-  selfRef.metaData = [];
-  selfRef.metaData.push('24/11/2013');
-  selfRef.mainDOMElement
-    .addClass(sewi.constants.RESOURCE_GALLERY_DOM_CLASS);
-}
 
-sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
+  function initDOM() {
+    this.mainDOMElement
+      .addClass(sewi.constants.RESOURCE_GALLERY_DOM_CLASS);
 
-sewi.ResourceGallery.prototype.load = function() {
+  }
+
+  function loadResourceGallery() {
+    var resourceGalleryURL = sewi.constants.RESOURCE_GALLERY_URL_BASE + this.encounterID + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
+
+    $.ajax({
+        dataType: 'json',
+        type: 'GET',
+        async: true,
+        url: resourceGalleryURL
+      }).done(retrieveResources.bind(this))
+      .fail(loadFailed.bind(this));
+  }
+
+  function loadFailed() {
+    this.mainDOMElement.trigger('Error');
+  }
+
+  function generateThumbnails(resourceGalleryData) {
+    var selfRef = this;
+    $.each(resourceGalleryData, function(index, value) {
+      var thumbnailURL = sewi.constants.RESOURCE_GALLERY_THUMBNAIL_URL_BASE + value['type'] + '/' + value['id'] + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX;
+      $.ajax({
+          dataType: '',
+          type: 'GET',
+          url: thumbnailURL
+
+        }).done(addThumbnail.bind(selfRef.resources[index]))
+        .fail(thumbnailError.bind(selfRef.resources[index]));
+    });
+
+  }
+
+  function addThumbnail(data) {
+    $(this).find('img').attr('src', data);
+  }
+
+  function thumbnailError() {
+    $(this).find('img').attr('src', RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
+  }
+
+
+  function retrieveResources(resourceGalleryData) {
+    var selfRef = this;
+    $.each(resourceGalleryData, function(index, value) {
+
+      var resourceContainer = selfRef.mainDOMElement;
+
+      var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
+        .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value['id'])
+        .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value['type'])
+        .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value['date'])
+        .draggable({
+          helper: 'clone',
+          revert: 'invalid',
+          appendTo: 'body',
+          start: function(e, ui) {
+            ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS)
+              .removeClass(sewi.constants.RESOURCE_GALLERY_RESOURCE_CLASS);
+          }
+        }).append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
+        .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
+
+      resource.on('dblclick', selfRef, selfRef.getResourceDOM);
+      selfRef.resources.push(resource);
+      resourceContainer.append(resource);
+
+    });
+    selfRef.addScrollbar();
+    selfRef.addTooltips();
+    generateThumbnails.call(selfRef, resourceGalleryData);
+  }
+
+  sewi.ResourceGallery.prototype.load = function() {
 
     loadResourceGallery.call(this);
-  
-
-  return this;
-}
-
-function loadResourceGallery() {
-  var resourceGalleryURL = sewi.constants.RESOURCE_GALLERY_URL_BASE + this.encounterID + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
-  console.log(resourceGalleryURL);
-  $.ajax({
-      dataType: 'json',
-      type: 'GET',
-      async: true,
-      url: resourceGalleryURL
-    }).done(generateThumbnails.bind(this))
-    .fail(loadFailed.bind(this));
-}
-
-function loadFailed() {
-  this.showError(sewi.constants.RESOURCE_GALLERY_LOAD_ERROR_MESSAGE);
-}
-
-function generateThumbnails(){
-   var selfRef = this;
-  $.each(resourceGalleryData, function(index, value){
-    value['url']
+    return this;
   }
 
-}
-
-function retrieveResources(resourceGalleryData) {
-  var selfRef = this;
-  $.each(resourceGalleryData, function(index, value){
-    selfRef.resourceHeaders.push(value['name']);
-    selfRef.resourceMetaData.push(value['date']);
-
-
-  });
-  //var decodedResourceGallery = JSON.parse(resourceGalleryData);
-
-}
-
-function toDo() {
-
-  var resourceContainer = selfRef.mainDOMElement;
-  for (var i = 0; i < selfRef.resources.length; i++) {
-    var path = selfRef.resources[i];
-    var resourceElement = $('<div>')
-      .addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS)
-      .attr('id', 'draggable')
-      .attr('data-res-id', i)
-      .attr('data-res-type', selfRef.resourceTypes[i])
-      .attr('data-container', 'body')
-      .draggable({
-        helper: 'clone',
-        revert: 'invalid',
-        appendTo: 'body',
-        start: function(e, ui) {
-          ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS)
-            .removeClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS);
-        }
-      });
-
-    resourceElement.append(
-      $('<img>').attr('src', path).addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS)
-    ).append(
-      $('<p>').text(selfRef.resourceHeaders[i]).addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS)
-    );
-
-    resourceElement.on('dblclick', selfRef, selfRef.getResourceDOM);
-    resourceContainer.append(resourceElement);
+  sewi.ResourceGallery.prototype.addScrollbar = function() {
+    var selfRef = this;
+    selfRef.mainDOMElement.slimScroll({
+      color: '#000',
+      width: '100%',
+      size: '4px',
+      height: '100%'
+    });
   }
 
-  selfRef.addScrollbar();
-  selfRef.addTooltips();
+  sewi.ResourceGallery.prototype.addTooltips = function() {
+    var selfRef = this;
+    selfRef.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_RESOURCE_CLASS).tooltip({
+      container: 'body',
+      placement: 'left',
+      appendTo: 'body'
+    });
+  }
 
-}
-
-sewi.ResourceGallery.prototype.addScrollbar = function() {
-  var selfRef = this;
-  selfRef.mainDOMElement.slimScroll({
-    color: '#000',
-    width: '100%',
-    size: '4px',
-    height: '100%'
-  });
-}
-
-sewi.ResourceGallery.prototype.addTooltips = function() {
-  var selfRef = this;
-  selfRef.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).tooltip({
-    container: 'body',
-    title: ('Recorded on:' + selfRef.metaData[0]),
-    placement: 'left'
-  });
-}
-
-sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
-  event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
-}
+  sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
+    event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
+  }
 });

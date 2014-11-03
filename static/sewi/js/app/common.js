@@ -70,15 +70,26 @@ var sewi = sewi || {};
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
         PROGRESS_BAR_BACKDROP_CLASS: 'progress-bar-backdrop',
 
+        //Resource constants
+        RESOURCE_INFO_RESOURCE_ID: 'data-res-id',
+        RESOURCE_INFO_RESOURCE_TYPE: 'data-res-type',
+
         //Resource Gallery Constants
         RESOURCE_GALLERY_URL_BASE: '/sewi/encounter/',
         RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
+        RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
+        RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
+        RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<img class="resource-thumbnail">',
+        RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-header">',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
-        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
-        RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
-        RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
-        RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
+        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource-thumbnail',
+        RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-header',
+        RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_TOOLTIP_HEADER: 'Last modified: ',
         RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
+        RESOURCE_GALLERY_DEFAULT_THUMBNAIL: '/static/sewi/images/default_thumbnail.png',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_BASIC_DOM: '<div></div>',

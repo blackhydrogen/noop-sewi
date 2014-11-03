@@ -12,7 +12,7 @@
     background-color: #adb9c4;
 }
 
-.media-thumbnail {
+.resource-thumbnail {
     width: 96%;
     padding: 4px;
     height: 70px;
@@ -22,7 +22,7 @@
     clear: both;
 }
 
-.media-header {
+.resource-header {
     width: 90%;
     overflow-wrap: break-word;
     text-align: center;

@@ -16,14 +16,24 @@ class ResourceGallery():
         encounterObservations.sort(key=lambda observation: observation.node, cmp=alphanum)
 
         content = []
+        resource_type = ''
         
         for observation in encounterObservations:
+            if(AudioResource.is_valid_observation(observation)):
+                resource_type = 'audio'
+            elif(VideoResource.is_valid_observation(observation)):
+                resource_type = 'video'
+            elif(ImageResource.is_valid_observation(observation)):
+                resource_type = 'image'
+            #elif(ChartResource.is_valid_observation(observation)):
+                #resource_type = 'chart'
+
             if bool(observation.value_complex):
                 content.append(
                     {
                         'name': observation.concept.name,
-                        'type': observation.concept.mimetype,
-                        'date': str(observation.concept.modified.day) +'/' + str(observation.concept.modified.month) + '/' + str(observation.concept.modified.year),
+                        'type': resource_type,
+                        'date': str(observation.modified.day) +'/' + str(observation.modified.month) + '/' + str(observation.modified.year),
                         'id': observation.uuid
                         
                     }
