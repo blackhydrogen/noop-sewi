@@ -28,13 +28,14 @@ $(function() {
 
         this.optionsMenu = $(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_DOM)
                                  .append(sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM)
-                                 .append(sewi.constants.CHART_CONTROLS_RESET_SELECTION_BUTTON_DOM)
+                                 .append(sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM)
                                  .append(sewi.constants.CHART_CONTROLS_ZOOM_OUT_OPTION_DOM);
 
-        this.timingDisplay = $(sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_DOM);
+        this.timingDisplayLabel = $(sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_DOM);
+        this.timingDisplay = this.timingDisplayLabel.children('input');
 
         leftPanel.append(this.optionsMenu);
-        rightPanel.append(this.timingDisplay);
+        rightPanel.append(this.timingDisplayLabel).append(this.timingDisplay);
 
         this.mainDOMElement.append(rightPanel)
                            .append(leftPanel)
@@ -47,11 +48,8 @@ $(function() {
             width: '100px',
             dropupAuto: false,
         });
-        this.timingDisplay.tooltip({
-          placement: 'top',
+        this.timingDisplayLabel.tooltip({
           appendTo: 'body',
-          title: 'Displays the average time interval (in seconds) between all the points that are selected after sorting them in increasing order of time.'
-
         });
     }
 
@@ -74,8 +72,7 @@ $(function() {
         if (!_.isEmpty(selectionOptions)) {
             isRangeSelectorShown = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RANGE_SELECTOR_VALUE);
             isZoomOut = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_ZOOM_OUT_VALUE);
-            console.log(isZoomOut);
-            isSelectionReset = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_SELECTION_VALUE);
+            isSelectionReset = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_VALUE);
         }
 
         // Ensure that non-checkable selections remain un-checked
@@ -271,7 +268,8 @@ $(function() {
   }
 
   sewi.ChartResourceViewer.prototype.resize = function() {
-    console.log("Incomplete");
+    this.graph.resize();
+    console.log("here");
   }
 
   sewi.ChartResourceViewer.prototype.clearAllSelectedPoints = function() {
@@ -379,7 +377,7 @@ $(function() {
       y = this.graph.toDomYCoord(p.yval);
     context.fillStyle = "#000";
     context.beginPath();
-    context.arc(x, y, 3, 0, 2 * Math.PI, false);
+    context.arc(x, y, 2.5, 0, 2 * Math.PI, false);
     context.fill();
     context.closePath();
   }
@@ -396,6 +394,8 @@ $(function() {
         rangeSelectorPlotFillColor: 'blue',
         rangeSelectorPlotStrokeColor: 'blue',
         colors: ['#c90696'],
+        xAxisLabelWidth: 15,
+        yAxisLabelWidth: 37,
         highlightCircleSize: 4,
         hideOverlayOnMouseOut: false,
         xlabel: 'Time',

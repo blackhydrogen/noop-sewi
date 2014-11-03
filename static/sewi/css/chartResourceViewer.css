@@ -1,11 +1,11 @@
 .time-series-graph-container {
-	width: 95%;
+	width: 98%;
 	height: 100%;
 }
 .main-graph-container{
 	min-width: 95%;
 	min-height: 80%;
-	margin-top: 35px;
+	margin-top: 20px;
 
 }
 .legend-container{
