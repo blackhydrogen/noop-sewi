@@ -49,6 +49,9 @@ var sewi = sewi || {};
 
     /** Declare all constants in this object. */
     sewi.constants = {
+        // Encounter URL Constants
+        ENCOUNTER_BASE_URL: '/sewi/encounter/',
+
         //Vertical Slider Constants
         VERTICAL_SLIDER_CONTAINER_DOM: '<div class="vertical-slider-container"></div>',
         VERTICAL_SLIDER_POPUP_DOM: '<div class="vertical-slider-popup animated"></div>',
@@ -70,12 +73,34 @@ var sewi = sewi || {};
         PROGRESS_BAR_ANIMATED_CLASS: 'progress-bar-striped active',
         PROGRESS_BAR_BACKDROP_CLASS: 'progress-bar-backdrop',
 
+        //Resource constants
+        RESOURCE_INFO_RESOURCE_ID: 'data-res-id',
+        RESOURCE_INFO_RESOURCE_TYPE: 'data-res-type',
+
+        //Basic Encounter Information Viewer Constants
+        BEI_MAIN_DOM_CLASS: 'basic-encounter-info-container',
+        BEI_BASIC_INFO_URL_SUFFIX: '/basicInfo',
+        BEI_HEADER_DOM: '<div class="basic-encounter-info-header"></div>',
+        BEI_ENTRY_DOM: '<div class="basic-encounter-info-entry"></div>',
+        BEI_ENTRY_KEY_DOM: '<span class="basic-encounter-info-entry-key"></span>',
+        BEI_ENTRY_VALUE_DOM: '<span class="basic-encounter-info-entry-value"></span>',
+
         //Resource Gallery Constants
+        RESOURCE_GALLERY_URL_BASE: '/sewi/encounter/',
+        RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
+        RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
+        RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
+        RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<img class="resource-thumbnail">',
+        RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-header">',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
-        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource',
-        RESOURCE_GALLERY_THUMBNAIL_IMAGE_CLASS: 'media-thumbnail',
-        RESOURCE_GALLERY_THUMBNAIL_HEADER_CLASS: 'media-header',
-        RESOURCE_GALLERY_DRAGGED_THUMBNAIL_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
+        RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource-thumbnail',
+        RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-header',
+        RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_TOOLTIP_HEADER: 'Last modified: ',
+        RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
+        RESOURCE_GALLERY_DEFAULT_THUMBNAIL: '/static/sewi/images/default_thumbnail.png',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_BASIC_DOM: '<div></div>',
@@ -135,6 +160,9 @@ var sewi = sewi || {};
         AUDIO_TEXT_COLOR: 'rgba(0,0,0,1)',
         AUDIO_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
 
+        //Chart Resource Constants
+        CHART_RESOURCE_URL: '/sewi/resources/chart/',
+
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
         MEDIA_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
@@ -153,14 +181,45 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
 
+        //Chart Controls Constants
+        CHART_CONTROLS_DOM_CLASS: 'chart-control-panel',
+        CHART_CONTROLS_INNER_PANEL_DOM: '<div></div>',
+        CHART_CONTROLS_LEFT_PANEL_CLASS: 'left',
+        CHART_CONTROLS_RIGHT_PANEL_CLASS: 'right',
+        CHART_CONTROLS_OPTIONS_DROPDOWN_DOM: '<select multiple class="dropup" data-style="btn-default options-dropdown" title="Options"></select>',
+        CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS: 'options-dropdown',
+        CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM: '<option value="rangeSelector">Range Selector</option>',
+        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM: '<option value="resetAll">Reset all points</option>',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM: '<option value="resetShown">Reset shown points</option>',
+        CHART_CONTROLS_ZOOM_OUT_OPTION_DOM: '<option value="zoomOutChart">Zoom Out</option>',
+        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label" title ="Displays the average time interval (in seconds) between all the points that are selected after sorting them in increasing order of time." data-placement ="top"> Interval <input type="text" class="timing-display" readonly /></label>',
+        CHART_CONTROLS_TIMING_DISPLAY_LABEL_CLASS: 'timing-display-label',
+        CHART_CONTROLS_RANGE_SELECTOR_VALUE: 'rangeSelector',
+        CHART_CONTROLS_RESET_ALL_POINTS_VALUE: 'resetAll',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_VALUE: 'resetShown',
+        CHART_CONTROLS_ZOOM_OUT_VALUE: 'zoomOutChart',
+
         //Configurator Constants
+        CONFIGURATOR_TITLE_DOM: '<h2>',
+        CONFIGURATOR_SUBTITLE_DOM: '<small>',
+        CONFIGURATOR_TITLE_PREFIX: 'ID #',
+        CONFIGURATOR_DEFAULT_TITLE: 'Loading',
+        CONFIGURATOR_DEFAULT_SUBTITLE: 'Please wait',
+        CONFIGURATOR_MINIMIZE_DOM: '<div class="minimize-button">&lt;&lt;</div>',
         CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',
         CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM: '<p></p>',
         CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM: '<button class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>',
         CONFIGURATOR_ERROR_SCREEN_BACKDROP_DOM: '<div></div>',
         CONFIGURATOR_RELOAD_LINK_DOM: '<button class="btn btn-link">Reload</button>',
         CONFIGURATOR_ACTIVE_ALERT_CLASS: 'active',
+        CONFIGURATOR_TITLEVIEW_EXCEPTION_MESSAGE: 'options: One titleView selector/element must be provided.',
+        CONFIGURATOR_BASICINFOVIEW_EXCEPTION_MESSAGE: 'options: One basicInfoView selector/element must be provided.',
+        CONFIGURATOR_RESVIEWERVIEW_EXCEPTION_MESSAGE: 'options: One resViewerView selector/element must be provided.',
+        CONFIGURATOR_RESGALLERYVIEW_EXCEPTION_MESSAGE: 'options: One resGalleryView selector/element must be provided.',
+        CONFIGURATOR_ALERTSVIEW_EXCEPTION_MESSAGE: 'options: One alertsView selector/element must be provided.',
+        CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE: 'options: encounterId must be a valid string.',
         CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE: 'An error has occured! Please reload the page!',
+        CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE: 'An error has occured! Press the button to reload!',
     };
 
 })();
