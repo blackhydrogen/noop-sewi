@@ -115,7 +115,7 @@ body {
     top: 0px;
 }
 
-.col-sm-0 {
+.col-xs-0, .col-sm-0, .col-md-0, .col-lg-0 {
   width: 0px;
   float: left;
   overflow: hidden;
