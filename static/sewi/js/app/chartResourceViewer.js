@@ -1,7 +1,7 @@
 var sewi = sewi || {};
 
 // ChartControls definition
-$(function() {
+(function() {
   /** [ChartControls description] */
   sewi.ChartControls = function(options) {
     // Safeguard if function is called without `new` keyword
@@ -141,7 +141,7 @@ $(function() {
 });
 
 
-$(function() {
+(function() {
 
   sewi.ChartResourceViewer = function(options) {
     // Safeguard if function is called without `new` keyword
@@ -362,16 +362,6 @@ $(function() {
 
   sewi.ChartResourceViewer.prototype.canvasPointClicked = function(x, points) {
     this.chartPointClicked(points[0]);
-    /*var indexOfClosestPointOnGraph = this.binarySearch(x);
-    var start = indexOfClosestPointOnGraph - 10;
-    var end = indexOfClosestPointOnGraph + 10;
-    var peak = this.findPeakInRegion(start, end);
-    if(peak == -1){
-     
-    }
-    else{
-      this.chartPointClicked(peak);
-    }*/
   }
 
   sewi.ChartResourceViewer.prototype.findPeakInRegion = function(start, end) {
