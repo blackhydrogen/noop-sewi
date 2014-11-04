@@ -182,6 +182,8 @@ var sewi = sewi || {};
         CONFIGURATOR_DEFAULT_TITLE: 'Loading',
         CONFIGURATOR_DEFAULT_SUBTITLE: 'Please wait',
         CONFIGURATOR_MINIMIZE_DOM: '<div class="minimize-button">&lt;&lt;</div>',
+        CONFIGURATOR_COLUMN_PREFIX_CLASS: 'col-xs-',
+        CONFIGURATOR_COLUMN_PREFIX_REGEX: /(^|\s)col-xs-\S+/g,
         CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',
         CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM: '<p></p>',
         CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM: '<button class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>',
