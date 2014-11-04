@@ -42,6 +42,9 @@ var sewi = sewi || {};
 						$(sewi.constants.BEI_ENTRY_KEY_DOM).html(encounterData[i][j][0])
 					)
 					.append(
+						$("<br>")
+					)
+					.append(
 						$(sewi.constants.BEI_ENTRY_VALUE_DOM).html(encounterData[i][j][1])
 					)
 					.appendTo(this.mainDOMElement);
