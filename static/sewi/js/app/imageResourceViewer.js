@@ -67,20 +67,20 @@ sewi.ImageResourceViewer.prototype.loadImage = function() {
 		dataType: 'json',
 		type: 'GET',
 		async: true,
-		url: '/sewi/resources/image/' + originalImageInfo.id,
+		url: '/sewi/resources/image/' + this.originalImageInfo.id,
 	})
-	.done(function() {
+	.done((function(data) {
 		this.imageElement.prop("src", data.url);
-	})
-	.error(function() {
+	}).bind(this))
+	.error((function() {
 		this.showError("An error occurred while trying to load the image resource.");
-	});
+	}).bind(this));
 }
 
 sewi.ImageResourceViewer.prototype.afterImageLoadSetup = function() {
-	originalImageInfo.width = imageElement.prop("naturalWidth");
-	originalImageInfo.height = imageElement.prop("naturalHeight");
-	originalImageInfo.url = imageElement.prop("src");
+	this.originalImageInfo.width = this.imageElement.prop("naturalWidth");
+	this.originalImageInfo.height = this.imageElement.prop("naturalHeight");
+	this.originalImageInfo.url = this.imageElement.prop("src");
 
 	this.controls = new sewi.ImageControls();
 	
@@ -88,7 +88,7 @@ sewi.ImageResourceViewer.prototype.afterImageLoadSetup = function() {
 	this.controls.on("contrastChanged", this.applyInbuiltImageContrast.bind(this));
 	this.controls.on("filtersChanged", this.applyCustomImageFilters.bind(this));
 
-	mainContainer.append(this.controls.getDOM());
+	this.mainDOMElement.append(this.controls.getDOM());
 
 	this.addDownloadButton(function() {
 		return this.imageElement.attr("src");
@@ -100,20 +100,28 @@ sewi.ImageResourceViewer.prototype.afterImageLoadSetup = function() {
 }
 
 sewi.ImageResourceViewer.prototype.setupZoomControls = function() {
-		this.on("zoomChanged", (function(event, newZoomPercentage) {
-			this.controls.update({
-				zoomLevel: newZoomPercentage
-			});
-		}).bind(this));
+	this.imagePanZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
 
-		this.controls.on("zoomChanged", (function(event, zoomLevel) {
-			this.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
-		}).bind(this));
+	this.on("zoomChanged", (function(event, newZoomPercentage) {
+		this.controls.updateZoomControlValue({
+			zoomLevel: newZoomPercentage
+		});
+	}).bind(this));
 
-		this.controls.on("zoomToFitRequested", this.imagePanZoomWidget.setZoomLevelToZoomToFit().bind(this.imagePanZoomWidget));
+	this.controls.on("zoomChanged", (function(event, zoomLevel) {
+		this.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
+	}).bind(this));
 
-		this.imagePanZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
-	}
+	this.controls.on("zoomToFitRequested", this.imagePanZoomWidget.setZoomLevelToZoomToFit.bind(this.imagePanZoomWidget));
+
+	// TODO set the correct min and max values.
+
+	// Update controls to the correct values (the value may have changed during construction,
+	// and the event not captured due to the event being registered after the construction)
+	this.controls.updateZoomControlValue({
+		zoomLevel: this.imagePanZoomWidget.getCurrentZoomLevel()
+	});
+}
 
 sewi.ImageResourceViewer.prototype.applyCustomImageFilters = function(event, settings) {
 	var t1 = new Date().getTime();
@@ -312,7 +320,7 @@ sewi.ImageResourceViewer.prototype.applySelectiveStretchingFilterToPixelData = f
 sewi.ImageResourceViewer.prototype.applyFalseColorFilterToPixelData = function(pixelData, chosenFalseColorPalette) {
 	// Assumption: image is in grayscale.
 
-	var falseColorPaletteToUse = falseColorPalette[chosenFalseColorPalette]["values"];
+	var falseColorPaletteToUse = this.falseColorPalette[chosenFalseColorPalette].values;
 
 	for(var i = 0; i < pixelData.length; i += 4) {
 		var falseColorToUse = falseColorPaletteToUse[pixelData[i]];
@@ -659,7 +667,7 @@ sewi.ImageControls.prototype.contrastPlusMenuSelectionChanged = function() {
 	}
 }
 
-sewi.ImageControls.prototype.update = function(options) {
+sewi.ImageControls.prototype.updateZoomControlValue = function(options) {
 	options = options || {};
 
 	if (!_.isUndefined(options.zoomSettings)) {
