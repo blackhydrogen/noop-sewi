@@ -1,5 +1,6 @@
 // Created by: Le Beier
 var sewi = sewi || {};
+
 (function(){
     // Audio Resource Viewer Class
     sewi.AudioResourceViewer = function(options){
@@ -69,9 +70,13 @@ var sewi = sewi || {};
             dataType: 'json',
             type: 'GET',
             url: audioResourceEndPoint,
-        }).done(retrieveAudio.bind(this));
+        }).done(retrieveAudio.bind(this)); 
     }
 
+    /**
+     * Initialized the approprate audio components after a valid URL has been retrieved.
+     * @param  {json} data Json object that contains the data from the ajax call.
+     */
     function retrieveAudio(data){
         this.loadedSuccess = true;
         this.url = data.url;
@@ -79,6 +84,15 @@ var sewi = sewi || {};
         initControls.call(this);    
     }
 
+    /**
+     * This function checks the availability of the Web Audio API.
+     * If the API exist, it will create the following objects:
+     * 1. audio context
+     * 2. script processor
+     * 3. gain node
+     * 4. XMLHttpRequest
+     * In the event that the Web Audio API is unavailable, an error message will be shown.
+     */
     function init(){
         this.mainDOMElement.addClass('audio-resource-viewer');
         
@@ -152,6 +166,11 @@ var sewi = sewi || {};
         this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
 
+    /**
+     * This function extracts the data buffer from the audio buffer object 
+     * and create the graph objects which is used to render the amplitude wave graph.
+     * param  {AudioBuffer} buffer The audio buffer object from the audio context which contains information about the audio file. 
+     */
     function onAudioDecodeFinish(buffer){
         this.audioBuffer = buffer;
         var sampleRate = buffer.sampleRate; 
@@ -184,6 +203,7 @@ var sewi = sewi || {};
 
     function onAudioDecodeFail(event){
         event.preventDefault();
+        this.showError('Error: failed to decode the audio file.');
     }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
