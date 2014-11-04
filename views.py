@@ -2,7 +2,7 @@ import json
 from django.templatetags.static import static
 from django.http import HttpResponse, HttpResponseServerError, HttpResponseForbidden, Http404
 from django.shortcuts import render, get_object_or_404
-from resource import ImageResource, VideoResource, AudioResource
+from resource import ImageResource, VideoResource, AudioResource, ChartResource
 from basic_encounter_information import BasicEncounterInformation
 from mds.core.models import Encounter
 from resource_gallery import ResourceGallery
@@ -47,6 +47,18 @@ def get_video_thumbnail(request, video_id):
     logger.info('Retrieving Video Thumbnail: ' + video_id)
     video_resource = VideoResource(video_id)
     thumb_data = video_resource.generate_thumbnail()
+    return HttpResponse(thumb_data, mimetype='text/plain')
+
+def get_chart(request, chart_id):
+    logger.info('Retrieving Chart ID: ' + chart_id)
+    chart_resource = ChartResource(chart_id)
+    data = json.dumps(chart_resource.get_info())
+    return HttpResponse(data, mimetype='application/json')
+
+def get_chart_thumbnail(request, chart_id):
+    logger.info('Retrieving Chart ID: ' + chart_id)
+    chart_resource = ChartResource(chart_id)
+    thumb_data = chart_resource.generate_thumbnail()
     return HttpResponse(thumb_data, mimetype='text/plain')
 
 def get_audio(request, audio_id):
