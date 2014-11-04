@@ -326,5 +326,5 @@ var sewi = sewi || {};
 	 * Informs the resource viewer that it is being deinitialized, and should
 	 * perform any cleanup if necessary.
 	 */
-	sewi.ResourceViewer.prototype.cleanup = _.noop;
+	sewi.ResourceViewer.prototype.cleanUp = _.noop;
 })();
