@@ -196,7 +196,7 @@ var sewi = sewi || {};
 		}
 
 		var downloadButton = $(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM);
-		
+
 		downloadButton.addClass(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS)
 			.on('click', function() {
 				if(_.isString(urlOrFunction))
@@ -250,4 +250,5 @@ var sewi = sewi || {};
 
 	sewi.ResourceViewer.prototype.showTooltips = _.noop;
 	sewi.ResourceViewer.prototype.hideTooltips = _.noop;
+	sewi.ResourceViewer.prototype.cleanup = _.noop;
 })();
