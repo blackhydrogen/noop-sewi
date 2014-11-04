@@ -111,7 +111,7 @@ var sewi = sewi || {};
             this.request.send();
 
         } else {
-            this.showError('Error: Web Audio API is not supported by the browser.');
+            this.showError(sewi.constants.AUDIO_ERROR_MSG_WEB_AUDIO_API_NOT_SUPPORTED);
         }
 
     }
@@ -134,16 +134,18 @@ var sewi = sewi || {};
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.updateProgressBar(100, 'generating amplitude wave graph');
+        this.updateProgressBar(100, sewi.constants.AUDIO_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
     function onAbort(event){
-        event.preventDefault(); 
+        event.preventDefault();
+        this.showError(sewi.constants.AUDIO_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED);
     }
 
     function onError(event){ 
-        event.preventDefault(); 
+        event.preventDefault();
+        this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
 
     function onAudioDecodeFinish(buffer){
@@ -220,11 +222,11 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit: zoom out to view the entire wave.',
+       this.zoomToFitBtn.tooltip({title : AUDIO_ZOOM_TO_FIT_TOOLTIP,
                                     container: 'body'});
-       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection: zoom to the selected region.',
+       this.zoomToSelectionBtn.tooltip({title : AUDIO_ZOOM_TO_SELECTION_TOOLTIP,
                                         container: 'body'});
-       this.clearSelectionBtn.tooltip({title : 'Clear the Selection: clear the highlighted region and reset playback duration to 100%.',
+       this.clearSelectionBtn.tooltip({title : AUDIO_CLEAR_SELECTION_TOOLTIP,
                                         container: 'body'});
     }               
 
@@ -301,7 +303,7 @@ var sewi = sewi || {};
             if(!this.offsetValueChanged){
                 var duration = this.source.buffer.duration;
                 var currentTime = ((Date.now() - this.beginTime) / 1000 + this.offset);
-                var percent = (currentTime / duration)*100;
+                var percent = (currentTime / duration) * 100;
                 this.controls.update({position : percent, 
                         currentTime : currentTime });
                 this.drawTimer += (currentTime - this.lastUpdated);
@@ -468,17 +470,20 @@ var sewi = sewi || {};
 
     function setupColorVariables(){
         // colors when the mouse is outside of the editor box
-        this.colorInactiveTop = "#AAA";
-        this.colorInactiveBottom = "#AAA";
+        this.colorInactiveTop = sewi.constants.AUDIO_COLOR_INACTIVE_TOP;
+        this.colorInactiveBottom = sewi.constants.AUDIO_COLOR_INACTIVE_BOTTOM;
+        
         // colors when the mouse is inside of the editor box
-        this.colorActiveTop = "#BBB";
-        this.colorActiveBottom = "#BBB";
+        this.colorActiveTop = sewi.constants.AUDIO_COLOR_ACTIVE_TOP;
+        this.colorActiveBottom = sewi.constants.AUDIO_COLOR_ACTIVE_BOTTOM;
+
         // color when the mouse is pressed during inside of the editor box
-        this.colorMouseDownTop = "#AAA";
-        this.colorMouseDownBottom = "#AAA";
+        this.colorMouseDownTop = sewi.constants.AUDIO_COLOR_MOUSE_DOWN_TOP;
+        this.colorMouseDownBottom = sewi.constants.AUDIO_COLOR_MOUSE_DOWN_BOTTOM;
+        
         // color of the selection frame
-        this.colorSelectionStroke = "rgba(0,0,255,0.5)";
-        this.colorSelectionFill = "rgba(0,0,255,0.2)";
+        this.colorSelectionStroke = sewi.constants.AUDIO_COLOR_SELECTION_STROKE;
+        this.colorSelectionFill = sewi.constants.AUDIO_COLOR_SELECTION_FILL;
     }
 
     function setupMiscVariables(){
@@ -707,12 +712,12 @@ var sewi = sewi || {};
         var verticalMultiplier = 1.0;
         var canvasWidth = this.canvasDOM.width();
         //canvasContext.setLineWidth(1);
-        canvasContext.strokeStyle = "rgba(102,102,255,0.9)";                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_WAVE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
 
         // choose the drawing style of the waveform
-        if (this.plotTechnique == 1){
+        if (this.plotTechnique == sewi.constants.AUDIO_PLOT_TECHNIQUE.COMPRESSED){
             // data per pixel
             for (i = 0; i < canvasWidth; ++i){
                 var peakAtFrame = this.visualizationData[i];
@@ -720,7 +725,7 @@ var sewi = sewi || {};
                 canvasContext.lineTo(i + 0.5, (center + peakAtFrame.max * verticalMultiplier * -center) + 1.0);
             }
 
-        } else if (this.plotTechnique == 2) {
+        } else if (this.plotTechnique == sewi.constants.AUDIO_PLOT_TECHNIQUE.DETAILED) {
             var s = 1;
             var len = this.visualizationData.length;
             for(i = 0; i < len; ++i){
@@ -747,7 +752,7 @@ var sewi = sewi || {};
 
         // Draw the horizontal line at the center
         //canvasContext.setLineWidth(1.0);
-        canvasContext.strokeStyle = "rgba(0, 0, 0, 0.5)";                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_HORIZONTAL_LINE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
         canvasContext.lineTo(this.canvasDOM.width(), center);
