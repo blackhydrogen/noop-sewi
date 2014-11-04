@@ -136,6 +136,9 @@ var sewi = sewi || {};
         //Audio Resource Constants
         AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
 
+        //Chart Resource Constants
+        CHART_RESOURCE_URL: '/sewi/resources/chart/',
+
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
         MEDIA_CONTROLS_BUTTON_DOM: '<button class="btn btn-default"></button>',
@@ -153,6 +156,24 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
+
+        //Chart Controls Constants
+        CHART_CONTROLS_DOM_CLASS: 'chart-control-panel',
+        CHART_CONTROLS_INNER_PANEL_DOM: '<div></div>',
+        CHART_CONTROLS_LEFT_PANEL_CLASS: 'left',
+        CHART_CONTROLS_RIGHT_PANEL_CLASS: 'right',
+        CHART_CONTROLS_OPTIONS_DROPDOWN_DOM: '<select multiple class="dropup" data-style="btn-default options-dropdown" title="Options"></select>',
+        CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS: 'options-dropdown',
+        CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM: '<option value="rangeSelector">Range Selector</option>',
+        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM: '<option value="resetAll">Reset all points</option>',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM: '<option value="resetShown">Reset shown points</option>',
+        CHART_CONTROLS_ZOOM_OUT_OPTION_DOM: '<option value="zoomOutChart">Zoom Out</option>',
+        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label" title ="Displays the average time interval (in seconds) between all the points that are selected after sorting them in increasing order of time." data-placement ="top"> Interval <input type="text" class="timing-display" readonly /></label>',
+        CHART_CONTROLS_TIMING_DISPLAY_LABEL_CLASS: 'timing-display-label',
+        CHART_CONTROLS_RANGE_SELECTOR_VALUE: 'rangeSelector',
+        CHART_CONTROLS_RESET_ALL_POINTS_VALUE: 'resetAll',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_VALUE: 'resetShown',
+        CHART_CONTROLS_ZOOM_OUT_VALUE: 'zoomOutChart',
 
         //Configurator Constants
         CONFIGURATOR_TITLE_DOM: '<h2>',

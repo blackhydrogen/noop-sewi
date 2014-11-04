@@ -21,6 +21,6 @@ urlpatterns = patterns(
   url(r'^resources/audio/(?P<audio_id>[\w-]+)/?$', views.get_audio, name='get_audio'),
   url(r'^resources/audio/(?P<audio_id>[\w-]+)/thumb$', views.get_audio_thumbnail, name='get_audio_thumb'),
   # Graph Plots
-  #url(r'^resources/graph/(?P<graph_id>\w+)/?$', views.get_graph_plot, name='get_graph_plot'),
-  #url(r'^resources/graph/(?P<graph_id>\w+)/thumb$', views.get_graph_plot_thumbnail, name='get_graph_plot_thumb'),
+  url(r'^resources/chart/(?P<chart_id>[\w-]+)/?$', views.get_chart, name='get_chart'),
+  url(r'^resources/chart/(?P<chart_id>[\w-]+)/thumb$', views.get_chart_thumbnail, name='get_chart_thumb'),
 )
