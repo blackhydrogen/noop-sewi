@@ -183,9 +183,7 @@ var sewi = sewi || {};
         this.basicInfoView
             .add(this.resViewerView)
             .add(this.resGalleryView)
-            .removeClass(function(index, cssClass) {
-                return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
-            });
+            .removeClass(getBootstrapColumnClasses);
 
         if (this.isBasicInfoMinimized) {
             resViewerWidth += basicInfoWidth - minBasicInfoWidth;
@@ -205,6 +203,10 @@ var sewi = sewi || {};
                .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resViewerWidth);
         this.resGalleryView
                .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resGalleryWidth);
+    }
+
+    function getBootstrapColumnClasses(index, cssClass) {
+        return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
     }
 
     function setEncounterTitle(id, name) {
