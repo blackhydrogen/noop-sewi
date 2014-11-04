@@ -137,6 +137,22 @@ body {
   transition: all 200ms ease-in-out 0s;
 }
 
+.tooltip {
+	pointer-events: none;
+}
+
+.tooltip.in {
+	opacity: 1;
+}
+
+.tooltip-inner {
+	max-width: 250px;
+}
+
+.tooltip span.underline {
+  text-decoration: underline;
+}
+
 div.minimize-button {
     position: absolute;
     right: 0;
@@ -146,6 +162,10 @@ div.minimize-button {
     color: #fff;
     cursor: pointer;
     border-radius: 0 0 0 5px;
+}
+
+label.btn input {
+	display: none;
 }
 
 .resource-viewer {
@@ -180,8 +200,7 @@ div.minimize-button {
     float: right;
 }
 
-.resource-viewer .top-panel button,
-.resource-viewer .top-panel a {
+.resource-viewer .top-panel .btn {
     height: 30px;
     width: 30px;
     padding: 5px 8px;

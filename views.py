@@ -28,9 +28,15 @@ def get_encounter(request, encounter_id):
 
 def get_image(request, image_id):
     logger.info("Retrieving Image ID: " + image_id)
-    image_resource = ImageResource("some-udid-here")
+    image_resource = ImageResource(image_id)
     data = json.dumps(image_resource.get_info())
     return HttpResponse(data, mimetype='application/json')
+
+def get_image_thumbnail(request, image_id):
+    logger.info('Retrieving Image Thumbnail: ' + image_id)
+    image_resource = ImageResource(image_id)
+    thumb_data = image_resource.generate_thumbnail()
+    return HttpResponse(thumb_data, mimetype='text/plain')
 
 def get_video(request, video_id):
     logger.info('Retrieving Video ID: ' + video_id)
@@ -41,7 +47,7 @@ def get_video(request, video_id):
 def get_video_thumbnail(request, video_id):
     logger.info('Retrieving Video ID: ' + video_id)
     video_resource = VideoResource(video_id)
-    thumb_data = json.dumps(video_resource.generate_thumbnail())
+    thumb_data = video_resource.generate_thumbnail()
     return HttpResponse(thumb_data, mimetype='text/plain')
 
 def get_audio(request, audio_id):
@@ -49,6 +55,12 @@ def get_audio(request, audio_id):
     audio_resource = AudioResource(audio_id)
     data = json.dumps(audio_resource.get_info())
     return HttpResponse(data, mimetype='application/json')
+
+def get_audio_thumbnail(request, audio_id):
+    logger.info('Retrieving Audio Thumbnail: ' + audio_id)
+    audio_resource = AudioResource(audio_id)
+    thumb_data = audio_resource.generate_thumbnail()
+    return HttpResponse(thumb_data, mimetype='text/plain')
 
 def get_encounter_info(request, encounter_id):
     logger.info('Getting Basic Encounter Information: ' + encounter_id)
