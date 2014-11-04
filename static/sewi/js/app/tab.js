@@ -114,7 +114,7 @@ var sewi = sewi || {};
 
         
         this.panel.on(whichTransitionEvent(), function(event){
-            if(event.currentTarget === event.Target){
+            if(event.currentTarget === event.target){
                 var propertyName = event.originalEvent.propertyName;
                 if(propertyName == "width" || propertyName == "height"){
                     selfRef.tab.resize();

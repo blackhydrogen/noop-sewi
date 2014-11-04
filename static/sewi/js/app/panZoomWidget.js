@@ -77,20 +77,23 @@ sewi.PanZoomWidget.prototype.calculateTargetDimensions = function(originalWidth,
 	this.targetDimensions.maximumZoom.height = this.targetDimensions.original.height * 2;
 }
 
-// Recalculate the targetDimensions of the target - used when the container is resized.
-sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function() {
-	this.calculateTargetDimensions(this.targetDimensions.original.width, this.targetDimensions.original.height);
+// Recalculate the targetDimensions of the target - used when the container and/or the target is resized.
+sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function(originalWidth, originalHeight) {
+	if(originalWidth == undefined)
+		this.calculateTargetDimensions(this.targetDimensions.original.width, this.targetDimensions.original.height);
+	else
+		this.calculateTargetDimensions(originalWidth, originalHeight);
 }
 
 sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {
 	return Math.round(100 * this.target.width() / this.targetDimensions.original.width);
 }
 
-sewi.PanZoomWidget.prototype.getMinimumimZoomLevel = function() {
+sewi.PanZoomWidget.prototype.getMinimumZoomLevel = function() {
 	return Math.round(100 * this.targetDimensions.minimumZoom.width / this.targetDimensions.original.width);
 }
 
-sewi.PanZoomWidget.prototype.getMaximumimZoomLevel = function() {
+sewi.PanZoomWidget.prototype.getMaximumZoomLevel = function() {
 	return Math.round(100 * this.targetDimensions.maximumZoom.width / this.targetDimensions.original.width);
 }
 
