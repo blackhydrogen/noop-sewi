@@ -123,8 +123,10 @@ var sewi = sewi || {};
     }
 
     function initResizeTracking() {
+        var windowElement = $(window);
+
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
-            reportResize(this.basicInfoView, this.basicInfo);
+            windowElement.resize(resizeBasicInfo.bind(this));
         }
         if (_.isFunction(sewi.TabContainer)) {
             reportResize(this.resViewerView, this.tabs);
@@ -137,11 +139,11 @@ var sewi = sewi || {};
     function reportResize(view, configuratorElement) {
         var windowElement = $(window);
 
-        view.on('transitionend', resizeIfSizeChanged.bind(configuratorElement));
+        view.on('transitionend', resizeIfSizeChangedInTransition.bind(configuratorElement));
         windowElement.resize(configuratorElement.resize.bind(configuratorElement));
     }
 
-    function resizeIfSizeChanged(event) {
+    function resizeIfSizeChangedInTransition(event) {
         if (event.target == event.currentTarget) {
             var propertyName = event.originalEvent.propertyName;
             var callback = event.data;
@@ -149,6 +151,17 @@ var sewi = sewi || {};
                 this.resize();
             }
         }
+    }
+
+    function resizeBasicInfo(event) {
+        var options = {
+            elementIsMinimized: this.isBasicInfoMinimized
+        };
+        if (event.type === "resize" && event.target === window) {
+            options.isWindowResizeEvent = true;
+        }
+
+        this.basicInfo.resize(options);
     }
 
     function openResource(galleryElement) {
