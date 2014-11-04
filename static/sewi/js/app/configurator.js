@@ -34,7 +34,7 @@ var sewi = sewi || {};
         initResizeTracking.call(this);
 
         return this;
-    }
+    };
 
     // Configurator private methods
     function validateArguments() {
@@ -146,7 +146,6 @@ var sewi = sewi || {};
     function resizeIfSizeChangedInTransition(event) {
         if (event.target == event.currentTarget) {
             var propertyName = event.originalEvent.propertyName;
-            var callback = event.data;
             if (propertyName == 'width' || propertyName == 'height') {
                 this.resize();
             }
@@ -183,17 +182,17 @@ var sewi = sewi || {};
         this.basicInfoView
             .add(this.resViewerView)
             .add(this.resGalleryView)
-            .removeClass(function(index, cssClass) {
-                return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
-            });
+            .removeClass(getBootstrapColumnClasses);
 
         if (this.isBasicInfoMinimized) {
             resViewerWidth += basicInfoWidth - minBasicInfoWidth;
             this.basicInfoView
-                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + minBasicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + minBasicInfoWidth)
+                   .addClass(sewi.constants.CONFIGURATOR_MINIMIZED_CLASS);
         } else {
             this.basicInfoView
-                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + basicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + basicInfoWidth)
+                   .removeClass(sewi.constants.CONFIGURATOR_MINIMIZED_CLASS);
         }
         if (this.isResourceViewerHidden) {
             resGalleryWidth += resViewerWidth;
@@ -203,6 +202,10 @@ var sewi = sewi || {};
                .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resViewerWidth);
         this.resGalleryView
                .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resGalleryWidth);
+    }
+
+    function getBootstrapColumnClasses(index, cssClass) {
+        return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
     }
 
     function setEncounterTitle(id, name) {
@@ -266,12 +269,14 @@ var sewi = sewi || {};
         }
 
         var reloadLink = $(sewi.constants.CONFIGURATOR_RELOAD_LINK_DOM);
-        reloadLink.click(function() {
-            window.location.reload(true);
-        })
+        reloadLink.click(refreshPage);
         this.alertsView.text(sewi.constants.CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE)
                           .append(reloadLink)
                           .addClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS);
+    }
+
+    function refreshPage() {
+        window.location.reload(true);
     }
 
     function refreshClicked(event) {
@@ -305,5 +310,5 @@ var sewi = sewi || {};
         this.subtitleDOM.text(subtitle);
         this.titleDOM.text(title + ' ')
                         .append(this.subtitleDOM);
-    }
+    };
 })();
