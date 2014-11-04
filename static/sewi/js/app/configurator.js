@@ -171,25 +171,25 @@ var sewi = sewi || {};
             .add(this.resViewerView)
             .add(this.resGalleryView)
             .removeClass(function(index, cssClass) {
-                return ( cssClass.match(/(^|\s)col-sm-\S+/g) || [] ).join(' ');
+                return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
             });
 
         if (this.isBasicInfoMinimized) {
             resViewerWidth += basicInfoWidth - minBasicInfoWidth;
             this.basicInfoView
-                   .addClass('col-sm-' + minBasicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + minBasicInfoWidth);
         } else {
             this.basicInfoView
-                   .addClass('col-sm-' + basicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + basicInfoWidth);
         }
         if (this.isResourceViewerHidden) {
             resGalleryWidth += resViewerWidth;
             resViewerWidth = 0;
         }
         this.resViewerView
-               .addClass('col-sm-' + resViewerWidth);
+               .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resViewerWidth);
         this.resGalleryView
-               .addClass('col-sm-' + resGalleryWidth);
+               .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resGalleryWidth);
     }
 
     function setEncounterTitle(id, name) {
