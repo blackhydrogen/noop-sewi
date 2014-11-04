@@ -1,3 +1,0 @@
-This is a temporary folder (to be removed, hopefully soon) where I (Ian) put all my "standalone" HTML files. These "standalone"s are where I work on the components, with all 3 CSS, JS & HTML in one single file, so I can test this much faster, and without the other components running (i.e. tabs, configurator, etc, etc).
-
-I'd expect that this folder disappear onces the basic integration is completed soon.
