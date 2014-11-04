@@ -154,6 +154,7 @@ var sewi = sewi || {};
         for(var i = 0; i < len; i++){
             selfRef.indicators[i].remove(); 
         }
+        selfRef.resourceViewer.cleanUp();
         delete selfRef.tab.panelList[selfRef.state];
         selfRef.panel.remove();     
     }
@@ -163,6 +164,8 @@ var sewi = sewi || {};
         selfRef.tab.panelList[oldPosition].getDOM().addClass(addCSSClass).removeClass(removeCSSClass);
         selfRef.tab.panelList[oldPosition].state = newPosition;
         selfRef.tab.panelList[newPosition] = selfRef.tab.panelList[oldPosition];
+        
+        selfRef.tab.panelList[oldPosition].resourceViewer.cleanUp();
         delete selfRef.tab.panelList[oldPosition];
     }
 
