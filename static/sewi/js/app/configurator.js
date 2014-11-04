@@ -34,7 +34,7 @@ var sewi = sewi || {};
         initResizeTracking.call(this);
 
         return this;
-    }
+    };
 
     // Configurator private methods
     function validateArguments() {
@@ -146,7 +146,6 @@ var sewi = sewi || {};
     function resizeIfSizeChangedInTransition(event) {
         if (event.target == event.currentTarget) {
             var propertyName = event.originalEvent.propertyName;
-            var callback = event.data;
             if (propertyName == 'width' || propertyName == 'height') {
                 this.resize();
             }
@@ -311,5 +310,5 @@ var sewi = sewi || {};
         this.subtitleDOM.text(subtitle);
         this.titleDOM.text(title + ' ')
                         .append(this.subtitleDOM);
-    }
+    };
 })();
