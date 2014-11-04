@@ -2,6 +2,9 @@ var sewi = sewi || {};
 
 (function() {
 	sewi.BasicEncounterInfoViewer = function(options) {
+		if(!(this instanceof sewi.BasicEncounterInfoViewer)){
+            return new sewi.BasicEncounterInfoViewer();
+        }
 		sewi.ConfiguratorElement.call(this);
 
 		this.encounterId = options.encounterId;
@@ -39,6 +42,9 @@ var sewi = sewi || {};
 						$(sewi.constants.BEI_ENTRY_KEY_DOM).html(encounterData[i][j][0])
 					)
 					.append(
+						$("<br>")
+					)
+					.append(
 						$(sewi.constants.BEI_ENTRY_VALUE_DOM).html(encounterData[i][j][1])
 					)
 					.appendTo(this.mainDOMElement);
@@ -52,12 +58,15 @@ var sewi = sewi || {};
 			height: "100%"
 		});
 
-		this.fixMainDomElementWidth();
+		this.fixMainDomElementWidth(false);
 	}
 
-	sewi.BasicEncounterInfoViewer.prototype.fixMainDomElementWidth = function() {
-		// We set the element's width to 100% (of its parent's width)
-		this.mainDOMElement.width("100%");
+	sewi.BasicEncounterInfoViewer.prototype.fixMainDomElementWidth = function(elementIsMinimized) {
+		// We set the element's width to 100% of its parent's width, or 300% if it's minimized
+		if(elementIsMinimized)
+			this.mainDOMElement.width("300%");
+		else
+			this.mainDOMElement.width("100%");
 
 		// Now we get the width back, but in pixels
 		var widthInPixels = this.mainDOMElement.width();
@@ -66,8 +75,8 @@ var sewi = sewi || {};
 		this.mainDOMElement.width(widthInPixels + "px");
 	}
 
-	sewi.BasicEncounterInfoViewer.prototype.resize = function() {
-		if(!configurator.isBasicInfoMinimized)
-			this.fixMainDomElementWidth();
+	sewi.BasicEncounterInfoViewer.prototype.resize = function(options) {
+		if(options.isWindowResizeEvent)
+			this.fixMainDomElementWidth(options.elementIsMinimized);
 	}
 })();
