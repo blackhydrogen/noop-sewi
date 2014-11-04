@@ -270,12 +270,14 @@ var sewi = sewi || {};
         }
 
         var reloadLink = $(sewi.constants.CONFIGURATOR_RELOAD_LINK_DOM);
-        reloadLink.click(function() {
-            window.location.reload(true);
-        })
+        reloadLink.click(refreshPage);
         this.alertsView.text(sewi.constants.CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE)
                           .append(reloadLink)
                           .addClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS);
+    }
+
+    function refreshPage() {
+        window.location.reload(true);
     }
 
     function refreshClicked(event) {
