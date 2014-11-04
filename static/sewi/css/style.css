@@ -168,6 +168,14 @@ div.minimize-button {
     border-radius: 0 0 0 5px;
 }
 
+div.minimize-button:before {
+	content: '<<';
+}
+
+.minimized div.minimize-button:before {
+	content: '>>';
+}
+
 label.btn input {
 	display: none;
 }

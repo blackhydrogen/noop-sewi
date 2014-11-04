@@ -190,10 +190,12 @@ var sewi = sewi || {};
         if (this.isBasicInfoMinimized) {
             resViewerWidth += basicInfoWidth - minBasicInfoWidth;
             this.basicInfoView
-                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + minBasicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + minBasicInfoWidth)
+                   .addClass(sewi.constants.CONFIGURATOR_MINIMIZED_CLASS);
         } else {
             this.basicInfoView
-                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + basicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + basicInfoWidth)
+                   .removeClass(sewi.constants.CONFIGURATOR_MINIMIZED_CLASS);
         }
         if (this.isResourceViewerHidden) {
             resGalleryWidth += resViewerWidth;
