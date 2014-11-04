@@ -67,6 +67,10 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d3d3', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 }
 
+.container{
+	min-width: 1024px;
+}
+
 #sewiContainer {
   min-height: 600px;
   height: 0;

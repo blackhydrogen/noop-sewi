@@ -1,6 +1,11 @@
 var sewi = sewi || {};
 
 (function() {
+	/**
+	 * An object representing a HTML element that will be a descendant of the
+	 * Configurator. It contains helper functions and properties that can assist
+	 * developers implementing the element.
+	 */
 	sewi.ConfiguratorElement = function() {
 		this.mainDOMElement = $("<div></div>");
 	}
@@ -43,6 +48,9 @@ var sewi = sewi || {};
 })();
 
 (function(){
+	/**
+	 * Represents an error screen which fills the container in which it resides.
+	 */
     sewi.ErrorScreen = function(){
         if(!(this instanceof sewi.ErrorScreen))
             return new sewi.ErrorScreen();
@@ -59,6 +67,10 @@ var sewi = sewi || {};
 						   .addClass(sewi.constants.ERROR_SCREEN_CLASS);
 	}
 
+	/**
+	 * Sets the text of the error screen.
+	 * @param {string} string The text that will be displayed.
+	 */
     sewi.ErrorScreen.prototype.setText = function(string){
         this.textElement.text(string);
     }
@@ -66,7 +78,11 @@ var sewi = sewi || {};
 })();
 
 (function(){
-    // Progress Bar
+    /**
+     * Represents a progress bar that can be updated dynamically.
+     * @param {boolean} animated True if the progress bar should be animated.
+     *                           Defaults to true.
+     */
     sewi.ProgressBar = function (animated) {
         if(!(this instanceof sewi.ProgressBar))
             return new sewi.ProgressBar(animated);
@@ -95,6 +111,12 @@ var sewi = sewi || {};
 						   .addClass(sewi.constants.PROGRESS_BAR_BACKDROP_CLASS)
     }
 
+	/**
+	 * Updates the progress bar percentage.
+	 * @param  {number} percent A number between 0 and 100 inclusive. If the
+	 *                          number is invalid, the progress bar will not
+	 *                          update.
+	 */
     sewi.ProgressBar.prototype.update = function(percent){
         var methodName = 'sewi.ProgressBar.prototype.update';
         if(_.isNumber(percent) == false){
@@ -106,6 +128,10 @@ var sewi = sewi || {};
         }
     }
 
+	/**
+	 * Updates the text displayed in the progress bar.
+	 * @param {string} progressText The text to be displayed.
+	 */
     sewi.ProgressBar.prototype.setText = function(progressText) {
         this.textElement.text(progressText);
     }
@@ -113,6 +139,10 @@ var sewi = sewi || {};
 })();
 
 (function() {
+	/**
+	 * Represents a viewer for any resource in the Sana system. Contains helper
+	 * functions that are common to all resource viewers.
+	 */
 	sewi.ResourceViewer = function() {
 		sewi.ConfiguratorElement.call(this);
 
@@ -186,6 +216,16 @@ var sewi = sewi || {};
 	    return this.mainDOMOuterContainer;
 	}
 
+	/**
+	 * Adds a download button that triggers the specified function or URL.
+	 * Clicking the button guarantees that an item will be downloaded by the
+	 * browser, and not opened in the current or new tab (unless forced to by
+	 * the client).
+	 * @param {string|function} urlOrFunction The URL of the item to be
+	 *                                        downloaded. Can be in the form of
+	 *                                        a string, or a function that
+	 *                                        returns a string. Required.
+	 */
 	sewi.ResourceViewer.prototype.addDownloadButton = function(urlOrFunction) {
 		if (!_.isString(urlOrFunction) && !_.isFunction(urlOrFunction)) {
 			throw new ValueError('URL must be a string or function');
@@ -196,7 +236,7 @@ var sewi = sewi || {};
 		}
 
 		var downloadButton = $(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM);
-		
+
 		downloadButton.addClass(sewi.constants.RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS)
 			.on('click', function() {
 				if(_.isString(urlOrFunction))
@@ -208,6 +248,10 @@ var sewi = sewi || {};
 		this.buttonGroup.prepend(downloadButton);
 	}
 
+	/**
+	 * Displays an error on the resource viewer.
+	 * @param {string} errorText Text that will be initially displayed. Required
+	 */
 	sewi.ResourceViewer.prototype.showError = function(errorText) {
 		var errorScreenElement = this.errorScreen.getDOM();
 
@@ -216,11 +260,22 @@ var sewi = sewi || {};
 		errorScreenElement.insertBefore(this.panel);
 	}
 
+	/**
+	 * Hides the error shown, if any.
+	 */
 	sewi.ResourceViewer.prototype.hideError = function() {
 		var errorScreenElement = this.errorScreen.getDOM();
 		errorScreenElement.detach();
 	}
 
+	/**
+	 * Displays a progress bar on the resource viewer.
+	 * @param {string} progressText Text that will initially be displayed on
+	 *                              the progress bar. Optional, and will default
+	 *                              to the value of
+	 *                              RESOURCE_VIEWER_DEFAULT_LOADING_MESSAGE
+	 *                              defined in sewi.constants.
+	 */
 	sewi.ResourceViewer.prototype.showProgressBar = function(progressText) {
 		var progressBarElement = this.progressBar.getDOM();
 		progressText = progressText || sewi.constants.RESOURCE_VIEWER_DEFAULT_LOADING_MESSAGE;
@@ -231,6 +286,11 @@ var sewi = sewi || {};
 		progressBarElement.insertBefore(this.panel);
 	}
 
+	/**
+	 * Updates the progress bar.
+	 * @param {number} percent      The new percentage to be displayed. Required.
+	 * @param {string} progressText The new text to be displayed. Optional.
+	 */
 	sewi.ResourceViewer.prototype.updateProgressBar = function(percent, progressText) {
 		var progressBarElement = this.progressBar.getDOM();
 
@@ -240,6 +300,9 @@ var sewi = sewi || {};
 		this.progressBar.update(percent);
 	}
 
+	/**
+	 * Hides the progress bar if it is being displayed.
+	 */
 	sewi.ResourceViewer.prototype.hideProgressBar = function() {
 		var progressBarElement = this.progressBar.getDOM();
 
@@ -248,6 +311,20 @@ var sewi = sewi || {};
 
 	// Unimplemented methods; these should be overridden by implemented ResourceViewers
 
+	/**
+	 * Allows tooltips within this viewer to be displayed when certain elements
+	 * are under the mouse cursor.
+	 */
 	sewi.ResourceViewer.prototype.showTooltips = _.noop;
+
+	/**
+	 * Undos showTooltips.
+	 */
 	sewi.ResourceViewer.prototype.hideTooltips = _.noop;
+
+	/**
+	 * Informs the resource viewer that it is being deinitialized, and should
+	 * perform any cleanup if necessary.
+	 */
+	sewi.ResourceViewer.prototype.cleanUp = _.noop;
 })();
