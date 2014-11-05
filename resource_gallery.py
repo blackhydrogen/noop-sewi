@@ -1,8 +1,7 @@
-
 import json
 from alphanum import alphanum
 from mds.core.models import Encounter, Observation, Concept
-from resource import ImageResource, VideoResource, AudioResource
+from resource import ImageResource, VideoResource, AudioResource, ChartResource
 
 class ResourceGallery():
     """A representation of all resources associated with an encounter
@@ -16,27 +15,28 @@ class ResourceGallery():
         encounterObservations.sort(key=lambda observation: observation.node, cmp=alphanum)
 
         content = []
-        resource_type = ''
         
         for observation in encounterObservations:
-            if(AudioResource.is_valid_observation(observation)):
-                resource_type = 'audio'
-            elif(VideoResource.is_valid_observation(observation)):
-                resource_type = 'video'
-            elif(ImageResource.is_valid_observation(observation)):
-                resource_type = 'image'
-            #elif(ChartResource.is_valid_observation(observation)):
-                #resource_type = 'chart'
-
             if bool(observation.value_complex):
+                resource_type = ''
+                if(AudioResource.is_valid_observation(observation)):
+                    resource_type = 'audio'
+                elif(VideoResource.is_valid_observation(observation)):
+                    resource_type = 'video'
+                elif(ImageResource.is_valid_observation(observation)):
+                    resource_type = 'image'
+                elif(ChartResource.is_valid_observation(observation)):
+                    resource_type = 'chart'
+
+               
                 content.append(
-                    {
-                        'name': observation.concept.name,
-                        'type': resource_type,
-                        'date': str(observation.modified.day) +'/' + str(observation.modified.month) + '/' + str(observation.modified.year),
-                        'id': observation.uuid
-                        
-                    }
+                        {
+                            'name': observation.concept.name,
+                            'type': resource_type,
+                            'date': str(observation.modified.day) +'/' + str(observation.modified.month) + '/' + str(observation.modified.year),
+                            'id': observation.uuid
+                            
+                        }
                 )
         return content
         

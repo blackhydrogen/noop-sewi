@@ -1,6 +1,6 @@
 var sewi = sewi || {};
 
-$(function() {
+(function() {
 
 
   sewi.ResourceGallery = function(options) {
@@ -22,7 +22,7 @@ $(function() {
   }
 
   function loadResourceGallery() {
-    var resourceGalleryURL = sewi.constants.RESOURCE_GALLERY_URL_BASE + this.encounterID + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
+    var resourceGalleryURL = sewi.constants.ENCOUNTER_BASE_URL + this.encounterID + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
 
     $.ajax({
         dataType: 'json',
@@ -57,7 +57,7 @@ $(function() {
   }
 
   function thumbnailError() {
-    $(this).find('img').attr('src', RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
+    $(this).find('img').attr('src', sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
   }
 
 
@@ -75,10 +75,6 @@ $(function() {
           helper: 'clone',
           revert: 'invalid',
           appendTo: 'body',
-          start: function(e, ui) {
-            ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS)
-              .removeClass(sewi.constants.RESOURCE_GALLERY_RESOURCE_CLASS);
-          }
         }).append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
         .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
 
@@ -120,4 +116,4 @@ $(function() {
   sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
     event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
   }
-});
+})();
