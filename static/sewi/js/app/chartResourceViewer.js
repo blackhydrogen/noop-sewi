@@ -138,7 +138,7 @@ var sewi = sewi || {};
   sewi.ChartControls.prototype.roundOffToNearestSeconds = function(value) {
     return (value / 1000).toFixed(2);
   }
-});
+})();
 
 
 (function() {
@@ -523,4 +523,4 @@ var sewi = sewi || {};
 
     return sumOfRRIntervals / (selfRef.peaks.length - 1);
   }
-});
+})();
