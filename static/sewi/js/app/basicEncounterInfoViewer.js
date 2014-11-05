@@ -3,16 +3,16 @@ var sewi = sewi || {};
 (function() {
 	sewi.BasicEncounterInfoViewer = function(options) {
 		if(!(this instanceof sewi.BasicEncounterInfoViewer)){
-            return new sewi.BasicEncounterInfoViewer();
-        }
+			return new sewi.BasicEncounterInfoViewer();
+		}
 		sewi.ConfiguratorElement.call(this);
 
 		this.encounterId = options.encounterId;
 
-		this.mainDOMElement.addClass(sewi.constants.BEI_MAIN_DOM_CLASS)
+		this.mainDOMElement.addClass(sewi.constants.BEI_MAIN_DOM_CLASS);
 		
 		this.loadInfo();
-	}
+	};
 
 	sewi.inherits(sewi.BasicEncounterInfoViewer, sewi.ConfiguratorElement);
 
@@ -22,8 +22,8 @@ var sewi = sewi || {};
 			type: 'GET',
 			async: true,
 			url: sewi.constants.ENCOUNTER_BASE_URL + this.encounterId + sewi.constants.BEI_BASIC_INFO_URL_SUFFIX,
-		}).done(this.processInfo.bind(this))
-	}
+		}).done(this.processInfo.bind(this));
+	};
 
 	sewi.BasicEncounterInfoViewer.prototype.processInfo = function(encounterData) {
 		this.trigger("BEILoaded", {
@@ -59,7 +59,7 @@ var sewi = sewi || {};
 		});
 
 		this.fixMainDomElementWidth(false);
-	}
+	};
 
 	sewi.BasicEncounterInfoViewer.prototype.fixMainDomElementWidth = function(elementIsMinimized) {
 		// We set the element's width to 100% of its parent's width, or 300% if it's minimized
@@ -73,10 +73,10 @@ var sewi = sewi || {};
 
 		// Finally, we fix the width to pixel, so the element is paritially hidden, it won't resize
 		this.mainDOMElement.width(widthInPixels + "px");
-	}
+	};
 
 	sewi.BasicEncounterInfoViewer.prototype.resize = function(options) {
 		if(options.isWindowResizeEvent)
 			this.fixMainDomElementWidth(options.elementIsMinimized);
-	}
+	};
 })();
