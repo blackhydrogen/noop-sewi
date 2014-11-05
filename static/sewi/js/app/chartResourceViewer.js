@@ -152,12 +152,12 @@ var sewi = sewi || {};
 
     var defaults = {};
 
-    /*options = options || {};
+    options = options || {};
     _.defaults(options, defaults);
     _.assign(this, _.pick(options, [
         'id',
-    ]));*/
-    this.id = 'e3925503-3f28-4d98-851f-88f263ce969c';
+    ]));
+    //this.id = 'e3925503-3f28-4d98-851f-88f263ce969c';
 
     initDOM.call(this);
     initControls.call(this);
