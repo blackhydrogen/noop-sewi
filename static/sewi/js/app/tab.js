@@ -425,7 +425,6 @@ var sewi = sewi || {};
         dropArea.droppable({
             drop: function(event, ui){
                 event.preventDefault();
-                console.log(ui.draggable);
                 if (selfRef.state == sewi.constants.TAB_PANEL_POSITIONS.FULL){
                     if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT){
                         selfRef.addPanel(sewi.constants.TAB_PANEL_POSITIONS.LEFT, sewi.constants.TAB_PANEL_POSITIONS.RIGHT, ui.draggable);
@@ -561,7 +560,6 @@ var sewi = sewi || {};
 
     sewi.TabPanel.prototype.resize = function(){
         var selfRef = this;
-        console.log("tab panel resize called");
         selfRef.resourceViewer.resize();
     }
 
@@ -571,49 +569,49 @@ var sewi = sewi || {};
 
     // Tab class
     sewi.Tab = function(tabContainer, id, name, hasDropArea){
-        var selfRef = this;
-        selfRef.tabContainer = tabContainer;
-        selfRef.panelList={};
-        selfRef.tabButton = $('<li class="tab-button"><a href="#'+id+'" role="tab" data-toggle="tab">'+name+'</a></li>');
-        selfRef.tabPanel = $('<div class="tab-pane" id="'+id+'"><div class="panel-content">'+name+'</div></div>');
+        this.tabContainer = tabContainer;
+        this.panelList={};
+        this.tabButton = $('<li class="tab-button"><a href="#'+id+'" role="tab" data-toggle="tab">'+name+'</a></li>');
+        this.tabPanel = $('<div class="tab-pane" id="'+id+'"><div class="panel-content">'+name+'</div></div>');
         
         // constant variables
-        selfRef.DROP_AREA_HOVER_STR = 'panel-drop-area-hover';
-        selfRef.PANEL_STR = 'panel';
-        selfRef.DROP_AREA_STR = '<div class="panel-drop-area panel-drop-area-full"></div>';
+        this.DROP_AREA_HOVER_STR = 'panel-drop-area-hover';
+        this.PANEL_STR = 'panel';
+        this.DROP_AREA_STR = '<div class="panel-drop-area panel-drop-area-full"></div>';
 
 
-        var removeButton={tabRef : selfRef,
-                    containerRef : tabContainer,
-                        tabButton : selfRef.tabButton,
-                        tabPanel : selfRef.tabPanel,
+        var removeButton={containerRef : tabContainer,
+                        tabButton : this.tabButton,
+                        tabPanel : this.tabPanel,
                             DOM : $('<span class="glyphicon glyphicon-remove"></span>')};
         
-        selfRef.tabButtonEvent = function(){
-            selfRef.tabContainer.setCurrentActiveTab(selfRef);
-        }   
-
         if(hasDropArea){
-            selfRef.addDropArea();
+            this.addDropArea();
         }
 
-        removeButton.DOM.on('click', removeButton, selfRef.removeEvent);
-        selfRef.tabButton.children('a').append(removeButton.DOM);
-        selfRef.tabButton.on('click', selfRef.tabButtonEvent);
+        removeButton.DOM.on('click', removeButton, removeEvent.bind(this));
+        this.tabButton.children('a').append(removeButton.DOM);
+        this.tabButton.on('click', tabButtonEvent.bind(this));
     }
 
-    sewi.Tab.prototype.removeEvent = function(event){
+    function tabButtonEvent(){
+        this.tabContainer.setCurrentActiveTab(this);
+    }
+
+    function removeEvent(event){
+        event.preventDefault();
         var removeButton = event.data;
-        var selfRef = removeButton.tabRef;
         var containerRef = removeButton.containerRef;
-        var tabIndex = containerRef.tabs.indexOf(selfRef);
-        
+        var tabIndex = containerRef.tabs.indexOf(this);
+
+        cleanUp.call(this);
+
         removeButton.tabPanel.remove();
         removeButton.tabButton.remove();
 
         containerRef.tabs.splice(tabIndex, 1);
 
-        if (containerRef.currentActiveTab == selfRef){
+        if (containerRef.currentActiveTab == this){
             if (tabIndex == containerRef.tabs.length){
                 containerRef.setCurrentActiveTab(containerRef.tabs[tabIndex-1]);
             } else {
@@ -627,7 +625,7 @@ var sewi = sewi || {};
         }
 
         if (containerRef.tabs.length == 0){
-            selfRef.tabContainer.container.trigger("NoTabs");
+            this.tabContainer.container.trigger("NoTabs");
         }
     }
 
@@ -637,16 +635,16 @@ var sewi = sewi || {};
         var type = DOMObject.data('resType');
         var obj = null;
         switch(type){
-            case 'image':
+            case sewi.constants.RESOURCE_TYPE.IMAGE:
                 obj = new sewi.ImageResourceViewer({id:id});
                 break;
-            case 'video':
+            case sewi.constants.RESOURCE_TYPE.VIDEO:
                 obj = new sewi.VideoResourceViewer({id:id});
                 break;
-            case 'audio':
+            case sewi.constants.RESOURCE_TYPE.AUDIO:
                 obj = new sewi.AudioResourceViewer({id:id});
                 break;
-            case 'chart':
+            case sewi.constants.RESOURCE_TYPE.CHART:
                 obj = new sewi.ChartResourceViewer({id:id});
                 break;
         }
@@ -682,109 +680,114 @@ var sewi = sewi || {};
     }
 
     sewi.Tab.prototype.addDropArea = function(){
-        var selfRef = this;
-        var dropAreaDOM = $(selfRef.DROP_AREA_STR);
-        selfRef.tabPanel.append(dropAreaDOM);
-        selfRef.setDroppable(dropAreaDOM);
+        var dropAreaDOM = $(this.DROP_AREA_STR);
+        this.tabPanel.append(dropAreaDOM);
+        this.setDroppable(dropAreaDOM);
     }
 
     sewi.Tab.prototype.removeDropArea = function(dropArea){
         var selfRef = this;
         dropArea.remove();
-        selfRef.tabPanel.children('.panel-indicator').remove();
+        selfRef.tabPanel.children(sewi.constants.TAB_CSS_CLASS_STR_PANEL_INDICATOR).remove();
     }
 
     sewi.Tab.prototype.setDroppable = function(dropArea){
         var selfRef = this;
         dropArea.droppable({
-            drop: function(event, ui){
-                event.preventDefault();
-                selfRef.removeDropArea(dropArea);
-                selfRef.append(ui.draggable, sewi.constants.TAB_PANEL_POSITIONS.FULL);
-            },
-            over: function(event, ui){
-                event.preventDefault();
-                console.log('over');
-                selfRef.tabPanel.append($('<div class="panel-indicator"></div>'));
-            
-            },
-            out: function(event, ui){
-                event.preventDefault();
-                console.log('out');
-                selfRef.tabPanel.children('.panel-indicator').remove();
-            },
+            drop: dropAreaDropEvent.bind(this, dropArea),
+            over: dropAreaOverEvent.bind(this),
+            out: dropAreaOutEvent.bind(this),
             activeClass: 'panel-drop-area-visible',
             hoverClass: selfRef.DROP_AREA_HOVER_STR
         });
     }
 
-    sewi.Tab.prototype.resize = function(){
-        var selfRef = this;
-        var panelList = selfRef.panelList;
+    function dropAreaDropEvent(dropArea, event, ui){
+        event.preventDefault();
+        this.removeDropArea(dropArea);
+        this.append(ui.draggable, sewi.constants.TAB_PANEL_POSITIONS.FULL); 
+    }
+
+    function dropAreaOverEvent(event, ui){
+        event.preventDefault();
+        this.tabPanel.append($('<div class="panel-indicator"></div>')); 
+    }
+
+    function dropAreaOutEvent(event, ui){
+        event.preventDefault();
+        this.tabPanel.children(sewi.constants.TAB_CSS_CLASS_STR_PANEL_INDICATOR).remove();
+    }
+
+    function cleanUp(){
+        var panelList = this.panelList;
         for(var panel in panelList){
             if(panelList.hasOwnProperty(panel)){
-                //console.log(panelList[panel]);
+                panelList[panel].resourceViewer.cleanUp();
+            }
+        }
+    }
+
+    sewi.Tab.prototype.resize = function(){
+        var panelList = this.panelList;
+        for(var panel in panelList){
+            if(panelList.hasOwnProperty(panel)){
                 panelList[panel].resize();
             }
         } 
     }
+})();
 
-    // tab container class
+// tab container class
+(function(){
     sewi.TabContainer = function(){
-        var selfRef = this;
-        selfRef.counter= 1;
-        
-        selfRef.currentActiveTab;
-        selfRef.tabButtons=[];  
-        
-        selfRef.tabs = [];
-
-        selfRef.container = $('<div class="tab-container"></div>');
-        selfRef.tabButtonGroup = $('<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>');
-        selfRef.tabContent = $('<div class="tab-content"></div>');
+        this.counter= 1;
+        this.currentActiveTab;
+        this.tabButtons=[];  
+        this.tabs = [];
+        this.container = $('<div class="tab-container"></div>');
+        this.tabButtonGroup = $('<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>');
+        this.tabContent = $('<div class="tab-content"></div>');
 
         var addTabButton = $('<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>');
-        addTabButton.on('click', function(){
-            selfRef.addNewTab("Tab"+selfRef.counter,"",true, true);
-            selfRef.counter++;
-        });
+        addTabButton.on('click', addTabButtonClickEvent.bind(this));
 
-        selfRef.tabButtons.push(addTabButton);
-        selfRef.tabButtonGroup.append(addTabButton);
+        this.tabButtons.push(addTabButton);
+        this.tabButtonGroup.append(addTabButton);
                 
-        selfRef.container.append(selfRef.tabButtonGroup);
-        selfRef.container.append(selfRef.tabContent);
+        this.container.append(this.tabButtonGroup);
+        this.container.append(this.tabContent);
 
     }
 
-    sewi.TabContainer.prototype.addNewTab = function(tabName, tabText, active, hasDropArea){
-        var selfRef = this;
-        if(selfRef.tabs.length < sewi.constants.TAB_MAX_NUM_TABS){
-            var newTab = new sewi.Tab(selfRef, tabName, tabText, hasDropArea);
-            selfRef.tabs.push(newTab);
+    function addTabButtonClickEvent(){
+        addNewTab.call(this,"Tab"+this.counter,"",true, true);
+        this.counter++; 
+    }
 
-            if (active) selfRef.setCurrentActiveTab(newTab);    
+    function addNewTab(tabName, tabText, active, hasDropArea){
+        if(this.tabs.length < sewi.constants.TAB_MAX_NUM_TABS){
+            var newTab = new sewi.Tab(this, tabName, tabText, hasDropArea);
+            this.tabs.push(newTab);
+
+            if (active) this.setCurrentActiveTab.call(this, newTab);    
     
-            var lastIndex = selfRef.tabButtons.length-1;    
-            newTab.tabButton.insertBefore(selfRef.tabButtons[lastIndex]);
-            selfRef.tabContent.append(newTab.tabPanel);
+            var lastIndex = this.tabButtons.length-1;    
+            newTab.tabButton.insertBefore(this.tabButtons[lastIndex]);
+            this.tabContent.append(newTab.tabPanel);
 
-            if(selfRef.tabs.length == sewi.constants.TAB_MAX_NUM_TABS){
-                selfRef.tabButtons[lastIndex].hide();
+            if(this.tabs.length == sewi.constants.TAB_MAX_NUM_TABS){
+                this.tabButtons[lastIndex].hide();
             }
-        } else {
-            // TO DO: trigger event to notify configurator to display error message
         }
     }
 
     sewi.TabContainer.prototype.setCurrentActiveTab = function(tab){
-        var selfRef = this; 
-        if (selfRef.currentActiveTab){
-            selfRef.currentActiveTab.deactivate();
+        if (this.currentActiveTab){
+            this.currentActiveTab.deactivate();
         }
-        selfRef.currentActiveTab = tab;
+        this.currentActiveTab = tab;
         if (tab){
-            selfRef.currentActiveTab.activate();
+            this.currentActiveTab.activate();
         }
     }
     
@@ -793,16 +796,14 @@ var sewi = sewi || {};
     }
 
     sewi.TabContainer.prototype.addObjectToNewTab = function(DOMObject){
-        var selfRef = this;
-        selfRef.addNewTab("Tab"+selfRef.counter,"", true, false);
-        selfRef.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
+        addNewTab.call(this,"Tab"+this.counter,"", true, false);
+        this.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
     }
 
     sewi.TabContainer.prototype.resize = function(){
-        var selfRef = this;
-        var tabsArrLength = selfRef.tabs.length; 
+        var tabsArrLength = this.tabs.length; 
         for(var i = 0; i < tabsArrLength; i++){ 
-            selfRef.tabs[i].resize();
+            this.tabs[i].resize();
         }
     }
 })();
