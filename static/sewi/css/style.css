@@ -53,7 +53,8 @@
 /* End of custom font definition */
 
 html, body {
-    min-height: 100%;
+	height: 100%;
+	overflow: hidden;
 }
 
 body {
@@ -67,9 +68,15 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3d3d3', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 }
 
+.container{
+	min-width: 980px;
+	height: 100%;
+}
+
 #sewiContainer {
-  min-height: 600px;
-  height: 0;
+  min-height: 550px;
+  margin-bottom: 50px;
+  height: calc(100% - 100px);
 }
 
 #beiView, #mainView, #resView {
@@ -111,7 +118,7 @@ body {
     top: 0px;
 }
 
-.col-sm-0 {
+.col-xs-0, .col-sm-0, .col-md-0, .col-lg-0 {
   width: 0px;
   float: left;
   overflow: hidden;
@@ -162,6 +169,14 @@ div.minimize-button {
     color: #fff;
     cursor: pointer;
     border-radius: 0 0 0 5px;
+}
+
+div.minimize-button:before {
+	content: '<<';
+}
+
+.minimized div.minimize-button:before {
+	content: '>>';
 }
 
 label.btn input {

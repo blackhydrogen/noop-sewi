@@ -406,6 +406,15 @@ var sewi = sewi || {};
             this.scrollBar.resize();
         }
     };
+
+    sewi.AudioResourceViewer.prototype.cleanUp = function(){
+        if(this.isPlaying){
+            this.source.stop(0);
+            this.source.disconnect(this.gainNode);
+            this.source.disconnect(this.scriptProcessor);
+        }
+    };
+
 })();
 
 
