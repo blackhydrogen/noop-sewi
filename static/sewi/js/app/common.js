@@ -1,13 +1,19 @@
+/**
+ * Global class that contains all components and shared properties of SEWI.
+ *
+ * @namespace sewi
+ */
 var sewi = sewi || {};
 
 (function() {
 
     /**
      * Helper function to ensure that a class inherits another class.
-     * Note that classes must still use {NameOfSuperClass}.call(this) in their
-     * constructor to initialize themselves.
-     * @param  {function} subClass   Function definition of the sub class.
-     * @param  {function} superClass Function definition of the super class.
+     * Note that classes must still use <code>NameOfSuperClass.call(this)</code>
+     * in their constructor to initialize themselves.
+     *
+     * @param  {Function} subClass   Function definition of the sub class.
+     * @param  {Function} superClass Function definition of the super class.
      */
     sewi.inherits = function(subClass, superClass) {
         if (_.isFunction(subClass) && _.isFunction(superClass)) {
@@ -19,6 +25,7 @@ var sewi = sewi || {};
 
     /**
      * Generates the DOM elements necessary to produce a vertical slider.
+     *
      * @param {jQuery} sliderDOMElement  The slider DOM element
      * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
      *                                   hover trigger.
@@ -47,7 +54,11 @@ var sewi = sewi || {};
         $(event.target).parent().removeClass('active');
     }
 
-    /** Declare all constants in this object. */
+    /**
+     * Contains all constants used by the components that make up SEWI.
+     * @constant
+     * @type Object
+     */
     sewi.constants = {
         // Encounter URL Constants
         ENCOUNTER_BASE_URL: '/sewi/encounter/',
