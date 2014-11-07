@@ -2,7 +2,25 @@ var sewi = sewi || {};
 
 (function() {
     /**
-     * Defines a control panel suitable for controlling
+     * Defines a control panel suitable for controlling and manipulating media.
+     *
+     * @class sewi.MediaControls
+     * @constructor
+     * @extends sewi.ConfiguratorElement
+     *
+     * @param {Object} [options] Configuration options for MediaControls
+     * @param {boolean} [options.isSeekBarHidden=false] If true, the seeking bar
+     * will be hidden, and the user will not be able to seek the desired media.
+     * @param {boolean} [options.isDurationHidden=false] If true, the duration
+     * and current position of the media will be hidden.
+     * @param {Object} [options.extraButtons] Additional buttons that can be
+     * included within this instance of MediaControls.
+     * @param {jQuery[]} [options.extraButtons.left] jQuery selectors that
+     * describe buttons to be added to the left side of the MediaControls,
+     * to the right of the play button.
+     * @param {jQuery[]} [options.extraButtons.right] jQuery selectors that
+     * describe buttons to be added to the right side of the MediaControls,
+     * to the left of the mute button.
      */
     sewi.MediaControls = function(options) {
         // Safeguard if function is called without `new` keyword
@@ -38,6 +56,44 @@ var sewi = sewi || {};
     }
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
+
+    /**
+     * Fired when the media is paused.
+     * @event Paused
+     * @memberof sewi.MediaControls
+     */
+
+    /**
+     * Fired when the media is playing.
+     * @event Playing
+     * @memberof sewi.MediaControls
+     */
+
+    /**
+     * Fired when the media is muted.
+     * @event Muted
+     * @memberof sewi.MediaControls
+     */
+
+    /**
+     * Fired when the media is unmuted.
+     * @event Unmuted
+     * @memberof sewi.MediaControls
+     */
+
+    /**
+     * Fired when the volume of the media is changed.
+     * @event VolumeChanged
+     * @memberof sewi.MediaControls
+     * @param {number} volume The current volume of the media.
+     */
+
+    /**
+     * Fired when the current playback position of the media is changed.
+     * @event PositionChanged
+     * @memberof sewi.MediaControls
+     * @param {number} volume The current playback position of the media.
+     */
 
     // Helper function that formats the text for the duration
     var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
@@ -88,7 +144,7 @@ var sewi = sewi || {};
     }
 
     function initExtraButtons(leftButtonPanel, rightButtonPanel) {
-        // Add any extra buttons to the left and right, if any.
+        // Add extra buttons to the left and right, if any.
         if (this.extraButtons) {
             if (this.extraButtons.left) {
                 leftButtonPanel.append(this.extraButtons.left);
@@ -189,6 +245,10 @@ var sewi = sewi || {};
     }
 
     // MediaControls public methods
+
+    /**
+     * Toggles the play state of the MediaControls, and its target media.
+     */
     sewi.MediaControls.prototype.togglePlay = function() {
         var isPlaying = this.isPlaying;
 
@@ -203,6 +263,11 @@ var sewi = sewi || {};
         return this;
     }
 
+    /**
+     * Toggles the mute state of the MediaControls, and its target media.
+     *
+     * @return {MediaControls} The current instance of the MediaControls.
+     */
     sewi.MediaControls.prototype.toggleMute = function() {
         if (this.isMuted) {
             this.mainDOMElement.trigger('Unmuted');
@@ -215,6 +280,13 @@ var sewi = sewi || {};
         return this;
     }
 
+    /**
+     * Gets or sets the volume of the MediaControls.
+     *
+     * @param  {number} [volume] The new volume.
+     * @return {MediaControls|Number} The current volume, or the current
+     * instance of MediaControls if the volume is set.
+     */
     sewi.MediaControls.prototype.volume = function(volume) {
         if (_.isUndefined(volume)) {
             return this.volumeSlider[0].value;
@@ -231,6 +303,13 @@ var sewi = sewi || {};
         return this;
     }
 
+    /**
+     * Gets or sets the playback position of the MediaControls.
+     *
+     * @param  {number} [volume] The new playback position.
+     * @return {MediaControls|Number} The current playback position, or the
+     * current instance of MediaControls if the playback position is set.
+     */
     sewi.MediaControls.prototype.playbackPosition = function(position) {
         if (_.isUndefined(position)) {
             return this.progressSlider[0].value;
@@ -245,8 +324,28 @@ var sewi = sewi || {};
 
     /**
      * Updates the displayed values of the MediaControls instance.
-     * @param  {object} options A dictionary containing all values that will be changed.
-     * @return {MediaControls} This instance of MediaControls.
+     *
+     * @param  {Object} [options] A dictionary containing all values that will
+     * be updated.
+     * @param {boolean} [options.playing] Whether the media is currently
+     * playing.
+     * @param {number} [options.duration] The new duration of the media.
+     * @param {number} [options.currentTime] The new playback position of the
+     * media in seconds. Updates the duration display.
+     * @param {number} [options.position] The new playback position of the media
+     * as a percentage. Updates the seeking bar. Ranges from 0.0 to 100.0.
+     * @param {number} [options.volume] The new volume of the media. Ranges from
+     * 0.0 to 1.0. If specified, <code>options.muted</code> will be set to
+     * <code>false</code>.
+     * @param {number} [options.muted] Whether the media is current muted. Will
+     * be overridden if <code>options.volume</code> is set.
+     * @param {Array} [options.buffer] The locations of the streaming buffers
+     * of the media.
+     * @param {number} [options.buffer.start] The starting location of a
+     * streaming buffer, in seconds.
+     * @param {number} [options.buffer.end] The end location of a streaming
+     * buffer, in seconds.
+     * @return {MediaControls} The current instance of MediaControls.
      */
     sewi.MediaControls.prototype.update = function(options) {
         options = options || {};
@@ -325,10 +424,11 @@ var sewi = sewi || {};
         }
     }
 
+    /**
+     * Allows tooltips within the MediaControls to be displayed when the buttons
+     * are under the mouse cursor.
+     */
     sewi.MediaControls.prototype.showTooltips = function() {
-        // Defer initialization of tooltips until required.
-        // This saves on initialization time.
-
         var elements = getOwnElements.call(this);
 
         if (!this.initializedTooltips) {
@@ -339,6 +439,10 @@ var sewi = sewi || {};
         }
     }
 
+    /**
+     * Hides tooltips previously made visible via
+     * {@link sewi.MediaControls#showTooltips}.
+     */
     sewi.MediaControls.prototype.hideTooltips = function() {
         var elements = getOwnElements.call(this);
 
@@ -351,6 +455,14 @@ var sewi = sewi || {};
 })();
 
 (function(){
+    /**
+     * Displays a streaming video resource for an encounter.
+     *
+     * @class sewi.VideoResourceViewer
+     * @constructor
+     * @param {Object} options Configuration options for the VideoResourceViewer
+     * @param {string} options.id The UUID of the video resource to be displayed.
+     */
     sewi.VideoResourceViewer = function(options) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.VideoResourceViewer))
@@ -378,6 +490,13 @@ var sewi = sewi || {};
     }
 
     sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
+
+    /**
+     * Fired when the video resource data has been loaded from the server.
+     *
+     * @event Loaded
+     * @memberof sewi.VideoResourceViewer
+     */
 
     // VideoResourceViewer private methods
     function validateArguments() {        if (!_.isString(this.id)) {
