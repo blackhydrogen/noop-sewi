@@ -71,7 +71,8 @@ var sewi = sewi || {};
         for(var i = 0; i < len; i++){
             this.indicators[i].remove(); 
         }
-        //this.resourceViewer.cleanUp();
+        
+        this.resourceViewer.cleanUp();
         delete this.tab.panelList[this.state];
         this.panel.remove();     
     }
@@ -82,7 +83,6 @@ var sewi = sewi || {};
         selfRef.tab.panelList[oldPosition].state = newPosition;
         selfRef.tab.panelList[newPosition] = selfRef.tab.panelList[oldPosition];
         
-        //selfRef.tab.panelList[oldPosition].resourceViewer.cleanUp();
         delete selfRef.tab.panelList[oldPosition];
     }
 
