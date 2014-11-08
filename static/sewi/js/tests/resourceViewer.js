@@ -8,6 +8,7 @@
         TEST_RESOURCE_VIEWER_CLASS: 'test-resource-viewer',
         TEST_PROGRESS_BAR_MESSAGE: 'Loading test...',
         TEST_PROGRESS_BAR_CHANGED_MESSAGE: 'Loading more...',
+        TEST_ERROR_SCREEN_MESSAGE: 'Test has an error',
 
         RESOURCE_VIEWER_FULLSCREEN_EVENT: 'FullscreenToggled',
         RESOURCE_VIEWER_CLOSING_EVENT: 'Closing',
@@ -19,7 +20,8 @@
         PROGRESS_BAR_CLASS: 'progress-bar',
         PROGRESS_BAR_TEXT_CLASS: 'progress-bar-text',
         PROGRESS_BAR_DEFAULT_MESSAGE: 'Loading Resource',
-
+        ERROR_SCREEN_CLASS: 'error-screen',
+        ERROR_SCREEN_TEXT_CLASS: 'error-text',
     }
 
     function TestResourceViewer() {
@@ -171,6 +173,26 @@
             assert.strictEqual(testResViewContainer.has('.' + constants.PROGRESS_BAR_CLASS).length, 0, 'Progress bar can be hidden after showing.');
             QUnit.start();
         }, 500);
+    });
+
+    QUnit.test('Resource Viewer Error Screen', function(assert) {
+        var testResViewer = this.testResViewer;
+        var testResViewContainer = testResViewer.getDOM();
+        this.fixture.append(testResViewContainer);
+
+        assert.strictEqual(testResViewContainer.has('.' + constants.ERROR_SCREEN_CLASS).length, 0, 'Error screen is initially not in DOM.');
+
+        testResViewer.showError(constants.TEST_ERROR_SCREEN_MESSAGE);
+
+        var errorScreen = testResViewContainer.find('.' + constants.ERROR_SCREEN_CLASS);
+        var errorScreenText = errorScreen.find('.' + constants.ERROR_SCREEN_TEXT_CLASS);
+
+        assert.strictEqual(errorScreen.length, 1, 'Error screen added to the DOM when error is displayed.');
+        assert.strictEqual(errorScreenText.text(), constants.TEST_ERROR_SCREEN_MESSAGE, 'Error can be shown with a pre-defined message.');
+
+        testResViewer.hideError();
+
+        assert.strictEqual(testResViewContainer.has('.' + constants.ERROR_SCREEN_CLASS).length, 0, 'Error screen can be removed.');
     });
 
 })();
