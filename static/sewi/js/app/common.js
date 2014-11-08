@@ -166,7 +166,7 @@ var sewi = sewi || {};
         RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
         RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
         RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
-        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail"></div>',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail" src="/static/sewi/images/loading.gif"></div>',
         RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-title">',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
         RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
