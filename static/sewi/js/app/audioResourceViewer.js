@@ -1,5 +1,6 @@
 // Created by: Le Beier
 var sewi = sewi || {};
+
 (function(){
     // Audio Resource Viewer Class
     sewi.AudioResourceViewer = function(options){
@@ -44,10 +45,14 @@ var sewi = sewi || {};
         this.url = "";
         this.loadSuccess = false;
         
+        this.scriptProcessorBufferSize = 512;
+        this.scriptProcessorInputChannels = 1;
+        this.scriptProcessorOutputChannels = 1;
+
         //Control Buttons
-        this.zoomToFitBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>');
-        this.zoomToSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-part" id="zoomToSelection"></button>');
-        this.clearSelectionBtn = $('<button type="button" class="btn btn-default sewi-icon-graph-select-none" id="clearSelection"></button>');
+        this.zoomToFitBtn = $(sewi.constants.AUDIO_ZOOM_TO_FIT_BUTTON);
+        this.zoomToSelectionBtn = $(sewi.constants.AUDIO_ZOOM_TO_SELECTION_BUTTON);
+        this.clearSelectionBtn = $(sewi.constants.AUDIO_CLEAR_SELECTION_BUTTON);
         
         //Web audio API objects
         this.audioContext = null;
@@ -65,9 +70,13 @@ var sewi = sewi || {};
             dataType: 'json',
             type: 'GET',
             url: audioResourceEndPoint,
-        }).done(retrieveAudio.bind(this));
+        }).done(retrieveAudio.bind(this)); 
     }
 
+    /**
+     * Initialized the approprate audio components after a valid URL has been retrieved.
+     * @param  {json} data Json object that contains the data from the ajax call.
+     */
     function retrieveAudio(data){
         this.loadedSuccess = true;
         this.url = data.url;
@@ -75,10 +84,18 @@ var sewi = sewi || {};
         initControls.call(this);    
     }
 
+    /**
+     * This function checks the availability of the Web Audio API.
+     * If the API exist, it will create the following objects:
+     * 1. audio context
+     * 2. script processor
+     * 3. gain node
+     * 4. XMLHttpRequest
+     * In the event that the Web Audio API is unavailable, an error message will be shown.
+     */
     function init(){
         this.mainDOMElement.addClass('audio-resource-viewer');
         
-        //this.url = '/media/core/observation/Early_Riser.mp3';
         var contextClass = (window.AudioContext || 
                             window.webkitAudioContext || 
                             window.mozAudioContext || 
@@ -87,11 +104,13 @@ var sewi = sewi || {};
         //contextClass = null;  
         if(contextClass){
             this.audioContext =new contextClass();
-            this.showProgressBar('fetching audio clip');
+            this.showProgressBar(sewi.constants.AUDIO_MSG_FETCHING_AUDIO_CLIP);
             this.contentDOM = $('<div class="audio-content"></div>');
             this.mainDOMElement.append(this.contentDOM);
             
-            this.scriptProcessor = this.audioContext.createScriptProcessor(512, 1, 1); 
+            this.scriptProcessor = this.audioContext.createScriptProcessor(this.scriptProcessorBufferSize,
+                                                                            this.scriptProcessorInputChannels,
+                                                                            this.scriptProcessorOutputChannels);
             this.scriptProcessor.connect(this.audioContext.destination);
             this.scriptProcessor.onaudioprocess = updateMediaControl.bind(this);
 
@@ -111,7 +130,7 @@ var sewi = sewi || {};
             this.request.send();
 
         } else {
-            this.showError('Error: Web Audio API is not supported by the browser.');
+            this.showError(sewi.constants.AUDIO_ERROR_MSG_WEB_AUDIO_API_NOT_SUPPORTED);
         }
 
     }
@@ -119,7 +138,6 @@ var sewi = sewi || {};
     function onReadyStateChange(event){
         event.preventDefault();        
         if(this.request.readyState > 2 && this.request.status == 200){
-            //console.log("response:" + this.request.response);
         }
     }
 
@@ -134,18 +152,25 @@ var sewi = sewi || {};
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.updateProgressBar(100, 'generating amplitude wave graph');
+        this.updateProgressBar(100, sewi.constants.AUDIO_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
     function onAbort(event){
-        event.preventDefault(); 
+        event.preventDefault();
+        this.showError(sewi.constants.AUDIO_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED);
     }
 
     function onError(event){ 
-        event.preventDefault(); 
+        event.preventDefault();
+        this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
 
+    /**
+     * This function extracts the data buffer from the audio buffer object 
+     * and create the graph objects which is used to render the amplitude wave graph.
+     * param  {AudioBuffer} buffer The audio buffer object from the audio context which contains information about the audio file. 
+     */
     function onAudioDecodeFinish(buffer){
         this.audioBuffer = buffer;
         var sampleRate = buffer.sampleRate; 
@@ -178,6 +203,7 @@ var sewi = sewi || {};
 
     function onAudioDecodeFail(event){
         event.preventDefault();
+        this.showError('Error: failed to decode the audio file.');
     }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
@@ -220,11 +246,11 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({title : 'Zoom To Fit: zoom out to view the entire wave.',
+       this.zoomToFitBtn.tooltip({title : AUDIO_ZOOM_TO_FIT_TOOLTIP,
                                     container: 'body'});
-       this.zoomToSelectionBtn.tooltip({title : 'Zoom To Selection: zoom to the selected region.',
+       this.zoomToSelectionBtn.tooltip({title : AUDIO_ZOOM_TO_SELECTION_TOOLTIP,
                                         container: 'body'});
-       this.clearSelectionBtn.tooltip({title : 'Clear the Selection: clear the highlighted region and reset playback duration to 100%.',
+       this.clearSelectionBtn.tooltip({title : AUDIO_CLEAR_SELECTION_TOOLTIP,
                                         container: 'body'});
     }               
 
@@ -301,7 +327,8 @@ var sewi = sewi || {};
             if(!this.offsetValueChanged){
                 var duration = this.source.buffer.duration;
                 var currentTime = ((Date.now() - this.beginTime) / 1000 + this.offset);
-                var percent = (currentTime / duration)*100;
+                var percent = (currentTime / duration) * 100;
+                var length = this.duration - this.audioAmplitudeGraphs[0].viewResolution;
                 this.controls.update({position : percent, 
                         currentTime : currentTime });
                 this.drawTimer += (currentTime - this.lastUpdated);
@@ -309,7 +336,7 @@ var sewi = sewi || {};
                 //Update the graph at 10 fps
                 if(this.drawTimer > this.updateInterval){
                     updateGraphPlaybackPosition.call(this, currentTime);
-                    this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
+                    this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / length);
                     this.drawTimer = 0;
                 }
                 this.lastUpdated = currentTime;
@@ -322,8 +349,9 @@ var sewi = sewi || {};
                     this.lastUpdated = this.offset;
                     this.drawTimer = 0;
                     updateGraphPlaybackPosition.call(this, this.offset);
-                    this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / this.duration);
-                }  
+                    this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / length);
+                } 
+
             } else {
                 this.pauseAudio();
                 this.offset = this.audioAmplitudeGraphs[0].playbackPos;
@@ -347,6 +375,13 @@ var sewi = sewi || {};
         if(this.isPlaying){
             this.offsetValueChanged = true;
         }
+
+        //If the selected position fall outside of the selected region, reset the playback duration to 100%
+        if(position > this.endTime || position < this.startTime){
+            this.startTime = 0;
+            this.endTime = this.duration;
+        }
+
         this.offset = position;
         this.lastUpdated = this.offset;
         this.drawTimer = 0;
@@ -468,17 +503,20 @@ var sewi = sewi || {};
 
     function setupColorVariables(){
         // colors when the mouse is outside of the editor box
-        this.colorInactiveTop = "#AAA";
-        this.colorInactiveBottom = "#AAA";
+        this.colorInactiveTop = sewi.constants.AUDIO_COLOR_INACTIVE_TOP;
+        this.colorInactiveBottom = sewi.constants.AUDIO_COLOR_INACTIVE_BOTTOM;
+        
         // colors when the mouse is inside of the editor box
-        this.colorActiveTop = "#BBB";
-        this.colorActiveBottom = "#BBB";
+        this.colorActiveTop = sewi.constants.AUDIO_COLOR_ACTIVE_TOP;
+        this.colorActiveBottom = sewi.constants.AUDIO_COLOR_ACTIVE_BOTTOM;
+
         // color when the mouse is pressed during inside of the editor box
-        this.colorMouseDownTop = "#AAA";
-        this.colorMouseDownBottom = "#AAA";
+        this.colorMouseDownTop = sewi.constants.AUDIO_COLOR_MOUSE_DOWN_TOP;
+        this.colorMouseDownBottom = sewi.constants.AUDIO_COLOR_MOUSE_DOWN_BOTTOM;
+        
         // color of the selection frame
-        this.colorSelectionStroke = "rgba(0,0,255,0.5)";
-        this.colorSelectionFill = "rgba(0,0,255,0.2)";
+        this.colorSelectionStroke = sewi.constants.AUDIO_COLOR_SELECTION_STROKE;
+        this.colorSelectionFill = sewi.constants.AUDIO_COLOR_SELECTION_FILL;
     }
 
     function setupMiscVariables(){
@@ -498,6 +536,8 @@ var sewi = sewi || {};
         this.viewPos = 0; // at 0 seconds
         // playback
         this.playbackPos = 0;
+
+        this.regionMoved = false;
     }
     
     function createCanvas(){
@@ -575,12 +615,14 @@ var sewi = sewi || {};
             // if the mouse is inside of a selection, then move the whole selection
             if (this.mouseInsideOfSelection){
                 var absDelta = getPixelToAbsolute.call(this, this.mouseX) - getPixelToAbsolute.call(this, this.previousMouseX);
-
                 this.canvasDOM.css({'cursor' : '-webkit-grabbing'});
                 // move the selection with the delta
                 this.selectionStart += absDelta;
                 this.selectionEnd += absDelta;
-                updateResourceViewer.call(this);
+                if(absDelta != 0){
+                    this.regionMoved = true;
+                    updateResourceViewer.call(this);
+                }
             }
             // if the left bar is selected, then move it only
             else if (this.mouseSelectionOfStart){
@@ -611,6 +653,11 @@ var sewi = sewi || {};
         var resourceViewer = this.resourceViewer;
         var start = this.selectionStart > this.selectionEnd ? this.selectionEnd : this.selectionStart;
         var end = this.selectionStart > this.selectionEnd ? this.selectionStart : this.selectionEnd;
+        
+        if(this.regionMoved){
+            resourceViewer.pauseAudio();
+        }
+
         if(start !== end){ 
             resourceViewer.startTime = start / this.audioSequence.sampleRate;
             resourceViewer.endTime = end / this.audioSequence.sampleRate; 
@@ -620,6 +667,7 @@ var sewi = sewi || {};
             resourceViewer.controls.update({currentTime : resourceViewer.offset, 
                                             position : resourceViewer.offset / this.audioSequence.duration});
         }
+
     }
 
     function canvasMouseUpEvent(event){
@@ -631,13 +679,20 @@ var sewi = sewi || {};
             this.selectionEnd = temp;
         }
 
+        if(this.mouseInsideOfSelection && !this.regionMoved){ 
+            this.resourceViewer.offsetChanged(getPixelToAbsolute.call(this, this.mouseX) / this.audioSequence.sampleRate);
+        }
+        else {    
+            this.resourceViewer.offsetChanged(this.selectionStart / this.audioSequence.sampleRate);
+        }
+
         // reset the selection mouse states for the selection
         this.mouseInsideOfSelection = false;
         this.mouseSelectionOfStart = false;
         this.mouseSelectionOfEnd = false;
         this.mouseDown = false;
-        
-        this.resourceViewer.offsetChanged(this.selectionStart / this.audioSequence.sampleRate);
+        this.regionMoved = false;
+       
         updateLinkedGraph.call(this);
     }
 
@@ -656,6 +711,7 @@ var sewi = sewi || {};
         this.mouseSelectionOfEnd = false;
         this.mouseDown = false;
         this.mouseInside = false;
+
         this.draw.call(this);
         updateLinkedGraph.call(this);    
     }
@@ -707,12 +763,12 @@ var sewi = sewi || {};
         var verticalMultiplier = 1.0;
         var canvasWidth = this.canvasDOM.width();
         //canvasContext.setLineWidth(1);
-        canvasContext.strokeStyle = "rgba(102,102,255,0.9)";                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_WAVE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
 
         // choose the drawing style of the waveform
-        if (this.plotTechnique == 1){
+        if (this.plotTechnique == sewi.constants.AUDIO_PLOT_TECHNIQUE.COMPRESSED){
             // data per pixel
             for (i = 0; i < canvasWidth; ++i){
                 var peakAtFrame = this.visualizationData[i];
@@ -720,7 +776,7 @@ var sewi = sewi || {};
                 canvasContext.lineTo(i + 0.5, (center + peakAtFrame.max * verticalMultiplier * -center) + 1.0);
             }
 
-        } else if (this.plotTechnique == 2) {
+        } else if (this.plotTechnique == sewi.constants.AUDIO_PLOT_TECHNIQUE.DETAILED) {
             var s = 1;
             var len = this.visualizationData.length;
             for(i = 0; i < len; ++i){
@@ -747,7 +803,7 @@ var sewi = sewi || {};
 
         // Draw the horizontal line at the center
         //canvasContext.setLineWidth(1.0);
-        canvasContext.strokeStyle = "rgba(0, 0, 0, 0.5)";                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_HORIZONTAL_LINE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
         canvasContext.lineTo(this.canvasDOM.width(), center);
@@ -791,14 +847,11 @@ var sewi = sewi || {};
     }
 
     function drawText(canvasContext){
-        drawTextWithShadow(this.name, 1, 10, "rgba(0,0,0,1)", canvasContext);
-        //drawTextWithShadow("Position: " + Math.round(this.viewPos), 1, 20, "rgb(0,0,0)", canvasContext);
-        //drawTextWithShadow("Selection: " + this.selectionStart + " - " + this.selectionEnd +
-        //        " (" + (this.selectionEnd - this.selectionStart) + ")", 1, 30, "rgb(255,0,0)", canvasContext);
+        drawTextWithShadow(this.name, 1, 10, sewi.constants.AUDIO_TEXT_COLOR, canvasContext);
     }
 
     function drawTextWithShadow(text, x, y, style, canvasContext){
-        canvasContext.fillStyle = "rgba(0,0,0,0.25)";
+        canvasContext.fillStyle = sewi.constants.AUDIO_TEXT_SHADOW_COLOR;
         canvasContext.fillText(text,x + 1, y + 1);
 
         canvasContext.fillStyle = style;
