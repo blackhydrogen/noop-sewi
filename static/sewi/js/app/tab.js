@@ -29,27 +29,30 @@ var sewi = sewi || {};
         selfRef.panel.append(DOMObject);
     
         $(DOMObject).on('Closing', onClose.bind(this));
-
+ 
+        this.panel.on(getTransitionEvent(), onPanelTransitionEnd.bind(this));
         
-        this.panel.on(whichTransitionEvent(), function(event){
-            if(event.currentTarget === event.target){
-                var propertyName = event.originalEvent.propertyName;
-                if(propertyName == "width" || propertyName == "height"){
-                    selfRef.tab.resize();
-                }
-            }
-        });
-        
-        $(DOMObject).on('FullscreenToggled', function(){
-            var requestFullscreen = this.requestFullscreen || 
-                                    this.mozRequestFullScreen || 
-                                    this.webkitRequestFullscreen || 
-                                    this.msRequestFullscreen;
-            requestFullscreen.call(this);
-        });
+        $(DOMObject).on('FullscreenToggled', toggleFullScreen);
+    }
+    
+    function toggleFullScreen(){
+        var requestFullscreen = this.requestFullscreen || 
+                                this.mozRequestFullScreen || 
+                                this.webkitRequestFullscreen || 
+                                this.msRequestFullscreen;
+        requestFullscreen.call(this); 
     }
 
-    function whichTransitionEvent(){
+    function onPanelTransitionEnd(event){
+        if(event.currentTarget === event.target){
+            var propertyName = event.originalEvent.propertyName;
+            if(propertyName == "width" || propertyName == "height"){
+                this.tab.resize();
+            }
+        }
+    }
+
+    function getTransitionEvent(){
         var el = document.createElement('fakeelement');
         var transitions = {
             'WebkitTransition' :'webkitTransitionEnd',
@@ -566,8 +569,10 @@ var sewi = sewi || {};
     sewi.TabPanel.prototype.getDOM = function(){
         return this.panel;
     }
+})();
 
-    // Tab class
+// Tab class
+(function(){
     sewi.Tab = function(tabContainer, id, name, hasDropArea){
         this.tabContainer = tabContainer;
         this.panelList={};
@@ -739,17 +744,24 @@ var sewi = sewi || {};
 
 // tab container class
 (function(){
+    
+    /**
+     * This defines a tab container component to hold all the tabs.
+     * 
+     * @class TabContainer
+     * @constructor
+     */
     sewi.TabContainer = function(){
-        this.counter= 1;
+        this.noOfTabs= 1;
         this.currentActiveTab;
         this.tabButtons=[];  
         this.tabs = [];
-        this.container = $('<div class="tab-container"></div>');
-        this.tabButtonGroup = $('<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>');
-        this.tabContent = $('<div class="tab-content"></div>');
+        this.container = $(sewi.constants.TAB_CONTAINER_DOM);
+        this.tabButtonGroup = $(sewi.constants.TAB_TAB_BUTTON_GROUP_DOM);
+        this.tabContent = $(sewi.constants.TAB_TAB_CONTENT_DOM);
 
-        var addTabButton = $('<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>');
-        addTabButton.on('click', addTabButtonClickEvent.bind(this));
+        var addTabButton = $(sewi.constants.TAB_ADD_TAB_BUTTON_DOM);
+        addTabButton.on(sewi.constants.TAB_CLICK_EVENT_STR, addTabButtonClickEvent.bind(this));
 
         this.tabButtons.push(addTabButton);
         this.tabButtonGroup.append(addTabButton);
@@ -760,11 +772,19 @@ var sewi = sewi || {};
     }
 
     function addTabButtonClickEvent(){
-        addNewTab.call(this,"Tab"+this.counter,"",true, true);
-        this.counter++; 
+        var tabName = "Tab"+this.noOfTabs
+        var tabText = "";
+        var active = true;
+        var hasDropArea = true;
+
+        var result = addNewTab.call(this, tabName, tabText, active, hasDropArea);
+        if(result){
+            this.noOfTabs++;
+        }
     }
 
     function addNewTab(tabName, tabText, active, hasDropArea){
+        var hasNewTabAdded = false;
         if(this.tabs.length < sewi.constants.TAB_MAX_NUM_TABS){
             var newTab = new sewi.Tab(this, tabName, tabText, hasDropArea);
             this.tabs.push(newTab);
@@ -778,9 +798,15 @@ var sewi = sewi || {};
             if(this.tabs.length == sewi.constants.TAB_MAX_NUM_TABS){
                 this.tabButtons[lastIndex].hide();
             }
+            hasNewTabAdded = true;
         }
+        return hasNewTabAdded;
     }
 
+    /**
+     * This function sets target tab as the current active tab. 
+     * @param  {Tab} tab The tab object that will be activated.
+     */
     sewi.TabContainer.prototype.setCurrentActiveTab = function(tab){
         if (this.currentActiveTab){
             this.currentActiveTab.deactivate();
@@ -791,15 +817,34 @@ var sewi = sewi || {};
         }
     }
     
+    /**
+     * This function returns the jquery DOM to the caller
+     * @return {jQuery} The reference to the jQuery DOM.
+     */
     sewi.TabContainer.prototype.getDOM = function(){
         return this.container;
     }
 
+    
+    /**
+     * This function initialized a new tab and adds the DOM to that tab.
+     * @param  {jQuery} DOMObject It holds the reference to the jQuery DOM that will be appended. 
+     */
     sewi.TabContainer.prototype.addObjectToNewTab = function(DOMObject){
-        addNewTab.call(this,"Tab"+this.counter,"", true, false);
-        this.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
+        var tabName = "Tab"+this.noOfTabs
+        var tabText = "";
+        var active = true;
+        var hasDropArea = false;
+        
+        var result = addNewTab.call(this, tabName, tabText, active, hasDropArea); 
+        if(result){
+            this.currentActiveTab.append(DOMObject, sewi.constants.TAB_PANEL_POSITIONS.FULL);
+        }
     }
 
+    /**
+     * This function calls all the resize functions of the tabs
+     */
     sewi.TabContainer.prototype.resize = function(){
         var tabsArrLength = this.tabs.length; 
         for(var i = 0; i < tabsArrLength; i++){ 

@@ -65,6 +65,11 @@ var sewi = sewi || {};
         TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
         TAB_PREVIOUS_DROP_AREA : {NONE: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4},
         TAB_CSS_CLASS_STR_PANEL_INDICATOR: '.panel-indicator',
+        TAB_CONTAINER_DOM: '<div class="tab-container"></div>', 
+        TAB_TAB_BUTTON_GROUP_DOM: '<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>',
+        TAB_TAB_CONTENT_DOM: '<div class="tab-content"></div>',
+        TAB_ADD_TAB_BUTTON_DOM:'<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>',
+        TAB_CLICK_EVENT_STR: 'click',
 
         //Error Screen Constants
         ERROR_SCREEN_CLASS: 'error-screen',
