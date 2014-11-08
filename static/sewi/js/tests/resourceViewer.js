@@ -6,6 +6,8 @@
         TEST_RESOURCE_VIEWER_TOOLTIPS_SHOWN_EVENT: 'testTooltipsShown',
         TEST_RESOURCE_VIEWER_TOOLTIPS_HIDDEN_EVENT: 'testTooltipsHidden',
         TEST_RESOURCE_VIEWER_CLASS: 'test-resource-viewer',
+        TEST_PROGRESS_BAR_MESSAGE: 'Loading test...',
+        TEST_PROGRESS_BAR_CHANGED_MESSAGE: 'Loading more...',
 
         RESOURCE_VIEWER_FULLSCREEN_EVENT: 'FullscreenToggled',
         RESOURCE_VIEWER_CLOSING_EVENT: 'Closing',
@@ -13,6 +15,11 @@
         FULLSCREEN_BUTTON_CLASS: 'fullscreen-button',
         CLOSE_BUTTON_CLASS: 'close-button',
         DOWNLOAD_BUTTON_CLASS: 'download-button',
+        PROGRESS_CLASS: 'progress',
+        PROGRESS_BAR_CLASS: 'progress-bar',
+        PROGRESS_BAR_TEXT_CLASS: 'progress-bar-text',
+        PROGRESS_BAR_DEFAULT_MESSAGE: 'Loading Resource',
+
     }
 
     function TestResourceViewer() {
@@ -110,12 +117,60 @@
         testResViewer.addDownloadButton(function() {
             assert.ok(true, 'Resource viewer allows downloading via function');
             QUnit.start();
-            return "/";
+            return '/';
         });
 
         var downloadButton = testResViewContainer.find('.download-button');
         downloadButton.click();
 
+    });
+
+    QUnit.asyncTest('Resource Viewer Progress Bar', function(assert) {
+        QUnit.start();
+        var testResViewer = this.testResViewer;
+        var testResViewContainer = testResViewer.getDOM();
+        this.fixture.append(testResViewContainer);
+
+        assert.strictEqual(testResViewContainer.has('.' + constants.PROGRESS_BAR_CLASS).length, 0, 'Progress bar is initially not in DOM.');
+
+        testResViewer.showProgressBar();
+        var progress = testResViewContainer.find('.' + constants.PROGRESS_CLASS);
+        var progressBar = testResViewContainer.find('.' + constants.PROGRESS_BAR_CLASS);
+        var progressBarText = testResViewContainer.find('.' + constants.PROGRESS_BAR_TEXT_CLASS);
+
+        var progressWidth = progress.width();
+
+        assert.ok(progressBar, 'Progress bar added to DOM successfully.');
+        assert.strictEqual(progressBar.width(), 0, 'Progress bar is initially set to 0% width.');
+        assert.equal(progressBarText.text(), constants.PROGRESS_BAR_DEFAULT_MESSAGE, 'Progress bar initially shows default message.');
+
+        testResViewer.showProgressBar(constants.TEST_PROGRESS_BAR_MESSAGE);
+        assert.equal(progressBarText.text(), constants.TEST_PROGRESS_BAR_MESSAGE, 'Progress bar can be initialised with a custom message.');
+
+        testResViewer.updateProgressBar(25);
+        var currentWidth = progressBar.width() / progressWidth;
+        assert.strictEqual(currentWidth, 0.25, 'Progress bar width can be altered.');
+
+        testResViewer.updateProgressBar('a');
+        currentWidth = progressBar.width() / progressWidth;
+        assert.strictEqual(currentWidth, 0.25, 'Progress bar width can only be set using a number.');
+
+        testResViewer.updateProgressBar(101);
+        currentWidth = progressBar.width() / progressWidth;
+        assert.strictEqual(currentWidth, 0.25, 'Progress bar width will not change if the value is outside the valid range.');
+
+        testResViewer.updateProgressBar(50, constants.TEST_PROGRESS_BAR_CHANGED_MESSAGE);
+
+        // Allow the DOM time to update the progress bar width.
+        QUnit.stop();
+        setTimeout(function() {
+            currentWidth = progressBar.width() / progressWidth;
+            assert.strictEqual(currentWidth, 0.5, 'Progress bar width can be updated with its text.');
+            assert.strictEqual(progressBarText.text(), constants.TEST_PROGRESS_BAR_CHANGED_MESSAGE, 'Progress bar text can be updated with its width.');
+            testResViewer.hideProgressBar();
+            assert.strictEqual(testResViewContainer.has('.' + constants.PROGRESS_BAR_CLASS).length, 0, 'Progress bar can be hidden after showing.');
+            QUnit.start();
+        }, 500);
     });
 
 })();
