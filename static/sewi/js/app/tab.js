@@ -232,39 +232,39 @@ var sewi = sewi || {};
             }
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP && 
-                this.tab.tabPanel.has('.panel-bottom').length){
-                this.tab.tabPanel.children('.panel-bottom').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.TOP_LEFT);
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT &&
-                this.tab.tabPanel.has('.panel-right').length){
-                this.tab.tabPanel.children('.panel-right').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.LEFT_TOP);
                 this.prevDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.LEFT;
             }
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP && 
-                this.tab.tabPanel.has('.panel-bottom').length){
-                this.tab.tabPanel.children('.panel-bottom').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.TOP_RIGHT);
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT &&
-                this.tab.tabPanel.has('.panel-left').length){
-                this.tab.tabPanel.children('.panel-left').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.RIGHT_TOP);
                 this.prevDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.RIGHT;
             }           
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.BOTTOM && 
-                this.tab.tabPanel.has('.panel-top').length){
-                this.tab.tabPanel.children('.panel-top').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.BOTTOM_LEFT);
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT &&
-                this.tab.tabPanel.has('.panel-right').length){
-                this.tab.tabPanel.children('.panel-right').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.LEFT_BOTTOM);
                 this.prevDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.LEFT;
@@ -272,14 +272,14 @@ var sewi = sewi || {};
 
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.BOTTOM && 
-                this.tab.tabPanel.has('.panel-top').length){
-                this.tab.tabPanel.children('.panel-top').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP);
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.BOTTOM_RIGHT);
 
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT &&
-                        this.tab.tabPanel.has('.panel-left').length){
-                this.tab.tabPanel.children('.panel-left').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT);
+                        this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).length){
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT);
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
                 indicatorDropArea.addClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.RIGHT_BOTTOM);
                 this.prevDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.RIGHT;
@@ -336,77 +336,77 @@ var sewi = sewi || {};
             }
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT){ 
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP &&
-                this.tab.tabPanel.has('.panel-bottom-right').length &&
-                this.tab.tabPanel.has('.panel-top-right').length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).length &&
                 this.prevDropArea !== sewi.constants.TAB_PREVIOUS_DROP_AREA.LEFT && 
                 _.size(this.tab.panelList) == 3){
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
-                this.tab.tabPanel.children('.panel-bottom-right').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.TOP_LEFT);
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT &&
-                this.tab.tabPanel.has('.panel-bottom-right').length &&
-                this.tab.tabPanel.has('.panel-bottom-left').length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).length &&
                 _.size(this.tab.panelList) === 3){
                 
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
-                this.tab.tabPanel.children('.panel-bottom-right').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.LEFT_TOP);
             }
             this.preDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.NONE;
         } else if (this.state === sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){
             if (position === sewi.constants.TAB_DROP_AREA_POSITIONS.TOP &&
-                this.tab.tabPanel.has('.panel-bottom-left').length &&
-                this.tab.tabPanel.has('.panel-top-left').length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).length &&
                 this.prevDropArea !== sewi.constants.TAB_PREVIOUS_DROP_AREA.RIGHT &&
                 _.size(this.tab.panelList) === 3){
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
-                this.tab.tabPanel.children('.panel-bottom-left').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.TOP_RIGHT);
             } else if (position === sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT &&
-                this.tab.tabPanel.has('.panel-bottom-left').length &&
-                this.tab.tabPanel.has('.panel-bottom-right').length &&                   
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).length &&                   
                 _.size(this.tab.panelList) === 3){
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
-                this.tab.tabPanel.children('.panel-bottom-left').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.RIGHT_TOP);
             }   
             this.prevDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.NONE;
         } else if (this.state === sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.BOTTOM &&
-                this.tab.tabPanel.has('.panel-top-right').length &&
-                this.tab.tabPanel.has('.panel-bottom-right').length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).length &&
                 this.prevDropArea !== sewi.constants.TAB_PREVIOUS_DROP_AREA.LEFT &&
                 _.size(this.tab.panelList) === 3){
 
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
-                this.tab.tabPanel.children('.panel-top-right').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.BOTTOM_LEFT);
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT &&
-                this.tab.tabPanel.has('.panel-top-right').length &&
-                this.tab.tabPanel.has('.panel-top-left').length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).length &&
                 _.size(this.tab.panelList) === 3){
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT);
-                this.tab.tabPanel.children('.panel-top-right').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.LEFT_BOTTOM);
             }
             this.preDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.NONE;
         } else if (this.state === sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT && 
-                this.tab.tabPanel.has('.panel-top-left').length &&
-                this.tab.tabPanel.has('.panel-top-right').length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT).length &&
                 _.size(this.tab.panelList) === 3){
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT);
-                this.tab.tabPanel.children('.panel-top-left').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.LEFT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.RIGHT_BOTTOM);
                 
             } else if (position === sewi.constants.TAB_DROP_AREA_POSITIONS.BOTTOM &&
-                this.tab.tabPanel.has('.panel-top-left').length &&
-                this.tab.tabPanel.has('.panel-bottom-left').length && 
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).length &&
+                this.tab.tabPanel.has('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_LEFT).length && 
                 this.prevDropArea !== sewi.constants.TAB_PREVIOUS_DROP_AREA.RIGHT &&
                 _.size(this.tab.panelList) == 3){
                 
                 this.panel.addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.BOTTOM_RIGHT).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_RIGHT);
-                this.tab.tabPanel.children('.panel-top-left').addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
+                this.tab.tabPanel.children('.'+sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT).addClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP).removeClass(sewi.constants.TAB_PANEL_STATE_CSS_CLASS.TOP_LEFT);
                 indicatorDropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.BOTTOM_RIGHT);
             }
             this.preDropArea = sewi.constants.TAB_PREVIOUS_DROP_AREA.NONE;
@@ -473,12 +473,12 @@ var sewi = sewi || {};
             }   
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){
             if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP){
-                                    this.updateState(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT);
+                this.updateState(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT);
                 this.addPanel(sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, ui.draggable);
                 dropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.TOP_RIGHT);
             } else if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT){
                 this.updateState(sewi.constants.TAB_PANEL_POSITIONS.LEFT, sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT);
-                                    this.addPanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, ui.draggable);
+                this.addPanel(sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT, sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, ui.draggable);
                 dropArea.removeClass(sewi.constants.TAB_PANEL_INDICATOR_POSITION_CSS_CLASS.RIGHT_TOP);
             }
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
@@ -584,7 +584,7 @@ var sewi = sewi || {};
         this.panelList={};
         this.tabButton = $(sewi.constants.TAB_TAB_BUTTON_DOM);
         this.tabButton.children('a').attr({'href': '#'+id});
-        this.tabPanel = $(sewi.constants.TAB_PANEL_DOM);
+        this.tabPanel = $(sewi.constants.TAB_TAB_PANEL_DOM);
         this.tabPanel.attr({'id' : id});
 
         var removeButton={

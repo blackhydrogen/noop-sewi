@@ -84,7 +84,7 @@ var sewi = sewi || {};
                                     TOP: 4},
         TAB_CSS_CLASS_STR_PANEL_INDICATOR: '.panel-indicator',
         TAB_CONTAINER_DOM: '<div class="tab-container"></div>', 
-        TAB_PANEL_DOM: '<div class="tab-pane" id=""><div class="panel-content"></div></div>',
+        TAB_TAB_PANEL_DOM: '<div class="tab-pane" id=""><div class="panel-content"></div></div>',
         TAB_TAB_BUTTON_GROUP_DOM: '<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>',
         TAB_TAB_CONTENT_DOM: '<div class="tab-content"></div>',
         TAB_ADD_TAB_BUTTON_DOM:'<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>',
