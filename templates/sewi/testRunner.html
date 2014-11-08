@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+{% load static %}
 <html>
   <head>
     <title>SEWI Test Runner</title>
@@ -25,6 +26,13 @@
     <script type="text/javascript" src="{% static "sewi/js/tests/vendor/qunit-1.12.0.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/tests/vendor/blanket.min.js" %}"></script>
     {# SEWI JavaScript files #}
+    <script type="text/javascript">
+        var sewi = {
+            staticPath: "{% static "sewi/" %}",
+            mediaPath: "{% get_media_prefix %}",
+            testMode: true,
+        };
+    </script>
     <script type="text/javascript" src="{% static "sewi/js/app/common.js" %}" data-cover></script>
     <script type="text/javascript" src="{% static "sewi/js/app/configuratorElement.js" %}" data-cover></script>
     <script type="text/javascript" src="{% static "sewi/js/app/panZoomWidget.js" %}" data-cover></script>
