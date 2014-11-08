@@ -1,13 +1,19 @@
+/**
+ * Global class that contains all components and shared properties of SEWI.
+ *
+ * @namespace sewi
+ */
 var sewi = sewi || {};
 
 (function() {
 
     /**
      * Helper function to ensure that a class inherits another class.
-     * Note that classes must still use {NameOfSuperClass}.call(this) in their
-     * constructor to initialize themselves.
-     * @param  {function} subClass   Function definition of the sub class.
-     * @param  {function} superClass Function definition of the super class.
+     * Note that classes must still use <code>NameOfSuperClass.call(this)</code>
+     * in their constructor to initialize themselves.
+     *
+     * @param  {Function} subClass   Function definition of the sub class.
+     * @param  {Function} superClass Function definition of the super class.
      */
     sewi.inherits = function(subClass, superClass) {
         if (_.isFunction(subClass) && _.isFunction(superClass)) {
@@ -19,6 +25,7 @@ var sewi = sewi || {};
 
     /**
      * Generates the DOM elements necessary to produce a vertical slider.
+     *
      * @param {jQuery} sliderDOMElement  The slider DOM element
      * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
      *                                   hover trigger.
@@ -47,8 +54,13 @@ var sewi = sewi || {};
         $(event.target).parent().removeClass('active');
     }
 
-    /** Declare all constants in this object. */
+    /**
+     * Contains all constants used by the components that make up SEWI.
+     * @constant
+     * @type Object
+     */
     sewi.constants = {
+
         //Encounter URL Constants
         ENCOUNTER_BASE_URL: '/sewi/encounter/',
 
@@ -150,17 +162,16 @@ var sewi = sewi || {};
         BEI_ENTRY_VALUE_DOM: '<span class="basic-encounter-info-entry-value"></span>',
 
         //Resource Gallery Constants
-        RESOURCE_GALLERY_URL_BASE: '/sewi/encounter/',
         RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
         RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
         RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
         RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
-        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<img class="resource-thumbnail">',
-        RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-header">',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail"></div>',
+        RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-title">',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
         RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource-thumbnail',
-        RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-header',
+        RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-title',
         RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS: 'resource-dragged',
         RESOURCE_GALLERY_TOOLTIP_HEADER: 'Last modified: ',
         RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
@@ -174,7 +185,7 @@ var sewi = sewi || {};
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
         RESOURCE_VIEWER_TOOLTIPS_BUTTON_DOM: '<label class="btn btn-default tooltips-button" data-toggle="buttons" title="Toggle Tooltips"><span aria-hidden="true" class="glyphicon glyphicon-info-sign"></span></label>',
         RESOURCE_VIEWER_TOOLTIPS_BUTTON_TRACKER_DOM: '<input type="checkbox" />',
-        RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
+        RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default download-button" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
         RESOURCE_VIEWER_BUTTON_GROUP_DOM: '<div class="btn-group"></div>',
         RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden animated"></div>',
@@ -199,9 +210,36 @@ var sewi = sewi || {};
 
         //Audio Resource Constants
         AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
+        AUDIO_ZOOM_TO_FIT_BUTTON: '<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>',
+        AUDIO_ZOOM_TO_SELECTION_BUTTON: '<button type="button" class="btn btn-default sewi-icon-graph-select-part" id="zoomToSelection"></button>',
+        AUDIO_CLEAR_SELECTION_BUTTON: '<button type="button" class="btn btn-default sewi-icon-graph-select-none" id="clearSelection"></button>',
+        AUDIO_ERROR_MSG_WEB_AUDIO_API_NOT_SUPPORTED: 'Error: Web Audio API is not supported by the browser.',
+        AUDIO_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED:'Error: File request operation has been aborted.',
+        AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE: 'Error: Failed to retrieve the file',
+        AUDIO_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH : 'generating amplitude wave graph', 
+        AUDIO_MSG_FETCHING_AUDIO_CLIP: 'fetching audio clip',
+        AUDIO_ZOOM_TO_FIT_TOOLTIP: 'Zoom To Fit: zoom out to view the entire wave.',
+        AUDIO_ZOOM_TO_SELECTION_TOOLTIP: 'Zoom To Selection: zoom to the selected region.',
+        AUDIO_CLEAR_SELECTION_TOOLTIP: 'Clear the Selection: clear the highlighted region and reset playback duration to 100%.',
+        AUDIO_WAVE_STROKE_COLOR: 'rgba(102,102,255,0.9)',
+        AUDIO_COLOR_ACTIVE_TOP: '#BBB',
+        AUDIO_COLOR_ACTIVE_BOTTOM: '#BBB',
+        AUDIO_COLOR_INACTIVE_TOP: '#AAA',
+        AUDIO_COLOR_INACTIVE_BOTTOM: '#AAA',
+        AUDIO_COLOR_MOUSE_DOWN_TOP: '#AAA',
+        AUDIO_COLOR_MOUSE_DOWN_BOTTOM: '#AAA',
+        AUDIO_COLOR_SELECTION_STROKE: 'rgba(0, 0, 255, 0.5',
+        AUDIO_COLOR_SELECTION_FILL: 'rgba(0, 0, 255, 0.2)',
+        AUDIO_HORIZONTAL_LINE_STROKE_COLOR: 'rgba(0, 0, 0, 0.5)',
+        AUDIO_PLOT_TECHNIQUE: {COMPRESSED: 1, DETAILED: 2},
+        AUDIO_TEXT_COLOR: 'rgba(0,0,0,1)',
+        AUDIO_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
 
         //Chart Resource Constants
         CHART_RESOURCE_URL: '/sewi/resources/chart/',
+        CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load chart, please close and re-open chart',
+        // the time interval(in ms) within which the peakDetection algorithm searches for a peak
+        CHART_RESOURCE_PEAK_SEARCH_INTERVAL: 200,
 
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
@@ -228,16 +266,22 @@ var sewi = sewi || {};
         CHART_CONTROLS_RIGHT_PANEL_CLASS: 'right',
         CHART_CONTROLS_OPTIONS_DROPDOWN_DOM: '<select multiple class="dropup" data-style="btn-default options-dropdown" title="Options"></select>',
         CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS: 'options-dropdown',
-        CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM: '<option value="rangeSelector">Range Selector</option>',
-        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM: '<option value="resetAll">Reset all points</option>',
-        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM: '<option value="resetShown">Reset shown points</option>',
-        CHART_CONTROLS_ZOOM_OUT_OPTION_DOM: '<option value="zoomOutChart">Zoom Out</option>',
-        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label" title ="Displays the average time interval (in seconds) between all the points that are selected after sorting them in increasing order of time." data-placement ="top"> Interval <input type="text" class="timing-display" readonly /></label>',
+        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM: '<option value="resetAll" class="reset-all-points-button">Reset all points</option>',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM: '<option value="resetShown" class="reset-shown-points-button">Reset visible points</option>',
+        CHART_CONTROLS_ZOOM_OUT_BUTTON_DOM: '<option value="zoomOutChart" class="zoom-out-button">Zoom Out</option>',
+        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label"> Interval:  <input type="text" id = "interval" class="timing-display" readonly /></label>',
         CHART_CONTROLS_TIMING_DISPLAY_LABEL_CLASS: 'timing-display-label',
+        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_CLASS: 'reset-all-points-button',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_CLASS: 'reset-shown-points-button',
+        CHART_CONTROLS_ZOOM_OUT_BUTTON_CLASS: 'zoom-out-button',        
         CHART_CONTROLS_RANGE_SELECTOR_VALUE: 'rangeSelector',
         CHART_CONTROLS_RESET_ALL_POINTS_VALUE: 'resetAll',
         CHART_CONTROLS_RESET_SHOWN_POINTS_VALUE: 'resetShown',
         CHART_CONTROLS_ZOOM_OUT_VALUE: 'zoomOutChart',
+        CHART_CONTROLS_RESET_ALL_POINTS_TOOLTIP_TEXT: 'Resets all the points that are selected and reverts the graph back to its original state',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_TOOLTIP_TEXT: 'Resets only the points that are within the current visible range of the graph',
+        CHART_CONTROLS_ZOOM_OUT_TOOLTIP_TEXT: 'Zooms out the graph to show the complete range',
+        CHART_CONTROLS_TIMING_DISPLAY_TOOLTIP_TEXT: 'The average time interval (in seconds) between the points that are currently shown on the screen after sorting them in increasing order of time',
 
         //Configurator Constants
         CONFIGURATOR_TITLE_DOM: '<h2>',
@@ -263,6 +307,8 @@ var sewi = sewi || {};
         CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE: 'options: encounterId must be a valid string.',
         CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE: 'An error has occured! Please reload the page!',
         CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE: 'An error has occured! Press the button to reload!',
+
+
     };
 
 })();

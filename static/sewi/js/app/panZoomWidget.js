@@ -16,6 +16,8 @@ var sewi = sewi || {};
         }
         this.targetPanningVariables = {}; // Variables used when panning
 
+        this.userHasInteracted = false;
+
         if(targetOriginalWidth == undefined)
             targetOriginalWidth = this.target.prop("naturalWidth");
         if(targetOriginalHeight == undefined)
@@ -84,6 +86,9 @@ var sewi = sewi || {};
             this.calculateTargetDimensions(this.targetDimensions.original.width, this.targetDimensions.original.height);
         else
             this.calculateTargetDimensions(originalWidth, originalHeight);
+
+        if(!this.userHasInteracted)
+            this.setZoomLevelToZoomToFit();
     }
 
     sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {
@@ -109,6 +114,10 @@ var sewi = sewi || {};
     }
 
     sewi.PanZoomWidget.prototype.calculateNewTargetWidthFromMousewheel = function(event) {
+        event.preventDefault();
+
+        this.userHasInteracted = true;
+
         // Figure out new width
         var zoomChange = 1 + 0.2 * event.originalEvent.wheelDelta / 120;
         var newTargetWidth = this.target.width() * zoomChange;
@@ -117,8 +126,6 @@ var sewi = sewi || {};
         var cursorPositionOnContainerY = event.pageY - this.container.offset().top;
 
         this.updateTargetWidth(newTargetWidth, cursorPositionOnContainerX, cursorPositionOnContainerY);
-
-        return false;
     }
 
     sewi.PanZoomWidget.prototype.updateTargetWidth = function(newTargetWidth, cursorPositionOnContainerX, cursorPositionOnContainerY) {
@@ -214,6 +221,8 @@ var sewi = sewi || {};
     }
 
     sewi.PanZoomWidget.prototype.setupPanningVariables = function(event) {
+        this.userHasInteracted = true;
+
         this.targetPanningVariables.originalCursorX = event.pageX;
         this.targetPanningVariables.originalCursorY = event.pageY;
         this.targetPanningVariables.originalTargetX = this.target.position().left;

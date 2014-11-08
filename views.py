@@ -82,5 +82,5 @@ def get_encounter_info(request, encounter_id):
 def get_encounter_resources(request, encounter_id):
     logger.info('Retreiving resources for Encounter ID: ' + encounter_id)
     resource_gallery = ResourceGallery(encounter_id)
-    data = json.dumps(resource_gallery.get_info())
+    data = json.dumps(resource_gallery.get_info(), indent=4)
     return HttpResponse(data, mimetype='application/json')
