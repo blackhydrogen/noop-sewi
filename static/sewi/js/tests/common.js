@@ -89,11 +89,11 @@
             assert.ok(sliderContainer.hasClass(constants.SLIDER_ACTIVE_CLASS), 'Slider has active class when focused');
             QUnit.start();
             slider.blur();
-        }, 200);
+        }, 500);
 
         setTimeout(function() {
             assert.ok(!sliderContainer.hasClass(constants.SLIDER_ACTIVE_CLASS), 'Slider loses active class when unfocused');
             QUnit.start();
-        }, 400);
+        }, 1000);
     });
 })();
