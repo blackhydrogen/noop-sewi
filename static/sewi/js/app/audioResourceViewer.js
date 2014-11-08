@@ -70,9 +70,14 @@ var sewi = sewi || {};
             dataType: 'json',
             type: 'GET',
             url: audioResourceEndPoint,
-        }).done(retrieveAudio.bind(this)); 
+        }).done(retrieveAudio.bind(this))
+            .fail(failToRetrieveAudio.bind(this));
+
     }
 
+    function failToRetrieveAudio(){
+        this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
+    }
     /**
      * Initialized the approprate audio components after a valid URL has been retrieved.
      * @param  {json} data Json object that contains the data from the ajax call.
