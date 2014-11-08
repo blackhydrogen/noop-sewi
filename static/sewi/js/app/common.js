@@ -60,6 +60,7 @@ var sewi = sewi || {};
      * @type Object
      */
     sewi.constants = {
+
         // Encounter URL Constants
         ENCOUNTER_BASE_URL: '/sewi/encounter/',
 
@@ -172,6 +173,9 @@ var sewi = sewi || {};
 
         //Chart Resource Constants
         CHART_RESOURCE_URL: '/sewi/resources/chart/',
+        CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load chart, please close and re-open chart',
+        // the time interval(in ms) within which the peakDetection algorithm searches for a peak
+        CHART_RESOURCE_PEAK_SEARCH_INTERVAL: 200,
 
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
@@ -198,16 +202,22 @@ var sewi = sewi || {};
         CHART_CONTROLS_RIGHT_PANEL_CLASS: 'right',
         CHART_CONTROLS_OPTIONS_DROPDOWN_DOM: '<select multiple class="dropup" data-style="btn-default options-dropdown" title="Options"></select>',
         CHART_CONTROLS_OPTIONS_DROPDOWN_CLASS: 'options-dropdown',
-        CHART_CONTROLS_RANGE_SELECTOR_OPTION_DOM: '<option value="rangeSelector">Range Selector</option>',
-        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM: '<option value="resetAll">Reset all points</option>',
-        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM: '<option value="resetShown">Reset shown points</option>',
-        CHART_CONTROLS_ZOOM_OUT_OPTION_DOM: '<option value="zoomOutChart">Zoom Out</option>',
-        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label" title ="Displays the average time interval (in seconds) between all the points that are selected after sorting them in increasing order of time." data-placement ="top"> Interval <input type="text" class="timing-display" readonly /></label>',
+        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM: '<option value="resetAll" class="reset-all-points-button">Reset all points</option>',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM: '<option value="resetShown" class="reset-shown-points-button">Reset visible points</option>',
+        CHART_CONTROLS_ZOOM_OUT_BUTTON_DOM: '<option value="zoomOutChart" class="zoom-out-button">Zoom Out</option>',
+        CHART_CONTROLS_TIMING_DISPLAY_DOM: '<label for="interval" class="timing-display-label"> Interval:  <input type="text" id = "interval" class="timing-display" readonly /></label>',
         CHART_CONTROLS_TIMING_DISPLAY_LABEL_CLASS: 'timing-display-label',
+        CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_CLASS: 'reset-all-points-button',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_CLASS: 'reset-shown-points-button',
+        CHART_CONTROLS_ZOOM_OUT_BUTTON_CLASS: 'zoom-out-button',        
         CHART_CONTROLS_RANGE_SELECTOR_VALUE: 'rangeSelector',
         CHART_CONTROLS_RESET_ALL_POINTS_VALUE: 'resetAll',
         CHART_CONTROLS_RESET_SHOWN_POINTS_VALUE: 'resetShown',
         CHART_CONTROLS_ZOOM_OUT_VALUE: 'zoomOutChart',
+        CHART_CONTROLS_RESET_ALL_POINTS_TOOLTIP_TEXT: 'Resets all the points that are selected and reverts the graph back to its original state',
+        CHART_CONTROLS_RESET_SHOWN_POINTS_TOOLTIP_TEXT: 'Resets only the points that are within the current visible range of the graph',
+        CHART_CONTROLS_ZOOM_OUT_TOOLTIP_TEXT: 'Zooms out the graph to show the complete range',
+        CHART_CONTROLS_TIMING_DISPLAY_TOOLTIP_TEXT: 'The average time interval (in seconds) between the points that are currently shown on the screen after sorting them in increasing order of time',
 
         //Configurator Constants
         CONFIGURATOR_TITLE_DOM: '<h2>',
@@ -233,6 +243,8 @@ var sewi = sewi || {};
         CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE: 'options: encounterId must be a valid string.',
         CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE: 'An error has occured! Please reload the page!',
         CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE: 'An error has occured! Press the button to reload!',
+
+
     };
 
 })();
