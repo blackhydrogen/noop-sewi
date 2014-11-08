@@ -29,8 +29,13 @@ var sewi = sewi || {};
         type: 'GET',
         async: true,
         url: resourceGalleryURL
-      }).done(retrieveResources.bind(this))
+      }).done(loadSuccessful.bind(this))
       .fail(loadFailed.bind(this));
+  }
+
+  function loadSuccessful(data){
+    retrieveResources.call(this, data);
+
   }
 
   function loadFailed() {
