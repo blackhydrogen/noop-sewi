@@ -1,9 +1,16 @@
 var sewi = sewi || {};
 
-// ChartControls definition
 (function() {
-  /** [ChartControls description] */
-  sewi.ChartControls = function(options) {
+
+  /**
+   * Defines a control panel suitable for controlling and manipulating the chart.
+   *
+   * @class sewi.ChartControls
+   * @constructor
+   * @extends sewi.ConfiguratorElement
+   */
+
+  sewi.ChartControls = function() {
     // Safeguard if function is called without `new` keyword
     if (!(this instanceof sewi.ChartControls))
       return new sewi.ChartControls();
@@ -17,6 +24,24 @@ var sewi = sewi || {};
   };
 
   sewi.inherits(sewi.ChartControls, sewi.ConfiguratorElement);
+
+  /**
+   * Fired when all the selected points in the chart need to be reset
+   * @event allPointsReset
+   * @memberof sewi.ChartControls
+   */
+
+  /**
+   * Fired when the selected points in the visible range of the graph need to be reset
+   * @event visiblePointsReset
+   * @memberof sewi.ChartControls
+   */
+
+  /**
+   * Fired when the graph needs to be fully zoomed out
+   * @event zoomOutGraph
+   * @memberof sewi.ChartControls
+   */
 
   function initDOM() {
     var innerPanel = $(sewi.constants.CHART_CONTROLS_INNER_PANEL_DOM);
@@ -78,7 +103,7 @@ var sewi = sewi || {};
     }
 
     if (isResetShownPoints) {
-      this.trigger('shownPointsReset');
+      this.trigger('visiblePointsReset');
     }
 
     if (isZoomOut) {
@@ -89,6 +114,16 @@ var sewi = sewi || {};
   function timingDisplayFocused() {
     this.timingDisplay.select();
   }
+
+  /**
+   * Updates the displayed values of the ChartControls instance.
+   *
+   * @param  {Object} [options] A dictionary containing all values that will
+   * be updated.
+   * @param {number} [options.timing] The new time interval between the selected
+   * points in the visible range of the graph
+   * @return {ChartControls} The current instance of ChartControls.
+   */
 
   sewi.ChartControls.prototype.update = function(options) {
     options = options || {};
@@ -101,13 +136,24 @@ var sewi = sewi || {};
         this.timingDisplay.val('');
       }
     }
+    return this;
   };
+
+  /**
+   * Converts the value passed into a number having 2 decimal places
+   * @param {number} [value] The exact time interval between the selected
+   * points in the visible range of the graph 
+   */
 
   sewi.ChartControls.prototype.roundOffToNearestSeconds = function(value) {
     return (value / 1000).toFixed(2);
   }
 
-  sewi.ChartControls.prototype.disableTooltips = function() {
+  /**
+   * Hides tooltips previously made visible via
+   * {@link sewi.ChartControls#showTooltips}.
+   */
+  sewi.ChartControls.prototype.hideTooltips = function() {
     if (this.initializedTooltips) {
       var element = this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_CLASS);
       element.tooltip('destroy');
@@ -118,8 +164,11 @@ var sewi = sewi || {};
     }
   }
 
-
-  sewi.ChartControls.prototype.enableTooltips = function() {
+  /**
+   * Allows tooltips within the ChartControls to be displayed when the buttons
+   * are under the mouse cursor.
+   */
+  sewi.ChartControls.prototype.showTooltips = function() {
     if (!this.initializedTooltips) {
       var element = this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_CLASS)
       element.tooltip({
@@ -158,6 +207,15 @@ var sewi = sewi || {};
 
 (function() {
 
+  /**
+   * Displays a time series chart for an ECG from an encounter.
+   *
+   * @class sewi.ChartResourceViewer
+   * @constructor
+   * @param {Object} options Configuration options for the ChartResourceViewer
+   * @param {string} options.id The UUID of the chart resource to be displayed.
+   */
+
   sewi.ChartResourceViewer = function(options) {
     // Safeguard if function is called without `new` keyword
     if (!(this instanceof sewi.ChartResourceViewer))
@@ -182,22 +240,6 @@ var sewi = sewi || {};
 
   sewi.inherits(sewi.ChartResourceViewer, sewi.ResourceViewer);
 
-  sewi.ChartResourceViewer.prototype.load = function() {
-    this.showProgressBar('Generating chart');
-    this.updateProgressBar(100);
-    /*var chartResourceEndPoint = sewi.constants.CHART_RESOURCE_URL + this.id;
-
-    $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            url: chartResourceEndPoint,
-        }).done(loadSuccessful.bind(this))
-          .fail(loadFailed.bind(this));*/
-    parseChartData.call(this, {
-      'url': "/static/sewi/js/app/Sample Resources/data.csv"
-    });
-  }
-
   function parseChartData(data) {
     var selfRef = this;
     selfRef.graphData = [];
@@ -212,7 +254,7 @@ var sewi = sewi || {};
         parsedCSV += value + '\n';
         selfRef.graphData.push(value.split(','));
       });
-      selfRef.createChart(parsedCSV);
+       createChart.call(selfRef, parsedCSV);
     });
   }
 
@@ -300,14 +342,14 @@ var sewi = sewi || {};
     var searchInterval = parseInt(sewi.constants.CHART_RESOURCE_PEAK_SEARCH_INTERVAL / this.samplingRate);
     var start = indexMin;
     while (start <= indexMax) {
-      var point = this.findPeakInRegion(start, start + searchInterval);
+      var point = findPeakInRegion.call(this, start, start + searchInterval);
 
       if (point != -1) {
         if (parseFloat(point['yval']) > yMin && parseFloat(point['yval']) < yMax) {
           if (!this.isHighlightedPoint(point)) {
             this.highlightedPoints.push(point);
             this.peaks.push(point.xval);
-            this.highlightPoint(point);
+            highlightPoint.call(this,point);
           }
         }
       }
@@ -328,6 +370,26 @@ var sewi = sewi || {};
     return (this.clickedX && x == this.clickedX);
   }
 
+  /**
+   * Loads the chart from its end point
+   * 
+   */
+  sewi.ChartResourceViewer.prototype.load = function() {
+    this.showProgressBar('Generating chart');
+    this.updateProgressBar(100);
+    /*var chartResourceEndPoint = sewi.constants.CHART_RESOURCE_URL + this.id;
+
+    $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: chartResourceEndPoint,
+        }).done(loadSuccessful.bind(this))
+          .fail(loadFailed.bind(this));*/
+    parseChartData.call(this, {
+      'url': "/static/sewi/js/app/Sample Resources/data.csv"
+    });
+  }
+
   sewi.ChartResourceViewer.prototype.resize = function() {
     this.graph.resize();
   }
@@ -346,7 +408,7 @@ var sewi = sewi || {};
     } else {
       this.highlightedPoints.push(p);
       this.peaks.push(p.xval);
-      this.highlightPoint(p);
+      highlightPoint.call(this,p);
     }
     this.updateTimeInterval();
   }
@@ -371,7 +433,7 @@ var sewi = sewi || {};
   }
 
   sewi.ChartResourceViewer.prototype.canvasPointClicked = function(x, points) {
-    this.chartPointClicked(points[0]);
+    chartPointClicked.call(this, points[0]);
   }
 
   sewi.ChartResourceViewer.prototype.getIndexOfPoint = function(x) {
@@ -382,7 +444,7 @@ var sewi = sewi || {};
     return (point['xval'] <= this.xMax && point['xval'] >= this.xMin && point['yval'] <= this.yMax && point['yval'] >= this.yMin)
   }
 
-  sewi.ChartResourceViewer.prototype.findPeakInRegion = function(start, end) {
+  function findPeakInRegion(start, end) {
     var ymax = 0;
     var xmax = 0;
     var ySecondMax = 0;
@@ -414,15 +476,15 @@ var sewi = sewi || {};
 
   }
 
-  sewi.ChartResourceViewer.prototype.highlightAllPoints = function() {
+  function highlightAllPoints() {
     var selfRef = this;
     var context = selfRef.canvasContext;
     $.each(selfRef.highlightedPoints, function(index, value) {
-      selfRef.highlightPoint(value);
+      highlightPoint.call(selfRef, value);
     });
   }
 
-  sewi.ChartResourceViewer.prototype.highlightPoint = function(p) {
+  function highlightPoint(p) {
     var context = this.canvasContext;
     var x = this.graph.toDomXCoord(p.xval),
       y = this.graph.toDomYCoord(p.yval);
@@ -433,7 +495,7 @@ var sewi = sewi || {};
     context.closePath();
   }
 
-  sewi.ChartResourceViewer.prototype.createChart = function(data) {
+  function createChart(data) {
     var selfRef = this;
     selfRef.graph = new Dygraph(
       selfRef.chartContainer[0],
@@ -481,13 +543,13 @@ var sewi = sewi || {};
           selfRef.chartPointClicked(p);
         },
 
-        highlightCallback: function(e, x, p) {
-          selfRef.highlightAllPoints();
+        highlightCallback: function() {
+          highlightAllPoints.call(selfRef);
         },
 
         drawCallback: function(g, is_initial) {
           selfRef.setCurrAxisRanges(g.xAxisRange(), g.yAxisRange());
-          selfRef.highlightAllPoints();
+          highlightAllPoints.call(selfRef);
           selfRef.updateTimeInterval();
         },
 
@@ -553,10 +615,10 @@ var sewi = sewi || {};
   }
 
   sewi.ChartResourceViewer.prototype.hideTooltips = function() {
-    this.controls.disableTooltips();
+    this.controls.hideTooltips();
   }
 
   sewi.ChartResourceViewer.prototype.showTooltips = function() {
-    this.controls.enableTooltips();
+    this.controls.showTooltips();
   }
 })();
