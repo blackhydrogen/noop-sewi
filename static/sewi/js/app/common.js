@@ -170,7 +170,7 @@ var sewi = sewi || {};
         AUDIO_PLOT_TECHNIQUE: {COMPRESSED: 1, DETAILED: 2},
         AUDIO_TEXT_COLOR: 'rgba(0,0,0,1)',
         AUDIO_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
-
+        
         //Chart Resource Constants
         CHART_RESOURCE_URL: '/sewi/resources/chart/',
         CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load chart, please close and re-open chart',
