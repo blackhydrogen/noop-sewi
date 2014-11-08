@@ -34,7 +34,7 @@ var sewi = sewi || {};
         initResizeTracking.call(this);
 
         return this;
-    }
+    };
 
     // Configurator private methods
     function validateArguments() {
@@ -123,8 +123,10 @@ var sewi = sewi || {};
     }
 
     function initResizeTracking() {
+        var windowElement = $(window);
+
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
-            reportResize(this.basicInfoView, this.basicInfo);
+            windowElement.resize(resizeBasicInfo.bind(this));
         }
         if (_.isFunction(sewi.TabContainer)) {
             reportResize(this.resViewerView, this.tabs);
@@ -137,18 +139,28 @@ var sewi = sewi || {};
     function reportResize(view, configuratorElement) {
         var windowElement = $(window);
 
-        view.on('transitionend', resizeIfSizeChanged.bind(configuratorElement));
+        view.on('transitionend', resizeIfSizeChangedInTransition.bind(configuratorElement));
         windowElement.resize(configuratorElement.resize.bind(configuratorElement));
     }
 
-    function resizeIfSizeChanged(event) {
+    function resizeIfSizeChangedInTransition(event) {
         if (event.target == event.currentTarget) {
             var propertyName = event.originalEvent.propertyName;
-            var callback = event.data;
             if (propertyName == 'width' || propertyName == 'height') {
                 this.resize();
             }
         }
+    }
+
+    function resizeBasicInfo(event) {
+        var options = {
+            elementIsMinimized: this.isBasicInfoMinimized
+        };
+        if (event.type === "resize" && event.target === window) {
+            options.isWindowResizeEvent = true;
+        }
+
+        this.basicInfo.resize(options);
     }
 
     function openResource(galleryElement) {
@@ -170,26 +182,30 @@ var sewi = sewi || {};
         this.basicInfoView
             .add(this.resViewerView)
             .add(this.resGalleryView)
-            .removeClass(function(index, cssClass) {
-                return ( cssClass.match(/(^|\s)col-sm-\S+/g) || [] ).join(' ');
-            });
+            .removeClass(getBootstrapColumnClasses);
 
         if (this.isBasicInfoMinimized) {
             resViewerWidth += basicInfoWidth - minBasicInfoWidth;
             this.basicInfoView
-                   .addClass('col-sm-' + minBasicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + minBasicInfoWidth)
+                   .addClass(sewi.constants.CONFIGURATOR_MINIMIZED_CLASS);
         } else {
             this.basicInfoView
-                   .addClass('col-sm-' + basicInfoWidth);
+                   .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + basicInfoWidth)
+                   .removeClass(sewi.constants.CONFIGURATOR_MINIMIZED_CLASS);
         }
         if (this.isResourceViewerHidden) {
             resGalleryWidth += resViewerWidth;
             resViewerWidth = 0;
         }
         this.resViewerView
-               .addClass('col-sm-' + resViewerWidth);
+               .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resViewerWidth);
         this.resGalleryView
-               .addClass('col-sm-' + resGalleryWidth);
+               .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resGalleryWidth);
+    }
+
+    function getBootstrapColumnClasses(index, cssClass) {
+        return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
     }
 
     function setEncounterTitle(id, name) {
@@ -253,12 +269,14 @@ var sewi = sewi || {};
         }
 
         var reloadLink = $(sewi.constants.CONFIGURATOR_RELOAD_LINK_DOM);
-        reloadLink.click(function() {
-            window.location.reload(true);
-        })
+        reloadLink.click(refreshPage);
         this.alertsView.text(sewi.constants.CONFIGURATOR_ALERT_GENERAL_ERROR_MESSAGE)
                           .append(reloadLink)
                           .addClass(sewi.constants.CONFIGURATOR_ACTIVE_ALERT_CLASS);
+    }
+
+    function refreshPage() {
+        window.location.reload(true);
     }
 
     function refreshClicked(event) {
@@ -292,5 +310,5 @@ var sewi = sewi || {};
         this.subtitleDOM.text(subtitle);
         this.titleDOM.text(title + ' ')
                         .append(this.subtitleDOM);
-    }
+    };
 })();

@@ -1,13 +1,19 @@
+/**
+ * Global class that contains all components and shared properties of SEWI.
+ *
+ * @namespace sewi
+ */
 var sewi = sewi || {};
 
 (function() {
 
     /**
      * Helper function to ensure that a class inherits another class.
-     * Note that classes must still use {NameOfSuperClass}.call(this) in their
-     * constructor to initialize themselves.
-     * @param  {function} subClass   Function definition of the sub class.
-     * @param  {function} superClass Function definition of the super class.
+     * Note that classes must still use <code>NameOfSuperClass.call(this)</code>
+     * in their constructor to initialize themselves.
+     *
+     * @param  {Function} subClass   Function definition of the sub class.
+     * @param  {Function} superClass Function definition of the super class.
      */
     sewi.inherits = function(subClass, superClass) {
         if (_.isFunction(subClass) && _.isFunction(superClass)) {
@@ -19,6 +25,7 @@ var sewi = sewi || {};
 
     /**
      * Generates the DOM elements necessary to produce a vertical slider.
+     *
      * @param {jQuery} sliderDOMElement  The slider DOM element
      * @param {jQuery} triggerDOMElement A visible DOM element that acts as the
      *                                   hover trigger.
@@ -47,7 +54,11 @@ var sewi = sewi || {};
         $(event.target).parent().removeClass('active');
     }
 
-    /** Declare all constants in this object. */
+    /**
+     * Contains all constants used by the components that make up SEWI.
+     * @constant
+     * @type Object
+     */
     sewi.constants = {
         // Encounter URL Constants
         ENCOUNTER_BASE_URL: '/sewi/encounter/',
@@ -86,17 +97,16 @@ var sewi = sewi || {};
         BEI_ENTRY_VALUE_DOM: '<span class="basic-encounter-info-entry-value"></span>',
 
         //Resource Gallery Constants
-        RESOURCE_GALLERY_URL_BASE: '/sewi/encounter/',
         RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
         RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
         RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
         RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
-        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<img class="resource-thumbnail">',
-        RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-header">',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail"></div>',
+        RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-title">',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
         RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource-thumbnail',
-        RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-header',
+        RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-title',
         RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS: 'resource-dragged',
         RESOURCE_GALLERY_TOOLTIP_HEADER: 'Last modified: ',
         RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
@@ -205,7 +215,10 @@ var sewi = sewi || {};
         CONFIGURATOR_TITLE_PREFIX: 'ID #',
         CONFIGURATOR_DEFAULT_TITLE: 'Loading',
         CONFIGURATOR_DEFAULT_SUBTITLE: 'Please wait',
-        CONFIGURATOR_MINIMIZE_DOM: '<div class="minimize-button">&lt;&lt;</div>',
+        CONFIGURATOR_MINIMIZE_DOM: '<div class="minimize-button"></div>',
+        CONFIGURATOR_MINIMIZED_CLASS: 'minimized',
+        CONFIGURATOR_COLUMN_PREFIX_CLASS: 'col-xs-',
+        CONFIGURATOR_COLUMN_PREFIX_REGEX: /(^|\s)col-xs-\S+/g,
         CONFIGURATOR_ERROR_SCREEN_RETRY_DOM: '<div class="retry"></div>',
         CONFIGURATOR_ERROR_SCREEN_MESSAGE_DOM: '<p></p>',
         CONFIGURATOR_ERROR_SCREEN_BUTTON_DOM: '<button class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>',
