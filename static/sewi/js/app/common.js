@@ -61,18 +61,82 @@ var sewi = sewi || {};
      */
     sewi.constants = {
 
-        // Encounter URL Constants
+        //Encounter URL Constants
         ENCOUNTER_BASE_URL: '/sewi/encounter/',
+
+        //Resource Types
+        RESOURCE_TYPE:{IMAGE: 'image', VIDEO: 'video', AUDIO: 'audio', CHART: 'chart'},
+
+        //DATA ATTRIBUTES
+        DATA_ATTR: {ID:'resId', TYPE:'resType'},
 
         //Vertical Slider Constants
         VERTICAL_SLIDER_CONTAINER_DOM: '<div class="vertical-slider-container"></div>',
         VERTICAL_SLIDER_POPUP_DOM: '<div class="vertical-slider-popup animated"></div>',
-
+        
         //Tab Constants
         TAB_MAX_NUM_TABS: 5,
-        TAB_DROP_AREA_POSITIONS: {TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3},
-        TAB_PANEL_POSITIONS: {FULL: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4, TOP_LEFT: 5, TOP_RIGHT: 6, BOTTOM_LEFT: 7, BOTTOM_RIGHT: 8},
-        TAB_PREVIOUS_DROP_AREA : {NONE: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3, TOP: 4},
+        TAB_DROP_AREA_POSITIONS: {  TOP: 0, 
+                                    BOTTOM: 1, 
+                                    LEFT: 2, 
+                                    RIGHT: 3},
+        TAB_PANEL_POSITIONS: {  FULL: 0, 
+                                LEFT: 1, 
+                                RIGHT: 2, 
+                                BOTTOM: 3, 
+                                TOP: 4, 
+                                TOP_LEFT: 5, 
+                                TOP_RIGHT: 6, 
+                                BOTTOM_LEFT: 7, 
+                                BOTTOM_RIGHT: 8},
+        TAB_PREVIOUS_DROP_AREA : {  NONE: 0, 
+                                    LEFT: 1, 
+                                    RIGHT: 2, 
+                                    BOTTOM: 3, 
+                                    TOP: 4},
+        TAB_CSS_CLASS_STR_PANEL_INDICATOR: '.panel-indicator',
+        TAB_CONTAINER_DOM: '<div class="tab-container"></div>', 
+        TAB_TAB_PANEL_DOM: '<div class="tab-pane" id=""><div class="panel-content"></div></div>',
+        TAB_TAB_BUTTON_GROUP_DOM: '<ul id="tab-button-group" class="nav nav-tabs" role="tablist"></ul>',
+        TAB_TAB_CONTENT_DOM: '<div class="tab-content"></div>',
+        TAB_ADD_TAB_BUTTON_DOM:'<li><a class="add-tab-button"><span class="glyphicon glyphicon-plus"></span></a></li>',
+        TAB_CLICK_EVENT_STR: 'click',
+        TAB_TAB_BUTTON_DOM:'<li class="tab-button"><a href="" role="tab" data-toggle="tab"></a></li>',
+        TAB_ACTIVE_CSS:'active',
+        TAB_DROP_AREA_VISIBLE_STR: 'panel-drop-area-visible',
+        TAB_DROP_AREA_HOVER_STR: 'panel-drop-area-hover',
+        TAB_DROP_AREA_DOM: '<div class="panel-drop-area panel-drop-area-full"></div>',
+        TAB_PANEL_INDICATOR_DOM: '<div class="panel-indicator"></div>',
+        TAB_PANEL_INDICATOR_DROP_AREA_DOM:'<div></div>',
+        TAB_PANEL_INDICATOR_POSITION_CSS_CLASS:{RIGHT: 'panel-indicator-right',
+                                                LEFT: 'panel-indicator-left',
+                                                TOP: 'panel-indicator-top',
+                                                BOTTOM: 'panel-indicator-bottom',
+                                                TOP_LEFT: 'panel-indicator-top-left',
+                                                BOTTOM_LEFT: 'panel-indicator-bottom-left',
+                                                TOP_RIGHT: 'panel-indicator-top-right',
+                                                BOTTOM_RIGHT: 'panel-indicator-bottom-right',
+                                                LEFT_TOP: 'panel-indicator-left-top',
+                                                RIGHT_TOP: 'panel-indicator-right-top',
+                                                LEFT_BOTTOM: 'panel-indicator-left-bottom',
+                                                RIGHT_BOTTOM: 'panel-indicator-right-bottom'},
+        TAB_NO_TAB_EVENT: 'NoTab',
+        TAB_REMOVE_BUTTON_DOM: '<span class="glyphicon glyphicon-remove"></span>', 
+        TAB_PANEL_STR: 'PANEL',
+        TAB_PANEL_DOM: '<div class="animated panel"></div>',
+        TAB_PANEL_STATE_CSS_CLASS :{FULL: 'panel-full', 
+                                    LEFT: 'panel-left', 
+                                    RIGHT: 'panel-right', 
+                                    BOTTOM: 'panel-bottom',
+                                    TOP: 'panel-top',
+                                    TOP_LEFT: 'panel-top-left',
+                                    TOP_RIGHT: 'panel-top-right',
+                                    BOTTOM_LEFT: 'panel-bottom-left',
+                                    BOTTOM_RIGHT: 'panel-bottom-right'},
+        TAB_PANEL_DROP_AREA_RIGHT_DOM: '<div class="panel-drop-area panel-drop-area-right"></div>',
+        TAB_PANEL_DROP_AREA_LEFT_DOM: '<div class="panel-drop-area panel-drop-area-left"></div>',
+        TAB_PANEL_DROP_AREA_TOP_DOM: '<div class="panel-drop-area panel-drop-area-top"></div>',
+        TAB_PANEL_DROP_AREA_BOTTOM_DOM: '<div class="panel-drop-area panel-drop-area-bottom"></div>',
 
         //Error Screen Constants
         ERROR_SCREEN_CLASS: 'error-screen',

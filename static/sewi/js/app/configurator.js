@@ -1,6 +1,31 @@
 var sewi = sewi || {};
 
 (function() {
+    /**
+     * Configures HTML elements to display portions of the SEWI, and manages
+     * the logic that makes up each portion displayed.
+     *
+     * @class sewi.Configurator
+     * @constructor
+     * @param {Object} options Configuration options for the Configurator.
+     * @param {Boolean} [options.isBasicInfoMinimized=false] If true, the
+     * Configurator expects that the basic information view is initially
+     * minimized.
+     * @param {Boolean} [options.isResourceViewerHidden=true] If true, the
+     * Configurator expects that the resource viewer is initially hidden.
+     * @param {jQuery|String} options.titleView The jQuery selector that
+     * describes the HTML element that will display the title. It is expected to
+     * be an empty element.
+     * @param {jQuery|String} options.resViewerView The jQuery selector that
+     * describes the HTML element that will display the basic encounter
+     * information.
+     * @param {jQuery|String} options.resGalleryView The jQuery selector that
+     * describes the HTML element that will display the resource gallery.
+     * @param {jQuery|String} options.alertsView The jQuery selector that
+     * describes the HTML element that will display global alert messages.
+     * @param {String} options.encounterId The ID of the encounter to be
+     * displayed.
+     */
     sewi.Configurator = function(options) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.Configurator))
@@ -39,6 +64,7 @@ var sewi = sewi || {};
     // Configurator private methods
     function validateArguments() {
 
+        // rewrap selectors, in case they were passed as strings.
         this.titleView = $(this.titleView);
         this.basicInfoView = $(this.basicInfoView);
         this.resViewerView = $(this.resViewerView);
@@ -90,6 +116,7 @@ var sewi = sewi || {};
             this.basicInfo.load();
         }
 
+        // Initialize a button that minimizes the basic information when clicked
         var minimizeElement = $(sewi.constants.CONFIGURATOR_MINIMIZE_DOM);
         this.basicInfoView.append(minimizeElement);
         minimizeElement.click(minimizeToggled.bind(this));
@@ -125,6 +152,7 @@ var sewi = sewi || {};
     function initResizeTracking() {
         var windowElement = $(window);
 
+        // Basic information view only requires tracking of window resize.
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
             windowElement.resize(resizeBasicInfo.bind(this));
         }
@@ -204,6 +232,7 @@ var sewi = sewi || {};
                .addClass(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_CLASS + resGalleryWidth);
     }
 
+    // Returns all Bootstrap-specific column classes, e.g. col-xs-1, col-xs-2, etc
     function getBootstrapColumnClasses(index, cssClass) {
         return ( cssClass.match(sewi.constants.CONFIGURATOR_COLUMN_PREFIX_REGEX) || [] ).join(' ');
     }
@@ -305,6 +334,13 @@ var sewi = sewi || {};
     }
 
     // Configurator public methods
+
+    /**
+     * Changes the displayed title.
+     *
+     * @param {String} title    The main title text to be displayed.
+     * @param {String} subtitle The smaller text to be displayed.
+     */
     sewi.Configurator.prototype.setTitle = function(title, subtitle) {
 
         this.subtitleDOM.text(subtitle);
