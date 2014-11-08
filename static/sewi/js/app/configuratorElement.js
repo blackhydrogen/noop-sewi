@@ -224,7 +224,7 @@ var sewi = sewi || {};
 
 	function tooltipsButtonClicked(event) {
 		var tooltipsButtonTracker = $(event.target);
-		var isActive = tooltipsButtonTracker.is(':checked');
+		var isActive = tooltipsButtonTracker[0].checked;
 		if (isActive) {
 			this.showTooltips();
 			tooltipsButtonTracker.parent().addClass('btn-primary');
