@@ -68,8 +68,8 @@
     });
 
     QUnit.asyncTest('Resource Viewer Top Panel', function(assert) {
-        expect(4);
-        QUnit.stop(3);
+        expect(5);
+        QUnit.stop(4);
 
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();
@@ -106,6 +106,15 @@
         tooltipsButton.click();
         fullscreenButton.click();
         closeButton.click();
+
+        testResViewer.addDownloadButton(function() {
+            assert.ok(true, 'Resource viewer allows downloading via function');
+            QUnit.start();
+            return "/";
+        });
+
+        var downloadButton = testResViewContainer.find('.download-button');
+        downloadButton.click();
 
     });
 
