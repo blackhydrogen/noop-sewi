@@ -24,7 +24,7 @@ var sewi = sewi || {};
 
 	/**
 	 * Helper function for triggering an event on the main DOM element.
-	 * Arguments are exactly like {@code jQuery.fn.trigger()}
+	 * Arguments are exactly like <code>code jQuery.fn.trigger()</code>.
 	 *
 	 */
 	sewi.ConfiguratorElement.prototype.trigger = function() {
@@ -33,7 +33,7 @@ var sewi = sewi || {};
 
 	/**
 	* Helper function for triggering an event on the main DOM element.
-	* Arguments are exactly like {@code jQuery.fn.on()}
+	* Arguments are exactly like <code>jQuery.fn.on()</code>.
 	*
 	*/
 	sewi.ConfiguratorElement.prototype.on = function() {
@@ -97,8 +97,8 @@ var sewi = sewi || {};
      * @class sewi.ProgressBar
      * @constructor
      * @extends sewi.ConfiguratorElement
-     * @param {Boolean} [animated] True if the progress bar should be animated.
-     *                           Defaults to true.
+     * @param {Boolean} [animated=true] True if the progress bar should be
+     * animated.
      */
     sewi.ProgressBar = function (animated) {
         if(!(this instanceof sewi.ProgressBar))
@@ -224,7 +224,7 @@ var sewi = sewi || {};
 
 	function tooltipsButtonClicked(event) {
 		var tooltipsButtonTracker = $(event.target);
-		var isActive = tooltipsButtonTracker.is(':checked');
+		var isActive = tooltipsButtonTracker[0].checked;
 		if (isActive) {
 			this.showTooltips();
 			tooltipsButtonTracker.parent().addClass('btn-primary');
@@ -247,7 +247,7 @@ var sewi = sewi || {};
 	 *
 	 * @param {String|Function} urlOrFunction The URL of the item to be
 	 * downloaded. Can be in the form of a string, or a function that returns a
-	 * string. Required.
+	 * string.
 	 */
 	sewi.ResourceViewer.prototype.addDownloadButton = function(urlOrFunction) {
 		if (!_.isString(urlOrFunction) && !_.isFunction(urlOrFunction)) {

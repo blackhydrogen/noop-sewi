@@ -54,7 +54,7 @@
 
 html, body {
 	height: 100%;
-	overflow: hidden;
+	overflow-x: hidden;
 }
 
 body {
@@ -74,9 +74,9 @@ body {
 }
 
 #sewiContainer {
-  min-height: 550px;
+  min-height: 530px;
   margin-bottom: 50px;
-  height: calc(100% - 100px);
+  height: calc(100% - 120px);
 }
 
 #beiView, #mainView, #resView {
