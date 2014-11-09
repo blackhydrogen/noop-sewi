@@ -18,6 +18,7 @@
         TEST_RESOURCE_TYPE: 'test',
         TEST_OPEN_RESOURCE_EVENT: 'testOpenResource',
         TEST_RESOURCE_OPENED_EVENT: 'testResourceOpened',
+        TEST_CLOSE_ALL_RESOURCES_EVENT: 'testCloseAllResources',
 
         BASIC_ENCOUNTER_INFO_CLASS: 'basic-encounter-container',
         RES_VIEWER_CLASS: 'resource-viewer-container',
@@ -40,7 +41,9 @@
         RES_VIEWER_VIEW_SHOWN_CLASS: 'col-xs-8 animated',
         RES_GALLERY_VIEW_MINIMIZED_CLASS: 'col-xs-1 animated',
         MINIMIZE_BUTTON_CLASS: 'minimize-button',
+
         GALLERY_CLICKED_EVENT: 'resourceClick',
+        VIEWER_NO_TABS_EVENT: sewi.constants.TAB_NO_TAB_EVENT,
     };
 
     function BasicEncounterInfoTestDriver(options) {
@@ -71,6 +74,7 @@
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.RES_VIEWER_CLASS);
+        this.on(constants.TEST_CLOSE_ALL_RESOURCES_EVENT, testCloseAllTabs.bind(this));
     }
     sewi.inherits(ResViewerTestDriver, sewi.ConfiguratorElement);
 
@@ -93,6 +97,10 @@
     function testOpenResource() {
         var resource = $(constants.TEST_RESOURCE_DOM);
         this.trigger(constants.GALLERY_CLICKED_EVENT, [ resource ]);
+    }
+
+    function testCloseAllTabs() {
+        this.trigger(constants.VIEWER_NO_TABS_EVENT);
     }
 
     function testDriverResized() {
@@ -391,4 +399,52 @@
         resGalleryElement.trigger(constants.TEST_OPEN_RESOURCE_EVENT);
     });
 
+    QUnit.asyncTest('Configurator responding to sub-components opening and closing resources', function(assert) {
+        QUnit.expect(4);
+        QUnit.stop(3);
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+        });
+
+        var basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+
+        resViewerElement.one(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Resource viewer expands when resource is opened.');
+
+            // Check whether the resource viewer resizes again after closing all resources.
+            resViewerElement.one(constants.TEST_RESIZE_EVENT, function() {
+                assert.ok(true, 'Resource viewer hides when all resources are closed.');
+                QUnit.start();
+            });
+
+            resViewerElement.trigger(constants.TEST_CLOSE_ALL_RESOURCES_EVENT);
+
+            QUnit.start();
+        });
+
+        resGalleryElement.one(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Resource gallery minimizes when resource is opened.');
+
+            // Check whether the resource gallery resizes again after closing all resources.
+            resGalleryElement.one(constants.TEST_RESIZE_EVENT, function() {
+                assert.ok(true, 'Resource gallery maximizes when all resources are closed.');
+                QUnit.start();
+            });
+
+            QUnit.start();
+        });
+
+        // Transitions need setup time before they can be tested.
+        setTimeout(function() {
+            resGalleryElement.trigger(constants.TEST_OPEN_RESOURCE_EVENT);
+        }, 500);
+    });
 })();
