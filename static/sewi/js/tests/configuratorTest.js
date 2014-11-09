@@ -1,28 +1,55 @@
 (function() {
 
-    function BasicEncounterInfoTestDriver() {
-        this.container = $('<div>').addClass('basic-encounter-container');
-    }
+    var constants = {
+        TEST_INVALID_DOM_ID: '#invalidId',
+        TEST_INVALID_ENCOUNTER_ID: 121,
+        TEST_VALID_ENCOUNTER_ID: '77d09b28-abed-4a6a-b48b-6b368bd2fdb3',
+        TEST_TITLE: 'Title for Test Case',
+        TEST_SUBTITLE: 'Subtitle for Test Case',
+        TEST_CHANGED_TITLE: 'New Title',
+        TEST_CHANGED_SUBTITLE: 'New Subtitle',
 
-    BasicEncounterInfoTestDriver.prototype.getDOM = function() {
-        return this.container;
-    }
+        BASIC_ENCOUNTER_INFO_CLASS: 'basic-encounter-container',
+        RES_VIEWER_CLASS: 'resource-viewer-container',
+        RES_GALLERY_CLASS: 'resource-gallery-container',
+        TITLE_DOM: 'h2',
+        SUBTITLE_DOM: 'small',
 
-    function ResViewerTestDriver() {
-        this.container = $('<div>').addClass('resource-viewer-container');
-    }
+        ROW_DOM: '<div class="row"></div>',
+        TITLE_VIEW_DOM: '<div id="titleView" class="row"></div>',
+        BASIC_INFO_VIEW_DOM: '<div id="basicInfoView"></div>',
+        RES_VIEWER_VIEW_DOM: '<div id="resViewerView"></div>',
+        RES_GALLERY_VIEW_DOM: '<div id="resGalleryView"></div>',
+        ALERTS_VIEW_DOM: '<div id="alerts"></div>',
+        TITLE_VIEW_ID: '#titleView',
+        BASIC_INFO_VIEW_ID: '#basicInfoView',
+        RES_VIEWER_VIEW_ID: '#resViewerView',
+        RES_GALLERY_VIEW_ID: '#resGalleryView',
+        ALERTS_VIEW_ID: '#alerts',
+    };
 
-    ResViewerTestDriver.prototype.getDOM = function() {
-        return this.container;
-    }
+    function BasicEncounterInfoTestDriver(options) {
+        sewi.ConfiguratorElement.call(this);
 
-    function ResGalleryTestDriver() {
-        this.container = $('<div>').addClass('resource-gallery-container');
+        this.mainDOMElement.addClass(constants.BASIC_ENCOUNTER_INFO_CLASS);
+        this.encounterId = options.encounterId;
     }
+    sewi.inherits(BasicEncounterInfoTestDriver, sewi.ConfiguratorElement);
 
-    ResGalleryTestDriver.prototype.getDOM = function() {
-        return this.container;
+    function ResViewerTestDriver(options) {
+        sewi.ConfiguratorElement.call(this);
+
+        this.mainDOMElement.addClass(constants.RES_VIEWER_CLASS);
     }
+    sewi.inherits(ResViewerTestDriver, sewi.ConfiguratorElement);
+
+    function ResGalleryTestDriver(options) {
+        sewi.ConfiguratorElement.call(this);
+
+        this.mainDOMElement.addClass(constants.RES_GALLERY_CLASS);
+        this.encounterId = options.encounterId;
+    }
+    sewi.inherits(ResGalleryTestDriver, sewi.ConfiguratorElement);
 
     function getTitleText(titleDiv) {
         var titleText = titleDiv.clone()
@@ -34,33 +61,32 @@
         return titleText.slice(0, -1);
     }
 
-    module('Configurator', {
+    QUnit.module('Configurator', {
         setup: function() {
             // set up fixture elements
             this.fixture = $('#qunit-fixture');
-            this.titleView = $('<div>').attr('id','titleView').addClass('row').appendTo(this.fixture);
-            var rowDiv = $('<div>').addClass('row').appendTo(this.fixture);
-            this.basicInfoView = $('<div>').attr('id','basicInfoView').appendTo(rowDiv);
-            this.resViewerView = $('<div>').attr('id','resViewerView').appendTo(rowDiv);
-            this.resGalleryView = $('<div>').attr('id','resGalleryView').appendTo(rowDiv);
+            this.titleView = $(constants.TITLE_VIEW_DOM).appendTo(this.fixture);
+            var rowDiv = $(constants.ROW_DOM).appendTo(this.fixture);
+            this.basicInfoView = $(constants.BASIC_INFO_VIEW_DOM).appendTo(rowDiv);
+            this.resViewerView = $(constants.RES_VIEWER_VIEW_DOM).appendTo(rowDiv);
+            this.resGalleryView = $(constants.RES_GALLERY_VIEW_DOM).appendTo(rowDiv);
+            this.alertsView = $(constants.ALERTS_VIEW_DOM).appendTo(this.fixture);
 
             // override SEWI global vars
-            this.oldSewi = sewi;
-            sewi = {
-                TabContainer: ResViewerTestDriver,
-                ResourceGallery: ResGalleryTestDriver,
-                BasicEncounterInfoViewer: BasicEncounterInfoTestDriver,
-                Configurator: sewi.Configurator
-            };
+            this.oldSewi = window.sewi;
+            window.sewi = _.clone(window.sewi);
+            window.sewi.TabContainer = ResViewerTestDriver;
+            window.sewi.ResourceGallery = ResGalleryTestDriver;
+            window.sewi.BasicEncounterInfoViewer = BasicEncounterInfoTestDriver;
         },
 
         teardown: function() {
             // restore global vars (for other test modules to work)
-            sewi = this.oldSewi;
+            window.sewi = this.oldSewi;
         }
     });
 
-    test('Initialization', function(assert) {
+    QUnit.test('Initialization', function(assert) {
 
         assert.throws(function() {
             var configurator = new sewi.Configurator();
@@ -70,60 +96,80 @@
 
         assert.throws(function() {
             var configurator = new sewi.Configurator({
-                titleView: '#invalidId',
-                basicInfoView: '#invalidId',
-                resViewerView: '#invalidId',
-                resGalleryView: '#invalidId',
+                titleView: constants.TEST_INVALID_DOM_ID,
+                basicInfoView: constants.TEST_INVALID_DOM_ID,
+                resViewerView: constants.TEST_INVALID_DOM_ID,
+                resGalleryView: constants.TEST_INVALID_DOM_ID,
+                alertsView: constants.TEST_INVALID_DOM_ID,
+                encounterId: constants.TEST_VALID_ENCOUNTER_ID
             });
         }, Error, 'Throws Error when DIV selectors/elements are invalid.');
 
+        assert.throws(function() {
+            var configurator = new sewi.Configurator({
+                titleView: constants.TITLE_VIEW_ID,
+                basicInfoView: constants.BASIC_INFO_VIEW_ID,
+                resViewerView: constants.RES_VIEWER_VIEW_ID,
+                resGalleryView: constants.RES_GALLERY_VIEW_ID,
+                alertsView: constants.ALERTS_VIEW_ID,
+                encounterId: constants.TEST_INVALID_ENCOUNTER_ID,
+            });
+        }, Error, 'Throws Error when invalid encounter ID is provided.');
+
         var configurator = new sewi.Configurator({
-            titleView: '#titleView',
-            basicInfoView: '#basicInfoView',
-            resViewerView: '#resViewerView',
-            resGalleryView: '#resGalleryView',
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
         });
         assert.ok(configurator, 'Configurator can init successfully with selectors/DIVs provided.');
     });
 
-    test('Basic DOM Elements', function(assert) {
+    QUnit.test('Basic DOM Elements', function(assert) {
         var configurator = new sewi.Configurator({
-            titleView: '#titleView',
-            basicInfoView: '#basicInfoView',
-            resViewerView: '#resViewerView',
-            resGalleryView: '#resGalleryView',
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
         });
-        assert.equal(this.titleView.children('h1').length, 1, 'Configurator adds a <h1> element to the title view DIV.');
+        console.log(this.titleView);
+        assert.equal(this.titleView.children(constants.TITLE_DOM).length, 1, 'Configurator adds a <h1> element to the title view DIV.');
         assert.notEqual(this.basicInfoView.children().length, 0, 'Configurator populates encounter basic information view DIV.');
         assert.notEqual(this.resViewerView.children().length, 0, 'Configurator populates encounter resource viewer DIV.');
         assert.notEqual(this.resGalleryView.children().length, 0, 'Configurator populates encounter resource gallery DIV.');
 
         console.log(this.basicInfoView.children());
-        assert.equal(this.basicInfoView.children('div.basic-encounter-container').length, 1, 'Configurator adds the basic information container to the encounter basic information view DIV.');
-        assert.equal(this.resViewerView.children('div.resource-viewer-container').length, 1, 'Configurator adds the resource viewer container to the encounter resource viewer DIV.');
-        assert.equal(this.resGalleryView.children('div.resource-gallery-container').length, 1, 'Configurator adds the resource gallery container to the encounter resource gallery DIV.');
+        assert.equal(this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS).length, 1, 'Configurator adds the basic information container to the encounter basic information view DIV.');
+        assert.equal(this.resViewerView.children('.' + constants.RES_VIEWER_CLASS).length, 1, 'Configurator adds the resource viewer container to the encounter resource viewer DIV.');
+        assert.equal(this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS).length, 1, 'Configurator adds the resource gallery container to the encounter resource gallery DIV.');
     });
 
-    test('Title and Subtitle', function(assert) {
+    QUnit.test('Title and Subtitle', function(assert) {
         var configurator = new sewi.Configurator({
-            titleView: '#titleView',
-            basicInfoView: '#basicInfoView',
-            resViewerView: '#resViewerView',
-            resGalleryView: '#resGalleryView',
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
 
-            title: 'Title for Test Case',
-            subtitle: 'Subtitle for Test Case'
+            title: constants.TEST_TITLE,
+            subtitle: constants.TEST_SUBTITLE
         });
-        var titleDiv = this.titleView.children('h1');
-        var subtitleDiv = titleDiv.children('small');
+        var titleDiv = this.titleView.children(constants.TITLE_DOM);
+        var subtitleDiv = titleDiv.children(constants.SUBTITLE_DOM);
 
         assert.equal(subtitleDiv.length, 1, 'Subtitle is displayed with title.');
-        assert.equal(getTitleText(titleDiv), 'Title for Test Case', 'Title text from constructor is displayed correctly.');
-        assert.equal(subtitleDiv.text(), 'Subtitle for Test Case', 'Subtitle text from constructor is displayed correctly.');
+        assert.equal(getTitleText(titleDiv), constants.TEST_TITLE, 'Title text from constructor is displayed correctly.');
+        assert.equal(subtitleDiv.text(), constants.TEST_SUBTITLE, 'Subtitle text from constructor is displayed correctly.');
 
-        configurator.setTitle('New title', 'New subtitle');
-        assert.equal(getTitleText(titleDiv), 'New title', 'Title text is changed correctly.');
-        assert.equal(subtitleDiv.text(), 'New subtitle', 'Subtitle text is changed correctly.');
+        configurator.setTitle(constants.TEST_CHANGED_TITLE, constants.TEST_CHANGED_SUBTITLE);
+        assert.equal(getTitleText(titleDiv), constants.TEST_CHANGED_TITLE, 'Title text is changed correctly.');
+        assert.equal(subtitleDiv.text(), constants.TEST_CHANGED_SUBTITLE, 'Subtitle text is changed correctly.');
     });
 
 })();
