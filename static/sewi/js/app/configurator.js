@@ -109,7 +109,7 @@ var sewi = sewi || {};
             var element = this.basicInfo.getDOM();
 
             element.on('BEILoaded', basicInfoLoaded.bind(this));
-            element.on('Error', basicInfoCrashed.bind(this));
+            element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, basicInfoCrashed.bind(this));
 
             this.basicInfoView.append(element);
 
@@ -128,7 +128,7 @@ var sewi = sewi || {};
             this.tabs = new sewi.TabContainer();
             var element = this.tabs.getDOM();
             element.on(sewi.constants.TAB_NO_TAB_EVENT, allTabsClosed.bind(this));
-            element.on('Error', resViewerCrashed.bind(this));
+            element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resViewerCrashed.bind(this));
             this.resViewerView.append(element);
         }
     }
@@ -141,7 +141,7 @@ var sewi = sewi || {};
             });
             var element = this.resGallery.getDOM();
             element.on('resourceClick', galleryOpenedResource.bind(this));
-            element.on('Error', resGalleryCrashed.bind(this));
+            element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resGalleryCrashed.bind(this));
 
             this.resGalleryView.append(element);
 
@@ -184,7 +184,7 @@ var sewi = sewi || {};
         var options = {
             elementIsMinimized: this.isBasicInfoMinimized
         };
-        if (event.type === "resize" && event.target === window) {
+        if (event.type === 'resize' && event.target === window) {
             options.isWindowResizeEvent = true;
         }
 
