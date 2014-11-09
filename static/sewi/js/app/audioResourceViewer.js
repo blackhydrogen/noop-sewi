@@ -1,8 +1,21 @@
 // Created by: Le Beier
 var sewi = sewi || {};
 
+// Audio Resource Viewer Class
 (function(){
-    // Audio Resource Viewer Class
+    
+    /**
+     * This initialized a audio media resource viewer which loads the audio file from the server.
+     * After the initial load, it will perform to draw the wave amplitude graph for visualization.
+     *
+     * @class  sewi.AudioResourceViewer
+     * @constructor
+     * @extends sewi.ResourceViewer
+     * 
+     * @param {Object} options The configuratin option for audio resource viewer
+     * @param {String} options.id The observation id associated with the resource. 
+     *                              Note: please do not use the encounter id.            
+     */
     sewi.AudioResourceViewer = function(options){
         if(!(this instanceof sewi.AudioResourceViewer)){
             return new sewi.AudioResourceViewer();
@@ -20,6 +33,7 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.AudioResourceViewer, sewi.ResourceViewer);
 
+    // This overrides the load function of Resource Viewer
     sewi.AudioResourceViewer.prototype.load = function(){
              
         loadAudioURL.call(this);
@@ -78,26 +92,15 @@ var sewi = sewi || {};
     function failToRetrieveAudio(){
         this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
-    /**
-     * Initialized the approprate audio components after a valid URL has been retrieved.
-     * @param  {json} data Json object that contains the data from the ajax call.
-     */
+
     function retrieveAudio(data){
         this.loadedSuccess = true;
         this.url = data.url;
         init.call(this);
-        initControls.call(this);    
+        initControls.call(this);
+        this.trigger("loaded");
     }
 
-    /**
-     * This function checks the availability of the Web Audio API.
-     * If the API exist, it will create the following objects:
-     * 1. audio context
-     * 2. script processor
-     * 3. gain node
-     * 4. XMLHttpRequest
-     * In the event that the Web Audio API is unavailable, an error message will be shown.
-     */
     function init(){
         this.mainDOMElement.addClass('audio-resource-viewer');
         
@@ -106,7 +109,7 @@ var sewi = sewi || {};
                             window.mozAudioContext || 
                             window.oAudioContext || 
                             window.msAudioContext);
-        //contextClass = null;  
+  
         if(contextClass){
             this.audioContext =new contextClass();
             this.showProgressBar(sewi.constants.AUDIO_MSG_FETCHING_AUDIO_CLIP);
@@ -119,6 +122,7 @@ var sewi = sewi || {};
             this.scriptProcessor.connect(this.audioContext.destination);
             this.scriptProcessor.onaudioprocess = updateMediaControl.bind(this);
 
+            //Set up the Gain Node with a default value of 1(max volume).
             this.gainNode = this.audioContext.createGain();
             this.gainNode.connect(this.audioContext.destination);
             this.gainNode.gain.value = 1;
@@ -251,11 +255,11 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({title : AUDIO_ZOOM_TO_FIT_TOOLTIP,
+       this.zoomToFitBtn.tooltip({  title : AUDIO_ZOOM_TO_FIT_TOOLTIP,
                                     container: 'body'});
        this.zoomToSelectionBtn.tooltip({title : AUDIO_ZOOM_TO_SELECTION_TOOLTIP,
                                         container: 'body'});
-       this.clearSelectionBtn.tooltip({title : AUDIO_CLEAR_SELECTION_TOOLTIP,
+       this.clearSelectionBtn.tooltip({ title : AUDIO_CLEAR_SELECTION_TOOLTIP,
                                         container: 'body'});
     }               
 
@@ -318,9 +322,9 @@ var sewi = sewi || {};
                                                     extraButtons : { left : buttons } });
             this.controls.on('Playing', this.playAudio.bind(this));
             this.controls.on('Paused', this.pauseAudio.bind(this));
-            this.controls.on('VolumeChanged', this.volumeSliderChanged.bind(this));
-            this.controls.on('Unmuted', this.volumeUnmuted.bind(this));
-            this.controls.on('Muted', this.volumeMuted.bind(this));
+            this.controls.on('VolumeChanged', volumeSliderChanged.bind(this));
+            this.controls.on('Unmuted', volumeUnmuted.bind(this));
+            this.controls.on('Muted', volumeMuted.bind(this));
             this.mainDOMElement.append(this.controls.getDOM());
             
         }
@@ -366,16 +370,38 @@ var sewi = sewi || {};
         }
     }
     
+    function volumeSliderChanged(event, volume){
+        event.preventDefault();
+        this.gainNode.gain.value = volume;
+    };
+
+    function volumeUnmuted(event){
+        event.preventDefault();
+        this.gainNode.gain.value = this.gainValue;
+    };
+
+    function volumeMuted(event){
+        event.preventDefault();
+        this.gainValue = this.gainNode.gain.value;
+        this.gainNode.gain.value = 0;
+    };
+
+    // This overrides the showTooltips function of Resource Viewer
     sewi.AudioResourceViewer.prototype.showTooltips = function(){
         createToolTips.call(this);
         this.controls.showTooltips();
     };
 
+    // This overrides the hideTooltips function of Resource Viewer
     sewi.AudioResourceViewer.prototype.hideTooltips = function(){
         destroyToolTips.call(this);
         this.controls.hideTooltips();
     };
 
+    /**
+     * This function updates the offset of the audio playback position in the audio source.
+     * @param  {float} position The playback position from the beginning of the audio in seconds.
+     */
     sewi.AudioResourceViewer.prototype.offsetChanged = function(position){
         if(this.isPlaying){
             this.offsetValueChanged = true;
@@ -394,23 +420,10 @@ var sewi = sewi || {};
         updateGraphPlaybackPosition.call(this, this.offset);
     };
 
-    sewi.AudioResourceViewer.prototype.volumeSliderChanged = function(event, volume){
-        event.preventDefault();
-        this.gainNode.gain.value = volume;
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeUnmuted = function(event){
-        event.preventDefault();
-        this.gainNode.gain.value = this.gainValue;
-    };
-
-    sewi.AudioResourceViewer.prototype.volumeMuted = function(event){
-        event.preventDefault();
-        this.gainValue = this.gainNode.gain.value;
-        this.gainNode.gain.value = 0;
-    };
-
-
+    /**
+     * This function plays the audio from the last playback position selected.
+     * If there is no playback position selected, it will play from the beginning.
+     */
     sewi.AudioResourceViewer.prototype.playAudio = function(){
         if(this.audioBuffer){
             this.source = this.audioContext.createBufferSource();   
@@ -425,6 +438,9 @@ var sewi = sewi || {};
         }
     };
 
+    /**
+     * This function pauses/stops the audio.
+     */
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
         if(this.source){
             this.offset += (Date.now() - this.beginTime) / 1000;
@@ -436,6 +452,7 @@ var sewi = sewi || {};
         }
     };
 
+    // This function overrides the resize function of the Resource Viewer
     sewi.AudioResourceViewer.prototype.resize = function(){
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
             this.audioAmplitudeGraphs[i].updateCanvasDimensions();
@@ -447,6 +464,9 @@ var sewi = sewi || {};
         }
     };
 
+    // This function overrides the cleanUp function of the Resource Viewer
+    // Note: As there is no audio tag appended to the page, it is very important to call the cleanUp function.
+    //       Unless we manually stop/disconnect the audio source, deleting the DOM of the resource viewer will not be able to disable the audio.
     sewi.AudioResourceViewer.prototype.cleanUp = function(){
         if(this.isPlaying){
             this.source.stop(0);
@@ -460,7 +480,16 @@ var sewi = sewi || {};
 
 // AudioAmplitudeGraph Class
 (function(){
-
+    /**
+     * This creates a object that is used to represent the Amplitude Wave Graph of the Audio.
+     *
+     * @class  sewi.AudioAmplitudeGraph
+     * @constructor
+     * 
+     * @param {jQuery} graphDOM This holds a reference to the jQuery object which is appended to the page.
+     * @param {[type]} audioSequence This holds a reference to the audio sequence object which holds the audio data buffer and sample rate
+     * @param {[type]} resourceViewer The audio resource viewer that this graph is associated with.
+     */
     sewi.AudioAmplitudeGraph = function(graphDOM, audioSequence, resourceViewer){
         this.resourceViewer = resourceViewer;
         this.graphDOM = graphDOM;
@@ -484,8 +513,10 @@ var sewi = sewi || {};
     function setupMouseVariables(){        
         // is the mouse inside of the editor (for background coloring)
         this.mouseInside = false;
+        
         // state of the mouse button
         this.mouseDown = false;
+        
         // is the mouse clicked inside of the selection
         this.mouseInsideOfSelection = false;
 
@@ -527,18 +558,20 @@ var sewi = sewi || {};
     function setupMiscVariables(){
         this.plotTechnique = 0;
         this.canvasDOM = null;
+        
         // temporary optimized visualization data    
         this.visualizationData = [];
+        
         // handle focus for copy, paste & cut
         this.hasFocus = true;    
+        
         // a list of editors which are linked to this one
         this.linkedGraph = null;
-        // panning
-        this.panPos = 0;
-
+        
         // zoom
         this.viewResolution = 10; // default 10 seconds
         this.viewPos = 0; // at 0 seconds
+        
         // playback
         this.playbackPos = 0;
 
@@ -895,10 +928,11 @@ var sewi = sewi || {};
                     var peakAtFrame = getPeakInFrame.call(this, dataFrom, dataTo, channelData);
                     this.visualizationData.push(peakAtFrame);
                 } else {
-                    this.visualizationData.push({ min : 0.0, max : 0.0});
+                    this.visualizationData.push({   min : 0.0, 
+                                                    max : 0.0});
                 }
             }
-            this.plotTechnique = 1;
+            this.plotTechnique = sewi.constants.AUDIO_PLOT_TECHNIQUE.COMPRESSED;
         } else {
             var pixelPerData = canvasWidth / len;
             var x = 0;
@@ -906,13 +940,15 @@ var sewi = sewi || {};
             for (i = from; i <= from + len; ++i){
                 // if outside of the data range
                 if (i < 0 || i >= channelData.length){
-                    this.visualizationData.push({ y : 0.0, x : x });
+                    this.visualizationData.push({   y : 0.0, 
+                                                    x : x });
                 } else {
-                    this.visualizationData.push({y : channelData[i], x : x});
+                    this.visualizationData.push({   y : channelData[i], 
+                                                    x : x});
                 }
                 x += pixelPerData;
             }
-            this.plotTechnique = 2;
+            this.plotTechnique = sewi.constants.AUDIO_PLOT_TECHNIQUE.DETAILED;
         }
     }
 
@@ -958,21 +994,33 @@ var sewi = sewi || {};
         linkedGraph.updateGraph();
     }
     
+    /**
+     * This function resets the zoom level, making it zoom to fit the whole canvas.
+     */
     sewi.AudioAmplitudeGraph.prototype.zoomToFit = function(){
         this.viewPos = 0;
         this.viewResolution = this.audioSequence.channelData.length / this.audioSequence.sampleRate;
     };
 
+    /**
+     * This function zooms to the selected region.
+     */
     sewi.AudioAmplitudeGraph.prototype.zoomToSelection = function(){
         this.viewPos = this.selectionStart / this.audioSequence.sampleRate;
         this.viewResolution = (this.selectionEnd - this.selectionStart) / this.audioSequence.sampleRate;
     };
 
+    /**
+     * This function clears the selected region from the graph.
+     */
     sewi.AudioAmplitudeGraph.prototype.clearSelection = function(){
        this.selectionStart = 0;
        this.selectionEnd = 0;
     };
 
+    /**
+     * This function draws the graph onto the canvas object.
+     */
     sewi.AudioAmplitudeGraph.prototype.draw = function(){
         var canvasContext = this.canvasDOM[0].getContext('2d');
         
@@ -990,6 +1038,10 @@ var sewi = sewi || {};
         drawText.call(this, canvasContext);
     };
 
+    /**
+     * This function will recalculate the dimension of the canvas based on the DOM dimension that it is currently residing in.
+     * This function is usually called after a resize has occurred.
+     */
     sewi.AudioAmplitudeGraph.prototype.updateCanvasDimensions = function(){
         this.canvasHeight = this.graphDOM.height();
         this.canvasWidth = this.graphDOM.width();
@@ -999,16 +1051,30 @@ var sewi = sewi || {};
                 });
     };
 
+    /**
+     * This function updates data points on the graph. 
+     * After the update, It will redraw the graph.
+     */
     sewi.AudioAmplitudeGraph.prototype.updateGraph = function(){
         getDataInResolution.call(this);                       
         this.draw.call(this);
     };
 
+    /**
+     * This function creates a link between 2 graphs. 
+     * Usually linking the left and right channel graphs.
+     * @param  {AudioAmplitudeGraph} otherGraph The graph to be linked. 
+     */
     sewi.AudioAmplitudeGraph.prototype.link = function(otherGraph){ 
         this.linkedGraph = otherGraph;
         otherGraph.linkedGraph = this;
     };
 
+    /**
+     * This function checks if there is a selected region on the graph
+     * @return {Boolean} If a region is selected, return true. 
+     *                   Otherwise return false.
+     */
     sewi.AudioAmplitudeGraph.prototype.hasSelectedRegion = function(){
         return this.selectionStart === this.selectionEnd ? false : true;
     };
@@ -1017,9 +1083,20 @@ var sewi = sewi || {};
 
 //Audio Sequence Class
 (function(){
+    /**
+     * This class is used to hold the audio buffer data as well as the sample rate of the audio
+     *
+     * @class  sewi.AudioSequence
+     * @constructor
+     * @param {int} sampleRate This is the sample rate of the audio data.
+     * @param {Float32Array} channelData This holds the array of audio buffers in Float32 format.
+     */
     sewi.AudioSequence = function(sampleRate, channelData){
-        //this.name = name;
         this.sampleRate = sampleRate;
+
+        // Make a copy of the channel data. 
+        // This array is used for the drawing of the graph which is usef for visualization.
+        // This is extremely important as the original data will be replaced once the audio starts to play, therefore a shallow copy will not work.
         this.channelData = Array.prototype.slice.call(channelData);
     };
 })();
