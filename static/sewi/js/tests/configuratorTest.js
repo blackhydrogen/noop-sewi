@@ -18,15 +18,18 @@
 
         ROW_DOM: '<div class="row"></div>',
         TITLE_VIEW_DOM: '<div id="titleView" class="row"></div>',
-        BASIC_INFO_VIEW_DOM: '<div id="basicInfoView"></div>',
-        RES_VIEWER_VIEW_DOM: '<div id="resViewerView"></div>',
-        RES_GALLERY_VIEW_DOM: '<div id="resGalleryView"></div>',
+        BASIC_INFO_VIEW_DOM: '<div id="basicInfoView" class="col-xs-3 animated"></div>',
+        RES_VIEWER_VIEW_DOM: '<div id="resViewerView" class="col-xs-0 animated"></div>',
+        RES_GALLERY_VIEW_DOM: '<div id="resGalleryView" class="col-xs-9 animated"></div>',
         ALERTS_VIEW_DOM: '<div id="alerts"></div>',
         TITLE_VIEW_ID: '#titleView',
         BASIC_INFO_VIEW_ID: '#basicInfoView',
         RES_VIEWER_VIEW_ID: '#resViewerView',
         RES_GALLERY_VIEW_ID: '#resGalleryView',
         ALERTS_VIEW_ID: '#alerts',
+        RES_VIEWER_VIEW_SHOWN_CLASS: 'col-xs-8 animated',
+        RES_GALLERY_VIEW_MINIMIZED_CLASS: 'col-xs-1 animated',
+        MINIMIZE_BUTTON_CLASS: 'minimize-button',
     };
 
     function BasicEncounterInfoTestDriver(options) {
@@ -37,9 +40,7 @@
     }
     sewi.inherits(BasicEncounterInfoTestDriver, sewi.ConfiguratorElement);
 
-    BasicEncounterInfoTestDriver.prototype.resize = function() {
-        this.trigger(constants.TEST_RESIZE_EVENT);
-    };
+    BasicEncounterInfoTestDriver.prototype.resize = testDriverResized;
 
     function ResViewerTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
@@ -48,9 +49,7 @@
     }
     sewi.inherits(ResViewerTestDriver, sewi.ConfiguratorElement);
 
-    ResViewerTestDriver.prototype.resize = function() {
-        this.trigger(constants.TEST_RESIZE_EVENT);
-    };
+    ResViewerTestDriver.prototype.resize = testDriverResized;
 
     function ResGalleryTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
@@ -60,9 +59,11 @@
     }
     sewi.inherits(ResGalleryTestDriver, sewi.ConfiguratorElement);
 
-    ResGalleryTestDriver.prototype.resize = function() {
+    ResGalleryTestDriver.prototype.resize = testDriverResized;
+
+    function testDriverResized() {
         this.trigger(constants.TEST_RESIZE_EVENT);
-    };
+    }
 
     function getTitleText(titleDiv) {
         var titleText = titleDiv.clone()
@@ -218,6 +219,70 @@
         });
 
         $(window).resize();
+    });
+
+    QUnit.asyncTest('View resize propogation in default mode', function(assert) {
+        QUnit.expect(1);
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+        });
+
+        var basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+        var minimizeButton = this.basicInfoView.children('.' + constants.MINIMIZE_BUTTON_CLASS);
+
+        resViewerElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(false, 'Resource viewer should not have been resized.');
+            QUnit.start();
+        });
+
+        resGalleryElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Configurator informs the resource gallery sub-component when the view resizes.');
+            QUnit.start();
+        });
+
+        setTimeout(minimizeButton.click.bind(minimizeButton), 500);
+    });
+
+    QUnit.asyncTest('View resize propogation when resource already opened', function(assert) {
+        QUnit.expect(1);
+
+        this.resViewerView.removeClass().addClass(constants.RES_VIEWER_VIEW_SHOWN_CLASS);
+        this.resGalleryView.removeClass().addClass(constants.RES_GALLERY_VIEW_MINIMIZED_CLASS);
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+            isResourceViewerHidden: false,
+        });
+
+        var basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+        var minimizeButton = this.basicInfoView.children('.' + constants.MINIMIZE_BUTTON_CLASS);
+
+        resViewerElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Configurator informs the resource viewer sub-component when the window resizes.');
+            QUnit.start();
+        });
+
+        resGalleryElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(false, 'Resource gallery should not have been resized.');
+            QUnit.start();
+        });
+
+        setTimeout(minimizeButton.click.bind(minimizeButton), 500);
     });
 
 })();
