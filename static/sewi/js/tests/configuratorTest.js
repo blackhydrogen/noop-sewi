@@ -46,6 +46,8 @@
         VIEWER_NO_TABS_EVENT: sewi.constants.TAB_NO_TAB_EVENT,
     };
 
+    // Driver classes definitions
+
     function BasicEncounterInfoTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
 
@@ -55,20 +57,6 @@
     sewi.inherits(BasicEncounterInfoTestDriver, sewi.ConfiguratorElement);
 
     BasicEncounterInfoTestDriver.prototype.resize = testDriverResized;
-
-    function BasicEncounterInfoWithTitleTestDriver(options) {
-        sewi.ConfiguratorElement.call(this);
-
-        this.mainDOMElement.addClass(constants.BASIC_ENCOUNTER_INFO_CLASS);
-    }
-    sewi.inherits(BasicEncounterInfoWithTitleTestDriver, sewi.ConfiguratorElement);
-
-    BasicEncounterInfoWithTitleTestDriver.prototype.load = function() {
-        this.trigger('BEILoaded', {
-            id: constants.TEST_DISPLAYED_PATIENT_ID,
-            name: constants.TEST_DISPLAYED_PATIENT_NAME
-        });
-    };
 
     function ResViewerTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
@@ -93,6 +81,25 @@
     sewi.inherits(ResGalleryTestDriver, sewi.ConfiguratorElement);
 
     ResGalleryTestDriver.prototype.resize = testDriverResized;
+
+    // Special driver classes definitions
+
+    // Variant of the basic encounter info viewer that initializes with a title.
+    function BasicEncounterInfoWithTitleTestDriver(options) {
+        sewi.ConfiguratorElement.call(this);
+
+        this.mainDOMElement.addClass(constants.BASIC_ENCOUNTER_INFO_CLASS);
+    }
+    sewi.inherits(BasicEncounterInfoWithTitleTestDriver, sewi.ConfiguratorElement);
+
+    BasicEncounterInfoWithTitleTestDriver.prototype.load = function() {
+        this.trigger('BEILoaded', {
+            id: constants.TEST_DISPLAYED_PATIENT_ID,
+            name: constants.TEST_DISPLAYED_PATIENT_NAME
+        });
+    };
+
+    // End driver class definitions
 
     function testOpenResource() {
         var resource = $(constants.TEST_RESOURCE_DOM);
