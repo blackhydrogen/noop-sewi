@@ -71,23 +71,28 @@ var sewi = sewi || {};
         this.resGalleryView = $(this.resGalleryView);
         this.alertsView = $(this.alertsView);
 
-        if (this.titleView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_TITLEVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.basicInfoView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_BASICINFOVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.resViewerView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_RESVIEWERVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.resGalleryView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_RESGALLERYVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.alertsView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_ALERTSVIEW_EXCEPTION_MESSAGE);
-        }
-        if (_.isString(this.encounterId) === false) {
-            throw new Error(sewi.constants.CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE);
+        try {
+            if (this.titleView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_TITLEVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.basicInfoView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_BASICINFOVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.resViewerView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_RESVIEWERVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.resGalleryView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_RESGALLERYVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.alertsView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_ALERTSVIEW_EXCEPTION_MESSAGE);
+            }
+            if (_.isString(this.encounterId) === false) {
+                throw new Error(sewi.constants.CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE);
+            }
+        } catch (anyError) {
+            reportSeriousError();
+            throw anyError;
         }
     }
 
@@ -130,7 +135,7 @@ var sewi = sewi || {};
 
             element.on(sewi.constants.TAB_NO_TAB_EVENT, allTabsClosed.bind(this));
             element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resViewerCrashed.bind(this));
-            
+
             this.resViewerView.append(element);
 
             this.tabs.load();
