@@ -127,9 +127,13 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.TabContainer)) {
             this.tabs = new sewi.TabContainer();
             var element = this.tabs.getDOM();
+
             element.on(sewi.constants.TAB_NO_TAB_EVENT, allTabsClosed.bind(this));
             element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resViewerCrashed.bind(this));
+            
             this.resViewerView.append(element);
+
+            this.tabs.load();
         }
     }
 
