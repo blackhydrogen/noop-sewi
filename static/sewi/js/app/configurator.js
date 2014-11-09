@@ -127,7 +127,7 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.TabContainer)) {
             this.tabs = new sewi.TabContainer();
             var element = this.tabs.getDOM();
-            element.on("NoTabs", allTabsClosed.bind(this));
+            element.on(sewi.constants.TAB_NO_TAB_EVENT, allTabsClosed.bind(this));
             element.on('Error', resViewerCrashed.bind(this));
             this.resViewerView.append(element);
         }
