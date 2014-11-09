@@ -8,6 +8,8 @@
         TEST_SUBTITLE: 'Subtitle for Test Case',
         TEST_CHANGED_TITLE: 'New Title',
         TEST_CHANGED_SUBTITLE: 'New Subtitle',
+        TEST_DISPLAYED_PATIENT_NAME: 'John Smith',
+        TEST_DISPLAYED_PATIENT_ID: '111',
         TEST_RESIZE_EVENT: 'testDriverResized',
 
         BASIC_ENCOUNTER_INFO_CLASS: 'basic-encounter-container',
@@ -15,6 +17,7 @@
         RES_GALLERY_CLASS: 'resource-gallery-container',
         TITLE_DOM: 'h2',
         SUBTITLE_DOM: 'small',
+        TITLE_PREFIX: sewi.constants.CONFIGURATOR_TITLE_PREFIX,
 
         ROW_DOM: '<div class="row"></div>',
         TITLE_VIEW_DOM: '<div id="titleView" class="row"></div>',
@@ -41,6 +44,20 @@
     sewi.inherits(BasicEncounterInfoTestDriver, sewi.ConfiguratorElement);
 
     BasicEncounterInfoTestDriver.prototype.resize = testDriverResized;
+
+    function BasicEncounterInfoWithTitleTestDriver(options) {
+        sewi.ConfiguratorElement.call(this);
+
+        this.mainDOMElement.addClass(constants.BASIC_ENCOUNTER_INFO_CLASS);
+    }
+    sewi.inherits(BasicEncounterInfoWithTitleTestDriver, sewi.ConfiguratorElement);
+
+    BasicEncounterInfoWithTitleTestDriver.prototype.load = function() {
+        this.trigger('BEILoaded', {
+            id: constants.TEST_DISPLAYED_PATIENT_ID,
+            name: constants.TEST_DISPLAYED_PATIENT_NAME
+        });
+    };
 
     function ResViewerTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
@@ -150,13 +167,12 @@
             alertsView: constants.ALERTS_VIEW_ID,
             encounterId: constants.TEST_VALID_ENCOUNTER_ID,
         });
-        console.log(this.titleView);
+
         assert.equal(this.titleView.children(constants.TITLE_DOM).length, 1, 'Configurator adds a <h1> element to the title view DIV.');
         assert.notEqual(this.basicInfoView.children().length, 0, 'Configurator populates encounter basic information view DIV.');
         assert.notEqual(this.resViewerView.children().length, 0, 'Configurator populates encounter resource viewer DIV.');
         assert.notEqual(this.resGalleryView.children().length, 0, 'Configurator populates encounter resource gallery DIV.');
 
-        console.log(this.basicInfoView.children());
         assert.equal(this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS).length, 1, 'Configurator adds the basic information container to the encounter basic information view DIV.');
         assert.equal(this.resViewerView.children('.' + constants.RES_VIEWER_CLASS).length, 1, 'Configurator adds the resource viewer container to the encounter resource viewer DIV.');
         assert.equal(this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS).length, 1, 'Configurator adds the resource gallery container to the encounter resource gallery DIV.');
@@ -184,6 +200,31 @@
         configurator.setTitle(constants.TEST_CHANGED_TITLE, constants.TEST_CHANGED_SUBTITLE);
         assert.equal(getTitleText(titleDiv), constants.TEST_CHANGED_TITLE, 'Title text is changed correctly.');
         assert.equal(subtitleDiv.text(), constants.TEST_CHANGED_SUBTITLE, 'Subtitle text is changed correctly.');
+    });
+
+    QUnit.test('Loading title from sub-component', function(assert) {
+        // Override with another test driver
+        window.sewi.BasicEncounterInfoViewer = BasicEncounterInfoWithTitleTestDriver;
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+
+            title: constants.TEST_TITLE,
+            subtitle: constants.TEST_SUBTITLE
+        });
+        var titleDiv = this.titleView.children(constants.TITLE_DOM);
+        var subtitleDiv = titleDiv.children(constants.SUBTITLE_DOM);
+
+        var titleText = getTitleText(titleDiv);
+        var subtitleText = subtitleDiv.text().replace(constants.TITLE_PREFIX, '');
+
+        assert.strictEqual(titleText, constants.TEST_DISPLAYED_PATIENT_NAME, 'Title text from constructor is displayed correctly.');
+        assert.strictEqual(subtitleText, constants.TEST_DISPLAYED_PATIENT_ID, 'Subtitle text from constructor is displayed correctly.');
     });
 
     QUnit.asyncTest('Window resize propogation', function(assert) {
