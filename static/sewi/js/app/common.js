@@ -120,7 +120,7 @@ var sewi = sewi || {};
                                                 RIGHT_TOP: 'panel-indicator-right-top',
                                                 LEFT_BOTTOM: 'panel-indicator-left-bottom',
                                                 RIGHT_BOTTOM: 'panel-indicator-right-bottom'},
-        TAB_NO_TAB_EVENT: 'NoTab',
+        TAB_NO_TAB_EVENT: 'noTab',
         TAB_REMOVE_BUTTON_DOM: '<span class="glyphicon glyphicon-remove"></span>', 
         TAB_PANEL_STR: 'PANEL',
         TAB_PANEL_DOM: '<div class="animated panel"></div>',
