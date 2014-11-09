@@ -347,4 +347,10 @@ var sewi = sewi || {};
         this.titleDOM.text(title + ' ')
                         .append(this.subtitleDOM);
     };
+
+    if (sewi.testMode) {
+        sewi.Configurator.prototype.privates = {
+            openResource: openResource,
+        };
+    }
 })();
