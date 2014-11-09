@@ -11,6 +11,13 @@
         TEST_DISPLAYED_PATIENT_NAME: 'John Smith',
         TEST_DISPLAYED_PATIENT_ID: '111',
         TEST_RESIZE_EVENT: 'testDriverResized',
+        TEST_RESOURCE_DOM: '<div class="resource" data-res-id="someId" data-res-type="test"></div>',
+        TEST_RESOURCE_ID_KEY: 'resId',
+        TEST_RESOURCE_TYPE_KEY: 'resType',
+        TEST_RESOURCE_ID: 'someId',
+        TEST_RESOURCE_TYPE: 'test',
+        TEST_OPEN_RESOURCE_EVENT: 'testOpenResource',
+        TEST_RESOURCE_OPENED_EVENT: 'testResourceOpened',
 
         BASIC_ENCOUNTER_INFO_CLASS: 'basic-encounter-container',
         RES_VIEWER_CLASS: 'resource-viewer-container',
@@ -33,6 +40,7 @@
         RES_VIEWER_VIEW_SHOWN_CLASS: 'col-xs-8 animated',
         RES_GALLERY_VIEW_MINIMIZED_CLASS: 'col-xs-1 animated',
         MINIMIZE_BUTTON_CLASS: 'minimize-button',
+        GALLERY_CLICKED_EVENT: 'resourceClick',
     };
 
     function BasicEncounterInfoTestDriver(options) {
@@ -67,16 +75,25 @@
     sewi.inherits(ResViewerTestDriver, sewi.ConfiguratorElement);
 
     ResViewerTestDriver.prototype.resize = testDriverResized;
+    ResViewerTestDriver.prototype.addObjectToNewTab = function(resourceDOM) {
+        this.trigger(constants.TEST_RESOURCE_OPENED_EVENT, resourceDOM);
+    };
 
     function ResGalleryTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.RES_GALLERY_CLASS);
         this.encounterId = options.encounterId;
+        this.on(constants.TEST_OPEN_RESOURCE_EVENT, testOpenResource.bind(this));
     }
     sewi.inherits(ResGalleryTestDriver, sewi.ConfiguratorElement);
 
     ResGalleryTestDriver.prototype.resize = testDriverResized;
+
+    function testOpenResource() {
+        var resource = $(constants.TEST_RESOURCE_DOM);
+        this.trigger(constants.GALLERY_CLICKED_EVENT, [ resource ]);
+    }
 
     function testDriverResized() {
         this.trigger(constants.TEST_RESIZE_EVENT);
@@ -308,7 +325,6 @@
             isResourceViewerHidden: false,
         });
 
-        var basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
         var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
         var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
         var minimizeButton = this.basicInfoView.children('.' + constants.MINIMIZE_BUTTON_CLASS);
@@ -324,6 +340,32 @@
         });
 
         setTimeout(minimizeButton.click.bind(minimizeButton), 500);
+    });
+
+    QUnit.asyncTest('Opening resource', function(assert) {
+        QUnit.expect(3);
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+        });
+
+        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+
+        resViewerElement.on(constants.TEST_RESOURCE_OPENED_EVENT, function(event, resource) {
+            assert.ok(true, 'Resource viewer view can receive the resource DOM element from the configurator.');
+            assert.strictEqual(resource.data(constants.TEST_RESOURCE_ID_KEY), constants.TEST_RESOURCE_ID, 'Resource ID was not mangled.');
+            assert.strictEqual(resource.data(constants.TEST_RESOURCE_TYPE_KEY), constants.TEST_RESOURCE_TYPE, 'Resource type was not mangled.');
+            QUnit.start();
+        });
+
+        var resourceDOM = $(constants.TEST_RESOURCE_DOM);
+        configurator.privates.openResource.call(configurator, resourceDOM);
     });
 
 })();
