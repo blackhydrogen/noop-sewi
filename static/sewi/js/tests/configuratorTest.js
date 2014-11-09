@@ -76,7 +76,7 @@
 
     ResViewerTestDriver.prototype.resize = testDriverResized;
     ResViewerTestDriver.prototype.addObjectToNewTab = function(resourceDOM) {
-        this.trigger(constants.TEST_RESOURCE_OPENED_EVENT, resourceDOM);
+        this.trigger(constants.TEST_RESOURCE_OPENED_EVENT, [ resourceDOM ]);
     };
 
     function ResGalleryTestDriver(options) {
