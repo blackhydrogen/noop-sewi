@@ -8,6 +8,7 @@
         TEST_SUBTITLE: 'Subtitle for Test Case',
         TEST_CHANGED_TITLE: 'New Title',
         TEST_CHANGED_SUBTITLE: 'New Subtitle',
+        TEST_RESIZE_EVENT: 'testDriverResized',
 
         BASIC_ENCOUNTER_INFO_CLASS: 'basic-encounter-container',
         RES_VIEWER_CLASS: 'resource-viewer-container',
@@ -36,12 +37,20 @@
     }
     sewi.inherits(BasicEncounterInfoTestDriver, sewi.ConfiguratorElement);
 
+    BasicEncounterInfoTestDriver.prototype.resize = function() {
+        this.trigger(constants.TEST_RESIZE_EVENT);
+    };
+
     function ResViewerTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.RES_VIEWER_CLASS);
     }
     sewi.inherits(ResViewerTestDriver, sewi.ConfiguratorElement);
+
+    ResViewerTestDriver.prototype.resize = function() {
+        this.trigger(constants.TEST_RESIZE_EVENT);
+    };
 
     function ResGalleryTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
@@ -50,6 +59,10 @@
         this.encounterId = options.encounterId;
     }
     sewi.inherits(ResGalleryTestDriver, sewi.ConfiguratorElement);
+
+    ResGalleryTestDriver.prototype.resize = function() {
+        this.trigger(constants.TEST_RESIZE_EVENT);
+    };
 
     function getTitleText(titleDiv) {
         var titleText = titleDiv.clone()
@@ -170,6 +183,41 @@
         configurator.setTitle(constants.TEST_CHANGED_TITLE, constants.TEST_CHANGED_SUBTITLE);
         assert.equal(getTitleText(titleDiv), constants.TEST_CHANGED_TITLE, 'Title text is changed correctly.');
         assert.equal(subtitleDiv.text(), constants.TEST_CHANGED_SUBTITLE, 'Subtitle text is changed correctly.');
+    });
+
+    QUnit.asyncTest('Window resize propogation', function(assert) {
+        QUnit.expect(3);
+        QUnit.stop(2);
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+        });
+
+        var basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+
+        basicInfoElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Configurator informs the basic information sub-component when the window resizes.');
+            QUnit.start();
+        });
+
+        resViewerElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Configurator informs the resource viewer sub-component when the window resizes.');
+            QUnit.start();
+        });
+
+        resGalleryElement.on(constants.TEST_RESIZE_EVENT, function() {
+            assert.ok(true, 'Configurator informs the resource gallery sub-component when the window resizes.');
+            QUnit.start();
+        });
+
+        $(window).resize();
     });
 
 })();
