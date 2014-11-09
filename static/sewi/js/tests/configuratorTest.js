@@ -368,4 +368,27 @@
         configurator.privates.openResource.call(configurator, resourceDOM);
     });
 
+    QUnit.asyncTest('Tranferring resource from gallery to viewer', function(assert) {
+        QUnit.expect(1);
+
+        var configurator = new sewi.Configurator({
+            titleView: constants.TITLE_VIEW_ID,
+            basicInfoView: constants.BASIC_INFO_VIEW_ID,
+            resViewerView: constants.RES_VIEWER_VIEW_ID,
+            resGalleryView: constants.RES_GALLERY_VIEW_ID,
+            alertsView: constants.ALERTS_VIEW_ID,
+            encounterId: constants.TEST_VALID_ENCOUNTER_ID,
+        });
+
+        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+
+        resViewerElement.on(constants.TEST_RESOURCE_OPENED_EVENT, function(event, resource) {
+            assert.ok(true, 'Resource element transferred successfully.');
+            QUnit.start();
+        });
+
+        resGalleryElement.trigger(constants.TEST_OPEN_RESOURCE_EVENT);
+    });
+
 })();
