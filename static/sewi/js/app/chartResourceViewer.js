@@ -239,11 +239,12 @@ var sewi = sewi || {};
    * @memberof sewi.ChartResourceViewer
    */
 
-  function validateArguments() {        
+  function validateArguments() {
     if (!_.isString(this.id)) {
-        throw new Error('options: Valid resource id must be provided.');
+      throw new Error('options: Valid resource id must be provided.');
     }
   }
+
   function initDOM() {
 
     this.mainDOMElement.addClass('time-series-graph-container');
@@ -261,8 +262,8 @@ var sewi = sewi || {};
 
   function initEventHandlers() {
 
-    this.controlPanelElement.on('allPointsReset', clearAllPoints.bind(this));
-    this.controlPanelElement.on('visiblePointsReset', clearShownPoints.bind(this));
+    this.controlPanelElement.on('allPointsReset', resetAllPoints.bind(this));
+    this.controlPanelElement.on('visiblePointsReset', resetShownPoints.bind(this));
     this.controlPanelElement.on('zoomOutGraph', zoomOutGraph.bind(this));
     this.chartContainer.on('zoomedOnY', highlightPointsAboveMinY.bind(this));
 
@@ -277,21 +278,22 @@ var sewi = sewi || {};
   }
 
   function parseChartData(data) {
-    var selfRef = this;
-    selfRef.graphData = [];
-    var parsedCSV = "";
+    this.graphData = [];
+    $.get(data.url, loadCSV.bind(this));
+  }
 
-    $.get(data.url, function(csvText) {
-      var allTextLines = csvText.split(/\r\n|\n/);
-      $.each(allTextLines, function(index, value) {
-        if (index == 1) {
-          selfRef.samplingRate = value[0] - allTextLines[index - 1][0];
-        }
-        parsedCSV += value + '\n';
-        selfRef.graphData.push(value.split(','));
-      });
-      createChart.call(selfRef, parsedCSV);
+  function loadCSV(csvText) {
+    var selfRef = this;
+    var allTextLines = csvText.split(/\r\n|\n/);
+    var parsedCSV = "";
+    $.each(allTextLines, function(index, value) {
+      if (index == 1) {
+        selfRef.samplingRate = value[0] - allTextLines[index - 1][0];
+      }
+      parsedCSV += value + '\n';
+      selfRef.graphData.push(value.split(','));
     });
+    createChart.call(this, parsedCSV);
   }
 
   function loadFailed() {
@@ -302,24 +304,25 @@ var sewi = sewi || {};
     parseChartData.call(this, data);
   }
 
-  function clearAllPoints() {
+  // Resets all the points that have been selected by the user
+  function resetAllPoints() {
 
     this.highlightedPoints = [];
     this.peaks = [];
     redrawGraph.call(this);
   }
 
-  function clearShownPoints() {
-    var selfRef = this;
-    var clone = selfRef.highlightedPoints.slice(0);
-    $.each(clone, function(index, value) {
-      if (isVisiblePoint(value, selfRef.xMin, selfRef.xMax, selfRef.yMin, selfRef.yMax)) {
-        unHighlightPoint.call(selfRef, value);
-      }
-
-    });
+  // Resets points within the current range of the graph that is visible to the user 
+  function resetShownPoints() {
+    var clone = this.highlightedPoints.slice(0);
+    $.each(clone, resetPoint.bind(this));
     redrawGraph.call(this);
+  }
 
+  function resetPoint(index, value) {
+    if (isVisiblePoint(value, this.xMin, this.xMax, this.yMin, this.yMax)) {
+      unHighlightPoint.call(this, value);
+    }
   }
 
   function zoomOutGraph() {
@@ -374,7 +377,7 @@ var sewi = sewi || {};
     });
   }
 
-  function chartPointClicked(p) {
+  function processClickedPoint(p) {
     if (isHighlightedPoint(p, this.peaks)) {
       unHighlightPoint.call(this, p);
 
@@ -404,10 +407,6 @@ var sewi = sewi || {};
   function isHighlightedPoint(p, peaks) {
     var index = peaks.indexOf(p.xval);
     return (index >= 0);
-  }
-
-  function canvasPointClicked(x, points) {
-    chartPointClicked.call(this, points[0]);
   }
 
   function getIndexOfPoint(x, samplingRate) {
@@ -469,9 +468,9 @@ var sewi = sewi || {};
   }
 
   function createChart(data) {
-    var selfRef = this;
-    selfRef.graph = new Dygraph(
-      selfRef.chartContainer[0],
+    var container = this.chartContainer[0];
+    this.graph = new Dygraph(
+      container,
       data, {
         title: ' ',
         animatedZooms: true,
@@ -486,53 +485,63 @@ var sewi = sewi || {};
         xlabel: 'Time',
         ylabel: 'Value',
         labels: ['time', 'Value'],
-        labelsDiv: selfRef.legendContainer[0],
-        dateWindow: selfRef.initialXRange,
+        labelsDiv: this.legendContainer[0],
+        dateWindow: this.initialXRange,
         axes: {
           x: {
             valueFormatter: formatLegend
           }
         },
 
-        underlayCallback: function() {
-          selfRef.canvasContext = selfRef.chartContainer.find('canvas')[1].getContext('2d');
-          selfRef.hideProgressBar();
-        },
+        underlayCallback: graphUnderlay.bind(this),
 
-        zoomCallback: function() {
-          if ((selfRef.yMin != selfRef.prevYMin || selfRef.yMax != selfRef.prevYMax) && selfRef.graph.isZoomed())
-            selfRef.chartContainer.trigger('zoomedOnY');
+        zoomCallback: chartZoomed.bind(this),
 
-          setCurrAxisRanges.call(selfRef, selfRef.graph);
-          updateTimeInterval.call(selfRef);
-          if(selfRef.graph.isZoomed())
-            selfRef.isZoomed = true;
+        pointClickCallback: chartPointClicked.bind(this),
 
-        },
+        highlightCallback: highlightAllPoints.bind(this),
 
-        pointClickCallback: function(e, p) {
-          selfRef.clickedX = p.xval;
-          chartPointClicked.call(selfRef, p);
-        },
+        drawCallback: graphReadyToBeDrawn.bind(this),
 
-        highlightCallback: function() {
-          highlightAllPoints.call(selfRef);
-        },
-
-        drawCallback: function(g, is_initial) {
-          setCurrAxisRanges.call(selfRef, g);
-          if (!is_initial) {
-            highlightAllPoints.call(selfRef);
-            updateTimeInterval.call(selfRef);
-          }
-        },
-
-        clickCallback: function(e, x, points) {
-          if (!isPointOnGraph.call(selfRef, x))
-            canvasPointClicked.call(selfRef, x, points);
-        }
+        clickCallback: canvasPointClicked.bind(this),
       }
     );
+  }
+
+  function graphUnderlay() {
+    this.canvasContext = this.chartContainer.find('canvas')[1].getContext('2d');
+    this.hideProgressBar();
+  }
+
+  function chartZoomed() {
+    if ((this.yMin != this.prevYMin || this.yMax != this.prevYMax) && this.graph.isZoomed())
+      this.chartContainer.trigger('zoomedOnY');
+
+    setCurrAxisRanges.call(this, this.graph);
+    updateTimeInterval.call(this);
+    if (this.graph.isZoomed())
+      this.isZoomed = true;
+    else
+      this.isZoomed = false;
+  }
+
+  function chartPointClicked(e, p) {
+    this.clickedX = p.xval;
+    processClickedPoint.call(this, p);
+  }
+
+  function graphReadyToBeDrawn(g, is_initial) {
+    setCurrAxisRanges.call(this, g);
+    if (!is_initial) {
+      highlightAllPoints.call(this);
+      updateTimeInterval.call(this);
+    }
+  }
+
+  function canvasPointClicked(e, x, points) {
+    if (!isPointOnGraph.call(this, x)) {
+      processClickedPoint.call(this, points[0]);
+    }
   }
 
   function setCurrAxisRanges(graph) {
@@ -558,7 +567,7 @@ var sewi = sewi || {};
     this.peaks.splice(this.peaks.indexOf(p.xval), 1);
   }
 
-   /*
+  /*
    * R-R Interval is calculated as follows :
    * 1.Sort all the points selected by increasing x-coordinate.
    * 2.Sum up the difference between adjacent points.
