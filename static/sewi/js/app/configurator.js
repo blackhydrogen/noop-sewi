@@ -137,8 +137,6 @@ var sewi = sewi || {};
             element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resViewerCrashed.bind(this));
 
             this.resViewerView.append(element);
-
-            this.tabs.load();
         }
     }
 
