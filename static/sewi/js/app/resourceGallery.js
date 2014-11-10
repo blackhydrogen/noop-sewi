@@ -80,6 +80,9 @@ var sewi = sewi || {};
           helper: 'clone',
           revert: 'invalid',
           appendTo: 'body',
+          start: function(e, ui) {
+            ui.helper.addClass('resource-dragged');
+        }
         }).append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
         .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
 
