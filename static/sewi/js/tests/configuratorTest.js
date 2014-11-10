@@ -106,36 +106,30 @@
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.BASIC_ENCOUNTER_INFO_CLASS);
+
+        setTimeout(this.trigger.bind(this), 500, constants.COMPONENT_CRASH_EVENT);
     }
     sewi.inherits(CrashingBasicEncounterInfoTestDriver, sewi.ConfiguratorElement);
 
-    CrashingBasicEncounterInfoTestDriver.prototype.load = function() {
-        this.trigger(constants.COMPONENT_CRASH_EVENT);
-    };
-
-    // Variant of the resource viewer that crashes immediately.
+    // Variant of the resource viewer that crashes after a brief period.
     function CrashingResViewerTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.RES_VIEWER_CLASS);
+
+        setTimeout(this.trigger.bind(this), 500, constants.COMPONENT_CRASH_EVENT);
     }
     sewi.inherits(CrashingResViewerTestDriver, sewi.ConfiguratorElement);
-
-    CrashingResViewerTestDriver.prototype.load = function() {
-        this.trigger(constants.COMPONENT_CRASH_EVENT);
-    };
 
     // Variant of the resource gallery that crashes immediately.
     function CrashingResGalleryTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.RES_GALLERY_CLASS);
+
+        setTimeout(this.trigger.bind(this), 500, constants.COMPONENT_CRASH_EVENT);
     }
     sewi.inherits(CrashingResGalleryTestDriver, sewi.ConfiguratorElement);
-
-    CrashingResGalleryTestDriver.prototype.load = function() {
-        this.trigger(constants.COMPONENT_CRASH_EVENT);
-    };
 
     // End driver class definitions
 
@@ -493,8 +487,9 @@
         }, 500);
     });
 
-    QUnit.test('Configurator responding to crashing sub-components', function(assert) {
+    QUnit.asyncTest('Configurator responding to crashing sub-components', function(assert) {
 
+        // Ensure all views are visible.
         this.resViewerView.removeClass().addClass(constants.RES_VIEWER_VIEW_SHOWN_CLASS);
         this.resGalleryView.removeClass().addClass(constants.RES_GALLERY_VIEW_MINIMIZED_CLASS);
 
@@ -517,38 +512,47 @@
             isResourceViewerHidden: false,
         });
 
-        var basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
-        var resViewerElement = this.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
-        var resGalleryElement = this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
+        var selfRef = this;
 
-        assert.equal(basicInfoElement.length, 0, 'Basic info viewer element was removed when it crashed.');
-        assert.equal(resViewerElement.length, 0, 'Resource viewer element was removed when it crashed.');
-        assert.equal(resGalleryElement.length, 0, 'Resource gallery element was removed when it crashed.');
+        // Allow time for the driver classes to crash
+        setTimeout(function() {
 
-        var basicInfoReloadButton = this.basicInfoView.find(constants.RELOAD_BUTTON_SELECTOR);
-        var resViewerReloadButton = this.resViewerView.find(constants.RELOAD_BUTTON_SELECTOR);
-        var resGalleryReloadButton = this.resGalleryView.find(constants.RELOAD_BUTTON_SELECTOR);
+            var basicInfoElement = selfRef.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+            var resViewerElement = selfRef.resViewerView.children('.' + constants.RES_VIEWER_CLASS);
+            var resGalleryElement = selfRef.resGalleryView.children('.' + constants.RES_GALLERY_CLASS);
 
-        assert.equal(basicInfoReloadButton.length, 1, 'Error screen shown with reload button when basic info viewer crashed.');
-        assert.equal(resViewerReloadButton.length, 1, 'Error screen shown with reload button when resource viewer crashed.');
-        assert.equal(resGalleryReloadButton.length, 1, 'Error screen shown with reload button when resource viewer crashed.');
+            assert.equal(basicInfoElement.length, 0, 'Basic info viewer element was removed when it crashed.');
+            assert.equal(resViewerElement.length, 0, 'Resource viewer element was removed when it crashed.');
+            assert.equal(resGalleryElement.length, 0, 'Resource gallery element was removed when it crashed.');
 
-        // Restore test drivers
-        window.sewi.TabContainer = ResViewerTestDriver;
-        window.sewi.ResourceGallery = ResGalleryTestDriver;
-        window.sewi.BasicEncounterInfoViewer = BasicEncounterInfoTestDriver;
+            var basicInfoReloadButton = selfRef.basicInfoView.find(constants.RELOAD_BUTTON_SELECTOR);
+            var resViewerReloadButton = selfRef.resViewerView.find(constants.RELOAD_BUTTON_SELECTOR);
+            var resGalleryReloadButton = selfRef.resGalleryView.find(constants.RELOAD_BUTTON_SELECTOR);
 
-        basicInfoReloadButton.click();
-        basicInfoElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
-        assert.equal(basicInfoElement.length, 1, 'Basic info viewer element reloaded successfully.');
+            assert.equal(basicInfoReloadButton.length, 1, 'Error screen shown with reload button when basic info viewer crashed.');
+            assert.equal(resViewerReloadButton.length, 1, 'Error screen shown with reload button when resource viewer crashed.');
+            assert.equal(resGalleryReloadButton.length, 1, 'Error screen shown with reload button when resource viewer crashed.');
 
-        resViewerReloadButton.click();
-        resViewerElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
-        assert.equal(resViewerElement.length, 1, 'Resource viewer element reloaded successfully.');
+            // Restore test drivers
+            window.sewi.TabContainer = ResViewerTestDriver;
+            window.sewi.ResourceGallery = ResGalleryTestDriver;
+            window.sewi.BasicEncounterInfoViewer = BasicEncounterInfoTestDriver;
 
-        resGalleryReloadButton.click();
-        resGalleryElement = this.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
-        assert.equal(resGalleryElement.length, 1, 'Resource gallery element reloaded successfully.');
+            basicInfoReloadButton.click();
+            basicInfoElement = selfRef.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+            assert.equal(basicInfoElement.length, 1, 'Basic info viewer element reloaded successfully.');
+
+            resViewerReloadButton.click();
+            resViewerElement = selfRef.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+            assert.equal(resViewerElement.length, 1, 'Resource viewer element reloaded successfully.');
+
+            resGalleryReloadButton.click();
+            resGalleryElement = selfRef.basicInfoView.children('.' + constants.BASIC_ENCOUNTER_INFO_CLASS);
+            assert.equal(resGalleryElement.length, 1, 'Resource gallery element reloaded successfully.');
+
+            QUnit.start();
+
+        }, 1000);
     });
 
 })();
