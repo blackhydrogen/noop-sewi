@@ -52,6 +52,7 @@ var sewi = sewi || {};
         this.id = this.options.id;
         this.contentDOM = null;
         this.audioAmplitudeGraphs = [];
+        this.audioSequences = [];
         this.updateInterval = 0.1;
         this.lastUpdated = 0;
         this.drawTimer = 0;
@@ -63,6 +64,10 @@ var sewi = sewi || {};
         this.scriptProcessorInputChannels = 1;
         this.scriptProcessorOutputChannels = 1;
 
+        this.scrollBar = null;
+        
+        this.buffersReady = 0;
+        
         //Control Buttons
         this.zoomToFitBtn = $(sewi.constants.AUDIO_ZOOM_TO_FIT_BUTTON);
         this.zoomToSelectionBtn = $(sewi.constants.AUDIO_ZOOM_TO_SELECTION_BUTTON);
@@ -161,7 +166,7 @@ var sewi = sewi || {};
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.updateProgressBar(100, sewi.constants.AUDIO_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
+        this.updateProgressBar(50, sewi.constants.AUDIO_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
@@ -185,43 +190,50 @@ var sewi = sewi || {};
         var sampleRate = buffer.sampleRate; 
         var duration = buffer.duration; 
         var numChannels = buffer.numberOfChannels;
-        var channelName = ['left-channel','right-channel'];
 
         this.duration = duration;
         this.startTime = 0;
         this.endTime = duration;
         this.controls.update({duration : duration, currentTime : this.offset});
         
-        this.audioAmplitudeGraphs = [];
         for(var i=0; i < numChannels; i++){
-            var audioSequence = new sewi.AudioSequence(sampleRate, buffer.getChannelData(i));
-            var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], audioSequence);
-            this.audioAmplitudeGraphs.push(audioAmplitudeGraph);
+            var audioSequence = new sewi.AudioSequence(sampleRate, this);
+            this.on('bufferCopied', onAudioBufferCopied.bind(this, numChannels));
+            audioSequence.startCopyingBuffer(buffer.getChannelData(i));
+            this.audioSequences.push(audioSequence);
         }
-        
-        // Link the left channel and right channels graphs together for canvas update
-        if(this.audioAmplitudeGraphs.length == 2){
-            this.audioAmplitudeGraphs[0].link(this.audioAmplitudeGraphs[1]);
-        }
-        
-        this.scrollBar = new sewi.ScrollBar();
-        this.contentDOM.append(this.scrollBar.getDOM());
-        this.scrollBar.setWidthScale(1);
-        this.scrollBar.on('move', scrollBarMove.bind(this));
     }
 
     function onAudioDecodeFail(event){
         event.preventDefault();
         this.showError('Error: failed to decode the audio file.');
     }
+    
+    function onAudioBufferCopied(numChannels, event){
+        this.buffersReady++;
+        if(this.buffersReady === numChannels){
+            var channelName = ['left-channel','right-channel'];
+            for(var i=0; i < numChannels; i++){
+                var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], this.audioSequences[i]);
+                this.audioAmplitudeGraphs.push(audioAmplitudeGraph);
+            }
+
+            // Link the left channel and right channels graphs together for canvas update
+            if(this.audioAmplitudeGraphs.length == 2){
+                this.audioAmplitudeGraphs[0].link(this.audioAmplitudeGraphs[1]);
+            }
+
+            this.scrollBar = new sewi.ScrollBar();
+            this.contentDOM.append(this.scrollBar.getDOM());
+            this.scrollBar.setWidthScale(1);
+            this.scrollBar.on('move', scrollBarMove.bind(this));
+        }
+    }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
         var graphDOM = $('<div class="wave-graph '+channelName+'" id="'+this.id+'" title="'+channelName+'"></div>');
         this.contentDOM.append(graphDOM);
-        if(this.progressBar){
-            this.progressBar.getDOM().remove();
-            delete this.progressBar;
-        }
+        this.hideProgressBar();
         var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence, this); 
 
         return graph;
@@ -230,26 +242,34 @@ var sewi = sewi || {};
     function updateGraphPlaybackPosition(positionInSec){
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
             var graph = this.audioAmplitudeGraphs[i];
+            
             graph.playbackPos = positionInSec;
+            
             if(graph.playbackPos > graph.viewPos + graph.viewResolution){
                 graph.viewPos = graph.playbackPos;
+                
                 if(graph.viewPos + graph.viewResolution > this.duration){
                     graph.viewPos = this.duration - graph.viewResolution;
                 }
+                
                 graph.updateGraph();
             }
+            
             graph.draw();
         }
     }
 
     function createMediaButtons(){
         var buttons = [];
+        
         this.zoomToFitBtn.on('click', zoomToFitBtnClickEvent.bind(this));
         this.zoomToSelectionBtn.on('click', zoomToSelectionBtnClickEvent.bind(this));
         this.clearSelectionBtn.on('click', clearSelectionBtnClickEvent.bind(this));
+        
         buttons.push(this.zoomToFitBtn);
         buttons.push(this.zoomToSelectionBtn);
         buttons.push(this.clearSelectionBtn);
+        
         return buttons;
     }
 
@@ -275,8 +295,10 @@ var sewi = sewi || {};
             this.audioAmplitudeGraphs[i].zoomToFit();
             this.audioAmplitudeGraphs[i].updateGraph();
         }
+        
         this.startTime = 0;
         this.endTime = this.duration;
+        
         this.scrollBar.setWidthScale(1);
         this.scrollBar.setPosition(0);
     }
@@ -285,12 +307,17 @@ var sewi = sewi || {};
         event.preventDefault();
         if(this.audioAmplitudeGraphs[0]){
             if(this.audioAmplitudeGraphs[0].hasSelectedRegion()){
+                
                 for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
                     this.audioAmplitudeGraphs[i].zoomToSelection();
                     this.audioAmplitudeGraphs[i].updateGraph();
                 }
-                this.scrollBar.setWidthScale(this.audioAmplitudeGraphs[0].viewResolution / this.duration);
-                this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / (this.duration - this.audioAmplitudeGraphs[0].viewResolution));
+                
+                var playbackPos = this.audioAmplitudeGraphs[0].viewPos / (this.duration - this.audioAmplitudeGraphs[0].viewResolution);
+                var widthScale = this.audioAmplitudeGraphs[0].viewResolution / this.duration;
+
+                this.scrollBar.setWidthScale(widthScale);
+                this.scrollBar.setPosition(playbackPos);
             }
         }
     }
@@ -320,13 +347,14 @@ var sewi = sewi || {};
             var buttons = createMediaButtons.call(this);
             this.controls = new sewi.MediaControls({ isSeekBarHidden : true, 
                                                     extraButtons : { left : buttons } });
+            
             this.controls.on('Playing', this.playAudio.bind(this));
             this.controls.on('Paused', this.pauseAudio.bind(this));
             this.controls.on('VolumeChanged', volumeSliderChanged.bind(this));
             this.controls.on('Unmuted', volumeUnmuted.bind(this));
             this.controls.on('Muted', volumeMuted.bind(this));
-            this.mainDOMElement.append(this.controls.getDOM());
             
+            this.mainDOMElement.append(this.controls.getDOM());
         }
     }
 
@@ -338,8 +366,9 @@ var sewi = sewi || {};
                 var currentTime = ((Date.now() - this.beginTime) / 1000 + this.offset);
                 var percent = (currentTime / duration) * 100;
                 var length = this.duration - this.audioAmplitudeGraphs[0].viewResolution;
+                
                 this.controls.update({position : percent, 
-                        currentTime : currentTime });
+                                    currentTime : currentTime });
                 this.drawTimer += (currentTime - this.lastUpdated);
 
                 //Update the graph at 10 fps
@@ -348,6 +377,7 @@ var sewi = sewi || {};
                     this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / length);
                     this.drawTimer = 0;
                 }
+                
                 this.lastUpdated = currentTime;
 
                 if(this.endTime - currentTime < 0.01){
@@ -1091,12 +1121,37 @@ var sewi = sewi || {};
      * @param {int} sampleRate This is the sample rate of the audio data.
      * @param {Float32Array} channelData This holds the array of audio buffers in Float32 format.
      */
-    sewi.AudioSequence = function(sampleRate, channelData){
+    sewi.AudioSequence = function(sampleRate, audioResourceViewer){
         this.sampleRate = sampleRate;
-
-        // Make a copy of the channel data. 
-        // This array is used for the drawing of the graph which is usef for visualization.
-        // This is extremely important as the original data will be replaced once the audio starts to play, therefore a shallow copy will not work.
-        this.channelData = Array.prototype.slice.call(channelData);
+        this.channelData = [];
+        this.audioResourceViewer = audioResourceViewer;
+        // this.channelData = Array.prototype.slice.call(channelData);
     };
+   
+    sewi.AudioSequence.prototype.startCopyingBuffer = function(channelData){
+        window.requestAnimationFrame(copyBuffer.bind(this, 0, channelData, 0));
+        this.audioResourceViewer.updateProgressBar(0);
+    };
+
+    // Make a copy of the channel data. 
+    // This array is used for the drawing of the graph which is usef for visualization.
+    // This is extremely important as the original data will be replaced once the audio starts to play, therefore a shallow copy will not work.
+    function copyBuffer(index, channelData, steps){
+        var len = channelData.length;
+        var blockSize = 10000;
+        var end = index+blockSize;
+    
+        for(var i = index; i < len && i < end; i++){
+            this.channelData.push(channelData[i]);
+        }
+        
+        var percent = 50 + (i/len) * 50;
+        this.audioResourceViewer.updateProgressBar(percent);
+        
+        if(i < len){
+            window.requestAnimationFrame(copyBuffer.bind(this, i, channelData));
+        } else {
+            this.audioResourceViewer.trigger('bufferCopied');
+        }
+    }
 })();
