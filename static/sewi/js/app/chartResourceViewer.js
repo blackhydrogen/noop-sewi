@@ -223,7 +223,7 @@ var sewi = sewi || {};
     _.assign(this, _.pick(options, [
       'id',
     ]));
-
+    validateArguments.call(this);
     initDOM.call(this);
     initControls.call(this);
     initEventHandlers.call(this);
@@ -239,32 +239,11 @@ var sewi = sewi || {};
    * @memberof sewi.ChartResourceViewer
    */
 
-  function parseChartData(data) {
-    var selfRef = this;
-    selfRef.graphData = [];
-    var parsedCSV = "";
-
-    $.get(data.url, function(csvText) {
-      var allTextLines = csvText.split(/\r\n|\n/);
-      $.each(allTextLines, function(index, value) {
-        if (index == 1) {
-          selfRef.samplingRate = value[0] - allTextLines[index - 1][0];
-        }
-        parsedCSV += value + '\n';
-        selfRef.graphData.push(value.split(','));
-      });
-      createChart.call(selfRef, parsedCSV);
-    });
+  function validateArguments() {        
+    if (!_.isString(this.id)) {
+        throw new Error('options: Valid resource id must be provided.');
+    }
   }
-
-  function loadFailed() {
-    this.showError(sewi.constants.CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE);
-  }
-
-  function loadSuccessful(data) {
-    parseChartData.call(this, data);
-  }
-
   function initDOM() {
 
     this.mainDOMElement.addClass('time-series-graph-container');
@@ -295,6 +274,32 @@ var sewi = sewi || {};
     this.peaks = [];
     this.initialXRange = [0, 2000];
     this.isZoomed = true;
+  }
+
+  function parseChartData(data) {
+    var selfRef = this;
+    selfRef.graphData = [];
+    var parsedCSV = "";
+
+    $.get(data.url, function(csvText) {
+      var allTextLines = csvText.split(/\r\n|\n/);
+      $.each(allTextLines, function(index, value) {
+        if (index == 1) {
+          selfRef.samplingRate = value[0] - allTextLines[index - 1][0];
+        }
+        parsedCSV += value + '\n';
+        selfRef.graphData.push(value.split(','));
+      });
+      createChart.call(selfRef, parsedCSV);
+    });
+  }
+
+  function loadFailed() {
+    this.showError(sewi.constants.CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE);
+  }
+
+  function loadSuccessful(data) {
+    parseChartData.call(this, data);
   }
 
   function clearAllPoints() {
