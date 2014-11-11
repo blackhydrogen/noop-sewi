@@ -166,6 +166,7 @@ var sewi = sewi || {};
         var zoomCentreToHeightRatioY = zoomCentreOnTargetY / this.target.height();
 
         this.target.width( newTargetWidth );
+        this.target.height( newTargetWidth * this.targetDimensions.original.height / this.targetDimensions.original.width );
 
         var newTargetPositionX = cursorPositionOnContainerX - zoomCentreToWidthRatioX * this.target.width();
         var newTargetPositionY = cursorPositionOnContainerY - zoomCentreToHeightRatioY * this.target.height();
@@ -245,17 +246,19 @@ var sewi = sewi || {};
 
         $("body").on("mousemove.PanZoomWidget", this.moveTargetToCursor.bind(this));
 
-        $("body").one("mouseup.PanZoomWidget", (function(event) {
-            this.container.on("mousewheel.PanZoomWidget", this.calculateNewTargetWidthFromMousewheel.bind(this));
-            $("body").off("mousemove.PanZoomWidget");
+        $("body").one("mouseup.PanZoomWidget", this.cleanUpAfterPanning.bind(this));
+    }
 
-            $("body").css({
-                cursor: "auto"
-            });
-            
-            this.container.css({
-                cursor: "-webkit-grab"
-            });
-        }).bind(this));
+    sewi.PanZoomWidget.prototype.cleanUpAfterPanning = function(event) {
+        this.container.on("mousewheel.PanZoomWidget", this.calculateNewTargetWidthFromMousewheel.bind(this));
+        $("body").off("mousemove.PanZoomWidget");
+
+        $("body").css({
+            cursor: "auto"
+        });
+        
+        this.container.css({
+            cursor: "-webkit-grab"
+        });
     }
 })();
