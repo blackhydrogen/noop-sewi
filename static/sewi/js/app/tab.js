@@ -1056,7 +1056,7 @@ var sewi = sewi || {};
     /**
      * This is the contructor function of the Tab class which initializes a tab in the tab container.
      *
-     * @class  Tab
+     * @class  sewi.Tab
      * @constructor
      *
      * @param {sewi.TabContainer}  tabContainer It holds a reference to the tab container object that this tab is residing in.
@@ -1255,7 +1255,7 @@ var sewi = sewi || {};
     /**
      * This defines a tab container component to hold all the tabs.
      * 
-     * @class TabContainer
+     * @class sewi.TabContainer
      * @constructor
      */
     sewi.TabContainer = function(){

@@ -117,6 +117,8 @@ var sewi = sewi || {};
         this.progressBarAmountElement = $(sewi.constants.PROGRESS_BAR_AMOUNT_DOM);
         this.textElement = $(sewi.constants.PROGRESS_BAR_TEXT_DOM);
 
+        this.hasTransitionEnded = true;
+
         if (animated) {
             this.progressBarAmountElement.addClass(sewi.constants.PROGRESS_BAR_ANIMATED_CLASS)
         }
@@ -124,8 +126,36 @@ var sewi = sewi || {};
         this.progressBarElement.append(this.progressBarAmountElement)
 							   .append(this.textElement);
 
-		this.mainDOMElement.append(this.progressBarElement)
+        this.progressBarAmountElement.on(getTransitionEvent(), onTransitionEnd.bind(this));
+		
+        this.mainDOMElement.append(this.progressBarElement)
 						   .addClass(sewi.constants.PROGRESS_BAR_BACKDROP_CLASS)
+    }
+
+    function onTransitionEnd(event){
+        if(event.currentTarget === event.target){
+            var propertyName = event.originalEvent.propertyName;
+            if(propertyName == "width"){
+                this.hasTransitionEnded = true;        
+            }
+        }
+    }
+    
+    function getTransitionEvent(){
+        var el = document.createElement('fakeelement');
+        var transitions = {
+            'WebkitTransition' :'webkitTransitionEnd',
+            'MozTransition'    :'transitionend',
+            'MSTransition'     :'msTransitionEnd',
+            'OTransition'      :'oTransitionEnd',
+            'transition'       :'transitionEnd'
+        }
+
+        for(var t in transitions){
+            if( el.style[t] !== undefined ){
+                return transitions[t];
+            }
+        }
     }
 
 	/**
@@ -141,7 +171,11 @@ var sewi = sewi || {};
             console.error(methodName + ': parameter is not a number');
         } else if(percent > 100 || percent < 0){
             console.error(methodName + ': parameter is out of range');
-        } else {
+        } else if(this.hasTransitionEnded){
+            var currentWidth = parseInt(this.progressBarAmountElement.css('width'));
+            if (currentWidth != percent){
+                this.hasTransitionEnded = false;
+            }
             this.progressBarAmountElement.css('width', percent+'%');
         }
     }
