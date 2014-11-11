@@ -207,6 +207,7 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-button" title="Reset zoom"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-to-fit-button" title="Zoom to fit"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" title="Adjust zoom level" data-placement="left" />',
+        VIDEO_RESOURCE_VIEWER_LOADED_EVENT: 'loaded',
 
         //Audio Resource Constants
         AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
@@ -217,7 +218,7 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED:'Error: File request operation has been aborted.',
         AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE: 'Error: Failed to retrieve the file',
         AUDIO_RESOURCE_ERROR_MSG_FAILED_TO_DECODE_AUDIO_FILE: 'Error: failed to decode the audio file.',
-        AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH : 'generating amplitude wave graph', 
+        AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH : 'generating amplitude wave graph',
         AUDIO_RESOURCE_MSG_FETCHING_AUDIO_CLIP: 'fetching audio clip',
         AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP: 'Zoom To Fit: zoom out to view the entire wave.',
         AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP: 'Zoom To Selection: zoom to the selected region.',
@@ -235,7 +236,7 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_PLOT_TECHNIQUE: {COMPRESSED: 1, DETAILED: 2},
         AUDIO_RESOURCE_TEXT_COLOR: 'rgba(0,0,0,1)',
         AUDIO_RESOURCE_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
-        AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS: 'audio-resource-viewer',  
+        AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS: 'audio-resource-viewer',
         AUDIO_RESOURCE_CONTENT_DOM:'<div class="audio-content"></div>',
         AUDIO_RESOURCE_EVENT_BUFFER_COPIED: 'bufferCopied',
         AUDIO_RESOURCE_CHANNEL_CSS_CLASS: {LEFT: 'left-channel', RIGHT: 'right-channel'},

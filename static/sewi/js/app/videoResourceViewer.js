@@ -755,7 +755,7 @@ var sewi = sewi || {};
         console.log('Video data retrieved.');
         this.videoData = videoData;
         this.isLoaded = true;
-        this.mainDOMElement.trigger('Loaded');
+        this.mainDOMElement.trigger(sewi.constants.VIDEO_RESOURCE_VIEWER_LOADED_EVENT);
         var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
         videoSourceElement.attr({
             src: this.videoData.url,
