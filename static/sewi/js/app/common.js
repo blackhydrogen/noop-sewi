@@ -65,7 +65,7 @@ var sewi = sewi || {};
         ENCOUNTER_BASE_URL: '/sewi/encounter/',
 
         //Resource Types
-        RESOURCE_TYPE:{IMAGE: 'image', VIDEO: 'video', AUDIO_RESOURCE: 'audio', CHART: 'chart'},
+        RESOURCE_TYPE:{IMAGE: 'image', VIDEO: 'video', AUDIO: 'audio', CHART: 'chart'},
 
         //DATA ATTRIBUTES
         DATA_ATTR: {ID:'resId', TYPE:'resType'},
