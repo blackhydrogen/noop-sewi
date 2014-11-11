@@ -263,6 +263,12 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
+        MEDIA_CONTROLS_PLAYING_EVENT: 'controlsPlaying',
+        MEDIA_CONTROLS_PAUSED_EVENT: 'controlsPaused',
+        MEDIA_CONTROLS_MUTED_EVENT: 'controlsMuted',
+        MEDIA_CONTROLS_UNMUTED_EVENT: 'controlsUnmuted',
+        MEDIA_CONTROLS_VOLUME_CHANGED_EVENT: 'controlsVolumeChanged',
+        MEDIA_CONTROLS_POSITION_CHANGED_EVENT: 'controlsPositionChanged',
 
         //Chart Controls Constants
         CHART_CONTROLS_DOM_CLASS: 'chart-control-panel',

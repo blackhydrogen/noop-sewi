@@ -255,9 +255,9 @@ var sewi = sewi || {};
         this.update({ playing: !this.isPlaying });
 
         if (isPlaying) {
-            this.mainDOMElement.trigger('Paused');
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT);
         } else {
-            this.mainDOMElement.trigger('Playing');
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT);
         }
     }
 
@@ -266,9 +266,9 @@ var sewi = sewi || {};
      */
     sewi.MediaControls.prototype.toggleMute = function() {
         if (this.isMuted) {
-            this.mainDOMElement.trigger('Unmuted');
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
         } else {
-            this.mainDOMElement.trigger('Muted');
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT);
         }
 
         this.update({ muted: !this.isMuted });
@@ -283,12 +283,12 @@ var sewi = sewi || {};
     sewi.MediaControls.prototype.volume = function(volume) {
         if (!_.isUndefined(volume)) {
             if (this.isMuted) {
-                this.mainDOMElement.trigger('Unmuted');
+                this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
             }
 
             this.update({ volume: volume });
 
-            this.mainDOMElement.trigger('VolumeChanged', volume);
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volume);
         }
 
         return this.volumeSlider[0].value;
@@ -304,7 +304,7 @@ var sewi = sewi || {};
         if (!_.isUndefined(position)) {
             this.update({ position: position });
 
-            this.mainDOMElement.trigger('PositionChanged', position);
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT, position);
         }
         return this.progressSlider[0].value;
     }
@@ -550,12 +550,12 @@ var sewi = sewi || {};
         this.videoElement.on('play pause', updatePlayingStatus.bind(this));
         this.videoElement.on('volumechange', updateVolume.bind(this));
 
-        this.controlPanelElement.on('Playing', playEvent.bind(this));
-        this.controlPanelElement.on('Paused', pauseEvent.bind(this));
-        this.controlPanelElement.on('Muted', muteEvent.bind(this));
-        this.controlPanelElement.on('Unmuted', unmuteEvent.bind(this));
-        this.controlPanelElement.on('PositionChanged', positionEvent.bind(this));
-        this.controlPanelElement.on('VolumeChanged', volumeEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT, playEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT, pauseEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT, muteEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT, unmuteEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT, positionEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volumeEvent.bind(this));
 
         this.zoomSlider.on('input change', zoomLevelChanged.bind(this));
         this.resetZoomButton.click(zoomLevelReset.bind(this));
