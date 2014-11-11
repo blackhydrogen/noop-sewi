@@ -259,14 +259,10 @@ var sewi = sewi || {};
         } else {
             this.mainDOMElement.trigger('Playing');
         }
-
-        return this;
     }
 
     /**
      * Toggles the mute state of the MediaControls, and its target media.
-     *
-     * @return {MediaControls} The current instance of the MediaControls.
      */
     sewi.MediaControls.prototype.toggleMute = function() {
         if (this.isMuted) {
@@ -276,50 +272,41 @@ var sewi = sewi || {};
         }
 
         this.update({ muted: !this.isMuted });
-
-        return this;
     }
 
     /**
      * Gets or sets the volume of the MediaControls.
      *
      * @param  {number} [volume] The new volume.
-     * @return {MediaControls|Number} The current volume, or the current
-     * instance of MediaControls if the volume is set.
+     * @return {Number} The current volume.
      */
     sewi.MediaControls.prototype.volume = function(volume) {
-        if (_.isUndefined(volume)) {
-            return this.volumeSlider[0].value;
+        if (!_.isUndefined(volume)) {
+            if (this.isMuted) {
+                this.mainDOMElement.trigger('Unmuted');
+            }
+
+            this.update({ volume: volume });
+
+            this.mainDOMElement.trigger('VolumeChanged', volume);
         }
 
-        if (this.isMuted) {
-            this.mainDOMElement.trigger('Unmuted');
-        }
-
-        this.update({ volume: volume });
-
-        this.mainDOMElement.trigger('VolumeChanged', volume);
-
-        return this;
+        return this.volumeSlider[0].value;
     }
 
     /**
      * Gets or sets the playback position of the MediaControls.
      *
      * @param  {number} [volume] The new playback position.
-     * @return {MediaControls|Number} The current playback position, or the
-     * current instance of MediaControls if the playback position is set.
+     * @return {Number} The current playback position.
      */
     sewi.MediaControls.prototype.playbackPosition = function(position) {
-        if (_.isUndefined(position)) {
-            return this.progressSlider[0].value;
+        if (!_.isUndefined(position)) {
+            this.update({ position: position });
+
+            this.mainDOMElement.trigger('PositionChanged', position);
         }
-
-        this.update({ position: position });
-
-        this.mainDOMElement.trigger('PositionChanged', position);
-
-        return this;
+        return this.progressSlider[0].value;
     }
 
     /**
@@ -485,8 +472,6 @@ var sewi = sewi || {};
         initDOM.call(this);
         attachVideoEventHandlers.call(this);
         setUpInactivityEventHandlers.call(this);
-
-        return this;
     }
 
     sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
@@ -793,8 +778,6 @@ var sewi = sewi || {};
         if (!this.isLoaded) {
             loadVideoData.call(this);
         }
-
-        return this;
     }
 
     sewi.VideoResourceViewer.prototype.resize = function() {
