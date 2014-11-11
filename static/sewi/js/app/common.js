@@ -207,6 +207,12 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_RESET_ZOOM_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-button" title="Reset zoom"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_TO_FIT_BUTTON_DOM: '<button class="btn btn-default sewi-icon zoom-to-fit-button" title="Zoom to fit"></button>',
         VIDEO_RESOURCE_VIEWER_ZOOM_SLIDER_DOM: '<input type="range" min="50" max="200" value="100" step="1" title="Adjust zoom level" data-placement="left" />',
+
+        /**
+         * Fired when the media is muted.
+         * @event loaded
+         * @memberof sewi.MediaControls
+         */
         VIDEO_RESOURCE_VIEWER_LOADED_EVENT: 'loaded',
 
         //Audio Resource Constants
