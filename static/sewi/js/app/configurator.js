@@ -71,23 +71,28 @@ var sewi = sewi || {};
         this.resGalleryView = $(this.resGalleryView);
         this.alertsView = $(this.alertsView);
 
-        if (this.titleView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_TITLEVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.basicInfoView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_BASICINFOVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.resViewerView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_RESVIEWERVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.resGalleryView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_RESGALLERYVIEW_EXCEPTION_MESSAGE);
-        }
-        if (this.alertsView.length != 1) {
-            throw new Error(sewi.constants.CONFIGURATOR_ALERTSVIEW_EXCEPTION_MESSAGE);
-        }
-        if (_.isString(this.encounterId) === false) {
-            throw new Error(sewi.constants.CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE);
+        try {
+            if (this.titleView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_TITLEVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.basicInfoView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_BASICINFOVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.resViewerView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_RESVIEWERVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.resGalleryView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_RESGALLERYVIEW_EXCEPTION_MESSAGE);
+            }
+            if (this.alertsView.length != 1) {
+                throw new Error(sewi.constants.CONFIGURATOR_ALERTSVIEW_EXCEPTION_MESSAGE);
+            }
+            if (_.isString(this.encounterId) === false) {
+                throw new Error(sewi.constants.CONFIGURATOR_ENCOUNTERID_EXCEPTION_MESSAGE);
+            }
+        } catch (anyError) {
+            reportSeriousError();
+            throw anyError;
         }
     }
 
@@ -109,7 +114,7 @@ var sewi = sewi || {};
             var element = this.basicInfo.getDOM();
 
             element.on('BEILoaded', basicInfoLoaded.bind(this));
-            element.on('Error', basicInfoCrashed.bind(this));
+            element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, basicInfoCrashed.bind(this));
 
             this.basicInfoView.append(element);
 
@@ -127,8 +132,10 @@ var sewi = sewi || {};
         if (_.isFunction(sewi.TabContainer)) {
             this.tabs = new sewi.TabContainer();
             var element = this.tabs.getDOM();
-            element.on("NoTabs", allTabsClosed.bind(this));
-            element.on('Error', resViewerCrashed.bind(this));
+
+            element.on(sewi.constants.TAB_NO_TAB_EVENT, allTabsClosed.bind(this));
+            element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resViewerCrashed.bind(this));
+
             this.resViewerView.append(element);
         }
     }
@@ -141,7 +148,7 @@ var sewi = sewi || {};
             });
             var element = this.resGallery.getDOM();
             element.on('resourceClick', galleryOpenedResource.bind(this));
-            element.on('Error', resGalleryCrashed.bind(this));
+            element.on(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT, resGalleryCrashed.bind(this));
 
             this.resGalleryView.append(element);
 
@@ -184,7 +191,7 @@ var sewi = sewi || {};
         var options = {
             elementIsMinimized: this.isBasicInfoMinimized
         };
-        if (event.type === "resize" && event.target === window) {
+        if (event.type === 'resize' && event.target === window) {
             options.isWindowResizeEvent = true;
         }
 
@@ -347,4 +354,10 @@ var sewi = sewi || {};
         this.titleDOM.text(title + ' ')
                         .append(this.subtitleDOM);
     };
+
+    if (sewi.testMode) {
+        sewi.Configurator.prototype.privates = {
+            openResource: openResource,
+        };
+    }
 })();
