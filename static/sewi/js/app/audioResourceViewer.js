@@ -348,11 +348,11 @@ var sewi = sewi || {};
             this.controls = new sewi.MediaControls({ isSeekBarHidden : true, 
                                                     extraButtons : { left : buttons } });
             
-            this.controls.on('Playing', this.playAudio.bind(this));
-            this.controls.on('Paused', this.pauseAudio.bind(this));
-            this.controls.on('VolumeChanged', volumeSliderChanged.bind(this));
-            this.controls.on('Unmuted', volumeUnmuted.bind(this));
-            this.controls.on('Muted', volumeMuted.bind(this));
+            this.controls.on(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT, this.playAudio.bind(this));
+            this.controls.on(sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT, this.pauseAudio.bind(this));
+            this.controls.on(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volumeSliderChanged.bind(this));
+            this.controls.on(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT, volumeUnmuted.bind(this));
+            this.controls.on(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT, volumeMuted.bind(this));
             
             this.mainDOMElement.append(this.controls.getDOM());
         }
