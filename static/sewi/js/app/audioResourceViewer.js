@@ -69,9 +69,9 @@ var sewi = sewi || {};
         this.buffersReady = 0;
         
         //Control Buttons
-        this.zoomToFitBtn = $(sewi.constants.AUDIO_ZOOM_TO_FIT_BUTTON);
-        this.zoomToSelectionBtn = $(sewi.constants.AUDIO_ZOOM_TO_SELECTION_BUTTON);
-        this.clearSelectionBtn = $(sewi.constants.AUDIO_CLEAR_SELECTION_BUTTON);
+        this.zoomToFitBtn = $(sewi.constants.AUDIO_RESOURCE_ZOOM_TO_FIT_BUTTON);
+        this.zoomToSelectionBtn = $(sewi.constants.AUDIO_RESOURCE_ZOOM_TO_SELECTION_BUTTON);
+        this.clearSelectionBtn = $(sewi.constants.AUDIO_RESOURCE_CLEAR_SELECTION_BUTTON);
         
         //Web audio API objects
         this.audioContext = null;
@@ -95,7 +95,7 @@ var sewi = sewi || {};
     }
 
     function failToRetrieveAudio(){
-        this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
+        this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
 
     function retrieveAudio(data){
@@ -107,7 +107,7 @@ var sewi = sewi || {};
     }
 
     function init(){
-        this.mainDOMElement.addClass('audio-resource-viewer');
+        this.mainDOMElement.addClass(sewi.constants.AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS);
         
         var contextClass = (window.AudioContext || 
                             window.webkitAudioContext || 
@@ -117,8 +117,8 @@ var sewi = sewi || {};
   
         if(contextClass){
             this.audioContext =new contextClass();
-            this.showProgressBar(sewi.constants.AUDIO_MSG_FETCHING_AUDIO_CLIP);
-            this.contentDOM = $('<div class="audio-content"></div>');
+            this.showProgressBar(sewi.constants.AUDIO_RESOURCE_MSG_FETCHING_AUDIO_CLIP);
+            this.contentDOM = $(sewi.constants.AUDIO_RESOURCE_CONTENT_DOM);
             this.mainDOMElement.append(this.contentDOM);
             
             this.scriptProcessor = this.audioContext.createScriptProcessor(this.scriptProcessorBufferSize,
@@ -144,7 +144,7 @@ var sewi = sewi || {};
             this.request.send();
 
         } else {
-            this.showError(sewi.constants.AUDIO_ERROR_MSG_WEB_AUDIO_API_NOT_SUPPORTED);
+            this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_WEB_AUDIO_API_NOT_SUPPORTED);
         }
 
     }
@@ -166,18 +166,18 @@ var sewi = sewi || {};
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.updateProgressBar(50, sewi.constants.AUDIO_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
+        this.updateProgressBar(50, sewi.constants.AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
     }
 
     function onAbort(event){
         event.preventDefault();
-        this.showError(sewi.constants.AUDIO_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED);
+        this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED);
     }
 
     function onError(event){ 
         event.preventDefault();
-        this.showError(sewi.constants.AUDIO_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
+        this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
 
     /**
@@ -198,7 +198,7 @@ var sewi = sewi || {};
         
         for(var i=0; i < numChannels; i++){
             var audioSequence = new sewi.AudioSequence(sampleRate, this);
-            this.on('bufferCopied', onAudioBufferCopied.bind(this, numChannels));
+            this.on(sewi.constants.AUDIO_RESOURCE_EVENT_BUFFER_COPIED, onAudioBufferCopied.bind(this, numChannels));
             audioSequence.startCopyingBuffer(buffer.getChannelData(i));
             this.audioSequences.push(audioSequence);
         }
@@ -206,13 +206,13 @@ var sewi = sewi || {};
 
     function onAudioDecodeFail(event){
         event.preventDefault();
-        this.showError('Error: failed to decode the audio file.');
+        this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAILED_TO_DECODE_AUDIO_FILE);
     }
     
     function onAudioBufferCopied(numChannels, event){
         this.buffersReady++;
         if(this.buffersReady === numChannels){
-            var channelName = ['left-channel','right-channel'];
+            var channelName = [sewi.constants.AUDIO_RESOURCE_CHANNEL_CSS_CLASS.LEFT, sewi.constants.AUDIO_RESOURCE_CHANNEL_CSS_CLASS.RIGHT];
             for(var i=0; i < numChannels; i++){
                 var audioAmplitudeGraph = createAmplitudeWaveGraph.call(this, channelName[i], this.audioSequences[i]);
                 this.audioAmplitudeGraphs.push(audioAmplitudeGraph);
@@ -275,11 +275,11 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({  title : AUDIO_ZOOM_TO_FIT_TOOLTIP,
+       this.zoomToFitBtn.tooltip({  title : AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP,
                                     container: 'body'});
-       this.zoomToSelectionBtn.tooltip({title : AUDIO_ZOOM_TO_SELECTION_TOOLTIP,
+       this.zoomToSelectionBtn.tooltip({title : AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP,
                                         container: 'body'});
-       this.clearSelectionBtn.tooltip({ title : AUDIO_CLEAR_SELECTION_TOOLTIP,
+       this.clearSelectionBtn.tooltip({ title : AUDIO_RESOURCE_CLEAR_SELECTION_TOOLTIP,
                                         container: 'body'});
     }               
 
@@ -569,20 +569,20 @@ var sewi = sewi || {};
 
     function setupColorVariables(){
         // colors when the mouse is outside of the editor box
-        this.colorInactiveTop = sewi.constants.AUDIO_COLOR_INACTIVE_TOP;
-        this.colorInactiveBottom = sewi.constants.AUDIO_COLOR_INACTIVE_BOTTOM;
+        this.colorInactiveTop = sewi.constants.AUDIO_RESOURCE_COLOR_INACTIVE_TOP;
+        this.colorInactiveBottom = sewi.constants.AUDIO_RESOURCE_COLOR_INACTIVE_BOTTOM;
         
         // colors when the mouse is inside of the editor box
-        this.colorActiveTop = sewi.constants.AUDIO_COLOR_ACTIVE_TOP;
-        this.colorActiveBottom = sewi.constants.AUDIO_COLOR_ACTIVE_BOTTOM;
+        this.colorActiveTop = sewi.constants.AUDIO_RESOURCE_COLOR_ACTIVE_TOP;
+        this.colorActiveBottom = sewi.constants.AUDIO_RESOURCE_COLOR_ACTIVE_BOTTOM;
 
         // color when the mouse is pressed during inside of the editor box
-        this.colorMouseDownTop = sewi.constants.AUDIO_COLOR_MOUSE_DOWN_TOP;
-        this.colorMouseDownBottom = sewi.constants.AUDIO_COLOR_MOUSE_DOWN_BOTTOM;
+        this.colorMouseDownTop = sewi.constants.AUDIO_RESOURCE_COLOR_MOUSE_DOWN_TOP;
+        this.colorMouseDownBottom = sewi.constants.AUDIO_RESOURCE_COLOR_MOUSE_DOWN_BOTTOM;
         
         // color of the selection frame
-        this.colorSelectionStroke = sewi.constants.AUDIO_COLOR_SELECTION_STROKE;
-        this.colorSelectionFill = sewi.constants.AUDIO_COLOR_SELECTION_FILL;
+        this.colorSelectionStroke = sewi.constants.AUDIO_RESOURCE_COLOR_SELECTION_STROKE;
+        this.colorSelectionFill = sewi.constants.AUDIO_RESOURCE_COLOR_SELECTION_FILL;
     }
 
     function setupMiscVariables(){
@@ -831,12 +831,12 @@ var sewi = sewi || {};
         var verticalMultiplier = 1.0;
         var canvasWidth = this.canvasDOM.width();
         //canvasContext.setLineWidth(1);
-        canvasContext.strokeStyle = sewi.constants.AUDIO_WAVE_STROKE_COLOR;                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_WAVE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
 
         // choose the drawing style of the waveform
-        if (this.plotTechnique == sewi.constants.AUDIO_PLOT_TECHNIQUE.COMPRESSED){
+        if (this.plotTechnique == sewi.constants.AUDIO_RESOURCE_PLOT_TECHNIQUE.COMPRESSED){
             // data per pixel
             for (i = 0; i < canvasWidth; ++i){
                 var peakAtFrame = this.visualizationData[i];
@@ -844,7 +844,7 @@ var sewi = sewi || {};
                 canvasContext.lineTo(i + 0.5, (center + peakAtFrame.max * verticalMultiplier * -center) + 1.0);
             }
 
-        } else if (this.plotTechnique == sewi.constants.AUDIO_PLOT_TECHNIQUE.DETAILED) {
+        } else if (this.plotTechnique == sewi.constants.AUDIO_RESOURCE_PLOT_TECHNIQUE.DETAILED) {
             var s = 1;
             var len = this.visualizationData.length;
             for(i = 0; i < len; ++i){
@@ -871,7 +871,7 @@ var sewi = sewi || {};
 
         // Draw the horizontal line at the center
         //canvasContext.setLineWidth(1.0);
-        canvasContext.strokeStyle = sewi.constants.AUDIO_HORIZONTAL_LINE_STROKE_COLOR;                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_HORIZONTAL_LINE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
         canvasContext.lineTo(this.canvasDOM.width(), center);
@@ -915,11 +915,11 @@ var sewi = sewi || {};
     }
 
     function drawText(canvasContext){
-        drawTextWithShadow(this.name, 1, 10, sewi.constants.AUDIO_TEXT_COLOR, canvasContext);
+        drawTextWithShadow(this.name, 1, 10, sewi.constants.AUDIO_RESOURCE_TEXT_COLOR, canvasContext);
     }
 
     function drawTextWithShadow(text, x, y, style, canvasContext){
-        canvasContext.fillStyle = sewi.constants.AUDIO_TEXT_SHADOW_COLOR;
+        canvasContext.fillStyle = sewi.constants.AUDIO_RESOURCE_TEXT_SHADOW_COLOR;
         canvasContext.fillText(text,x + 1, y + 1);
 
         canvasContext.fillStyle = style;
@@ -962,7 +962,7 @@ var sewi = sewi || {};
                                                     max : 0.0});
                 }
             }
-            this.plotTechnique = sewi.constants.AUDIO_PLOT_TECHNIQUE.COMPRESSED;
+            this.plotTechnique = sewi.constants.AUDIO_RESOURCE_PLOT_TECHNIQUE.COMPRESSED;
         } else {
             var pixelPerData = canvasWidth / len;
             var x = 0;
@@ -978,7 +978,7 @@ var sewi = sewi || {};
                 }
                 x += pixelPerData;
             }
-            this.plotTechnique = sewi.constants.AUDIO_PLOT_TECHNIQUE.DETAILED;
+            this.plotTechnique = sewi.constants.AUDIO_RESOURCE_PLOT_TECHNIQUE.DETAILED;
         }
     }
 
@@ -1151,7 +1151,7 @@ var sewi = sewi || {};
         if(i < len){
             window.requestAnimationFrame(copyBuffer.bind(this, i, channelData));
         } else {
-            this.audioResourceViewer.trigger('bufferCopied');
+            this.audioResourceViewer.trigger(sewi.constants.AUDIO_RESOURCE_EVENT_BUFFER_COPIED);
         }
     }
 })();
