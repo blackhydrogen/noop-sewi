@@ -2,7 +2,16 @@ var sewi = sewi || {};
 
 (function() {
 
-
+  /**
+   * A gallery that displays thumbnails for all the available resources
+   *
+   * @class sewi.ResourceGallery
+   * @constructor
+   * @extends sewi.ConfiguratorElement
+   *
+   * @param {Object} options Encounter information for the ResourceGallery
+   * @param {string} options.encounterId The encounterId of the encounter
+   */
   sewi.ResourceGallery = function(options) {
 
     sewi.ConfiguratorElement.call(this);
@@ -29,8 +38,13 @@ var sewi = sewi || {};
         type: 'GET',
         async: true,
         url: resourceGalleryURL
-      }).done(retrieveResources.bind(this))
+      }).done(loadSuccessful.bind(this))
       .fail(loadFailed.bind(this));
+  }
+
+  function loadSuccessful(data) {
+    retrieveResources.call(this, data);
+
   }
 
   function loadFailed() {
@@ -47,7 +61,7 @@ var sewi = sewi || {};
           url: thumbnailURL
 
         }).done(addThumbnail.bind(selfRef.resources[index]))
-        .fail(thumbnailError.bind(selfRef.resources[index]));
+        .fail(thumbnailImageError.bind(selfRef.resources[index]));
     });
 
   }
@@ -56,47 +70,65 @@ var sewi = sewi || {};
     $(this).find('img').attr('src', data);
   }
 
-  function thumbnailError() {
+  function thumbnailImageError() {
+    // A default thumbnail image is shown for any resource without a thumbnail
     $(this).find('img').attr('src', sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
   }
 
 
   function retrieveResources(resourceGalleryData) {
-    var selfRef = this;
-    $.each(resourceGalleryData, function(index, value) {
-
-      var resourceContainer = selfRef.mainDOMElement;
-
-      var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
-        .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value['id'])
-        .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value['type'])
-        .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value['date'])
-        .draggable({
-          helper: 'clone',
-          revert: 'invalid',
-          appendTo: 'body',
-        }).append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
-        .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
-
-      resource.on('dblclick', selfRef, selfRef.getResourceDOM);
-      selfRef.resources.push(resource);
-      resourceContainer.append(resource);
-
-    });
-    selfRef.addScrollbar();
-    selfRef.addTooltips();
-    generateThumbnails.call(selfRef, resourceGalleryData);
+    $.each(resourceGalleryData, appendResourceToDOM.bind(this));
+    this.addScrollbar();
+    this.addTooltips();
+    generateThumbnails.call(this, resourceGalleryData);
   }
 
+  function appendResourceToDOM(index, value) {
+    var resourceContainer = this.mainDOMElement;
+
+    var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
+      .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value['id'])
+      .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value['type'])
+      .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value['date'])
+      .draggable({
+        helper: 'clone',
+        revert: 'invalid',
+        appendTo: 'body',
+        start: function(e, ui) {
+          ui.helper.addClass('resource-dragged');
+        }
+      }).append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
+      .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
+
+    resource.on('dblclick', this, getResourceDOM);
+    this.resources.push(resource);
+    resourceContainer.append(resource);
+  }
+
+  /**
+   * Fired when a resource is double clicked
+   * @event resourceClick
+   * @type {object}
+   * @memberof sewi.ResourceGallery
+   */
+  function getResourceDOM(event) {
+    event.data.mainDOMElement.trigger('resourceClick', $(this));
+  }
+
+  /**
+   * Loads the resource gallery
+   */
   sewi.ResourceGallery.prototype.load = function() {
 
     loadResourceGallery.call(this);
     return this;
   }
 
+  /**
+   * Adds a semi-transparent scroll bar to the resource gallery.
+   */
   sewi.ResourceGallery.prototype.addScrollbar = function() {
-    var selfRef = this;
-    selfRef.mainDOMElement.slimScroll({
+    this.mainDOMElement.slimScroll({
       color: '#000',
       width: '100%',
       size: '4px',
@@ -104,16 +136,14 @@ var sewi = sewi || {};
     });
   }
 
+  /**
+   * Adds tooltips to every resource that displays meta-data about the data.
+   */
   sewi.ResourceGallery.prototype.addTooltips = function() {
-    var selfRef = this;
-    selfRef.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_RESOURCE_CLASS).tooltip({
+    this.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_RESOURCE_CLASS).tooltip({
       container: 'body',
       placement: 'left',
       appendTo: 'body'
     });
-  }
-
-  sewi.ResourceGallery.prototype.getResourceDOM = function(event) {
-    event.data.mainDOMElement.trigger('resourceClick', jQuery(this));
   }
 })();
