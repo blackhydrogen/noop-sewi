@@ -57,44 +57,6 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
-    /**
-     * Fired when the media is paused.
-     * @event Paused
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the media is playing.
-     * @event Playing
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the media is muted.
-     * @event Muted
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the media is unmuted.
-     * @event Unmuted
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the volume of the media is changed.
-     * @event VolumeChanged
-     * @memberof sewi.MediaControls
-     * @param {number} volume The current volume of the media.
-     */
-
-    /**
-     * Fired when the current playback position of the media is changed.
-     * @event PositionChanged
-     * @memberof sewi.MediaControls
-     * @param {number} volume The current playback position of the media.
-     */
-
     // Helper function that formats the text for the duration
     var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
 

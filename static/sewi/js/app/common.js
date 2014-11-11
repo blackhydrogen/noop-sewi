@@ -264,11 +264,49 @@ var sewi = sewi || {};
         MEDIA_CONTROLS_SEEK_BAR_BACKGROUND_DOM: '<div class="seek-bar-background"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_CONTAINER_DOM: '<div class="seek-bar-buffers"></div>',
         MEDIA_CONTROLS_SEEK_BAR_BUFFER_DOM: '<div class="buffer"></div>',
+
+        /**
+         * Fired when the media is playing.
+         * @event controlsPlaying
+         * @memberof sewi.MediaControls
+         */
         MEDIA_CONTROLS_PLAYING_EVENT: 'controlsPlaying',
+
+        /**
+         * Fired when the media is paused.
+         * @event controlsPaused
+         * @memberof sewi.MediaControls
+         */
         MEDIA_CONTROLS_PAUSED_EVENT: 'controlsPaused',
+
+        /**
+         * Fired when the media is muted.
+         * @event controlsMuted
+         * @memberof sewi.MediaControls
+         */
         MEDIA_CONTROLS_MUTED_EVENT: 'controlsMuted',
+
+        /**
+         * Fired when the media is unmuted.
+         * @event controlsUnmuted
+         * @memberof sewi.MediaControls
+         */
         MEDIA_CONTROLS_UNMUTED_EVENT: 'controlsUnmuted',
+
+        /**
+         * Fired when the volume of the media is changed.
+         * @event controlsVolumeChanged
+         * @memberof sewi.MediaControls
+         * @param {number} volume The current volume of the media.
+         */
         MEDIA_CONTROLS_VOLUME_CHANGED_EVENT: 'controlsVolumeChanged',
+
+        /**
+         * Fired when the current playback position of the media is changed.
+         * @event controlsPositionChanged
+         * @memberof sewi.MediaControls
+         * @param {number} volume The current playback position of the media.
+         */
         MEDIA_CONTROLS_POSITION_CHANGED_EVENT: 'controlsPositionChanged',
 
         //Chart Controls Constants
