@@ -752,7 +752,6 @@ var sewi = sewi || {};
     }
 
     function retrieveVideo(videoData) {
-        console.log('Video data retrieved.');
         this.videoData = videoData;
         this.isLoaded = true;
         var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
@@ -791,7 +790,6 @@ var sewi = sewi || {};
         var video = this.videoElement[0];
         video.src = ' ';
         video.load();
-        console.log('Cleaning up video');
     };
 
     sewi.VideoResourceViewer.prototype.resize = function() {
