@@ -879,7 +879,7 @@ var sewi = sewi || {};
     }
 
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventFull(dropArea, position){
+    function indicatorOnDropEventFull(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT){
             addPanel.call(  this,
                             sewi.constants.TAB_PANEL_POSITIONS.LEFT, 
@@ -915,7 +915,7 @@ var sewi = sewi || {};
     }
     
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventLeft(dropArea, position){
+    function indicatorOnDropEventLeft(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP){
             addPanel.call(  this,
                             sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT, 
@@ -934,7 +934,7 @@ var sewi = sewi || {};
     }
     
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventRight(dropArea, position){
+    function indicatorOnDropEventRight(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP){
             addPanel.call(  this,
                             sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, 
@@ -953,7 +953,7 @@ var sewi = sewi || {};
     }
     
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventBottom(dropArea, position){
+    function indicatorOnDropEventBottom(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT){
             addPanel.call(  this,
                             sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT, 
@@ -972,7 +972,7 @@ var sewi = sewi || {};
     }
 
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventTop(dropArea, position){
+    function indicatorOnDropEventTop(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT){
             addPanel.call(  this,
                             sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT, 
@@ -991,7 +991,7 @@ var sewi = sewi || {};
     }
     
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventTopLeft(dropArea, position){
+    function indicatorOnDropEventTopLeft(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP){
             updateState.call(   this,
                                 sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 
@@ -1018,7 +1018,7 @@ var sewi = sewi || {};
     }
     
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventTopRight(dropArea, position){
+    function indicatorOnDropEventTopRight(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.TOP){
             updateState.call(   this,
                                 sewi.constants.TAB_PANEL_POSITIONS.BOTTOM, 
@@ -1045,7 +1045,7 @@ var sewi = sewi || {};
     }
 
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventBottomLeft(dropArea, position){
+    function indicatorOnDropEventBottomLeft(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.LEFT){
             updateState.call(   this,
                                 sewi.constants.TAB_PANEL_POSITIONS.RIGHT, 
@@ -1072,7 +1072,7 @@ var sewi = sewi || {};
     }
     
     //This is a helper function for indicatorOnDropEvent
-    function indicatorOnDropEventBottomRight(dropArea, position){
+    function indicatorOnDropEventBottomRight(dropArea, position, ui){
         if (position == sewi.constants.TAB_DROP_AREA_POSITIONS.RIGHT){
             updateState.call(   this,
                                 sewi.constants.TAB_PANEL_POSITIONS.LEFT, 
@@ -1101,31 +1101,31 @@ var sewi = sewi || {};
     function indicatorOnDropEvent(dropArea, position, event, ui){
         event.preventDefault();
         if (this.state == sewi.constants.TAB_PANEL_POSITIONS.FULL){
-            indicatorOnDropEventFull.call(this, dropArea, position);
+            indicatorOnDropEventFull.call(this, dropArea, position, ui);
 
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.LEFT){
-            indicatorOnDropEventLeft.call(this, dropArea, position);
+            indicatorOnDropEventLeft.call(this, dropArea, position, ui);
         
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.RIGHT){
-            indicatorOnDropEventRight.call(this, dropArea, position);
+            indicatorOnDropEventRight.call(this, dropArea, position, ui);
 
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM){
-            indicatorOnDropEventBottom.call(this, dropArea, position);
+            indicatorOnDropEventBottom.call(this, dropArea, position, ui);
 
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP){
-            indicatorOnDropEventTop.call(this, dropArea, position);
+            indicatorOnDropEventTop.call(this, dropArea, position, ui);
 
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_LEFT){
-            indicatorOnDropEventTopLeft.call(this, dropArea, position);
+            indicatorOnDropEventTopLeft.call(this, dropArea, position, ui);
         
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.TOP_RIGHT){
-            indicatorOnDropEventTopRight.call(this, dropArea, position);
+            indicatorOnDropEventTopRight.call(this, dropArea, position, ui);
         
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_LEFT){
-            indicatorOnDropEventBottomLeft.call(this, dropArea, position);
+            indicatorOnDropEventBottomLeft.call(this, dropArea, position, ui);
 
         } else if (this.state == sewi.constants.TAB_PANEL_POSITIONS.BOTTOM_RIGHT){
-            indicatorOnDropEventBottomRight.call(this, dropArea, position);
+            indicatorOnDropEventBottomRight.call(this, dropArea, position, ui);
         }
     }
 
