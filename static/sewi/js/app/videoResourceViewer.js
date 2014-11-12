@@ -377,10 +377,10 @@ var sewi = sewi || {};
         if (!_.isUndefined(options.muted)) {
             this.isMuted = !!options.muted;
 
-            if (!this.isMuted) {
-                this.mainDOMElement.removeClass('muted');
-            } else {
+            if (this.isMuted) {
                 this.mainDOMElement.addClass('muted');
+            } else {
+                this.mainDOMElement.removeClass('muted');
             }
         }
 
@@ -391,11 +391,11 @@ var sewi = sewi || {};
             var positions = [];
 
             for (var i = 0; i < numOfBuffers; i++) {
-                var start = limitToRange(options.buffers[i].start, 0, 1);
-                var end = limitToRange(options.buffers[i].end, 0, 1);
+                var start = limitToRange(options.buffers[i].start / duration, 0, 1);
+                var end = limitToRange(options.buffers[i].end / duration, 0, 1);
                 var position = {
-                    left:  ((start / duration) * 100) + '%',
-                    right: ((1 - end / duration) * 100) + '%'
+                    left:  ((start) * 100) + '%',
+                    right: ((1 - end) * 100) + '%'
                 };
                 positions.push(position);
             }
