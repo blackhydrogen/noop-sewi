@@ -534,7 +534,7 @@ var sewi = sewi || {};
     }
 
     function attachVideoEventHandlers() {
-        this.videoElement.on('canplay', this.hideProgressBar.bind(this));
+        this.videoElement.on('canplay', videoReady.bind(this));
         this.videoElement.on('loadedmetadata', updateDimensions.bind(this));
         this.videoElement.on('error', playbackFailed.bind(this));
     }
@@ -751,7 +751,6 @@ var sewi = sewi || {};
         console.log('Video data retrieved.');
         this.videoData = videoData;
         this.isLoaded = true;
-        this.mainDOMElement.trigger(sewi.constants.VIDEO_RESOURCE_VIEWER_LOADED_EVENT);
         var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
         videoSourceElement.attr({
             src: this.videoData.url,
@@ -767,6 +766,11 @@ var sewi = sewi || {};
 
     function loadFailed() {
         this.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE);
+    }
+
+    function videoReady() {
+        this.hideProgressBar();
+        this.mainDOMElement.trigger(sewi.constants.VIDEO_RESOURCE_VIEWER_LOADED_EVENT);
     }
 
     // VideoResourceViewer public methods
