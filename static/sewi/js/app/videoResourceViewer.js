@@ -320,18 +320,21 @@ var sewi = sewi || {};
         if (!_.isUndefined(options.currentTime)) {
             this.currentTime = options.currentTime;
 
-            var currentMins = Math.floor(options.currentTime / 60);
-            var currentSecs = Math.floor(options.currentTime % 60);
+            if (!_.isUndefined(this.duration)) {
 
-            var durationMins = Math.floor(this.duration / 60);
-            var durationSecs = Math.floor(this.duration % 60);
+                var currentMins = Math.floor(options.currentTime / 60);
+                var currentSecs = Math.floor(options.currentTime % 60);
 
-            this.durationTextPanel.text(generateDurationText({
-                currentMins: getTimeDigits(currentMins),
-                currentSecs: getTimeDigits(currentSecs),
-                durationMins: getTimeDigits(durationMins),
-                durationSecs: getTimeDigits(durationSecs),
-            }));
+                var durationMins = Math.floor(this.duration / 60);
+                var durationSecs = Math.floor(this.duration % 60);
+
+                this.durationTextPanel.text(generateDurationText({
+                    currentMins: getTimeDigits(currentMins),
+                    currentSecs: getTimeDigits(currentSecs),
+                    durationMins: getTimeDigits(durationMins),
+                    durationSecs: getTimeDigits(durationSecs),
+                }));
+            }
         }
 
         if (!_.isUndefined(options.position) && !this.isSeeking) {
