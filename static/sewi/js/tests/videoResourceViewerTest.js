@@ -2,12 +2,30 @@
     var constants = {
         TEST_EXTRA_BUTTON_DOM: '<button type="button" class="extra-button"></button>',
         TEST_EXTRA_BUTTON_CLASS: 'extra-button',
+        TEST_VALID_DURATION: 156,
+        TEST_INVALID_DURATION_1: 'invalid',
+        TEST_INVALID_DURATION_2: -1,
+        TEST_INVALID_INITIAL_DURATION_TEXT: '00:00/00:00',
+        TEST_VALID_INITIAL_DURATION_TEXT: '00:00/02:36',
+        TEST_INVALID_TIME_1: 'invalid',
+        TEST_INVALID_TIME_2: -1,
+        TEST_VALID_TIME: 1,
+        TEST_VALID_UPDATED_DURATION_TEXT: '00:01/02:36',
+        TEST_VOLUME: 0.5,
 
         PLAY_BUTTON_CLASS: 'play-button',
         MUTE_BUTTON_CLASS: 'mute-button',
         VOLUME_SLIDER_CLASS: 'volume-slider',
         PROGRESS_SLIDER_CLASS: 'progress-slider',
-        DURATION_CLASS: 'duration'
+        DURATION_CLASS: 'duration',
+
+        PLAYING_EVENT: sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT,
+        PAUSED_EVENT: sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT,
+        MUTED_EVENT: sewi.constants.MEDIA_CONTROLS_MUTED_EVENT,
+        UNMUTED_EVENT: sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT,
+        VOLUME_CHANGED_EVENT: sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT,
+        POSITION_CHANGED_EVENT: sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT,
+
     };
 
     function isIn(containerElement, htmlClass) {
@@ -77,5 +95,76 @@
 
         var numOfExtraButtons = this.fixture.find('.' + constants.TEST_EXTRA_BUTTON_CLASS).length;
         assert.equal(numOfExtraButtons, 3, 'All 3 extra buttons were added successfully.');
+    });
+
+    QUnit.asyncTest('Playing and Pausing', function(assert) {
+        QUnit.stop(1);
+        var controls = new this.sewi.MediaControls();
+        var controlsElement = controls.getDOM();
+
+        controlsElement.on(constants.PLAYING_EVENT, function() {
+            assert.ok(true, 'Controls can play media.');
+            QUnit.start();
+        });
+
+        controlsElement.on(constants.PAUSED_EVENT, function() {
+            assert.ok(true, 'Controls can pause media.');
+            QUnit.start();
+        });
+
+        this.fixture.append(controls.getDOM());
+
+        var playButton = this.fixture.find('.' + constants.PLAY_BUTTON_CLASS);
+
+        playButton.click();
+        playButton.click();
+    });
+
+    QUnit.asyncTest('Muting and Unmuting', function(assert) {
+        QUnit.stop(1);
+
+        var controls = new this.sewi.MediaControls();
+        this.fixture.append(controls.getDOM());
+        var controlsElement = controls.getDOM();
+
+        var volumeSlider = this.fixture.find('.' + constants.VOLUME_SLIDER_CLASS);
+        var muteButton = this.fixture.find('.' + constants.MUTE_BUTTON_CLASS);
+
+        controlsElement.on(constants.MUTED_EVENT, function() {
+            assert.ok(true, 'Controls can mute media.');
+            QUnit.start();
+        });
+
+        controlsElement.on(constants.UNMUTED_EVENT, function() {
+            assert.ok(true, 'Controls can unmute media.');
+            QUnit.start();
+        });
+
+        muteButton.click();
+        muteButton.click();
+    });
+
+    QUnit.asyncTest('Adjusting Volume', function(assert) {
+        QUnit.stop(1);
+
+        var controls = new this.sewi.MediaControls();
+        this.fixture.append(controls.getDOM());
+        var controlsElement = controls.getDOM();
+
+        var volumeSlider = this.fixture.find('.' + constants.VOLUME_SLIDER_CLASS);
+        var muteButton = this.fixture.find('.' + constants.MUTE_BUTTON_CLASS);
+
+        controlsElement.one(constants.VOLUME_CHANGED_EVENT, function(event, volume) {
+            assert.equal(volumeSlider.val(), constants.TEST_VOLUME, 'Controls can adjust volume.');
+            QUnit.start();
+        });
+
+        controlsElement.on(constants.UNMUTED_EVENT, function() {
+            assert.ok(true, 'Adjusting volume unmutes the media.');
+            QUnit.start();
+        });
+
+        muteButton.click();
+        volumeSlider.val(constants.TEST_VOLUME).trigger('input').trigger('change');
     });
 })();
