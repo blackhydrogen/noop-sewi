@@ -18,6 +18,8 @@
         VOLUME_SLIDER_CLASS: 'volume-slider',
         PROGRESS_SLIDER_CLASS: 'progress-slider',
         DURATION_CLASS: 'duration',
+        PLAYING_CLASS: 'playing',
+        MUTED_CLASS: 'muted',
 
         PLAYING_EVENT: sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT,
         PAUSED_EVENT: sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT,
@@ -103,12 +105,12 @@
         var controlsElement = controls.getDOM();
 
         controlsElement.on(constants.PLAYING_EVENT, function() {
-            assert.ok(true, 'Controls can play media.');
+            assert.ok(controlsElement.hasClass(constants.PLAYING_CLASS), 'Controls can play media.');
             QUnit.start();
         });
 
         controlsElement.on(constants.PAUSED_EVENT, function() {
-            assert.ok(true, 'Controls can pause media.');
+            assert.ok(!controlsElement.hasClass(constants.PLAYING_CLASS), 'Controls can pause media.');
             QUnit.start();
         });
 
@@ -131,12 +133,12 @@
         var muteButton = this.fixture.find('.' + constants.MUTE_BUTTON_CLASS);
 
         controlsElement.on(constants.MUTED_EVENT, function() {
-            assert.ok(true, 'Controls can mute media.');
+            assert.ok(controlsElement.hasClass(constants.MUTED_CLASS), 'Controls can mute media.');
             QUnit.start();
         });
 
         controlsElement.on(constants.UNMUTED_EVENT, function() {
-            assert.ok(true, 'Controls can unmute media.');
+            assert.ok(!controlsElement.hasClass(constants.MUTED_CLASS), 'Controls can unmute media.');
             QUnit.start();
         });
 
