@@ -691,4 +691,80 @@
 		equal(this.panZoomTarget.css("left"), "-400px", "Left");
 		equal(this.panZoomTarget.css("top"), "-200px", "Top");	
 	});
+
+	QUnit.module("PanZoomWidget, Get Zoom Level Functions", {
+		setup: function() {
+			this.fixture = $('#qunit-fixture');
+
+			// this.panZoomTargetOriginalUrl = "testImage1.png";
+			this.panZoomContainer = $('<div></div>');
+
+			this.panZoomTargetOriginalWidth = 800;
+			this.panZoomTargetOriginalHeight = 400;
+			this.panZoomTarget = $('<img>')
+				.width(this.panZoomTargetOriginalWidth)
+				.height(this.panZoomTargetOriginalHeight)
+				.appendTo(this.panZoomContainer);
+
+			this.panZoomContainer.appendTo($("body"));
+
+			this.panZoomWidget = new sewi.PanZoomWidget(
+				this.panZoomTarget,
+				this.panZoomContainer,
+				this.panZoomTargetOriginalWidth,
+				this.panZoomTargetOriginalHeight
+			);
+		},
+
+		teardown: function() {
+			this.panZoomContainer.remove();
+		}
+	});
+
+	QUnit.test("getMinimumZoomLevel, getMaximumZoomLevel (2 values)", function(assert) {
+		expect(4);
+
+		// Set the container's respective width and height.
+		this.panZoomContainer.width(800);
+		this.panZoomContainer.height(400);
+
+		// Make PanZoomWidget recalculate the new dimensions
+		this.panZoomWidget.recalculateTargetDimensions();
+
+		equal(this.panZoomWidget.getMinimumZoomLevel(), 50, "getMinimumZoomLevel (container size: 800, 400)");
+		equal(this.panZoomWidget.getMaximumZoomLevel(), 200, "getMaximumZoomLevel (container size: 800, 400)");
+
+		// Re-Set the container's respective width and height.
+		this.panZoomContainer.width(400);
+		this.panZoomContainer.height(200);
+
+		// Make PanZoomWidget recalculate the new dimensions
+		this.panZoomWidget.recalculateTargetDimensions();
+
+		equal(this.panZoomWidget.getMinimumZoomLevel(), 25, "getMinimumZoomLevel (container size: 400, 200)");
+		equal(this.panZoomWidget.getMaximumZoomLevel(), 200, "getMaximumZoomLevel (container size: 400, 200)");
+	});
+
+	QUnit.test("fitSizeEqualsOriginalSize (Both possible values)", function(assert) {
+		expect(2);
+
+		// Set the container's respective width and height.
+		this.panZoomContainer.width(800);
+		this.panZoomContainer.height(400);
+
+		// Make PanZoomWidget recalculate the new dimensions
+		this.panZoomWidget.recalculateTargetDimensions();
+
+		equal(this.panZoomWidget.fitSizeEqualsOriginalSize(), true, "fitSizeEqualsOriginalSize (true)");
+
+		// Re-Set the container's respective width and height.
+		this.panZoomContainer.width(600);
+		this.panZoomContainer.height(300);
+
+		// Make PanZoomWidget recalculate the new dimensions
+		this.panZoomWidget.recalculateTargetDimensions();
+
+		equal(this.panZoomWidget.fitSizeEqualsOriginalSize(), false, "fitSizeEqualsOriginalSize (false)");
+	});
+
 })();
