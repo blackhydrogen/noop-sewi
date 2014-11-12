@@ -215,6 +215,15 @@ var sewi = sewi || {};
         return ('0' + number).slice(-2);
     }
 
+    function limitToRange(value, min, max) {
+        if (value < min) {
+            value = min;
+        } else if (!_.isUndefined(max) && value > max) {
+            value = max;
+        }
+        return value;
+    }
+
     // MediaControls public methods
 
     /**
@@ -287,14 +296,19 @@ var sewi = sewi || {};
      * be updated.
      * @param {boolean} [options.playing] Whether the media is currently
      * playing.
-     * @param {number} [options.duration] The new duration of the media.
+     * @param {number} [options.duration] The new duration of the media. If less
+     * than 0, it will default to 0.
      * @param {number} [options.currentTime] The new playback position of the
-     * media in seconds. Updates the duration display.
+     * media in seconds. Updates the duration display. If less than 0, it will
+     * default to 0. If it is greater than <code>duration</code>, it will round
+     * to the value of <code>duration</code>.
      * @param {number} [options.position] The new playback position of the media
-     * as a percentage. Updates the seeking bar. Ranges from 0.0 to 100.0.
+     * as a percentage. Updates the seeking bar. Ranges from 0.0 to 100.0. If
+     * outside the range, it will round to the nearest valid value.
      * @param {number} [options.volume] The new volume of the media. Ranges from
      * 0.0 to 1.0. If specified, <code>options.muted</code> will be set to
-     * <code>false</code>.
+     * <code>false</code>. If outside the range, it will round to the nearest
+     * valid value.
      * @param {number} [options.muted] Whether the media is current muted. Will
      * be overridden if <code>options.volume</code> is set.
      * @param {Array} [options.buffer] The locations of the streaming buffers
@@ -319,20 +333,22 @@ var sewi = sewi || {};
             }
         }
 
-        if (!_.isUndefined(options.duration)) {
+        if (_.isNumber(options.duration)) {
+            options.duration = limitToRange(options.duration, 0);
+
             this.duration = options.duration;
-            if (_.isUndefined(this.currentTime)) {
-                options.currentTime = options.currentTime || 0;
-            }
+            options.currentTime = options.currentTime || this.currentTime || 0;
         }
 
-        if (!_.isUndefined(options.currentTime)) {
+        if (_.isNumber(options.currentTime) && options.currentTime >= 0) {
+            options.currentTime = limitToRange(options.currentTime, 0);
             this.currentTime = options.currentTime;
 
             if (!_.isUndefined(this.duration)) {
+                this.currentTime = limitToRange(this.currentTime, 0, this.duration);
 
-                var currentMins = Math.floor(options.currentTime / 60);
-                var currentSecs = Math.floor(options.currentTime % 60);
+                var currentMins = Math.floor(this.currentTime / 60);
+                var currentSecs = Math.floor(this.currentTime % 60);
 
                 var durationMins = Math.floor(this.duration / 60);
                 var durationSecs = Math.floor(this.duration % 60);
@@ -346,11 +362,13 @@ var sewi = sewi || {};
             }
         }
 
-        if (!_.isUndefined(options.position) && !this.isSeeking) {
+        if (_.isNumber(options.position) && !this.isSeeking) {
+            options.position = limitToRange(options.position, 0, 100);
             this.progressSlider[0].value = options.position;
         }
 
-        if (!_.isUndefined(options.volume)) {
+        if (_.isNumber(options.volume)) {
+            options.volume = limitToRange(options.volume, 0, 1);
             this.volumeSlider[0].value = options.volume;
             options.muted = false;
         }
@@ -365,17 +383,19 @@ var sewi = sewi || {};
             }
         }
 
-        if (!_.isUndefined(options.buffers) && options.buffers.length > 0) {
+        if (_.isArray(options.buffers) && options.buffers.length > 0) {
             var duration = this.duration;
             var numOfBuffers = options.buffers.length;
 
             var positions = [];
 
             for (var i = 0; i < numOfBuffers; i++) {
+                var start = limitToRange(options.buffers[i].start, 0, 1);
+                var end = limitToRange(options.buffers[i].end, 0, 1);
                 var position = {
-                    left:  ((options.buffers[i].start / duration) * 100) + '%',
-                    right: ((1 - options.buffers[i].end / duration) * 100) + '%'
-                }
+                    left:  ((start / duration) * 100) + '%',
+                    right: ((1 - end / duration) * 100) + '%'
+                };
                 positions.push(position);
             }
 
