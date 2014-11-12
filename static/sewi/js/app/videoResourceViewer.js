@@ -780,6 +780,16 @@ var sewi = sewi || {};
         }
     }
 
+    sewi.VideoResourceViewer.prototype.cleanUp = function() {
+        // Strip the video element of all event handlers.
+        this.videoElement.off();
+        // Force the video element to unload its containing video.
+        var video = this.videoElement[0];
+        video.src = ' ';
+        video.load();
+        console.log('Cleaning up video');
+    }
+
     sewi.VideoResourceViewer.prototype.resize = function() {
         if (this.panZoomWidget) {
             this.panZoomWidget.centreTargetOnContainer();
