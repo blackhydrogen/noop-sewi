@@ -384,23 +384,27 @@ var sewi = sewi || {};
             }
         }
 
-        if (_.isArray(options.buffers) && options.buffers.length > 0) {
+        if (_.isArray(options.buffers)) {
             var duration = this.duration;
             var numOfBuffers = options.buffers.length;
 
             var positions = [];
 
             for (var i = 0; i < numOfBuffers; i++) {
-                var start = limitToRange(options.buffers[i].start / duration, 0, 1);
-                var end = limitToRange(options.buffers[i].end / duration, 0, 1);
-                var position = {
-                    left:  ((start) * 100) + '%',
-                    right: ((1 - end) * 100) + '%'
-                };
-                positions.push(position);
+                var start = options.buffers[i].start / duration;
+                var end = options.buffers[i].end / duration;
+                if (_.isFinite(start) && _.isFinite(end)) {
+                    start = limitToRange(start, 0, 1);
+                    end = limitToRange(end, 0, 1);
+                    var position = {
+                        left:  ((start) * 100) + '%',
+                        right: ((1 - end) * 100) + '%'
+                    };
+                    positions.push(position);
+                }
             }
 
-            setNumberOfBufferBars.call(this, numOfBuffers);
+            setNumberOfBufferBars.call(this, positions.length);
             setBufferBarPositions.call(this, positions);
 
         }
