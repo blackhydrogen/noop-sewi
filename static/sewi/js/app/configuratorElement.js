@@ -127,7 +127,7 @@ var sewi = sewi || {};
 							   .append(this.textElement);
 
         this.progressBarAmountElement.on(getTransitionEvent(), onTransitionEnd.bind(this));
-		
+
         this.mainDOMElement.append(this.progressBarElement)
 						   .addClass(sewi.constants.PROGRESS_BAR_BACKDROP_CLASS)
     }
@@ -136,11 +136,11 @@ var sewi = sewi || {};
         if(event.currentTarget === event.target){
             var propertyName = event.originalEvent.propertyName;
             if(propertyName == "width"){
-                this.hasTransitionEnded = true;        
+                this.hasTransitionEnded = true;
             }
         }
     }
-    
+
     function getTransitionEvent(){
         var el = document.createElement('fakeelement');
         var transitions = {
@@ -249,11 +249,11 @@ var sewi = sewi || {};
 	}
 
 	function closeButtonClicked() {
-		this.trigger('Closing');
+		this.trigger(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT);
 	}
 
 	function fullscreenButtonClicked() {
-		this.trigger('FullscreenToggled');
+		this.trigger(sewi.constants.RESOURCE_VIEWER_CLOSING_EVENT);
 	}
 
 	function tooltipsButtonClicked(event) {
