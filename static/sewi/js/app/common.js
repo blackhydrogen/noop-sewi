@@ -239,6 +239,7 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_CONTENT_DOM:'<div class="audio-content"></div>',
         AUDIO_RESOURCE_EVENT_BUFFER_COPIED: 'bufferCopied',
         AUDIO_RESOURCE_CHANNEL_CSS_CLASS: {LEFT: 'left-channel', RIGHT: 'right-channel'},
+        AUDIO_RESOURCE_GRAPH_DOM : '<div class="wave-graph" id="" title=""></div>',
 
         //Chart Resource Constants
         CHART_RESOURCE_URL: '/sewi/resources/chart/',

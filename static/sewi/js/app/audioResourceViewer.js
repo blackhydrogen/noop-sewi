@@ -231,7 +231,10 @@ var sewi = sewi || {};
     }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
-        var graphDOM = $('<div class="wave-graph '+channelName+'" id="'+this.id+'" title="'+channelName+'"></div>');
+        var graphDOM = $(sewi.constants.AUDIO_RESOURCE_GRAPH_DOM);
+        graphDOM.addClass(channelName);
+        graphDOM.attr({'id' : this.id,
+                    'title' : channelName});
         this.contentDOM.append(graphDOM);
         this.hideProgressBar();
         var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence, this); 
@@ -830,7 +833,7 @@ var sewi = sewi || {};
         var center = this.canvasDOM.height() / 2;
         var verticalMultiplier = 1.0;
         var canvasWidth = this.canvasDOM.width();
-        //canvasContext.setLineWidth(1);
+        
         canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_WAVE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
@@ -870,7 +873,6 @@ var sewi = sewi || {};
         canvasContext.stroke(); 
 
         // Draw the horizontal line at the center
-        //canvasContext.setLineWidth(1.0);
         canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_HORIZONTAL_LINE_STROKE_COLOR;                
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
