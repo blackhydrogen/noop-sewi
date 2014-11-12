@@ -236,10 +236,29 @@ var sewi = sewi || {};
         AUDIO_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
 
         //Chart Resource Constants
+        CHART_RESOURCE_LEGEND_CONTAINER_DOM: '<div class="legend-container"> </div>',
+        CHART_RESOURCE_CHART_CONTAINER_DOM: '<div class="main-graph-container"> </div>',
+        CHART_RESOURCE_MAIN_DOM_CLASS: 'time-series-graph-container',
         CHART_RESOURCE_URL: '/sewi/resources/chart/',
         CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load chart, please close and re-open chart',
-        // the time interval(in ms) within which the peakDetection algorithm searches for a peak
-        CHART_RESOURCE_PEAK_SEARCH_INTERVAL: 200,
+        CHART_RESOURCE_INVALID_RESOURCEID_ERROR: 'options: Valid resource id must be provided.',
+        CHART_RESOURCE_PEAK_SEARCH_INTERVAL: 200, // the time interval(in ms) within which the peakDetection algorithm searches for a peak
+        CHART_RESOURCE_LEGEND_X_DOM: '<b style="color:#c61055">Time</b>: ',
+        CHART_RESOURCE_X_AXIS_UNIT: 'ms ',
+        CHART_RESOURCE_Y_AXIS_UNIT: 'mV',
+        CHART_RESOURCE_LEGEND_Y_DOM: '<b style="color:#c61055"></b>',
+        CHART_RESOURCE_SELECTED_POINT_HIGHLIGHT_COLOR: '#000',
+        CHART_RESOURCE_LINE_GRAPH_COLOR: '#c61055',
+        CHART_RESOURCE_X_AXIS_LABEL: 'Time',
+        CHART_RESOURCE_Y_AXIS_LABEL: 'Value',
+        CHART_RESOURCE_X_AXIS_LABEL_WIDTH: 55,
+        CHART_RESOURCE_Y_AXIS_LABEL_WIDTH: 37,
+        CHART_RESOURCE_HIGHLIGHT_POINT_SIZE: 4,
+        CHART_RESOURCE_RESET_ALL_POINTS_EVENT: 'allPointsReset',
+        CHART_RESOURCE_RESET_VISIBLE_POINTS_EVENT: 'visiblePointsReset',
+        CHART_RESOURCE_ZOOM_OUT_GRAPH_EVENT: 'zoomOutGraph',
+        CHART_RESOURCE_Y_AXIS_ZOOMED_EVENT: 'zoomedIntoY',
+        MINIMUM_DIFFERENCE_FOR_PEAK_IDENTIFICATION: 0.2,
 
         //Media Controls Constants
         MEDIA_CONTROLS_DOM_CLASS: 'media-control-panel',
