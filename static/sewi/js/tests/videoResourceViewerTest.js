@@ -21,6 +21,22 @@
         TEST_VALID_POSITION: 45,
         TEST_INVALID_UPDATED_POSITION: 100,
         TEST_VALID_UPDATED_POSITION: 45.0,
+        TEST_BUFFER_DURATION: 320,
+        TEST_INVALID_BUFFER_1: { start: 'beginning', end: 'end' },
+        TEST_INVALID_BUFFER_2: { start: -1, end: 321 },
+        TEST_VALID_SINGLE_BUFFER: { start: 20, end: 205 },
+        TEST_VALID_MULTIPLE_BUFFERS: [
+            { start: 0, end: 21 },
+            { start: 40, end: 100 },
+            { start: 105, end: 106 },
+            { start: 120, end: 140 },
+            { start: 160, end: 186 },
+            { start: 189, end: 205 },
+            { start: 206, end: 260 },
+            { start: 266, end: 290 },
+            { start: 291, end: 302 },
+            { start: 302, end: 303 },
+        ],
 
         PLAY_BUTTON_CLASS: 'play-button',
         MUTE_BUTTON_CLASS: 'mute-button',
@@ -289,5 +305,46 @@
             playing: false,
         });
         assert.ok(!controlsElement.hasClass(constants.PLAYING_CLASS), 'Controls can emulate paused mode.');
+    });
+
+    QUnit.test('Updating Displayed Buffers', function(assert) {
+        var controls = new this.sewi.MediaControls();
+        this.fixture.append(controls.getDOM());
+        var controlsElement = controls.getDOM();
+
+        controls.update({
+            duration: constants.TEST_BUFFER_DURATION,
+        });
+
+        controls.update({
+            buffers: [constants.TEST_INVALID_BUFFER_1],
+        });
+        var numOfBuffers = controlsElement.find('.' + constants.BUFFER_CLASS).length;
+        assert.equal(numOfBuffers, 0, 'No buffers are created if they are invalid.');
+
+        controls.update({
+            buffers: [constants.TEST_INVALID_BUFFER_2],
+        });
+        numOfBuffers = controlsElement.find('.' + constants.BUFFER_CLASS).length;
+        assert.equal(numOfBuffers, 1, 'Buffers can be created if they are out of the valid range.');
+        var bufferElement = controlsElement.find('.' + constants.BUFFER_CLASS);
+
+        controls.update({
+            buffers: [constants.TEST_VALID_SINGLE_BUFFER],
+        });
+        numOfBuffers = controlsElement.find('.' + constants.BUFFER_CLASS).length;
+        assert.equal(numOfBuffers, 1, 'Buffers within valid range can be created.');
+
+        controls.update({
+            buffers: constants.TEST_VALID_MULTIPLE_BUFFERS,
+        });
+        numOfBuffers = controlsElement.find('.' + constants.BUFFER_CLASS).length;
+        assert.equal(numOfBuffers, 10, 'Multiple buffers are created if they are valid.');
+
+        controls.update({
+            buffers: [],
+        });
+        numOfBuffers = controlsElement.find('.' + constants.BUFFER_CLASS).length;
+        assert.equal(numOfBuffers, 0, 'Buffers can be cleared.');
     });
 })();
