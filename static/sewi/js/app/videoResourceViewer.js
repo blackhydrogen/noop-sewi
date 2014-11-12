@@ -246,13 +246,13 @@ var sewi = sewi || {};
      * Toggles the mute state of the MediaControls, and its target media.
      */
     sewi.MediaControls.prototype.toggleMute = function() {
-        if (this.isMuted) {
-            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
-        } else {
-            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT);
-        }
-
         this.update({ muted: !this.isMuted });
+
+        if (this.isMuted) {
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT);
+        } else {
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
+        }
     }
 
     /**
