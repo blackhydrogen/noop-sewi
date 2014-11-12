@@ -249,11 +249,11 @@ var sewi = sewi || {};
 	}
 
 	function closeButtonClicked() {
-		this.trigger(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT);
+		this.trigger(sewi.constants.RESOURCE_VIEWER_CLOSING_EVENT);
 	}
 
 	function fullscreenButtonClicked() {
-		this.trigger(sewi.constants.RESOURCE_VIEWER_CLOSING_EVENT);
+		this.trigger(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT);
 	}
 
 	function tooltipsButtonClicked(event) {
