@@ -198,7 +198,8 @@ var sewi = sewi || {};
     }
 
     function volumeChanged() {
-        this.volume(this.volumeSlider[0].value);
+        var newVolume = parseFloat(this.volumeSlider[0].value);
+        this.volume(newVolume);
     }
 
     function progressSeeking() {
@@ -206,9 +207,9 @@ var sewi = sewi || {};
     }
 
     function progressChanged() {
+        var newPosition = parseFloat(this.progressSlider[0].value);
         this.isSeeking = false;
-        this.playbackPosition(this.progressSlider[0].value);
-        //this.setPlaybackProgress(??);
+        this.playbackPosition(newPosition);
     }
 
     function getTimeDigits(number) {
