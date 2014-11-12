@@ -167,4 +167,43 @@
         muteButton.click();
         volumeSlider.val(constants.TEST_VOLUME).trigger('input').trigger('change');
     });
+
+    QUnit.test('Updating Time and Duration', function(assert) {
+        var controls = new this.sewi.MediaControls();
+        this.fixture.append(controls.getDOM());
+
+        var durationDisplay = this.fixture.find('.' + constants.DURATION_CLASS);
+        var initialDisplayText = durationDisplay.text();
+
+        controls.update({
+            duration: constants.TEST_INVALID_DURATION_1,
+        });
+
+        assert.equal(durationDisplay.text(), initialDisplayText, 'Duration display does not update when non-number is provided.');
+
+        controls.update({
+            duration: constants.TEST_INVALID_DURATION_2,
+        });
+        assert.equal(durationDisplay.text(), constants.TEST_INVALID_INITIAL_DURATION_TEXT, 'Duration display defaults to 0 when negative number is provided.');
+
+        controls.update({
+            duration: constants.TEST_VALID_DURATION,
+        });
+        assert.equal(durationDisplay.text(), constants.TEST_VALID_INITIAL_DURATION_TEXT, 'Duration display updates when non-negative number is provided.');
+
+        controls.update({
+            currentTime: constants.TEST_INVALID_TIME_1,
+        });
+        assert.equal(durationDisplay.text(), constants.TEST_VALID_INITIAL_DURATION_TEXT, 'Current time does not update when non-number is provided.');
+
+        controls.update({
+            currentTime: constants.TEST_INVALID_TIME_2,
+        });
+        assert.equal(durationDisplay.text(), constants.TEST_VALID_INITIAL_DURATION_TEXT, 'Current time does not update when negative number is provided..');
+
+        controls.update({
+            currentTime: constants.TEST_VALID_TIME,
+        });
+        assert.equal(durationDisplay.text(), constants.TEST_VALID_UPDATED_DURATION_TEXT, 'Current time updates when non-negative number is provided.');
+    });
 })();
