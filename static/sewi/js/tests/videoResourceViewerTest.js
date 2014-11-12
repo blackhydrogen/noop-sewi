@@ -43,6 +43,7 @@
         VOLUME_SLIDER_CLASS: 'volume-slider',
         PROGRESS_SLIDER_CLASS: 'progress-slider',
         DURATION_CLASS: 'duration',
+        BUFFER_CLASS: 'buffer',
         PLAYING_CLASS: 'playing',
         MUTED_CLASS: 'muted',
 
@@ -205,7 +206,6 @@
         controls.update({
             duration: constants.TEST_INVALID_DURATION_1,
         });
-
         assert.equal(durationDisplay.text(), initialDisplayText, 'Duration display does not update when non-number is provided.');
 
         controls.update({
