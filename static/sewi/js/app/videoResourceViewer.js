@@ -57,7 +57,16 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
-    // Helper function that formats the text for the duration
+    /*
+     * Helper function that formats the text for the duration
+     * Takes an object with the following parameters:
+     * {
+     *	    currentMins: The displayed number of minutes for the current time.
+     *	    currentSecs: The displayed number of seconds for the current time.
+     *	    durationMins: The displayed number of minutes for the duration.
+     *	    durationSecs: The displayed number of seconds for the duration.
+     * }
+     */
     var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
 
     // MediaControls private methods begin
