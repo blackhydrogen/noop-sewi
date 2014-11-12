@@ -240,7 +240,7 @@ var sewi = sewi || {};
         } else {
             this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT);
         }
-    }
+    };
 
     /**
      * Toggles the mute state of the MediaControls, and its target media.
@@ -253,7 +253,7 @@ var sewi = sewi || {};
         } else {
             this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
         }
-    }
+    };
 
     /**
      * Gets or sets the volume of the MediaControls.
@@ -273,7 +273,7 @@ var sewi = sewi || {};
         }
 
         return this.volumeSlider[0].value;
-    }
+    };
 
     /**
      * Gets or sets the playback position of the MediaControls.
@@ -288,7 +288,7 @@ var sewi = sewi || {};
             this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT, position);
         }
         return this.progressSlider[0].value;
-    }
+    };
 
     /**
      * Updates the displayed values of the MediaControls instance.
@@ -408,7 +408,7 @@ var sewi = sewi || {};
             setBufferBarPositions.call(this, positions);
 
         }
-    }
+    };
 
     /**
      * Allows tooltips within the MediaControls to be displayed when the buttons
@@ -423,7 +423,7 @@ var sewi = sewi || {};
             });
             this.initializedTooltips = true;
         }
-    }
+    };
 
     /**
      * Hides tooltips previously made visible via
@@ -436,7 +436,7 @@ var sewi = sewi || {};
             elements.tooltip('destroy');
             this.initializedTooltips = false;
         }
-    }
+    };
 
 })();
 
@@ -782,7 +782,7 @@ var sewi = sewi || {};
         if (!this.isLoaded) {
             loadVideoData.call(this);
         }
-    }
+    };
 
     sewi.VideoResourceViewer.prototype.cleanUp = function() {
         // Strip the video element of all event handlers.
@@ -792,13 +792,13 @@ var sewi = sewi || {};
         video.src = ' ';
         video.load();
         console.log('Cleaning up video');
-    }
+    };
 
     sewi.VideoResourceViewer.prototype.resize = function() {
         if (this.panZoomWidget) {
             this.panZoomWidget.centreTargetOnContainer();
         }
-    }
+    };
 
     sewi.VideoResourceViewer.prototype.showTooltips = function() {
         this.controls.showTooltips();
@@ -807,13 +807,13 @@ var sewi = sewi || {};
         elements.tooltip({
             container: 'body'
         });
-    }
+    };
 
     sewi.VideoResourceViewer.prototype.hideTooltips = function() {
         this.controls.hideTooltips();
         var elements = getOwnElements.call(this);
 
         elements.tooltip('destroy');
-    }
+    };
 
 })();
