@@ -278,11 +278,11 @@ var sewi = sewi || {};
 
     
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({  title : AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP,
+       this.zoomToFitBtn.tooltip({  title : sewi.constants.AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP,
                                     container: 'body'});
-       this.zoomToSelectionBtn.tooltip({title : AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP,
+       this.zoomToSelectionBtn.tooltip({title : sewi.constants.AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP,
                                         container: 'body'});
-       this.clearSelectionBtn.tooltip({ title : AUDIO_RESOURCE_CLEAR_SELECTION_TOOLTIP,
+       this.clearSelectionBtn.tooltip({ title : sewi.constants.AUDIO_RESOURCE_CLEAR_SELECTION_TOOLTIP,
                                         container: 'body'});
     }               
 
