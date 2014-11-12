@@ -191,6 +191,20 @@ var sewi = sewi || {};
         RESOURCE_VIEWER_PANEL_DOM: '<div class="top-panel fullscreen-hidden animated"></div>',
         RESOURCE_VIEWER_DEFAULT_LOADING_MESSAGE: 'Loading Resource',
 
+        /**
+         * Fired when the resource viewer is to enter fullscreen mode.
+         * @event fullscreenToggled
+         * @memberof sewi.ResourceViewer
+         */
+        RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT: 'fullscreenToggled',
+
+        /**
+         * Fired when the resource viewer is closing.
+         * @event closing
+         * @memberof sewi.ResourceViewer
+         */
+        RESOURCE_VIEWER_CLOSING_EVENT: 'closing',
+
         //Video Resource Constants
         VIDEO_RESOURCE_URL: '/sewi/resources/video/',
         VIDEO_RESOURCE_THUMBNAIL_URL: '/thumb',
@@ -217,7 +231,7 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED:'Error: File request operation has been aborted.',
         AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE: 'Error: Failed to retrieve the file',
         AUDIO_RESOURCE_ERROR_MSG_FAILED_TO_DECODE_AUDIO_FILE: 'Error: failed to decode the audio file.',
-        AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH : 'generating amplitude wave graph', 
+        AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH : 'generating amplitude wave graph',
         AUDIO_RESOURCE_MSG_FETCHING_AUDIO_CLIP: 'fetching audio clip',
         AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP: 'Zoom To Fit: zoom out to view the entire wave.',
         AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP: 'Zoom To Selection: zoom to the selected region.',
@@ -235,7 +249,7 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_PLOT_TECHNIQUE: {COMPRESSED: 1, DETAILED: 2},
         AUDIO_RESOURCE_TEXT_COLOR: 'rgba(0,0,0,1)',
         AUDIO_RESOURCE_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
-        AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS: 'audio-resource-viewer',  
+        AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS: 'audio-resource-viewer',
         AUDIO_RESOURCE_CONTENT_DOM:'<div class="audio-content"></div>',
         AUDIO_RESOURCE_EVENT_BUFFER_COPIED: 'bufferCopied',
         AUDIO_RESOURCE_CHANNEL_CSS_CLASS: {LEFT: 'left-channel', RIGHT: 'right-channel'},
