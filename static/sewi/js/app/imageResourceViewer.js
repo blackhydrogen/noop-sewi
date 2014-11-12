@@ -92,9 +92,9 @@ var sewi = sewi || {};
 
         this.mainDOMElement.append(this.controls.getDOM());
 
-        this.addDownloadButton(function() {
+        this.addDownloadButton((function() {
             return this.imageElement.attr("src");
-        });
+        }).bind(this));
 
         this.setupZoomControls();
 
@@ -146,64 +146,67 @@ var sewi = sewi || {};
                 .prop("width", this.originalImageInfo.width)
                 .prop("height", this.originalImageInfo.height);
 
-            var originalImage = $("<img>").prop("src", this.originalImageInfo.url);
+            originalImage.one("load", function() {
 
-            canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
+                canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
 
-            t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+                t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-            var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
+                var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
 
-            t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+                t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-            if(toApplyGrayscaleFilter) {
-                this.applyGrayscaleFilterToPixelData(canvasData.data);
-            }
-            if(toApplyDifferenceFilter) {
-                this.applyDifferenceFilterToPixelData(canvasData.data);
-            }
-            if(toApplyInvertFilter) {
-                this.applyInvertFilterToPixelData(canvasData.data);
-            }
-            if(toApplyHistogramEqualizationFilter) {
-                this.applyHistogramEqualizationFilterToPixelData(canvasData.data);
-            }
-            if(toApplySelectiveStretchingFilter) {
-                switch(settings.contrastStretchMode) {
-                    case "shadows":
-                        var selectedRangeStart = 0;
-                        var selectedRangeEnd = 80;
-                        break;
-                    case "midtones":
-                        var selectedRangeStart = 81;
-                        var selectedRangeEnd = 174;
-                        break;
-                    case "highlights":
-                        var selectedRangeStart = 175;
-                        var selectedRangeEnd = 255;
-                        break;
+                if(toApplyGrayscaleFilter) {
+                    this.applyGrayscaleFilterToPixelData(canvasData.data);
+                }
+                if(toApplyDifferenceFilter) {
+                    this.applyDifferenceFilterToPixelData(canvasData.data);
+                }
+                if(toApplyInvertFilter) {
+                    this.applyInvertFilterToPixelData(canvasData.data);
+                }
+                if(toApplyHistogramEqualizationFilter) {
+                    this.applyHistogramEqualizationFilterToPixelData(canvasData.data);
+                }
+                if(toApplySelectiveStretchingFilter) {
+                    switch(settings.contrastStretchMode) {
+                        case "shadows":
+                            var selectedRangeStart = 0;
+                            var selectedRangeEnd = 80;
+                            break;
+                        case "midtones":
+                            var selectedRangeStart = 81;
+                            var selectedRangeEnd = 174;
+                            break;
+                        case "highlights":
+                            var selectedRangeStart = 175;
+                            var selectedRangeEnd = 255;
+                            break;
+                    }
+
+                    this.applySelectiveStretchingFilterToPixelData(
+                        canvasData.data,
+                        selectedRangeStart,
+                        selectedRangeEnd, 
+                        settings.contrastStretchValue
+                    );
+                }
+                if(toApplyFalseColorFilter) {
+                    this.applyFalseColorFilterToPixelData(canvasData.data, settings.colorize);
                 }
 
-                this.applySelectiveStretchingFilterToPixelData(
-                    canvasData.data,
-                    selectedRangeStart,
-                    selectedRangeEnd, 
-                    settings.contrastStretchValue
-                );
-            }
-            if(toApplyFalseColorFilter) {
-                this.applyFalseColorFilterToPixelData(canvasData.data, settings.colorize);
-            }
+                t2 = new Date().getTime(); console.log("APPLY FILTER TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-            t2 = new Date().getTime(); console.log("APPLY FILTER TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+                canvasElement[0].getContext("2d").putImageData(canvasData, 0, 0);
 
-            canvasElement[0].getContext("2d").putImageData(canvasData, 0, 0);
+                t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-            t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+                this.imageElement.prop("src", canvasElement[0].toDataURL("image/jpeg", 0.9));
 
-            this.imageElement.prop("src", canvasElement[0].toDataURL("image/jpeg", 0.9));
+                t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+            });
 
-            t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+            var originalImage = $("<img>").prop("src", this.originalImageInfo.url);
         }
         else {
             this.imageElement.prop("src", this.originalImageInfo.url);
