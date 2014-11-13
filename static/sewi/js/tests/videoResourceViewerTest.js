@@ -348,3 +348,125 @@
         assert.equal(numOfBuffers, 0, 'Buffers can be cleared.');
     });
 })();
+
+// Video Resource Viewer unit tests
+(function() {
+    var constants = {
+        TEST_INVALID_RESOURCE_ID: 1234,
+        TEST_NONEXISTANT_RESOURCE_ID: 'FKOSPFKSDO',
+        TEST_VALID_RESOURCE_ID: 'c1dee25d-fe89-49c3-b837-0e328adb7cb5',
+        TEST_CONTROLS_CLASS: 'media-controls',
+
+        TEST_TRIGGER_PLAY_EVENT: 'testPlayVideo',
+        TEST_TRIGGER_PAUSE_EVENT: 'testPauseVideo',
+        TEST_TRIGGER_SEEK_EVENT: 'testSeekVideo',
+        TEST_TRIGGER_VOLUME_EVENT: 'testAdjustVolume',
+        TEST_CONTROLS_UPDATED_EVENT: 'testControlsUpdated',
+
+        ERROR_SCREEN_CLASS: 'error-screen',
+        VIDEO_ELEMENT: 'video',
+
+        LOADED_EVENT: 'loaded',
+        CONTROLS_PLAYING_EVENT: sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT,
+        CONTROLS_PAUSED_EVENT: sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT,
+        CONTROLS_MUTED_EVENT: sewi.constants.MEDIA_CONTROLS_MUTED_EVENT,
+        CONTROLS_UNMUTED_EVENT: sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT,
+        CONTROLS_VOLUME_EVENT: sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT,
+        CONTROLS_POSITION_EVENT: sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT,
+    };
+
+    function MediaControlsTestDriver() {
+        sewi.ConfiguratorElement.call(this);
+
+        this.mainDOMElement.addClass(constants.TEST_CONTROLS_CLASS);
+        this.on(constants.TEST_TRIGGER_PLAY_EVENT, testPlayingVideo.bind(this));
+        this.on(constants.TEST_TRIGGER_PAUSE_EVENT, testPausingVideo.bind(this));
+        this.on(constants.TEST_TRIGGER_SEEK_EVENT, testSeekingVideo.bind(this));
+    }
+    sewi.inherits(MediaControlsTestDriver, sewi.ConfiguratorElement);
+
+    MediaControlsTestDriver.prototype.update = function(options) {
+        this.trigger(constants.TEST_CONTROLS_UPDATED_EVENT, options);
+    };
+
+    MediaControlsTestDriver.prototype.showTooltips = function(options) {
+
+    };
+
+    MediaControlsTestDriver.prototype.hideTooltips = function(options) {
+
+    };
+
+    function testPlayingVideo() {
+        this.trigger(constants.CONTROLS_PLAYING_EVENT);
+    }
+
+    function testPausingVideo() {
+        this.trigger(constants.CONTROLS_PAUSED_EVENT);
+    }
+
+    function testSeekingVideo() {
+        this.trigger(constants.CONTROLS_PAUSED_EVENT);
+    }
+
+    QUnit.module('Video Resource Viewer', {
+        setup: function() {
+            this.fixture = $('#qunit-fixture');
+            this.oldSewi = window.sewi;
+            window.sewi = _.clone(window.sewi);
+            window.sewi.MediaControls = MediaControlsTestDriver;
+        },
+        teardown: function() {
+            window.sewi = this.oldSewi;
+        }
+    });
+
+    QUnit.asyncTest('Initialization', function(assert) {
+        QUnit.stop(2);
+
+        assert.throws(function() {
+            new window.sewi.VideoResourceViewer();
+        }, Error, 'Viewer cannot be initialized without an ID.');
+
+        assert.throws(function() {
+            new window.sewi.VideoResourceViewer({
+                id: constants.TEST_INVALID_RESOURCE_ID
+            });
+        }, Error, 'Viewer cannot be initialized with an invalid ID.');
+
+        var nonExistentViewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_NONEXISTANT_RESOURCE_ID
+        });
+        var validViewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+        // Neither of these should throw an error.
+        assert.ok(true, 'Viewer can be initialized with a valid ID.');
+
+        var nonExistentViewerElement = nonExistentViewer.getDOM();
+        this.fixture.append(nonExistentViewerElement);
+        nonExistentViewer.load();
+
+        var validViewerElement = validViewer.getDOM();
+        this.fixture.append(validViewerElement);
+
+        validViewerElement.on(constants.LOADED_EVENT, function() {
+            assert.ok(true, 'Viewer loaded successfully with valid existing ID.');
+            QUnit.start();
+        });
+
+        validViewer.load();
+
+        setTimeout(function() {
+            var errorScreen = nonExistentViewerElement.find('.' + constants.ERROR_SCREEN_CLASS);
+            assert.equal(errorScreen.length, 1, 'Viewer displays an error if the resource does not exist.');
+            QUnit.start();
+        }, 1000);
+
+        setTimeout(function() {
+            var errorScreen = validViewerElement.find('.' + constants.ERROR_SCREEN_CLASS);
+            assert.equal(errorScreen.length, 0, 'Viewer does not display an error if the resource exists.');
+            QUnit.start();
+        }, 1000);
+    });
+})();
