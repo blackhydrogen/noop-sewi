@@ -59,22 +59,26 @@ var sewi = sewi || {};
 
         this.imageElement.one("load", afterImageLoadSetup.bind(this));
 
-        loadImage.call(this);
+        loadImageUrl.call(this);
     };
 
-    function loadImage() {
+    function loadImageUrl() {
         $.ajax({
             dataType: 'json',
             type: 'GET',
             async: true,
             url: sewi.constants.IMAGE_RESOURCE_RESOURCE_URL_PREFIX + this.originalImageInfo.id,
         })
-        .done((function(data) {
-            this.imageElement.prop("src", data.url);
-        }).bind(this))
-        .error((function() {
-            this.showError(sewi.constants.IMAGE_RESOURCE_LOAD_RESOURCE_ERROR_MESSAGE);
-        }).bind(this));
+        .done(loadImageUrlSuccess.bind(this))
+        .error(loadImageUrlFailure.bind(this));
+    };
+
+    function loadImageUrlSuccess(data) {
+        this.imageElement.prop("src", data.url);
+    };
+
+    function loadImageUrlFailure() {
+        this.showError(sewi.constants.IMAGE_RESOURCE_LOAD_RESOURCE_ERROR_MESSAGE);
     };
 
     function afterImageLoadSetup() {
@@ -527,7 +531,6 @@ var sewi = sewi || {};
         });
     };
 
-    // ImageControls private methods begin
     function initDOM() {
         this.mainDOMElement
             .addClass(sewi.constants.IMAGE_CONTROLS_MAIN_DOM_ELEMENT_CLASS)
