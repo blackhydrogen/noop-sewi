@@ -777,4 +777,11 @@ var sewi = sewi || {};
             this.contrastStretchingSettingsControl.addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_HIDDEN_CLASS);
         }
     };
+
+    if(sewi.testMode) {
+        sewi.ImageResourceViewer.prototype.privates = {
+            afterImageLoadSetup: afterImageLoadSetup,
+            loadImageUrlSuccess: loadImageUrlSuccess
+        };
+    }
 })();
