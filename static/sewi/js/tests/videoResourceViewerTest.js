@@ -362,6 +362,8 @@
         TEST_TRIGGER_PAUSE_EVENT: 'testPauseVideo',
         TEST_TRIGGER_SEEK_EVENT: 'testSeekVideo',
         TEST_TRIGGER_VOLUME_EVENT: 'testAdjustVolume',
+        TEST_TRIGGER_MUTE_EVENT: 'testMuteVideo',
+        TEST_TRIGGER_UNMUTE_EVENT: 'testUnmuteVideo',
         TEST_CONTROLS_UPDATED_EVENT: 'testControlsUpdated',
 
         ERROR_SCREEN_CLASS: 'error-screen',
@@ -384,6 +386,8 @@
         this.on(constants.TEST_TRIGGER_PAUSE_EVENT, testPausingVideo.bind(this));
         this.on(constants.TEST_TRIGGER_SEEK_EVENT, testSeekingVideo.bind(this));
         this.on(constants.TEST_TRIGGER_VOLUME_EVENT, testAdjustingVolume.bind(this));
+        this.on(constants.TEST_TRIGGER_MUTE_EVENT, testMuteVideo.bind(this));
+        this.on(constants.TEST_TRIGGER_UNMUTE_EVENT, testUnmuteVideo.bind(this));
     }
     sewi.inherits(MediaControlsTestDriver, sewi.ConfiguratorElement);
 
@@ -413,6 +417,14 @@
 
     function testAdjustingVolume() {
         this.trigger(constants.CONTROLS_VOLUME_EVENT, constants.TEST_VOLUME_LEVEL);
+    }
+
+    function testMuteVideo() {
+        this.trigger(constants.CONTROLS_MUTED_EVENT);
+    }
+
+    function testUnmuteVideo() {
+        this.trigger(constants.CONTROLS_UNMUTED_EVENT);
     }
 
     QUnit.module('Video Resource Viewer', {
@@ -532,6 +544,42 @@
             QUnit.start();
 
             viewer.cleanUp();
+        });
+
+        viewer.load();
+    });
+
+    QUnit.asyncTest('Toggling Mute', function(assert) {
+        QUnit.stop(1);
+        var selfRef = this;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        var videoElement = viewerElement.find(constants.VIDEO_ELEMENT);
+        this.fixture.append(viewerElement);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            selfRef.controlsElement.trigger(constants.TEST_TRIGGER_MUTE_EVENT);
+        });
+
+        // Detect muted event
+        videoElement.one('volumechange', function() {
+            assert.ok(videoElement[0].muted, 'Video can be muted.');
+            QUnit.start();
+
+            // Detect unmuted event
+            videoElement.one('volumechange', function() {
+                assert.ok(!videoElement[0].muted, 'Video can be unmuted.');
+                QUnit.start();
+
+                viewer.cleanUp();
+            });
+
+            selfRef.controlsElement.trigger(constants.TEST_TRIGGER_UNMUTE_EVENT);
         });
 
         viewer.load();
