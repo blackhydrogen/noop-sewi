@@ -436,7 +436,7 @@ var sewi = sewi || {};
          * @memberof sewi.ImageControls
          * @param {number} contrast The current value of the contrast slider.
          */
-        IMAGE_CONTROLS_ZOOM_CHANGED_EVENT: 'zoomChanged',
+        IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT: 'zoomLevelChanged',
         /**
          * Fired when the contrast slider's value has changed.
          * @event contrastChanged

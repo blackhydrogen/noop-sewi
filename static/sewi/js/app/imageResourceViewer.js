@@ -32,6 +32,8 @@ var sewi = sewi || {};
         this.brightness = 1;
         this.contrast = 1;
 
+        this.previousCustomFiltersSettings = {};
+
         this.controls = null;
         this.imagePanZoomWidget = null;
     };
@@ -39,7 +41,8 @@ var sewi = sewi || {};
     sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
 
     sewi.ImageResourceViewer.prototype.resize = function() {
-        this.imagePanZoomWidget.recalculateTargetDimensions();
+        if(this.imagePanZoomWidget != null)
+            this.imagePanZoomWidget.recalculateTargetDimensions();
     };
 
     sewi.ImageResourceViewer.prototype.showTooltips = function() {
@@ -107,7 +110,7 @@ var sewi = sewi || {};
         );
 
         this.controls.on(
-            sewi.constants.IMAGE_CONTROLS_ZOOM_CHANGED_EVENT, 
+            sewi.constants.IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT, 
             setPanZoomWidgetCurrentZoomLevel.bind(this)
         );
 
@@ -151,11 +154,13 @@ var sewi = sewi || {};
             toApplySelectiveStretchingFilter: settings.contrastStretchMode !== sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE
         }
 
-        if(_.reduce(
-            filterFlags,
-            function(accumulator, value) { return accumulator || value; },
-            false
-        )) {
+        if(_.isEqual(this.previousCustomFiltersSettings, settings)) {
+            // Do nothing, as the filters are the same.
+        }
+        else if(_.reduce(filterFlags, OrReduce, false)) { // OR every element inside filterFlags (i.e. filterFlags.a || filterFlags.b || etc...)
+            this.showProgressBar("Applying Filters");
+            this.updateProgressBar(100);
+
             var originalImage = $(sewi.constants.IMAGE_RESOURCE_IN_MEMORY_IMAGE_ELEMENT);
 
             originalImage.one("load", applyCustomImageFiltersOnOriginalImageLoad.bind(this, settings, filterFlags, originalImage));
@@ -165,7 +170,13 @@ var sewi = sewi || {};
         else {
             this.imageElement.prop("src", this.originalImageInfo.url);
         }
+
+        this.previousCustomFiltersSettings = settings;
     };
+
+    function OrReduce(accumulator, value) {
+        return accumulator || value;
+    }
 
     function applyCustomImageFiltersOnOriginalImageLoad(settings, filterFlags, originalImage) {
         // var t1 = new Date().getTime();
@@ -233,20 +244,13 @@ var sewi = sewi || {};
             sewi.constants.IMAGE_RESOURCE_GENERATED_IMAGE_QUALITY_JPEG
         ));
 
+        this.hideProgressBar();
+
         // t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
         // console.log("=== END OF REPORT ==="); // DEBUG
         // console.log(""); // DEBUG
     }
-
-    function applyInvertFilterToPixelData(pixelData) {
-        for(var i = 0; i < pixelData.length; i += 4) {
-            // Direct computation is faster than using an array
-            pixelData[i] = 255 - pixelData[i];
-            pixelData[i+1] = 255 - pixelData[i+1];
-            pixelData[i+2] = 255 - pixelData[i+2];
-        }
-    };
 
     function applyGrayscaleFilterToPixelData(pixelData) {
         for(var i = 0; i < pixelData.length; i += 4) {
@@ -268,6 +272,15 @@ var sewi = sewi || {};
             pixelData[i] = newValuesMapping[pixelData[i]];
             pixelData[i+1] = newValuesMapping[pixelData[i+1]];
             pixelData[i+2] = newValuesMapping[pixelData[i+2]];
+        }
+    };
+
+    function applyInvertFilterToPixelData(pixelData) {
+        for(var i = 0; i < pixelData.length; i += 4) {
+            // Direct computation is faster than using a values-mapping array
+            pixelData[i] = 255 - pixelData[i];
+            pixelData[i+1] = 255 - pixelData[i+1];
+            pixelData[i+2] = 255 - pixelData[i+2];
         }
     };
 
@@ -389,14 +402,99 @@ var sewi = sewi || {};
 
         sewi.ConfiguratorElement.call(this);
 
-        this.initDOM();
-        this.initEvents();
+        initDOM.call(this);
+        initEvents.call(this);
     };
 
     sewi.inherits(sewi.ImageControls, sewi.ConfiguratorElement);
 
+    sewi.ImageControls.prototype.updateZoomControlValue = function(options) {
+        options = options || {};
+
+        if (!_.isUndefined(options.zoomSettings)) {
+            this.zoomSlider.attr({
+                max: options.zoomSettings.max,
+                min: options.zoomSettings.min,
+            });
+        }
+
+        if (!_.isUndefined(options.zoomLevel)) {
+            this.zoomSlider.val(options.zoomLevel);
+        }
+    };
+
+    sewi.ImageControls.prototype.disableTooltips = function() {
+        this.mainDOMElement.find(".grayscale-option").tooltip('destroy');
+        this.mainDOMElement.find(".flame-option").tooltip('destroy');
+        this.mainDOMElement.find(".spectrum-option").tooltip('destroy');
+        this.mainDOMElement.find(".hsv-option").tooltip('destroy');
+        this.mainDOMElement.find(".difference-option").tooltip('destroy');
+        this.mainDOMElement.find(".invert-option").tooltip('destroy');
+        this.mainDOMElement.find(".autoContrast-option").tooltip('destroy');
+        this.mainDOMElement.find(".contrast-menu-button").tooltip('destroy');
+    };
+
+    sewi.ImageControls.prototype.enableTooltips = function() {
+        this.mainDOMElement.find(".grayscale-option").tooltip({
+            html: true,
+            title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="' + sewi.staticPath +'images/image_tooltip_grayscale.png" height="100px" width="200px">',
+            container: "body",
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".flame-option").tooltip({
+            html: true,
+            title: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_flame.png" height="100px" width="200px">',
+            container: "body",
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".spectrum-option").tooltip({
+            html: true,
+            title: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_rainbow.png" height="100px" width="200px">',
+            container: "body",
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".hsv-option").tooltip({
+            html: true,
+            title: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_spectrum.png" height="100px" width="200px">',
+            container: "body",
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".difference-option").tooltip({
+            html: true,
+            title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_difference.png" height="100px" width="200px">',
+            container: $("body"),
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".invert-option").tooltip({
+            html: true,
+            title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="' + sewi.staticPath +'images/image_tooltip_invert.png" height="100px" width="200px">',
+            container: "body",
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".autoContrast-option").tooltip({
+            html: true,
+            title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="' + sewi.staticPath +'images/image_tooltip_histogram_equalization.png" height="100px" width="200px">',
+            container: "body",
+            placement: "right"
+        });
+
+        this.mainDOMElement.find(".contrast-menu-button").removeAttr("title");
+        this.mainDOMElement.find(".contrast-menu-button").tooltip({
+            html: true,
+            title: '<span class="underline">Contrast Stretching</span><br>This filter artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="' + sewi.staticPath +'images/image_tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
+            container: "body",
+            placement: "top"
+        });
+    };
+
     // ImageControls private methods begin
-    sewi.ImageControls.prototype.initDOM = function() {
+    function initDOM() {
         this.mainDOMElement
             .addClass('image-control-panel')
             .addClass('animated');
@@ -478,6 +576,7 @@ var sewi = sewi || {};
         this.filterMenu = $('<select class="dropup" multiple role="menu" title="Filters" data-style="btn-default filter-menu-button">')
             .append(recolorFilterGroup)
             .append(advancedFilterGroup);
+        console.log("aaa", this.filterMenu);
 
         this.contrastPlusMenu = $('<select class="dropup" multiple role="menu" title="C. Stretch" data-style="btn-default contrast-menu-button" data-max-options="1">')
             .append('<option value="shadows">Shadows</option>')
@@ -515,122 +614,52 @@ var sewi = sewi || {};
         });
     };
 
-    sewi.ImageControls.prototype.initEvents = function() {
-        this.brightnessSlider.on('input', this.brightnessChanged.bind(this));    
-        this.contrastSlider.on('input', this.contrastChanged.bind(this));
-        this.brightnessButton.on('click', this.brightnessReset.bind(this));
-        this.contrastButton.on('click', this.contrastReset.bind(this));
-        this.zoomSlider.on('input', this.zoomLevelChanged.bind(this));
-        this.zoomButton.on('click', this.zoomLevelReset.bind(this));
-        this.zoomToFitButton.on('click', this.zoomToFit.bind(this));
-        this.filterMenu.on('change', this.filtersChanged.bind(this));
-        this.contrastPlusMenu.on('change', this.contrastPlusMenuSelectionChanged.bind(this));
-        this.contrastPlusMenu.on('change', this.filtersChanged.bind(this));
-        this.contrastPlusSlider.on('change', this.filtersChanged.bind(this));
+    function initEvents() {
+        this.brightnessSlider.on('input', brightnessChanged.bind(this));    
+        this.contrastSlider.on('input', contrastChanged.bind(this));
+        this.brightnessButton.on('click', brightnessReset.bind(this));
+        this.contrastButton.on('click', contrastReset.bind(this));
+        this.zoomSlider.on('input', zoomLevelChanged.bind(this));
+        this.zoomButton.on('click', zoomLevelReset.bind(this));
+        this.zoomToFitButton.on('click', zoomToFit.bind(this));
+        this.filterMenu.on('change', filtersChanged.bind(this));
+        this.contrastPlusMenu.on('change', contrastPlusMenuSelectionChanged.bind(this));
+        this.contrastPlusMenu.on('change', filtersChanged.bind(this));
+        this.contrastPlusSlider.on('change', filtersChanged.bind(this));
     };
 
-    sewi.ImageControls.prototype.disableTooltips = function() {
-        this.mainDOMElement.find(".grayscale-option").tooltip('destroy');
-        this.mainDOMElement.find(".flame-option").tooltip('destroy');
-        this.mainDOMElement.find(".spectrum-option").tooltip('destroy');
-        this.mainDOMElement.find(".hsv-option").tooltip('destroy');
-        this.mainDOMElement.find(".difference-option").tooltip('destroy');
-        this.mainDOMElement.find(".invert-option").tooltip('destroy');
-        this.mainDOMElement.find(".autoContrast-option").tooltip('destroy');
-        this.mainDOMElement.find(".contrast-menu-button").tooltip('destroy');
+    function brightnessChanged() {
+        this.trigger(sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_CHANGED_EVENT, this.brightnessSlider.val());
     };
 
-    sewi.ImageControls.prototype.enableTooltips = function() {
-        this.mainDOMElement.find(".grayscale-option").tooltip({
-            html: true,
-            title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="' + sewi.staticPath +'images/image_tooltip_grayscale.png" height="100px" width="200px">',
-            container: "body",
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".flame-option").tooltip({
-            html: true,
-            title: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_flame.png" height="100px" width="200px">',
-            container: "body",
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".spectrum-option").tooltip({
-            html: true,
-            title: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_rainbow.png" height="100px" width="200px">',
-            container: "body",
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".hsv-option").tooltip({
-            html: true,
-            title: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_spectrum.png" height="100px" width="200px">',
-            container: "body",
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".difference-option").tooltip({
-            html: true,
-            title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_difference.png" height="100px" width="200px">',
-            container: $("body"),
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".invert-option").tooltip({
-            html: true,
-            title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="' + sewi.staticPath +'images/image_tooltip_invert.png" height="100px" width="200px">',
-            container: "body",
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".autoContrast-option").tooltip({
-            html: true,
-            title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="' + sewi.staticPath +'images/image_tooltip_histogram_equalization.png" height="100px" width="200px">',
-            container: "body",
-            placement: "right"
-        });
-
-        this.mainDOMElement.find(".contrast-menu-button").removeAttr("title");
-        this.mainDOMElement.find(".contrast-menu-button").tooltip({
-            html: true,
-            title: '<span class="underline">Contrast Stretching</span><br>This filter artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="' + sewi.staticPath +'images/image_tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
-            container: "body",
-            placement: "top"
-        });
+    function contrastChanged() {
+        this.trigger(sewi.constants.IMAGE_CONTROLS_CONTRAST_CHANGED_EVENT, this.contrastSlider.val());
     };
 
-    sewi.ImageControls.prototype.brightnessChanged = function() {
-        this.trigger('brightnessChanged', this.brightnessSlider.val());
-    };
-
-    sewi.ImageControls.prototype.contrastChanged = function() {
-        this.trigger('contrastChanged', this.contrastSlider.val());
-    };
-
-    sewi.ImageControls.prototype.brightnessReset = function() {
+    function brightnessReset() {
         this.brightnessSlider.val(1);
-        this.brightnessChanged();
+        brightnessChanged.call(this);
     };
 
-    sewi.ImageControls.prototype.contrastReset = function() {
+    function contrastReset() {
         this.contrastSlider.val(1);
-        this.contrastChanged();
+        contrastChanged.call(this);
     };
 
-    sewi.ImageControls.prototype.zoomLevelChanged = function() {
-        this.trigger('zoomChanged', this.zoomSlider.val());
+    function zoomLevelChanged() {
+        this.trigger(sewi.constants.IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT, this.zoomSlider.val());
     };
 
-    sewi.ImageControls.prototype.zoomLevelReset = function() {
+    function zoomLevelReset() {
         this.zoomSlider.val(100);
-        this.zoomLevelChanged();
+        zoomLevelChanged.call(this);
     };
 
-    sewi.ImageControls.prototype.zoomToFit = function() {
-        this.trigger('zoomToFitRequested');
+    function zoomToFit() {
+        this.trigger(sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_REQUESTED_EVENT);
     };
 
-    sewi.ImageControls.prototype.filtersChanged = function() {
+    function filtersChanged() {
         var filterMenuValues = this.filterMenu.val() || [];
         var contrastStretchMenuValues = this.contrastPlusMenu.val() || [];
 
@@ -674,10 +703,10 @@ var sewi = sewi || {};
             this.filterMenu.selectpicker('val', newFilterMenuValues);
         }
 
-        this.trigger('filtersChanged', filterSettingsReturnObject);
+        this.trigger(sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT, filterSettingsReturnObject);
     };
 
-    sewi.ImageControls.prototype.contrastPlusMenuSelectionChanged = function() {
+    function contrastPlusMenuSelectionChanged() {
         var value = this.contrastPlusMenu.val();
         if (value !== null) {
             this.contrastPlusControl.removeClass('hidden');
@@ -690,20 +719,4 @@ var sewi = sewi || {};
             this.contrastPlusControl.addClass('hidden');
         }
     };
-
-    sewi.ImageControls.prototype.updateZoomControlValue = function(options) {
-        options = options || {};
-
-        if (!_.isUndefined(options.zoomSettings)) {
-            this.zoomSlider.attr({
-                max: options.zoomSettings.max,
-                min: options.zoomSettings.min,
-            });
-        }
-
-        if (!_.isUndefined(options.zoomLevel)) {
-            this.zoomSlider.val(options.zoomLevel);
-        }
-    };
-
 })();
