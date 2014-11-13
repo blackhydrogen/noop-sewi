@@ -467,11 +467,13 @@
             var errorScreen = validViewerElement.find('.' + constants.ERROR_SCREEN_CLASS);
             assert.equal(errorScreen.length, 0, 'Viewer does not display an error if the resource exists.');
             QUnit.start();
+            validViewer.cleanUp();
         }, 1000);
     });
 
     QUnit.asyncTest('Video Playback', function(assert) {
         QUnit.stop(1);
+        var selfRef = this;
 
         var viewer = new window.sewi.VideoResourceViewer({
             id: constants.TEST_VALID_RESOURCE_ID
@@ -482,22 +484,22 @@
         this.fixture.append(viewerElement);
 
         viewerElement.on(constants.LOADED_EVENT, function() {
-            var controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
-            controlsElement.trigger(constants.TEST_TRIGGER_PLAY_EVENT);
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            selfRef.controlsElement.trigger(constants.TEST_TRIGGER_PLAY_EVENT);
         });
 
         videoElement.on('play', function() {
             assert.ok(true, 'Video can play');
-
-            var controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
-            controlsElement.trigger(constants.TEST_TRIGGER_PAUSE_EVENT);
-
             QUnit.start();
+
+            selfRef.controlsElement.trigger(constants.TEST_TRIGGER_PAUSE_EVENT);
         });
 
         videoElement.on('pause', function() {
             assert.ok(true, 'Video can pause');
             QUnit.start();
+
+            viewer.cleanUp();
         });
 
         viewer.load();
