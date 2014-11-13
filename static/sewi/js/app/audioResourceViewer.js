@@ -96,6 +96,9 @@ var sewi = sewi || {};
 
     function failToRetrieveAudio(){
         this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
+        
+        //This event is used for Unit Testing
+        this.trigger('loadFailed');
     }
 
     function retrieveAudio(data){
@@ -229,6 +232,9 @@ var sewi = sewi || {};
             this.contentDOM.append(this.scrollBar.getDOM());
             this.scrollBar.setWidthScale(1);
             this.scrollBar.on('move', scrollBarMove.bind(this));
+
+            //This event is only fired for Unit Test
+            this.trigger("bufferReady");
         }
     }
 
@@ -470,20 +476,25 @@ var sewi = sewi || {};
             this.isPlaying = true;
             this.controls.update({playing: this.isPlaying});
             updateGraphPlaybackPosition.call(this, this.offset);        
-        }
+        }        
     };
 
     /**
      * This function pauses/stops the audio.
      */
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
+        console.log("pauseAudio");
         if(this.source){
+            console.log("Audio Paused");
             this.offset += (Date.now() - this.beginTime) / 1000;
             this.source.stop(0);
             this.source.disconnect(this.gainNode);
             this.source.disconnect(this.scriptProcessor);
             this.isPlaying = false;
             this.controls.update({playing: this.isPlaying});
+
+            //This event is used for Unit Test
+            this.trigger("audioPaused");
         }
     };
 
