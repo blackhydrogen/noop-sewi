@@ -690,6 +690,20 @@ var sewi = sewi || {};
                 // move the selection with the delta
                 this.selectionStart += absDelta;
                 this.selectionEnd += absDelta;
+                var width = this.selectionEnd - this.selectionStart 
+                var dataLen = this.audioSequence.channelData.length;
+
+                // This prevents the region from going out of bound
+                if(this.selectionStart < 0){
+                    this.selectionStart = 0;
+                    this.selectionEnd = this.selectionStart + width;
+                    absDelta = 0;
+                } else if(this.selectionEnd > dataLen) {
+                    this.selectionEnd = dataLen;
+                    this.selectionStart = this.selectionEnd - width;
+                    absDelta = 0;
+                }
+                
                 if(absDelta != 0){
                     this.regionMoved = true;
                     updateResourceViewer.call(this);
@@ -735,8 +749,7 @@ var sewi = sewi || {};
             resourceViewer.offset = resourceViewer.startTime;
             resourceViewer.lastUpdated = resourceViewer.startTime;
             resourceViewer.drawTimer = 0;
-            resourceViewer.controls.update({currentTime : resourceViewer.offset, 
-                                            position : resourceViewer.offset / this.audioSequence.duration});
+            resourceViewer.controls.update({currentTime : resourceViewer.offset});
         }
 
     }
