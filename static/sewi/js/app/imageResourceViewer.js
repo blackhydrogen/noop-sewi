@@ -21,12 +21,12 @@ var sewi = sewi || {};
             id: options.id
         };
 
-        this.mainDOMElement.addClass("image-resource-main-container");
+        this.mainDOMElement.addClass(sewi.constants.IMAGE_RESOURCE_MAIN_DOM_ELEMENT_CLASS);
 
-        this.imageContainer = $('<div class="image-resource-image-container"></div>')
+        this.imageContainer = $(sewi.constants.IMAGE_RESOURCE_CONTAINER_ELEMENT)
             .appendTo(this.mainDOMElement);
 
-        this.imageElement = $('<img class="image-resource-image">')
+        this.imageElement = $(sewi.constants.IMAGE_RESOURCE_IMAGE_ELEMENT)
             .appendTo(this.imageContainer);
 
         this.brightness = 1;
@@ -59,33 +59,18 @@ var sewi = sewi || {};
         loadImage.call(this);
     };
 
-    var falseColorPalette = {
-        flame: {
-            name: "Flame",
-            values: [[3, 0, 0], [5, 0, 0], [5, 0, 0], [8, 0, 0], [8, 0, 0], [11, 0, 0], [11, 0, 0], [13, 0, 0], [13, 0, 0], [16, 0, 0], [19, 0, 0], [19, 0, 0], [21, 0, 0], [21, 0, 0], [24, 0, 0], [27, 0, 0], [27, 0, 0], [29, 0, 0], [32, 0, 0], [32, 0, 0], [35, 0, 0], [37, 0, 0], [40, 0, 0], [40, 0, 0], [43, 0, 0], [45, 0, 0], [48, 0, 0], [48, 0, 0], [50, 0, 0], [53, 0, 0], [56, 0, 0], [58, 0, 0], [58, 0, 0], [61, 0, 0], [64, 0, 0], [66, 0, 0], [69, 0, 0], [72, 0, 0], [74, 0, 0], [74, 0, 0], [77, 0, 0], [80, 0, 0], [82, 0, 0], [85, 0, 0], [88, 0, 0], [90, 0, 0], [93, 0, 0], [96, 0, 0], [98, 0, 0], [101, 0, 0], [104, 0, 0], [106, 0, 0], [109, 0, 0], [112, 0, 0], [114, 0, 0], [117, 0, 0], [120, 0, 0], [122, 0, 0], [125, 0, 0], [128, 0, 0], [130, 0, 0], [133, 0, 0], [135, 0, 0], [138, 0, 0], [141, 0, 0], [143, 0, 0], [146, 0, 0], [149, 0, 0], [151, 0, 0], [154, 0, 0], [157, 0, 0], [159, 0, 0], [162, 0, 0], [167, 0, 0], [170, 0, 0], [173, 0, 0], [175, 0, 0], [178, 0, 0], [181, 0, 0], [183, 0, 0], [186, 0, 0], [191, 0, 0], [194, 0, 0], [197, 0, 0], [199, 0, 0], [202, 0, 0], [205, 0, 0], [207, 0, 0], [213, 0, 0], [215, 0, 0], [218, 0, 0], [220, 0, 0], [223, 0, 0], [228, 0, 0], [231, 0, 0], [234, 0, 0], [236, 0, 0], [239, 0, 0], [244, 0, 0], [247, 0, 0], [250, 0, 0], [252, 0, 0], [255, 0, 0], [255, 5, 0], [255, 8, 0], [255, 11, 0], [255, 13, 0], [255, 16, 0], [255, 21, 0], [255, 24, 0], [255, 27, 0], [255, 29, 0], [255, 35, 0], [255, 37, 0], [255, 40, 0], [255, 43, 0], [255, 48, 0], [255, 50, 0], [255, 53, 0], [255, 56, 0], [255, 61, 0], [255, 64, 0], [255, 66, 0], [255, 69, 0], [255, 74, 0], [255, 77, 0], [255, 80, 0], [255, 82, 0], [255, 88, 0], [255, 90, 0], [255, 93, 0], [255, 96, 0], [255, 98, 0], [255, 104, 0], [255, 106, 0], [255, 109, 0], [255, 112, 0], [255, 117, 0], [255, 120, 0], [255, 122, 0], [255, 125, 0], [255, 130, 0], [255, 133, 0], [255, 135, 0], [255, 138, 0], [255, 143, 0], [255, 146, 0], [255, 149, 0], [255, 151, 0], [255, 157, 0], [255, 159, 0], [255, 162, 0], [255, 165, 0], [255, 167, 0], [255, 173, 0], [255, 175, 0], [255, 178, 0], [255, 181, 0], [255, 183, 0], [255, 189, 0], [255, 191, 0], [255, 194, 0], [255, 197, 0], [255, 199, 0], [255, 205, 0], [255, 207, 0], [255, 210, 0], [255, 213, 0], [255, 215, 0], [255, 220, 0], [255, 223, 0], [255, 226, 0], [255, 228, 0], [255, 231, 0], [255, 234, 0], [255, 236, 0], [255, 242, 0], [255, 244, 0], [255, 247, 0], [255, 250, 0], [255, 252, 0], [255, 255, 0], [255, 255, 4], [255, 255, 8], [255, 255, 16], [255, 255, 20], [255, 255, 24], [255, 255, 28], [255, 255, 32], [255, 255, 36], [255, 255, 40], [255, 255, 44], [255, 255, 48], [255, 255, 52], [255, 255, 56], [255, 255, 60], [255, 255, 64], [255, 255, 68], [255, 255, 72], [255, 255, 76], [255, 255, 80], [255, 255, 84], [255, 255, 88], [255, 255, 92], [255, 255, 96], [255, 255, 100], [255, 255, 104], [255, 255, 108], [255, 255, 112], [255, 255, 116], [255, 255, 120], [255, 255, 124], [255, 255, 128], [255, 255, 131], [255, 255, 135], [255, 255, 139], [255, 255, 143], [255, 255, 147], [255, 255, 147], [255, 255, 151], [255, 255, 155], [255, 255, 159], [255, 255, 163], [255, 255, 167], [255, 255, 171], [255, 255, 171], [255, 255, 175], [255, 255, 179], [255, 255, 183], [255, 255, 187], [255, 255, 187], [255, 255, 191], [255, 255, 195], [255, 255, 199], [255, 255, 199], [255, 255, 203], [255, 255, 207], [255, 255, 211], [255, 255, 211], [255, 255, 215], [255, 255, 219], [255, 255, 219], [255, 255, 223], [255, 255, 227], [255, 255, 227], [255, 255, 231], [255, 255, 231], [255, 255, 235], [255, 255, 239], [255, 255, 239], [255, 255, 243], [255, 255, 243], [255, 255, 247], [255, 255, 247], [255, 255, 251], [255, 255, 251]]
-        },
-        rainbow: {
-            name: "Rainbow",
-            values: [[0, 0, 131], [0, 0, 135], [0, 0, 135], [0, 0, 139], [0, 0, 139], [0, 0, 143], [0, 0, 143], [0, 0, 147], [0, 0, 147], [0, 0, 151], [0, 0, 155], [0, 0, 155], [0, 0, 159], [0, 0, 159], [0, 0, 163], [0, 0, 167], [0, 0, 167], [0, 0, 171], [0, 0, 175], [0, 0, 175], [0, 0, 179], [0, 0, 183], [0, 0, 187], [0, 0, 187], [0, 0, 191], [0, 0, 195], [0, 0, 199], [0, 0, 199], [0, 0, 203], [0, 0, 207], [0, 0, 211], [0, 0, 215], [0, 0, 215], [0, 0, 219], [0, 0, 223], [0, 0, 227], [0, 0, 231], [0, 0, 235], [0, 0, 239], [0, 0, 239], [0, 0, 243], [0, 0, 247], [0, 0, 251], [0, 0, 255], [0, 4, 255], [0, 8, 255], [0, 12, 255], [0, 16, 255], [0, 20, 255], [0, 24, 255], [0, 28, 255], [0, 32, 255], [0, 36, 255], [0, 40, 255], [0, 44, 255], [0, 48, 255], [0, 52, 255], [0, 56, 255], [0, 60, 255], [0, 64, 255], [0, 68, 255], [0, 72, 255], [0, 76, 255], [0, 80, 255], [0, 84, 255], [0, 88, 255], [0, 92, 255], [0, 96, 255], [0, 100, 255], [0, 104, 255], [0, 108, 255], [0, 112, 255], [0, 116, 255], [0, 124, 255], [0, 128, 255], [0, 131, 255], [0, 135, 255], [0, 139, 255], [0, 143, 255], [0, 147, 255], [0, 151, 255], [0, 159, 255], [0, 163, 255], [0, 167, 255], [0, 171, 255], [0, 175, 255], [0, 179, 255], [0, 183, 255], [0, 191, 255], [0, 195, 255], [0, 199, 255], [0, 203, 255], [0, 207, 255], [0, 215, 255], [0, 219, 255], [0, 223, 255], [0, 227, 255], [0, 231, 255], [0, 239, 255], [0, 243, 255], [0, 247, 255], [0, 251, 255], [0, 255, 255], [8, 255, 247], [12, 255, 243], [16, 255, 239], [20, 255, 235], [24, 255, 231], [32, 255, 223], [36, 255, 219], [40, 255, 215], [44, 255, 211], [52, 255, 203], [56, 255, 199], [60, 255, 195], [64, 255, 191], [72, 255, 183], [76, 255, 179], [80, 255, 175], [84, 255, 171], [92, 255, 163], [96, 255, 159], [100, 255, 155], [104, 255, 151], [112, 255, 143], [116, 255, 139], [120, 255, 135], [124, 255, 131], [131, 255, 124], [135, 255, 120], [139, 255, 116], [143, 255, 112], [147, 255, 108], [155, 255, 100], [159, 255, 96], [163, 255, 92], [167, 255, 88], [175, 255, 80], [179, 255, 76], [183, 255, 72], [187, 255, 68], [195, 255, 60], [199, 255, 56], [203, 255, 52], [207, 255, 48], [215, 255, 40], [219, 255, 36], [223, 255, 32], [227, 255, 28], [235, 255, 20], [239, 255, 16], [243, 255, 12], [247, 255, 8], [251, 255, 4], [255, 251, 0], [255, 247, 0], [255, 243, 0], [255, 239, 0], [255, 235, 0], [255, 227, 0], [255, 223, 0], [255, 219, 0], [255, 215, 0], [255, 211, 0], [255, 203, 0], [255, 199, 0], [255, 195, 0], [255, 191, 0], [255, 187, 0], [255, 179, 0], [255, 175, 0], [255, 171, 0], [255, 167, 0], [255, 163, 0], [255, 159, 0], [255, 155, 0], [255, 147, 0], [255, 143, 0], [255, 139, 0], [255, 135, 0], [255, 131, 0], [255, 128, 0], [255, 124, 0], [255, 120, 0], [255, 112, 0], [255, 108, 0], [255, 104, 0], [255, 100, 0], [255, 96, 0], [255, 92, 0], [255, 88, 0], [255, 84, 0], [255, 80, 0], [255, 76, 0], [255, 72, 0], [255, 68, 0], [255, 64, 0], [255, 60, 0], [255, 56, 0], [255, 52, 0], [255, 48, 0], [255, 44, 0], [255, 40, 0], [255, 36, 0], [255, 32, 0], [255, 28, 0], [255, 24, 0], [255, 20, 0], [255, 16, 0], [255, 12, 0], [255, 8, 0], [255, 4, 0], [255, 0, 0], [251, 0, 0], [247, 0, 0], [243, 0, 0], [239, 0, 0], [235, 0, 0], [235, 0, 0], [231, 0, 0], [227, 0, 0], [223, 0, 0], [219, 0, 0], [215, 0, 0], [211, 0, 0], [211, 0, 0], [207, 0, 0], [203, 0, 0], [199, 0, 0], [195, 0, 0], [195, 0, 0], [191, 0, 0], [187, 0, 0], [183, 0, 0], [183, 0, 0], [179, 0, 0], [175, 0, 0], [171, 0, 0], [171, 0, 0], [167, 0, 0], [163, 0, 0], [163, 0, 0], [159, 0, 0], [155, 0, 0], [155, 0, 0], [151, 0, 0], [151, 0, 0], [147, 0, 0], [143, 0, 0], [143, 0, 0], [139, 0, 0], [139, 0, 0], [135, 0, 0], [135, 0, 0], [131, 0, 0], [131, 0, 0]]
-        },
-        spectrum: {
-            name: "Spectrum",
-            values: [[255, 0, 0], [255, 6, 0], [255, 6, 0], [255, 12, 0], [255, 12, 0], [255, 18, 0], [255, 18, 0], [255, 24, 0], [255, 24, 0], [255, 30, 0], [255, 36, 0], [255, 36, 0], [255, 42, 0], [255, 42, 0], [255, 48, 0], [255, 54, 0], [255, 54, 0], [255, 60, 0], [255, 66, 0], [255, 66, 0], [255, 72, 0], [255, 78, 0], [255, 84, 0], [255, 84, 0], [255, 90, 0], [255, 96, 0], [255, 102, 0], [255, 102, 0], [255, 108, 0], [255, 114, 0], [255, 120, 0], [255, 126, 0], [255, 126, 0], [255, 131, 0], [255, 137, 0], [255, 143, 0], [255, 149, 0], [255, 155, 0], [255, 161, 0], [255, 161, 0], [255, 167, 0], [255, 173, 0], [255, 179, 0], [255, 185, 0], [255, 191, 0], [255, 197, 0], [255, 203, 0], [255, 209, 0], [255, 215, 0], [255, 221, 0], [255, 227, 0], [255, 233, 0], [255, 239, 0], [255, 245, 0], [255, 251, 0], [253, 255, 0], [247, 255, 0], [241, 255, 0], [235, 255, 0], [229, 255, 0], [223, 255, 0], [217, 255, 0], [211, 255, 0], [205, 255, 0], [199, 255, 0], [193, 255, 0], [187, 255, 0], [181, 255, 0], [175, 255, 0], [169, 255, 0], [163, 255, 0], [157, 255, 0], [151, 255, 0], [139, 255, 0], [133, 255, 0], [128, 255, 0], [122, 255, 0], [116, 255, 0], [110, 255, 0], [104, 255, 0], [98, 255, 0], [86, 255, 0], [80, 255, 0], [74, 255, 0], [68, 255, 0], [62, 255, 0], [56, 255, 0], [50, 255, 0], [38, 255, 0], [32, 255, 0], [26, 255, 0], [20, 255, 0], [14, 255, 0], [2, 255, 0], [0, 255, 4], [0, 255, 10], [0, 255, 16], [0, 255, 22], [0, 255, 34], [0, 255, 40], [0, 255, 46], [0, 255, 52], [0, 255, 58], [0, 255, 70], [0, 255, 76], [0, 255, 82], [0, 255, 88], [0, 255, 94], [0, 255, 106], [0, 255, 112], [0, 255, 118], [0, 255, 124], [0, 255, 135], [0, 255, 141], [0, 255, 147], [0, 255, 153], [0, 255, 165], [0, 255, 171], [0, 255, 177], [0, 255, 183], [0, 255, 195], [0, 255, 201], [0, 255, 207], [0, 255, 213], [0, 255, 225], [0, 255, 231], [0, 255, 237], [0, 255, 243], [0, 255, 255], [0, 249, 255], [0, 243, 255], [0, 237, 255], [0, 231, 255], [0, 219, 255], [0, 213, 255], [0, 207, 255], [0, 201, 255], [0, 189, 255], [0, 183, 255], [0, 177, 255], [0, 171, 255], [0, 159, 255], [0, 153, 255], [0, 147, 255], [0, 141, 255], [0, 129, 255], [0, 124, 255], [0, 118, 255], [0, 112, 255], [0, 100, 255], [0, 94, 255], [0, 88, 255], [0, 82, 255], [0, 76, 255], [0, 64, 255], [0, 58, 255], [0, 52, 255], [0, 46, 255], [0, 40, 255], [0, 28, 255], [0, 22, 255], [0, 16, 255], [0, 10, 255], [0, 4, 255], [8, 0, 255], [14, 0, 255], [20, 0, 255], [26, 0, 255], [32, 0, 255], [44, 0, 255], [50, 0, 255], [56, 0, 255], [62, 0, 255], [68, 0, 255], [74, 0, 255], [80, 0, 255], [92, 0, 255], [98, 0, 255], [104, 0, 255], [110, 0, 255], [116, 0, 255], [122, 0, 255], [128, 0, 255], [133, 0, 255], [145, 0, 255], [151, 0, 255], [157, 0, 255], [163, 0, 255], [169, 0, 255], [175, 0, 255], [181, 0, 255], [187, 0, 255], [193, 0, 255], [199, 0, 255], [205, 0, 255], [211, 0, 255], [217, 0, 255], [223, 0, 255], [229, 0, 255], [235, 0, 255], [241, 0, 255], [247, 0, 255], [253, 0, 255], [255, 0, 251], [255, 0, 245], [255, 0, 239], [255, 0, 233], [255, 0, 227], [255, 0, 221], [255, 0, 215], [255, 0, 209], [255, 0, 203], [255, 0, 197], [255, 0, 191], [255, 0, 185], [255, 0, 179], [255, 0, 173], [255, 0, 167], [255, 0, 167], [255, 0, 161], [255, 0, 155], [255, 0, 149], [255, 0, 143], [255, 0, 137], [255, 0, 131], [255, 0, 131], [255, 0, 126], [255, 0, 120], [255, 0, 114], [255, 0, 108], [255, 0, 108], [255, 0, 102], [255, 0, 96], [255, 0, 90], [255, 0, 90], [255, 0, 84], [255, 0, 78], [255, 0, 72], [255, 0, 72], [255, 0, 66], [255, 0, 60], [255, 0, 60], [255, 0, 54], [255, 0, 48], [255, 0, 48], [255, 0, 42], [255, 0, 42], [255, 0, 36], [255, 0, 30], [255, 0, 30], [255, 0, 24], [255, 0, 24], [255, 0, 18], [255, 0, 18], [255, 0, 12], [255, 0, 12]]
-        }
-    };
-
     function loadImage() {
         $.ajax({
             dataType: 'json',
             type: 'GET',
             async: true,
-            url: '/sewi/resources/image/' + this.originalImageInfo.id,
+            url: sewi.constants.IMAGE_RESOURCE_RESOURCE_URL_PREFIX + this.originalImageInfo.id,
         })
         .done((function(data) {
             this.imageElement.prop("src", data.url);
         }).bind(this))
         .error((function() {
-            this.showError("An error occurred while trying to load the image resource.");
+            this.showError(sewi.constants.IMAGE_RESOURCE_LOAD_RESOURCE_ERROR_MESSAGE);
         }).bind(this));
     };
 
@@ -96,9 +81,9 @@ var sewi = sewi || {};
 
         this.controls = new sewi.ImageControls();
         
-        this.controls.on("brightnessChanged", applyInbuiltImageBrightness.bind(this));
-        this.controls.on("contrastChanged", applyInbuiltImageContrast.bind(this));
-        this.controls.on("filtersChanged", applyCustomImageFilters.bind(this));
+        this.controls.on(sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_CHANGED_EVENT, applyInbuiltImageBrightness.bind(this));
+        this.controls.on(sewi.constants.IMAGE_CONTROLS_CONTRAST_CHANGED_EVENT, applyInbuiltImageContrast.bind(this));
+        this.controls.on(sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT, applyCustomImageFilters.bind(this));
 
         this.mainDOMElement.append(this.controls.getDOM());
 
@@ -116,17 +101,20 @@ var sewi = sewi || {};
     function setupZoomControls() {
         this.imagePanZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
 
-        this.on("zoomChanged", (function(event, newZoomPercentage) {
-            this.controls.updateZoomControlValue({
-                zoomLevel: newZoomPercentage
-            });
-        }).bind(this));
+        this.on(
+            sewi.constants.PAN_ZOOM_WIDGET_TARGET_ZOOM_CHANGED_EVENT,
+            updateControlsZoomControlValue.bind(this)
+        );
 
-        this.controls.on("zoomChanged", (function(event, zoomLevel) {
-            this.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
-        }).bind(this));
+        this.controls.on(
+            sewi.constants.IMAGE_CONTROLS_ZOOM_CHANGED_EVENT, 
+            setPanZoomWidgetCurrentZoomLevel.bind(this)
+        );
 
-        this.controls.on("zoomToFitRequested", this.imagePanZoomWidget.setZoomLevelToZoomToFit.bind(this.imagePanZoomWidget));
+        this.controls.on(
+            sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_REQUESTED_EVENT,
+            setPanZoomWidgetZoomLevelZoomToFit.bind(this)
+        );
 
         // TODO set the correct min and max values.
 
@@ -137,14 +125,30 @@ var sewi = sewi || {};
         });
     };
 
+    function updateControlsZoomControlValue(event, newZoomPercentage) {
+        this.controls.updateZoomControlValue({
+            zoomLevel: newZoomPercentage
+        });
+    }
+
+    function setPanZoomWidgetCurrentZoomLevel(event, zoomLevel) {
+        this.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
+    }
+
+    function setPanZoomWidgetZoomLevelZoomToFit(event) {
+        this.imagePanZoomWidget.setZoomLevelToZoomToFit();
+    }
+
     function applyCustomImageFilters(event, settings) {
         var filterFlags = {
-            toApplyGrayscaleFilter: settings.colorize !== "none",
+            toApplyGrayscaleFilter: settings.colorize !== sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE,
             toApplyDifferenceFilter: settings.difference,
             toApplyInvertFilter: settings.invert,
             toApplyHistogramEqualizationFilter: settings.autoContrast,
-            toApplyFalseColorFilter: settings.colorize !== "none" && settings.colorize !== "grayscale",
-            toApplySelectiveStretchingFilter: settings.contrastStretchMode !== "none"
+            toApplyFalseColorFilter:
+                settings.colorize !== sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE &&
+                settings.colorize !== sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE,
+            toApplySelectiveStretchingFilter: settings.contrastStretchMode !== sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE
         }
 
         if(_.reduce(
@@ -152,7 +156,7 @@ var sewi = sewi || {};
             function(accumulator, value) { return accumulator || value; },
             false
         )) {
-            var originalImage = $("<img>");
+            var originalImage = $(sewi.constants.IMAGE_RESOURCE_IN_MEMORY_IMAGE_ELEMENT);
 
             originalImage.one("load", applyCustomImageFiltersOnOriginalImageLoad.bind(this, settings, filterFlags, originalImage));
 
@@ -164,20 +168,20 @@ var sewi = sewi || {};
     };
 
     function applyCustomImageFiltersOnOriginalImageLoad(settings, filterFlags, originalImage) {
-        var t1 = new Date().getTime();
-        var t2;
+        // var t1 = new Date().getTime();
+        // var t2;
 
-        var canvasElement = $("<canvas></canvas>")
+        var canvasElement = $(sewi.constants.IMAGE_RESOURCE_IN_MEMORY_CANVAS_ELEMENT)
                 .prop("width", this.originalImageInfo.width)
                 .prop("height", this.originalImageInfo.height);
 
         canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
 
-        t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+        // t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
         var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
 
-        t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+        // t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
         if(filterFlags.toApplyGrayscaleFilter) {
             applyGrayscaleFilterToPixelData(canvasData.data);
@@ -193,15 +197,15 @@ var sewi = sewi || {};
         }
         if(filterFlags.toApplySelectiveStretchingFilter) {
             switch(settings.contrastStretchMode) {
-                case "shadows":
+                case sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS:
                     var selectedRangeStart = 0;
                     var selectedRangeEnd = 80;
                     break;
-                case "midtones":
+                case sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_MIDTONES:
                     var selectedRangeStart = 81;
                     var selectedRangeEnd = 174;
                     break;
-                case "highlights":
+                case sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_HIGHLIGHTS:
                     var selectedRangeStart = 175;
                     var selectedRangeEnd = 255;
                     break;
@@ -218,18 +222,21 @@ var sewi = sewi || {};
             applyFalseColorFilterToPixelData(canvasData.data, settings.colorize);
         }
 
-        t2 = new Date().getTime(); console.log("APPLY FILTER TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+        // t2 = new Date().getTime(); console.log("APPLY FILTER TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
         canvasElement[0].getContext("2d").putImageData(canvasData, 0, 0);
 
-        t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+        // t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-        this.imageElement.prop("src", canvasElement[0].toDataURL("image/jpeg", 0.9));
+        this.imageElement.prop("src", canvasElement[0].toDataURL(
+            sewi.constants.IMAGE_RESOURCE_GENERATED_IMAGE_TYPE_JPEG,
+            sewi.constants.IMAGE_RESOURCE_GENERATED_IMAGE_QUALITY_JPEG
+        ));
 
-        t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
+        // t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-        console.log("=== END OF REPORT ==="); // DEBUG
-        console.log(""); // DEBUG
+        // console.log("=== END OF REPORT ==="); // DEBUG
+        // console.log(""); // DEBUG
     }
 
     function applyInvertFilterToPixelData(pixelData) {
@@ -341,7 +348,7 @@ var sewi = sewi || {};
     function applyFalseColorFilterToPixelData(pixelData, chosenFalseColorPalette) {
         // Assumption: image is in grayscale.
 
-        var falseColorPaletteToUse = falseColorPalette[chosenFalseColorPalette].values;
+        var falseColorPaletteToUse = sewi.constants.IMAGE_RESOURCE_FALSE_COLOR_PALETTE[chosenFalseColorPalette].values;
 
         for(var i = 0; i < pixelData.length; i += 4) {
             var falseColorToUse = falseColorPaletteToUse[pixelData[i]];
