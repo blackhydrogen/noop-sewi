@@ -1498,6 +1498,8 @@ var sewi = sewi || {};
      * This function calls all the resize function of the active tab.
      */
     sewi.TabContainer.prototype.resize = function(){
-        this.currentActiveTab.resize();
+        if(this.currentActiveTab){
+            this.currentActiveTab.resize();
+        }
     }
 })();

@@ -240,8 +240,7 @@ class TabUITest(LiveServerTestCase):
         tabs = self.browser.find_by_css('.tab-pane')
         self.assertEqual(len(tabs), 2, "Number of tabs doesn't match")
 
-    def test_close_resources(self):
-        
+    def test_close_resources_1(self):        
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -275,4 +274,39 @@ class TabUITest(LiveServerTestCase):
         panelBottom = self.browser.find_by_css('.panel-bottom');
         self.assertNotEqual(len(panelTop), 0, "top panel doesn't exist")
         self.assertNotEqual(len(panelBottom), 0, "bottom panel doesn't exist")
+
+    def test_close_resources_2(self):
+        self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
+        sleep(3)
+        
+        resource = self.browser.find_by_css('.resource')[0]
+        resource.double_click()
+        sleep(3)
+
+        draggable = self.browser.find_by_css('.ui-draggable')[0]
+        target = self.browser.find_by_css('.panel-full').find_by_css('.panel-drop-area-top')[0]        
+        draggable.drag_and_drop(target)
+
+        target = self.browser.find_by_css('.panel-bottom').find_by_css('.panel-drop-area-left')[0]
+        draggable.drag_and_drop(target)
+        
+        target = self.browser.find_by_css('.panel-top').find_by_css('.panel-drop-area-right')[0]
+        draggable.drag_and_drop(target)
+
+        panelTopRight = self.browser.find_by_css('.panel-top-right')[0]
+        panelTopRight.click()
+        buttonClose = self.browser.find_by_css('.panel-top-right').find_by_css('.close-button')[0]
+        buttonClose.click()
+        sleep(1)
+        
+        panelTop = self.browser.find_by_css('.panel-top')[0]
+        panelTop.click()
+        buttonClose = self.browser.find_by_css('.panel-top').find_by_css('.close-button')[0]
+        buttonClose.click()
+        sleep(1)
+
+        panelLeft = self.browser.find_by_css('.panel-left')
+        panelRight = self.browser.find_by_css('.panel-right')
+        self.assertNotEqual(len(panelLeft), 0, "panel left doesn't exist");
+        self.assertNotEqual(len(panelRight), 0, "panel right doesn't exist");
 
