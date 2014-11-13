@@ -356,6 +356,7 @@
         TEST_NONEXISTANT_RESOURCE_ID: 'FKOSPFKSDO',
         TEST_VALID_RESOURCE_ID: 'c1dee25d-fe89-49c3-b837-0e328adb7cb5',
         TEST_CONTROLS_CLASS: 'media-controls',
+        TEST_VOLUME_LEVEL: 0.45,
 
         TEST_TRIGGER_PLAY_EVENT: 'testPlayVideo',
         TEST_TRIGGER_PAUSE_EVENT: 'testPauseVideo',
@@ -382,6 +383,7 @@
         this.on(constants.TEST_TRIGGER_PLAY_EVENT, testPlayingVideo.bind(this));
         this.on(constants.TEST_TRIGGER_PAUSE_EVENT, testPausingVideo.bind(this));
         this.on(constants.TEST_TRIGGER_SEEK_EVENT, testSeekingVideo.bind(this));
+        this.on(constants.TEST_TRIGGER_VOLUME_EVENT, testAdjustingVolume.bind(this));
     }
     sewi.inherits(MediaControlsTestDriver, sewi.ConfiguratorElement);
 
@@ -407,6 +409,10 @@
 
     function testSeekingVideo() {
         this.trigger(constants.CONTROLS_PAUSED_EVENT);
+    }
+
+    function testAdjustingVolume() {
+        this.trigger(constants.CONTROLS_VOLUME_EVENT, constants.TEST_VOLUME_LEVEL);
     }
 
     QUnit.module('Video Resource Viewer', {
@@ -497,6 +503,32 @@
 
         videoElement.on('pause', function() {
             assert.ok(true, 'Video can pause');
+            QUnit.start();
+
+            viewer.cleanUp();
+        });
+
+        viewer.load();
+    });
+
+    QUnit.asyncTest('Adjusting Volume', function(assert) {
+        var selfRef = this;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        var videoElement = viewerElement.find(constants.VIDEO_ELEMENT);
+        this.fixture.append(viewerElement);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            selfRef.controlsElement.trigger(constants.TEST_TRIGGER_VOLUME_EVENT);
+        });
+
+        videoElement.on('volumechange', function() {
+            assert.equal(videoElement[0].volume, constants.TEST_VOLUME_LEVEL, 'Video volume can be adjusted.');
             QUnit.start();
 
             viewer.cleanUp();
