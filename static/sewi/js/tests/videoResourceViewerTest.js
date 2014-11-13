@@ -703,4 +703,33 @@
 
         viewer.load();
     });
+
+    QUnit.asyncTest('Video Responding to Resizing', function(assert) {
+        var selfRef = this;
+        window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        this.fixture.append(viewerElement);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            selfRef.panZoomTargetElement = viewerElement.find('.' + constants.TEST_PAN_ZOOM_CLASS);
+
+            selfRef.panZoomTargetElement.one(constants.TEST_WIDGET_RESIZED_EVENT, widgetResized);
+            viewer.resize();
+        });
+
+        function widgetResized() {
+            assert.ok(true, 'Video can respond to resize events.');
+            QUnit.start();
+
+            viewer.cleanUp();
+        }
+
+        viewer.load();
+    });
 })();
