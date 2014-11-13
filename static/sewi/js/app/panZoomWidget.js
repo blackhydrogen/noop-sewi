@@ -23,19 +23,68 @@ var sewi = sewi || {};
         if(targetOriginalHeight == undefined)
             targetOriginalHeight = this.target.prop("naturalHeight");
 
-        this.calculateTargetDimensions(targetOriginalWidth, targetOriginalHeight);
+        this.target.css({
+            position: "absolute"
+        });
+
+        calculateTargetDimensions.call(this, targetOriginalWidth, targetOriginalHeight);
 
         this.container.css({
             cursor: "-webkit-grab"
         });
 
-        this.container.on("mousewheel.PanZoomWidget", this.calculateNewTargetWidthFromMousewheel.bind(this));
-        this.container.on("mousedown.PanZoomWidget", this.setupPanningVariables.bind(this));
+        this.container.on("mousewheel.PanZoomWidget", calculateNewTargetWidthFromMousewheel.bind(this));
+        this.container.on("mousedown.PanZoomWidget", setupPanningVariables.bind(this));
 
         this.setZoomLevelToZoomToFit();
     }
 
-    sewi.PanZoomWidget.prototype.calculateTargetDimensions = function(originalWidth, originalHeight) {
+    // Recalculate the targetDimensions of the target - used when the container and/or the target is resized.
+    sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function(originalWidth, originalHeight) {
+        if(originalWidth == undefined)
+            calculateTargetDimensions.call(this, this.targetDimensions.original.width, this.targetDimensions.original.height);
+        else
+            calculateTargetDimensions.call(this, originalWidth, originalHeight);
+
+        if(!this.userHasInteracted)
+            this.setZoomLevelToZoomToFit();
+    }
+
+    sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {
+        return Math.round(100 * this.target.width() / this.targetDimensions.original.width);
+    }
+
+    sewi.PanZoomWidget.prototype.getMinimumZoomLevel = function() {
+        return Math.round(100 * this.targetDimensions.minimumZoom.width / this.targetDimensions.original.width);
+    }
+
+    sewi.PanZoomWidget.prototype.getMaximumZoomLevel = function() {
+        return Math.round(100 * this.targetDimensions.maximumZoom.width / this.targetDimensions.original.width);
+    }
+
+    sewi.PanZoomWidget.prototype.fitSizeEqualsOriginalSize = function() {
+        return this.targetDimensions.fitToContainer.width == this.targetDimensions.original.width;
+    }
+
+    sewi.PanZoomWidget.prototype.setCurrentZoomLevel = function(zoomPercentage) {
+        var newTargetWidth = this.targetDimensions.original.width * zoomPercentage / 100;
+
+        updateTargetWidth.call(this, newTargetWidth, this.container.width() / 2, this.container.height() / 2);
+    }
+
+    sewi.PanZoomWidget.prototype.setZoomLevelToZoomToFit = function() {
+        updateTargetWidth.call(this, this.targetDimensions.fitToContainer.width, 0, 0);
+        this.centreTargetOnContainer();
+    }
+
+    sewi.PanZoomWidget.prototype.centreTargetOnContainer = function() {
+        this.target.css({
+            top: (this.container.height() - this.target.height()) / 2,
+            left: (this.container.width() - this.target.width()) / 2
+        });
+    }
+
+    function calculateTargetDimensions(originalWidth, originalHeight) {
         this.targetDimensions.original.width = originalWidth;
         this.targetDimensions.original.height = originalHeight;
 
@@ -80,55 +129,7 @@ var sewi = sewi || {};
         this.targetDimensions.maximumZoom.height = this.targetDimensions.original.height * 2;
     }
 
-    // Recalculate the targetDimensions of the target - used when the container and/or the target is resized.
-    sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function(originalWidth, originalHeight) {
-        if(originalWidth == undefined)
-            this.calculateTargetDimensions(this.targetDimensions.original.width, this.targetDimensions.original.height);
-        else
-            this.calculateTargetDimensions(originalWidth, originalHeight);
-
-        if(!this.userHasInteracted)
-            this.setZoomLevelToZoomToFit();
-    }
-
-    sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {
-        return Math.round(100 * this.target.width() / this.targetDimensions.original.width);
-    }
-
-    sewi.PanZoomWidget.prototype.getMinimumZoomLevel = function() {
-        return Math.round(100 * this.targetDimensions.minimumZoom.width / this.targetDimensions.original.width);
-    }
-
-    sewi.PanZoomWidget.prototype.getMaximumZoomLevel = function() {
-        return Math.round(100 * this.targetDimensions.maximumZoom.width / this.targetDimensions.original.width);
-    }
-
-    sewi.PanZoomWidget.prototype.fitSizeEqualsOriginalSize = function() {
-        return this.targetDimensions.fitToContainer.width == this.targetDimensions.original.width;
-    }
-
-    sewi.PanZoomWidget.prototype.setCurrentZoomLevel = function(zoomPercentage) {
-        var newTargetWidth = this.targetDimensions.original.width * zoomPercentage / 100;
-
-        this.updateTargetWidth(newTargetWidth, this.container.width() / 2, this.container.height() / 2);
-    }
-
-    sewi.PanZoomWidget.prototype.calculateNewTargetWidthFromMousewheel = function(event) {
-        event.preventDefault();
-
-        this.userHasInteracted = true;
-
-        // Figure out new width
-        var zoomChange = 1 + 0.2 * event.originalEvent.wheelDelta / 120;
-        var newTargetWidth = this.target.width() * zoomChange;
-
-        var cursorPositionOnContainerX = event.pageX - this.container.offset().left;
-        var cursorPositionOnContainerY = event.pageY - this.container.offset().top;
-
-        this.updateTargetWidth(newTargetWidth, cursorPositionOnContainerX, cursorPositionOnContainerY);
-    }
-
-    sewi.PanZoomWidget.prototype.updateTargetWidth = function(newTargetWidth, cursorPositionOnContainerX, cursorPositionOnContainerY) {
+    function updateTargetWidth(newTargetWidth, cursorPositionOnContainerX, cursorPositionOnContainerY) {
         // We make sure the new width isn't outside the range of the respective minimum and maximum dimensions.
         if(newTargetWidth < this.targetDimensions.minimumZoom.width) {
             newTargetWidth = this.targetDimensions.minimumZoom.width;
@@ -179,12 +180,50 @@ var sewi = sewi || {};
         this.target.trigger("zoomChanged", this.getCurrentZoomLevel());
     }
 
-    sewi.PanZoomWidget.prototype.setZoomLevelToZoomToFit = function() {
-        this.updateTargetWidth(this.targetDimensions.fitToContainer.width, 0, 0);
-        this.centreTargetOnContainer();
+    function calculateNewTargetWidthFromMousewheel(event) {
+        event.preventDefault();
+
+        this.userHasInteracted = true;
+
+        // Figure out new width
+        var zoomChange = 1 + 0.2 * event.originalEvent.wheelDelta / 120;
+        var newTargetWidth = this.target.width() * zoomChange;
+
+        var cursorPositionOnContainerX = event.pageX - this.container.offset().left;
+        var cursorPositionOnContainerY = event.pageY - this.container.offset().top;
+
+        updateTargetWidth.call(this, newTargetWidth, cursorPositionOnContainerX, cursorPositionOnContainerY);
     }
 
-    sewi.PanZoomWidget.prototype.moveTargetToCursor = function(event) {
+    function setupPanningVariables(event) {
+        this.userHasInteracted = true;
+
+        this.targetPanningVariables.originalCursorX = event.pageX;
+        this.targetPanningVariables.originalCursorY = event.pageY;
+        this.targetPanningVariables.originalTargetX = this.target.position().left;
+        this.targetPanningVariables.originalTargetY = this.target.position().top;
+        this.targetPanningVariables.maxTargetX = this.container.width() / 2;
+        this.targetPanningVariables.maxTargetY = this.container.height() / 2;
+        this.targetPanningVariables.minTargetX = this.targetPanningVariables.maxTargetX - this.target.width();
+        this.targetPanningVariables.minTargetY = this.targetPanningVariables.maxTargetY - this.target.height();
+        this.targetPanningVariables.ignoreEvent = false; // Used for performances purposes. This variable is set when moveTargetToCursor is called too quickly consecutively (after each call to moveTargetToCursor, it is set to true, then a timeout() - with some delay - is set it back to false)
+
+        this.container.off("mousewheel.PanZoomWidget"); //Don't allow the user to move and zoom
+
+        this.container.css({
+            cursor: "-webkit-grabbing"
+        });
+
+        $("body").css({
+            cursor: "-webkit-grabbing"
+        });
+
+        $("body").on("mousemove.PanZoomWidget", moveTargetToCursor.bind(this));
+
+        $("body").one("mouseup.PanZoomWidget", cleanUpAfterPanning.bind(this));
+    }
+
+    function moveTargetToCursor(event) {
         event.preventDefault();
 
         if(this.targetPanningVariables.ignoreEvent)
@@ -214,43 +253,8 @@ var sewi = sewi || {};
         }).bind(this), 10);
     }
 
-    sewi.PanZoomWidget.prototype.centreTargetOnContainer = function() {
-        this.target.css({
-            top: (this.container.height() - this.target.height()) / 2,
-            left: (this.container.width() - this.target.width()) / 2
-        });
-    }
-
-    sewi.PanZoomWidget.prototype.setupPanningVariables = function(event) {
-        this.userHasInteracted = true;
-
-        this.targetPanningVariables.originalCursorX = event.pageX;
-        this.targetPanningVariables.originalCursorY = event.pageY;
-        this.targetPanningVariables.originalTargetX = this.target.position().left;
-        this.targetPanningVariables.originalTargetY = this.target.position().top;
-        this.targetPanningVariables.maxTargetX = this.container.width() / 2;
-        this.targetPanningVariables.maxTargetY = this.container.height() / 2;
-        this.targetPanningVariables.minTargetX = this.targetPanningVariables.maxTargetX - this.target.width();
-        this.targetPanningVariables.minTargetY = this.targetPanningVariables.maxTargetY - this.target.height();
-        this.targetPanningVariables.ignoreEvent = false; // Used for performances purposes. This variable is set when moveTargetToCursor is called too quickly consecutively (after each call to moveTargetToCursor, it is set to true, then a timeout() - with some delay - is set it back to false)
-
-        this.container.off("mousewheel.PanZoomWidget"); //Don't allow the user to move and zoom
-
-        this.container.css({
-            cursor: "-webkit-grabbing"
-        });
-
-        $("body").css({
-            cursor: "-webkit-grabbing"
-        });
-
-        $("body").on("mousemove.PanZoomWidget", this.moveTargetToCursor.bind(this));
-
-        $("body").one("mouseup.PanZoomWidget", this.cleanUpAfterPanning.bind(this));
-    }
-
-    sewi.PanZoomWidget.prototype.cleanUpAfterPanning = function(event) {
-        this.container.on("mousewheel.PanZoomWidget", this.calculateNewTargetWidthFromMousewheel.bind(this));
+    function cleanUpAfterPanning(event) {
+        this.container.on("mousewheel.PanZoomWidget", calculateNewTargetWidthFromMousewheel.bind(this));
         $("body").off("mousemove.PanZoomWidget");
 
         $("body").css({
@@ -260,5 +264,14 @@ var sewi = sewi || {};
         this.container.css({
             cursor: "-webkit-grab"
         });
+    }
+
+    if(sewi.testMode) {
+        sewi.PanZoomWidget.prototype.privates = {
+            calculateNewTargetWidthFromMousewheel: calculateNewTargetWidthFromMousewheel,
+            setupPanningVariables: setupPanningVariables,
+            moveTargetToCursor: moveTargetToCursor,
+            cleanUpAfterPanning: cleanUpAfterPanning
+        };
     }
 })();
