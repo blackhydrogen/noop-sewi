@@ -43,18 +43,18 @@
     });
 
     QUnit.asyncTest('Audio Play/Pause', function(assert){
-        QUnit.stop(2);
+        QUnit.stop(1);
         var audioResourceViewer = new sewi.AudioResourceViewer({id :'23e8e15f-a155-4f8c-b587-2f4855187279'});
         var dom = audioResourceViewer.getDOM();
         this.fixture.append(dom);
         
-        audioResourceViewer.on('bufferReady', function(assert){
+        audioResourceViewer.on('bufferReady', function(){
                 audioResourceViewer.playAudio();
                 assert.equal(audioResourceViewer.isPlaying, true, "Audio Started");
                 QUnit.start();
             });
 
-        audioResourceViewer.on('audioPaused', function(assert){
+        audioResourceViewer.on('audioPaused', function(){
                 assert.equal(audioResourceViewer.isPlaying, false, "Audio Stopped");
                 QUnit.start();
             });
