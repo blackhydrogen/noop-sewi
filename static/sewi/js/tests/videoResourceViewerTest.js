@@ -356,6 +356,9 @@
         TEST_NONEXISTANT_RESOURCE_ID: 'FKOSPFKSDO',
         TEST_VALID_RESOURCE_ID: 'c1dee25d-fe89-49c3-b837-0e328adb7cb5',
         TEST_CONTROLS_CLASS: 'media-controls',
+        TEST_PAN_ZOOM_CLASS: 'pan-zoom-widget',
+        TEST_EXTRA_BUTTONS_KEY: 'extraButtons',
+        TEST_POSITION: 10,
         TEST_VOLUME_LEVEL: 0.45,
 
         TEST_TRIGGER_PLAY_EVENT: 'testPlayVideo',
@@ -366,7 +369,14 @@
         TEST_TRIGGER_UNMUTE_EVENT: 'testUnmuteVideo',
         TEST_CONTROLS_UPDATED_EVENT: 'testControlsUpdated',
 
+        TEST_WIDGET_RESIZED_EVENT: 'widgetResized',
+        TEST_WIDGET_ZOOMED_EVENT: 'widgetZoomed',
+        TEST_WIDGET_FIT_EVENT: 'widgetZoomToFit',
+
         ERROR_SCREEN_CLASS: 'error-screen',
+        ZOOM_SLIDER_CLASS: 'zoom-slider',
+        RESET_ZOOM_BUTTON_CLASS: 'zoom-button',
+        ZOOM_TO_FIT_BUTTON_CLASS: 'zoom-to-fit-button',
         VIDEO_ELEMENT: 'video',
 
         LOADED_EVENT: 'loaded',
@@ -378,7 +388,10 @@
         CONTROLS_POSITION_EVENT: sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT,
     };
 
-    function MediaControlsTestDriver() {
+    // Test driver class definitions start
+
+    // Simulates a dumb MediaControls instance
+    function MediaControlsTestDriver(options) {
         sewi.ConfiguratorElement.call(this);
 
         this.mainDOMElement.addClass(constants.TEST_CONTROLS_CLASS);
@@ -388,6 +401,8 @@
         this.on(constants.TEST_TRIGGER_VOLUME_EVENT, testAdjustingVolume.bind(this));
         this.on(constants.TEST_TRIGGER_MUTE_EVENT, testMuteVideo.bind(this));
         this.on(constants.TEST_TRIGGER_UNMUTE_EVENT, testUnmuteVideo.bind(this));
+
+        this.mainDOMElement.data(constants.TEST_EXTRA_BUTTONS_KEY, options.extraButtons);
     }
     sewi.inherits(MediaControlsTestDriver, sewi.ConfiguratorElement);
 
@@ -412,7 +427,7 @@
     }
 
     function testSeekingVideo() {
-        this.trigger(constants.CONTROLS_PAUSED_EVENT);
+        this.trigger(constants.CONTROLS_POSITION_EVENT, constants.TEST_POSITION);
     }
 
     function testAdjustingVolume() {
@@ -426,6 +441,33 @@
     function testUnmuteVideo() {
         this.trigger(constants.CONTROLS_UNMUTED_EVENT);
     }
+
+    // Simulates a simple PanZoomWidget, with enough public methods to replace
+    // the PanZoomWidget used by VideoResourceViewer
+    function PanZoomWidgetTestDriver(panZoomTarget, panZoomContainer, targetOriginalWidth, targetOriginalHeight) {
+        this.panZoomTarget = panZoomTarget;
+        panZoomTarget.addClass(constants.TEST_PAN_ZOOM_CLASS);
+    }
+
+    PanZoomWidgetTestDriver.prototype.getMinimumZoomLevel = function() {
+        return 50;
+    };
+
+    PanZoomWidgetTestDriver.prototype.getMaximumZoomLevel = function() {
+        return 200;
+    };
+
+    PanZoomWidgetTestDriver.prototype.recalculateTargetDimensions = function() {
+        this.panZoomTarget.trigger(constants.TEST_WIDGET_RESIZED_EVENT);
+    };
+
+    PanZoomWidgetTestDriver.prototype.setCurrentZoomLevel = function() {
+        this.panZoomTarget.trigger(constants.TEST_WIDGET_ZOOMED_EVENT);
+    };
+
+    PanZoomWidgetTestDriver.prototype.setZoomLevelToZoomToFit = function() {
+        this.panZoomTarget.trigger(constants.TEST_WIDGET_FIT_EVENT);
+    };
 
     QUnit.module('Video Resource Viewer', {
         setup: function() {
@@ -581,6 +623,83 @@
 
             selfRef.controlsElement.trigger(constants.TEST_TRIGGER_UNMUTE_EVENT);
         });
+
+        viewer.load();
+    });
+
+    QUnit.asyncTest('Zoom Support', function(assert) {
+        var selfRef = this;
+        window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        this.fixture.append(viewerElement);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            var extraButtons = selfRef.controlsElement.data(constants.TEST_EXTRA_BUTTONS_KEY);
+            assert.ok(extraButtons, 'Extra buttons provided.');
+            assert.ok(extraButtons.right, 'Extra right buttons provided.');
+            var zoomToFitButton = extraButtons.right[0];
+            var zoomControls = extraButtons.right[1];
+            assert.ok(zoomToFitButton, 'Zoom to fit button provided.');
+            assert.ok(zoomControls, 'Zoom controls provided.');
+            QUnit.start();
+
+            viewer.cleanUp();
+        });
+
+        viewer.load();
+    });
+
+    QUnit.asyncTest('Zooming Video', function(assert) {
+        QUnit.stop(2);
+        var selfRef = this;
+        window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        this.fixture.append(viewerElement);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            selfRef.panZoomTargetElement = viewerElement.find('.' + constants.TEST_PAN_ZOOM_CLASS);
+            var extraButtons = selfRef.controlsElement.data(constants.TEST_EXTRA_BUTTONS_KEY);
+            selfRef.zoomToFitButton = extraButtons.right[0];
+            var zoomControls = extraButtons.right[1];
+            selfRef.zoomSlider = zoomControls.find('.' + constants.ZOOM_SLIDER_CLASS);
+            selfRef.zoomButton = zoomControls.find('.' + constants.RESET_ZOOM_BUTTON_CLASS);
+
+            selfRef.panZoomTargetElement.one(constants.TEST_WIDGET_ZOOMED_EVENT, panZoomResized);
+            selfRef.panZoomTargetElement.one(constants.TEST_WIDGET_FIT_EVENT, panZoomFit);
+            selfRef.zoomSlider.trigger('input').trigger('change');
+
+        });
+
+        function panZoomResized() {
+            assert.ok(true, 'Video supports zooming.');
+            QUnit.start();
+
+            selfRef.panZoomTargetElement.one(constants.TEST_WIDGET_ZOOMED_EVENT, panZoomReset);
+            selfRef.zoomToFitButton.click();
+            selfRef.zoomButton.click();
+        }
+
+        function panZoomReset() {
+            assert.ok(true, 'Video supports resetting zoom level.');
+            QUnit.start();
+        }
+
+        function panZoomFit() {
+            assert.ok(true, 'Video supports zooming to fit.');
+            QUnit.start();
+        }
 
         viewer.load();
     });
