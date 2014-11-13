@@ -484,8 +484,13 @@ var sewi = sewi || {};
 
     // VideoResourceViewer private methods
     function validateArguments() {
-        if (!_.isString(this.id)) {
-            throw new Error('options: Valid resource id must be provided.');
+        try {
+            if (!_.isString(this.id)) {
+                throw new Error('options: Valid resource id must be provided.');
+            }
+        } catch (err) {
+            this.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_INVALID_ID_MESSAGE);
+            throw err;
         }
     }
 
