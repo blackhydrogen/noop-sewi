@@ -380,13 +380,15 @@ var sewi = sewi || {};
         IMAGE_RESOURCE_LOAD_RESOURCE_ERROR_MESSAGE: 'An error occurred while trying to load the image resource.',
         IMAGE_RESOURCE_IN_MEMORY_IMAGE_ELEMENT: '<img>',
         IMAGE_RESOURCE_IN_MEMORY_CANVAS_ELEMENT: '<canvas></canvas>',
+
         IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE: 'none',
         IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS: 'shadows',
         IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_MIDTONES: 'midtones',
         IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_HIGHLIGHTS: 'highlights',
         IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE: 'none',
         IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE: 'grayscale',
-        // False colors' filter names are implictly defined inside IMAGE_RESOURCE_FALSE_COLOR_PALETTE
+        // False colors' filter names are implictly defined by each element inside IMAGE_RESOURCE_FALSE_COLOR_PALETTE
+
         IMAGE_RESOURCE_GENERATED_IMAGE_TYPE_JPEG: 'image/jpeg',
         IMAGE_RESOURCE_GENERATED_IMAGE_QUALITY_JPEG: 0.9,
 
@@ -444,6 +446,84 @@ var sewi = sewi || {};
          * @param {number} contrast The current value of the contrast slider.
          */
         IMAGE_CONTROLS_ZOOM_TO_FIT_REQUESTED_EVENT: 'zoomToFitRequested',
+
+        IMAGE_CONTROLS_DEFAULT_BUTTON_ELEMENT: '<button class="btn btn-default">',
+        IMAGE_CONTROLS_DEFAULT_SLIDER_ELEMENT: '<input type="range" min="0" max="2" value="1" step="0.1" />',
+
+        IMAGE_CONTROLS_INNER_PANEL_ELEMENT: '<div>',
+        IMAGE_CONTROLS_BRIGHTNESS_BUTTON_INNER_LABEL_ELEMENT: '<span class="sewi-icon-brightness-medium">',
+        IMAGE_CONTROLS_CONTRAST_BUTTON_INNER_LABEL_ELEMENT: '<span class="sewi-icon-contrast">',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_INNER_LABEL_ELEMENT: '<span class="glyphicon glyphicon-tasks">',
+        IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_INNER_LABEL_ELEMENT: '<span class="sewi-icon-zoom-to-fit">',
+        IMAGE_CONTROLS_ZOOM_BUTTON_INNER_LABEL_ELEMENT: '<span class="sewi-icon-zoom-to-full">',
+
+        IMAGE_CONTROLS_FILTER_MENU_ELEMENT: '<select class="dropup" multiple role="menu" title="Filters" data-style="btn-default filter-menu-button">',
+
+        IMAGE_CONTROLS_COLORIZE_OPTGROUP_ELEMENT: '<optgroup label="Colorize" data-max-options="1">',
+        IMAGE_CONTROLS_COLORIZE_VALUES_PREFIX: 'colorize.',
+        IMAGE_CONTROLS_GRAYSCALE_OPTION_ELEMENT: '<option value="colorize.grayscale">Grayscale</option>',
+        IMAGE_CONTROLS_FLAME_OPTION_ELEMENT: '<option value="colorize.flame">Flame</option>',
+        IMAGE_CONTROLS_RAINBOW_OPTION_ELEMENT: '<option value="colorize.rainbow">Rainbow</option>',
+        IMAGE_CONTROLS_SPECTRUM_OPTION_ELEMENT: '<option value="colorize.spectrum">Spectrum</option>',
+
+
+        IMAGE_CONTROLS_ADVANCED_FILTERS_OPTGROUP_ELEMENT: '<optgroup label="Advanced Filters">',
+        IMAGE_CONTROLS_ADVANCED_FILTERS_VALUES_PREFIX: 'filter.',
+        IMAGE_CONTROLS_INVERT_OPTION_ELEMENT: '<option value="filter.invert">Invert</option>',
+        IMAGE_CONTROLS_DIFFERENCE_OPTION_ELEMENT: '<option value="filter.difference">Difference</option>',
+        IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_ELEMENT: '<option value="filter.autoContrast">Auto Contrast</option>',
+
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_ELEMENT: '<select class="dropup" multiple role="menu" title="C. Stretch" data-style="btn-default contrast-stretching-menu-button" data-max-options="1">',
+
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SHADOWS_OPTION_ELEMENT: '<option value="shadows">Shadows</option>',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_MIDTONES_OPTION_ELEMENT: '<option value="midtones">Midtones</option>',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_HIGHLIGHTS_OPTION_ELEMENT: '<option value="highlights">Highlights</option>',
+
+        IMAGE_CONTROLS_ANIMATED_CLASS: 'animated',
+        IMAGE_CONTROLS_MAIN_DOM_ELEMENT_CLASS: 'image-control-panel',
+        IMAGE_CONTROLS_LEFT_BUTTON_PANEL_CLASS: 'left',
+        IMAGE_CONTROLS_RIGHT_BUTTON_PANEL_CLASS: 'right',
+        IMAGE_CONTROLS_BRIGHTNESS_BUTTON_CLASS: 'brightness-button',
+        IMAGE_CONTROLS_BRIGHTNESS_SLIDER_CLASS: 'brightness-slider',
+        IMAGE_CONTROLS_CONTRAST_BUTTON_CLASS: 'contrast-button',
+        IMAGE_CONTROLS_CONTRAST_SLIDER_CLASS: 'contrast-slider',
+        IMAGE_CONTROLS_GRAYSCALE_OPTION_CLASS: 'grayscale-option',
+        IMAGE_CONTROLS_FLAME_OPTION_CLASS: 'flame-option',
+        IMAGE_CONTROLS_RAINBOW_OPTION_CLASS: 'rainbow-option',
+        IMAGE_CONTROLS_SPECTRUM_OPTION_CLASS: 'spectrum-option',
+        IMAGE_CONTROLS_INVERT_OPTION_CLASS: 'invert-option',
+        IMAGE_CONTROLS_DIFFERENCE_OPTION_CLASS: 'difference-option',
+        IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_CLASS: 'autoContrast-option',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_CLASS: 'contrast-stretching-menu-button',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_OPTION_SELECTED_CLASS: 'option-selected',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_CLASS: 'contrast-stretching-settings-button',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_HIDDEN_CLASS: 'hidden',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_CLASS: 'contrast-stretching-settings-slider',
+        IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_CLASS: 'zoom-to-fit-button',
+        IMAGE_CONTROLS_ZOOM_BUTTON_CLASS: 'zoom-button',
+        IMAGE_CONTROLS_ZOOM_SLIDER_CLASS: 'zoom-slider',
+
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MIN_VALUE: "1",
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MAX_VALUE: "2.5",
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_DEFAULT_VALUE: "1",
+
+        IMAGE_CONTROLS_ZOOM_SLIDER_MIN_VALUE: "50",
+        IMAGE_CONTROLS_ZOOM_SLIDER_MAX_VALUE: "200",
+        IMAGE_CONTROLS_ZOOM_SLIDER_DEFAULT_VALUE: "100",
+        IMAGE_CONTROLS_ZOOM_SLIDER_STEP_SIZE: "1",
+
+        IMAGE_CONTROLS_BRIGHTNESS_BUTTON_TOOLTIP_HTML: 'Adjusts the brightness of the image. Additionally, you may click on this button to reset the image\'s brightness to its original value.',
+        IMAGE_CONTROLS_CONTRAST_BUTTON_TOOLTIP_HTML: 'Adjusts the contrast of the image. Additionally, you may click on this button to reset the image\'s contrast to its original value.',
+        IMAGE_CONTROLS_GRAYSCALE_OPTION_TOOLTIP_HTML: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="' + sewi.staticPath +'images/image_tooltip_grayscale.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_FLAME_OPTION_TOOLTIP_HTML: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_flame.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_RAINBOW_OPTION_TOOLTIP_HTML: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_rainbow.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_SPECTRUM_OPTION_TOOLTIP_HTML: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_spectrum.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_INVERT_OPTION_TOOLTIP_HTML: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="' + sewi.staticPath +'images/image_tooltip_invert.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_DIFFERENCE_OPTION_TOOLTIP_HTML: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_difference.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_TOOLTIP_HTML: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="' + sewi.staticPath +'images/image_tooltip_histogram_equalization.png" height="100px" width="200px">',
+        IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_TOOLTIP_HTML: '<span TOOLTIP_HTML="underline">Contrast Stretching</span><br>This filter artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="' + sewi.staticPath +'images/image_tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
+        IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_TOOLTIP_HTML: 'Scales the image to fit the available space.',
+        IMAGE_CONTROLS_ZOOM_BUTTON_TOOLTIP_HTML: 'Adjusts the image\'s current zoom level. Additionally, you may click on this button to scale the image back to 100% - i.e. its original size.',
 
         // PanZoomWidget Constants
         /**

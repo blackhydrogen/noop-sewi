@@ -424,104 +424,104 @@ var sewi = sewi || {};
     };
 
     sewi.ImageControls.prototype.disableTooltips = function() {
-        this.mainDOMElement.find(".contrast-button").tooltip('destroy');
-        this.mainDOMElement.find(".brightness-button").tooltip('destroy');
-        this.mainDOMElement.find(".grayscale-option").tooltip('destroy');
-        this.mainDOMElement.find(".flame-option").tooltip('destroy');
-        this.mainDOMElement.find(".spectrum-option").tooltip('destroy');
-        this.mainDOMElement.find(".hsv-option").tooltip('destroy');
-        this.mainDOMElement.find(".difference-option").tooltip('destroy');
-        this.mainDOMElement.find(".invert-option").tooltip('destroy');
-        this.mainDOMElement.find(".autoContrast-option").tooltip('destroy');
-        this.mainDOMElement.find(".contrast-menu-button").tooltip('destroy');
-        this.mainDOMElement.find(".fit-button").tooltip('destroy');
-        this.mainDOMElement.find(".zoom-button").tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_BUTTON_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_BUTTON_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_GRAYSCALE_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_FLAME_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_RAINBOW_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_SPECTRUM_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_INVERT_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_DIFFERENCE_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_CLASS).tooltip('destroy');
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_ZOOM_BUTTON_CLASS).tooltip('destroy');
     };
-
 
     sewi.ImageControls.prototype.enableTooltips = function() {
 
-        this.mainDOMElement.find(".brightness-button").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_BUTTON_CLASS).tooltip({
             html: true,
-            title: 'Adjusts the brightness of the image. Additionally, you may click on this button to reset the image\'s brightness to its original value.',
+            title: sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_BUTTON_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".contrast-button").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_BUTTON_CLASS).tooltip({
             html: true,
-            title: 'Adjusts the contrast of the image. Additionally, you may click on this button to reset the image\'s contrast to its original value.',
+            title: sewi.constants.IMAGE_CONTROLS_CONTRAST_BUTTON_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".grayscale-option").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_GRAYSCALE_OPTION_CLASS).tooltip({
             html: true,
-            title: 'Removes color details from the image, forming a grayscale respresentation.<br><img src="' + sewi.staticPath +'images/image_tooltip_grayscale.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_GRAYSCALE_OPTION_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".flame-option").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_FLAME_OPTION_CLASS).tooltip({
             html: true,
-            title: 'Artifically colors a grayscale image with the flame color spectrum, where the darker shades are mapped to black and red, and the lighter shades mapped to yellow and white. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_flame.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_FLAME_OPTION_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".spectrum-option").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_RAINBOW_OPTION_CLASS).tooltip({
             html: true,
-            title: 'Artifically colors a grayscale image with the colors (largely) from the rainbow spectrum. Darker shades are mapped to blue, while the lighter shades are mapped to red; shades in-between the two extremes are mapped to the respective in-between colors of the rainbow. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_rainbow.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_RAINBOW_OPTION_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".hsv-option").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_SPECTRUM_OPTION_CLASS).tooltip({
             html: true,
-            title: 'Artifically colors a grayscale image with the entire color spectrum. This filter may highlight hard-to-see shade differences of the original image. Different color spectrum filters will provide different levels of details at different areas of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_false_color_spectrum.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_SPECTRUM_OPTION_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".difference-option").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_INVERT_OPTION_CLASS).tooltip({
             html: true,
-            title: 'Produces an image that represents the difference in color intensity between the original and inverted image. Generally this filter improves the contrast of the image.<br><img src="' + sewi.staticPath +'images/image_tooltip_difference.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_INVERT_OPTION_TOOLTIP_HTML,
+            container: 'body',
+            placement: 'right'
+        });
+
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_DIFFERENCE_OPTION_CLASS).tooltip({
+            html: true,
+            title: sewi.constants.IMAGE_CONTROLS_DIFFERENCE_OPTION_TOOLTIP_HTML,
             container: $('body'),
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".invert-option").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_CLASS).tooltip({
             html: true,
-            title: 'Inverts the colors of image. Simply stated, on a grayscale image, white becomes black, while black becomes white.<br><img src="' + sewi.staticPath +'images/image_tooltip_invert.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".autoContrast-option").tooltip({
+        // Remove the attribute as bootstrap-select uses the title as well (it interferes with tooltip if we don't remove it first.)
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_CLASS).removeAttr("title");
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_CLASS).tooltip({
             html: true,
-            title: 'Artifically stretches the colors of the image to make use of the entire grayscale spectrum, which intensifies the difference among the various shades of gray, generally improving contrast.<br><img src="' + sewi.staticPath +'images/image_tooltip_histogram_equalization.png" height="100px" width="200px">',
+            title: sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_TOOLTIP_HTML,
             container: 'body',
             placement: 'right'
         });
 
-        this.mainDOMElement.find(".contrast-menu-button").removeAttr("title");
-        this.mainDOMElement.find(".contrast-menu-button").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_CLASS).tooltip({
             html: true,
-            title: '<span class="underline">Contrast Stretching</span><br>This filter artifically stretches the grayscale range of a specific region at the cost of other regions. This improves the constrast for the stretched region, but reduces the constrast for the other regions. The example below stretches the range of the middle region (i.e. mid-shades of grays), while the range of the upper (white/lighter shades of grays) and lower regions (black/darker shades of grays) are compressed. There are 3 regions to choose from, and you may vary the degree of intensity to stretch the range of the region selected.<br><img src="' + sewi.staticPath +'images/image_tooltip_contrast_stretch_middle.png"  height="100px" width="200px">',
-            container: 'body',
-            placement: 'right'
-        });
-
-        this.mainDOMElement.find(".fit-button").tooltip({
-            html: true,
-            title: 'Scales the image to fit the available space.',
+            title: sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_TOOLTIP_HTML,
             container: 'body',
             placement: 'left'
         });
 
-        this.mainDOMElement.find(".zoom-button").tooltip({
+        this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_ZOOM_BUTTON_CLASS).tooltip({
             html: true,
-            title: 'Adjusts the image\'s current zoom level. Additionally, you may click on this button to scale the image back to 100% - i.e. its original size.',
+            title: sewi.constants.IMAGE_CONTROLS_ZOOM_BUTTON_TOOLTIP_HTML,
             container: 'body',
             placement: 'left'
         });
@@ -530,103 +530,124 @@ var sewi = sewi || {};
     // ImageControls private methods begin
     function initDOM() {
         this.mainDOMElement
-            .addClass('image-control-panel')
-            .addClass('animated');
+            .addClass(sewi.constants.IMAGE_CONTROLS_MAIN_DOM_ELEMENT_CLASS)
+            .addClass(sewi.constants.IMAGE_CONTROLS_ANIMATED_CLASS);
 
-        var button = $('<button class="btn btn-default">');
-        var slider = $('<input type="range" min="0" max="2" value="1" step="0.1" />');
-        var innerPanel = $('<div>');
+        var button = $(sewi.constants.IMAGE_CONTROLS_DEFAULT_BUTTON_ELEMENT);
+        var slider = $(sewi.constants.IMAGE_CONTROLS_DEFAULT_SLIDER_ELEMENT);
+        var innerPanel = $(sewi.constants.IMAGE_CONTROLS_INNER_PANEL_ELEMENT);
 
         var leftButtonPanel = innerPanel
             .clone()
-            .addClass('left');
+            .addClass(sewi.constants.IMAGE_CONTROLS_LEFT_BUTTON_PANEL_CLASS);
 
         var rightButtonPanel = innerPanel
             .clone()
-            .addClass('right');
+            .addClass(sewi.constants.IMAGE_CONTROLS_RIGHT_BUTTON_PANEL_CLASS);
 
         this.brightnessButton = button
             .clone()
-            .addClass('brightness-button')
-            .append('<span class="sewi-icon-brightness-medium">');
+            .addClass(sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_BUTTON_CLASS)
+            .append(sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_BUTTON_INNER_LABEL_ELEMENT);
 
         this.contrastButton = button
             .clone()
-            .addClass('contrast-button')
-            .append('<span class="sewi-icon-contrast">');
+            .addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_BUTTON_CLASS)
+            .append(sewi.constants.IMAGE_CONTROLS_CONTRAST_BUTTON_INNER_LABEL_ELEMENT);
 
-        this.contrastPlusButton = button
+        this.contrastStretchingSettingsButton = button
             .clone()
-            .addClass('contrast-plus-button')
-            .append('<span class="glyphicon glyphicon-tasks">');
-
-        this.zoomButton = button
-            .clone()
-            .addClass('zoom-button')
-            .append('<span class="sewi-icon-zoom-to-full">');
+            .addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_CLASS)
+            .append(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_INNER_LABEL_ELEMENT);
 
         this.zoomToFitButton = button
             .clone()
-            .addClass('fit-button')
-            .append('<span class="sewi-icon-zoom-to-fit">');
+            .addClass(sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_CLASS)
+            .append(sewi.constants.IMAGE_CONTROLS_ZOOM_TO_FIT_BUTTON_INNER_LABEL_ELEMENT);
+
+        this.zoomButton = button
+            .clone()
+            .addClass(sewi.constants.IMAGE_CONTROLS_ZOOM_BUTTON_CLASS)
+            .append(sewi.constants.IMAGE_CONTROLS_ZOOM_BUTTON_INNER_LABEL_ELEMENT);
 
         this.brightnessSlider = slider
             .clone()
-            .addClass('brightness-slider');
+            .addClass(sewi.constants.IMAGE_CONTROLS_BRIGHTNESS_SLIDER_CLASS);
 
         this.contrastSlider = slider
             .clone()
-            .addClass('contrast-slider');
+            .addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_SLIDER_CLASS);
 
-        this.contrastPlusSlider = slider.clone()
-            .addClass('contrast-plus-slider')
+        this.contrastStretchingSettingsSlider = slider
+            .clone()
+            .addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_CLASS)
             .attr({
-                min: "1",
-                max: "2.5",
-                value: "1"
+                min: sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MIN_VALUE,
+                max: sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MAX_VALUE,
+                value: sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_DEFAULT_VALUE
             });
 
         this.zoomSlider = slider
             .clone()
-            .addClass('zoom-slider')
+            .addClass(sewi.constants.IMAGE_CONTROLS_ZOOM_SLIDER_CLASS)
             .attr({
-                max: "200",
-                min: "50",
-                value: "100",
-                step: "1"
+                max: sewi.constants.IMAGE_CONTROLS_ZOOM_SLIDER_MIN_VALUE,
+                min: sewi.constants.IMAGE_CONTROLS_ZOOM_SLIDER_MAX_VALUE,
+                value: sewi.constants.IMAGE_CONTROLS_ZOOM_SLIDER_DEFAULT_VALUE,
+                step: sewi.constants.IMAGE_CONTROLS_ZOOM_SLIDER_STEP_SIZE
             });
 
-        var recolorFilterGroup = $('<optgroup label="Colorize" data-max-options="1">')
-            .append('<option class="grayscale-option" value="colorize.grayscale">Grayscale</option>')
-            .append('<option class="flame-option" value="colorize.flame">Flame</option>')
-            .append('<option class="spectrum-option" value="colorize.rainbow">Rainbow</option>')
-            .append('<option class="hsv-option" value="colorize.spectrum">Spectrum</option>');
+        var colorizeFilterGroup = $(sewi.constants.IMAGE_CONTROLS_COLORIZE_OPTGROUP_ELEMENT)
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_GRAYSCALE_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_GRAYSCALE_OPTION_CLASS)
+            )
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_FLAME_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_FLAME_OPTION_CLASS)
+            )
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_RAINBOW_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_RAINBOW_OPTION_CLASS)
+            )
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_SPECTRUM_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_SPECTRUM_OPTION_CLASS)
+            );
 
-        var advancedFilterGroup = $('<optgroup label="Advanced Filters">')
-            .append('<option class="invert-option" value="filter.invert">Invert</option>')
-            .append('<option class="difference-option" value="filter.difference">Difference</option>')
-            .append('<option class="autoContrast-option" value="filter.autoContrast">Auto Contrast</option>');
+        var advancedFilterGroup = $(sewi.constants.IMAGE_CONTROLS_ADVANCED_FILTERS_OPTGROUP_ELEMENT)
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_INVERT_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_INVERT_OPTION_CLASS)
+            )
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_DIFFERENCE_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_DIFFERENCE_OPTION_CLASS)
+            )
+            .append(
+                $(sewi.constants.IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_ELEMENT)
+                    .addClass(sewi.constants.IMAGE_CONTROLS_AUTO_CONTRAST_OPTION_CLASS)
+            );
 
-        this.filterMenu = $('<select class="dropup" multiple role="menu" title="Filters" data-style="btn-default filter-menu-button">')
-            .append(recolorFilterGroup)
+        this.filterMenu = $(sewi.constants.IMAGE_CONTROLS_FILTER_MENU_ELEMENT)
+            .append(colorizeFilterGroup)
             .append(advancedFilterGroup);
-        console.log("aaa", this.filterMenu);
 
-        this.contrastPlusMenu = $('<select class="dropup" multiple role="menu" title="C. Stretch" data-style="btn-default contrast-menu-button" data-max-options="1">')
-            .append('<option value="shadows">Shadows</option>')
-            .append('<option value="midtones">Midtones</option>')
-            .append('<option value="highlights">Highlights</option>');
+        this.contrastStretchingMenu = $(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_ELEMENT)
+            .append(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SHADOWS_OPTION_ELEMENT)
+            .append(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MIDTONES_OPTION_ELEMENT)
+            .append(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_HIGHLIGHTS_OPTION_ELEMENT);
 
         var brightnessControl = sewi.createVerticalSlider(this.brightnessSlider, this.brightnessButton);
         var contrastControl = sewi.createVerticalSlider(this.contrastSlider, this.contrastButton);
-        this.contrastPlusControl = sewi.createVerticalSlider(this.contrastPlusSlider, this.contrastPlusButton).addClass('hidden');
+        this.contrastStretchingSettingsControl = sewi.createVerticalSlider(this.contrastStretchingSettingsSlider, this.contrastStretchingSettingsButton).addClass('hidden');
         var zoomControl = sewi.createVerticalSlider(this.zoomSlider, this.zoomButton);
 
         leftButtonPanel.append(brightnessControl)
              .append(contrastControl)
              .append(this.filterMenu)
-             .append(this.contrastPlusMenu)
-             .append(this.contrastPlusControl);
+             .append(this.contrastStretchingMenu)
+             .append(this.contrastStretchingSettingsControl);
 
         rightButtonPanel.append(this.zoomToFitButton)
             .append(zoomControl);
@@ -641,7 +662,7 @@ var sewi = sewi || {};
             dropupAuto: false,
         });
 
-        this.contrastPlusMenu.selectpicker({
+        this.contrastStretchingMenu.selectpicker({
             selectedTextFormat: 'values',
             width: '95px',
             dropupAuto: false,
@@ -657,9 +678,9 @@ var sewi = sewi || {};
         this.zoomButton.on('click', zoomLevelReset.bind(this));
         this.zoomToFitButton.on('click', zoomToFit.bind(this));
         this.filterMenu.on('change', filtersChanged.bind(this));
-        this.contrastPlusMenu.on('change', contrastPlusMenuSelectionChanged.bind(this));
-        this.contrastPlusMenu.on('change', filtersChanged.bind(this));
-        this.contrastPlusSlider.on('change', filtersChanged.bind(this));
+        this.contrastStretchingMenu.on('change', contrastStretchingMenuSelectionChanged.bind(this));
+        this.contrastStretchingMenu.on('change', filtersChanged.bind(this));
+        this.contrastStretchingSettingsSlider.on('change', filtersChanged.bind(this));
     };
 
     function brightnessChanged() {
@@ -695,26 +716,26 @@ var sewi = sewi || {};
 
     function filtersChanged() {
         var filterMenuValues = this.filterMenu.val() || [];
-        var contrastStretchMenuValues = this.contrastPlusMenu.val() || [];
+        var contrastStretchMenuValues = this.contrastStretchingMenu.val() || [];
 
         var filterSettingsReturnObject = {
-            colorize: "none",
+            colorize: sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE,
             difference: false,
             invert: false,
             autoContrast: false,
-            contrastStretchMode: "none",
+            contrastStretchMode: sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE,
             contrastStretchValue: 1
         };
 
         // Figure out colorize
-        if(filterMenuValues.length !== 0 && filterMenuValues[0].indexOf("colorize.") != -1) {
-            filterSettingsReturnObject.colorize = filterMenuValues[0].substr(9); //remove the leading "colorize."
+        if(filterMenuValues.length !== 0 && filterMenuValues[0].indexOf(sewi.constants.IMAGE_CONTROLS_COLORIZE_VALUES_PREFIX) != -1) {
+            filterSettingsReturnObject.colorize = filterMenuValues[0].substr(sewi.constants.IMAGE_CONTROLS_COLORIZE_VALUES_PREFIX.length); //remove the prefix.
             filterMenuValues.shift();
         }
 
         // Figure out filters (invert, difference, autoContrast). What's left in the filterMenuValues array should be strings starting with "filter."
         while(filterMenuValues.length !== 0) {
-            var chosenFilter = filterMenuValues[0].substr(7); //remove the leading "filter."
+            var chosenFilter = filterMenuValues[0].substr(sewi.constants.IMAGE_CONTROLS_ADVANCED_FILTERS_VALUES_PREFIX.length); //remove the prefix
             filterSettingsReturnObject[chosenFilter] = true;
             filterMenuValues.shift();
         }
@@ -722,35 +743,35 @@ var sewi = sewi || {};
         // Figure out the contrast stretch filter
         if (contrastStretchMenuValues.length !== 0) {
             filterSettingsReturnObject.contrastStretchMode = contrastStretchMenuValues[0];
-            filterSettingsReturnObject.contrastStretchValue = parseFloat(this.contrastPlusSlider.val());
+            filterSettingsReturnObject.contrastStretchValue = parseFloat(this.contrastStretchingSettingsSlider.val());
         }
 
         // Ensure that at least grayscale is selected when Auto Contrast or Contrast Stretch is used
         // (false-colors - e.g. flame - are implicitly grayscale, so they satisfy the condition)
-        if (filterSettingsReturnObject.colorize === "none" && 
-            (filterSettingsReturnObject.autoContrast || filterSettingsReturnObject.contrastStretchMode !== "none")) {
-            filterSettingsReturnObject.colorize = "grayscale";
+        if (filterSettingsReturnObject.colorize === sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE && 
+            (filterSettingsReturnObject.autoContrast || filterSettingsReturnObject.contrastStretchMode !== sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE)) {
+            filterSettingsReturnObject.colorize = sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE;
 
             // Propagate the changes to the UI
             var newFilterMenuValues = this.filterMenu.val() || [];
-            newFilterMenuValues.unshift("colorize.grayscale");
+            newFilterMenuValues.unshift(sewi.constants.IMAGE_CONTROLS_COLORIZE_VALUES_PREFIX + sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE);
             this.filterMenu.selectpicker('val', newFilterMenuValues);
         }
 
         this.trigger(sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT, filterSettingsReturnObject);
     };
 
-    function contrastPlusMenuSelectionChanged() {
-        var value = this.contrastPlusMenu.val();
+    function contrastStretchingMenuSelectionChanged() {
+        var value = this.contrastStretchingMenu.val();
         if (value !== null) {
-            this.contrastPlusControl.removeClass('hidden');
-            this.mainDOMElement.find('.contrast-menu-button')
-                .addClass('option-selected');
+            this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_CLASS)
+                .addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_OPTION_SELECTED_CLASS);
+            this.contrastStretchingSettingsControl.removeClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_HIDDEN_CLASS);
         }
         else {
-            this.mainDOMElement.find('.contrast-menu-button')
-                .removeClass('option-selected');
-            this.contrastPlusControl.addClass('hidden');
+            this.mainDOMElement.find('.' + sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_CLASS)
+                .removeClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_MENU_BUTTON_OPTION_SELECTED_CLASS);
+            this.contrastStretchingSettingsControl.addClass(sewi.constants.IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_BUTTON_HIDDEN_CLASS);
         }
     };
 })();
