@@ -243,7 +243,7 @@ var sewi = sewi || {};
 
         // t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
-        this.imageElement.prop("src", canvasElement[0].toDataURL(
+        this.imageElement.prop("src", canvasElement[0].toDataURL(//"image/png"));
             sewi.constants.IMAGE_RESOURCE_GENERATED_IMAGE_TYPE_JPEG,
             sewi.constants.IMAGE_RESOURCE_GENERATED_IMAGE_QUALITY_JPEG
         ));
@@ -781,7 +781,9 @@ var sewi = sewi || {};
     if(sewi.testMode) {
         sewi.ImageResourceViewer.prototype.privates = {
             afterImageLoadSetup: afterImageLoadSetup,
-            loadImageUrlSuccess: loadImageUrlSuccess
+            loadImageUrlSuccess: loadImageUrlSuccess,
+            applyCustomImageFilters: applyCustomImageFilters,
+            getImageUri: getImageUri
         };
     }
 })();
