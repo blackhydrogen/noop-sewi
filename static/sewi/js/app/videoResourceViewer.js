@@ -799,7 +799,7 @@ var sewi = sewi || {};
 
     sewi.VideoResourceViewer.prototype.resize = function() {
         if (this.panZoomWidget) {
-            this.panZoomWidget.centreTargetOnContainer();
+            this.panZoomWidget.recalculateTargetDimensions();
         }
     };
 
