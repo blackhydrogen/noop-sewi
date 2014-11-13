@@ -103,6 +103,8 @@ var sewi = sewi || {};
         this.url = data.url;
         init.call(this);
         initControls.call(this);
+        
+        // This event is fired for Unit Testing
         this.trigger("loaded");
     }
 
