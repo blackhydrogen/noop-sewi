@@ -177,7 +177,7 @@ var sewi = sewi || {};
             left: newTargetPositionX
         });
 
-        this.target.trigger("zoomChanged", this.getCurrentZoomLevel());
+        this.target.trigger(sewi.constants.PAN_ZOOM_WIDGET_TARGET_ZOOM_CHANGED_EVENT, this.getCurrentZoomLevel());
     }
 
     function calculateNewTargetWidthFromMousewheel(event) {
