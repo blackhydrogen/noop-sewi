@@ -698,7 +698,7 @@ var sewi = sewi || {};
             filterSettingsReturnObject.colorize = "grayscale";
 
             // Propagate the changes to the UI
-            var newFilterMenuValues = this.filterMenu.val();
+            var newFilterMenuValues = this.filterMenu.val() || [];
             newFilterMenuValues.unshift("colorize.grayscale");
             this.filterMenu.selectpicker('val', newFilterMenuValues);
         }
