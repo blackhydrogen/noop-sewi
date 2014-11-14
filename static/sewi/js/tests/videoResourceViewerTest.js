@@ -701,17 +701,20 @@
 
             selfRef.panZoomTargetElement.one(constants.TEST_WIDGET_ZOOMED_EVENT, panZoomReset);
             selfRef.zoomToFitButton.click();
+        }
+
+        function panZoomFit() {
+            assert.ok(true, 'Video supports zooming to fit.');
+            QUnit.start();
+
             selfRef.zoomButton.click();
         }
 
         function panZoomReset() {
             assert.ok(true, 'Video supports resetting zoom level.');
             QUnit.start();
-        }
 
-        function panZoomFit() {
-            assert.ok(true, 'Video supports zooming to fit.');
-            QUnit.start();
+            viewer.cleanUp();
         }
 
         viewer.load();
