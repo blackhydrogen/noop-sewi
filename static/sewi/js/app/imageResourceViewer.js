@@ -848,5 +848,8 @@ var sewi = sewi || {};
             applyCustomImageFilters: applyCustomImageFilters,
             getImageUri: getImageUri
         };
+        sewi.ImageControls.prototype.privates = {
+            filtersChanged: filtersChanged
+        }
     }
 })();
