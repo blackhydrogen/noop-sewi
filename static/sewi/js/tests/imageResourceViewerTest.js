@@ -100,7 +100,7 @@
         }
     });
 
-    QUnit.asyncTest("Grayscale", function(assert) {
+    QUnit.asyncTest("Grayscale (IR1)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -144,7 +144,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Flame", function(assert) {
+    QUnit.asyncTest("Flame (IR2)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -188,7 +188,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Rainbow", function(assert) {
+    QUnit.asyncTest("Rainbow (IR3)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -232,7 +232,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Spectrum", function(assert) {
+    QUnit.asyncTest("Spectrum (IR4)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -276,7 +276,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Invert", function(assert) {
+    QUnit.asyncTest("Invert (IR5)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -320,7 +320,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Difference", function(assert) {
+    QUnit.asyncTest("Difference (IR6)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -364,7 +364,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Auto-contrast", function(assert) {
+    QUnit.asyncTest("Auto-contrast (IR7)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -408,7 +408,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Contrast Stretching, Shadows", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Shadows (IR8)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -452,7 +452,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Contrast Stretching, Midtones", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Midtones (IR9)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -496,7 +496,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Contrast Stretching, Highlights", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Highlights (IR10)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -583,7 +583,7 @@
         }
     });
 
-    QUnit.asyncTest("Grayscale", function(assert) {
+    QUnit.asyncTest("Grayscale (IC1)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -623,7 +623,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Flame", function(assert) {
+    QUnit.asyncTest("Flame (IC2)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -663,7 +663,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Rainbow", function(assert) {
+    QUnit.asyncTest("Rainbow (IC3)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -703,7 +703,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Spectrum", function(assert) {
+    QUnit.asyncTest("Spectrum (IC4)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -743,7 +743,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Invert", function(assert) {
+    QUnit.asyncTest("Invert (IC5)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -783,7 +783,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Difference", function(assert) {
+    QUnit.asyncTest("Difference (IC6)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -823,7 +823,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Auto-contrast", function(assert) {
+    QUnit.asyncTest("Auto-contrast (IC7)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -863,7 +863,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Contrast Stretching, Shadows", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Shadows (IC8)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -903,7 +903,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Contrast Stretching, Midtones", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Midtones (IC9)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -943,7 +943,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Contrast Stretching, Highlights", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Highlights (IC10)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -983,7 +983,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.asyncTest("Zoom Slider", function(assert) {
+    QUnit.asyncTest("Zoom Slider (IC11)", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
