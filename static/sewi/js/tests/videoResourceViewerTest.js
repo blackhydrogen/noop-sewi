@@ -1,3 +1,4 @@
+// Media Controls unit tests
 (function() {
     var constants = {
         TEST_EXTRA_BUTTON_DOM: '<button type="button" class="extra-button"></button>',
@@ -746,7 +747,7 @@
     });
 
     QUnit.asyncTest('Displaying Controls Only When Mouse Moves', function(assert) {
-        assert.expect(4);
+        assert.expect(5);
         var selfRef = this;
         window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
 
@@ -763,19 +764,25 @@
             moveMouseIn(innerElement, 10, 10);
             setTimeout(function() {
                 assert.ok(innerElement.hasClass('active'), 'Viewer becomes active when mouse moves within it.');
+                moveMouseIn(innerElement, 20, 20);
+
             }, 500);
 
             setTimeout(function() {
+                assert.ok(innerElement.hasClass('active'), 'Viewer does not become inactive when mouse is still moving within it.');
+            }, 2000);
+
+            setTimeout(function() {
                 assert.ok(!innerElement.hasClass('active'), 'Viewer becomes inactive after a period of time.');
-                moveMouseIn(innerElement, 10, 10);
-            }, 3000);
+                moveMouseIn(innerElement, 20, 20);
+            }, 3500);
 
             setTimeout(function() {
                 assert.ok(!innerElement.hasClass('active'), 'Viewer does not become active if event is detected but mouse did not actually move.');
                 QUnit.start();
 
                 viewer.cleanUp();
-            }, 3500);
+            }, 4000);
         });
 
         viewer.load();
