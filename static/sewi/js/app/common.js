@@ -184,16 +184,23 @@ var sewi = sewi || {};
         RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
         RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
         RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
-        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail" src="/static/sewi/images/loading.gif"></div>',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail"></div>',
         RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-title">',
+        RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_DOM: '<div class="double-click-instruction"> Double click to open a resource</div>',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
+        RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_CLASS: 'double-click-instruction',
         RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
+        RESOURCE_GALLERY_RESOURCE_DRAGGED_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_MINIMIZED_CLASS: 'gallery-minimized',
+        RESOURCE_GALLERY_THUMBNAIL_CONTAINER_CLASS: 'resource-thumbnail-container',
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource-thumbnail',
+        RESOURCE_GALLERY_THUMBNAIL_CONTAINER_DRAGGED_CLASS: 'resource-thumbnail-container-dragged',
         RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-title',
-        RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_RESOURCE_HEADER_DRAGGED_CLASS: 'resource-title-dragged',
         RESOURCE_GALLERY_TOOLTIP_HEADER: 'Last modified: ',
         RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
-        RESOURCE_GALLERY_DEFAULT_THUMBNAIL: '/static/sewi/images/default_thumbnail.png',
+        RESOURCE_GALLERY_DEFAULT_THUMBNAIL: 'images/default_thumbnail.png',
+        RESOURCE_GALLERY_LOADING_THUMBNAIL: 'images/loading.gif',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_BASIC_DOM: '<div></div>',
@@ -454,21 +461,41 @@ var sewi = sewi || {};
          * Fired when any of the custom filters' controls have changed value.
          * @event filtersChanged
          * @memberof sewi.ImageControls
-         * @param ...
+         * @param {Object} filterSettings The object representing the state of all custom filters
+         * (i.e. which filters are selected/not-selected).
+         * @param {String} filterSettings.colorize The colorize filter to selected. Current possible
+         * values are IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE and the keys of the 
+         * IMAGE_RESOURCE_FALSE_COLOR_PALETTE object (i.e. "flame", "rainbow", "spectrum").
+         * If no filters are selected, the value will be IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE.
+         * @param {Boolean} filterSettings.difference True if the difference filter is selected; false otherwise.
+         * @param {Boolean} filterSettings.invert True if the invert filter is selected; false otherwise.
+         * @param {Boolean} filterSettings.autoContrast True if the autoContrast filter is selected; false otherwise.
+         * If the auto-contrast filter is selected, the one of the colorize filter must be applied.
+         * If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+         * chosen automatically.
+         * @param {String} filterSettings.contrastStretchMode If a contrast-stretching filter is selected, this
+         * element will take one of three possible values: IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS,
+         * IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_MIDTONES, or IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_HIGHLIGHTS.
+         * If none is selected, the value will be IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE.
+         * Note that if the contrast-stretching filter is selected, the one of the colorize filter must be applied.
+         * If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+         * chosen automatically.
+         * @param {Number} filterSettings.contrastStretchValue The intensity of the contrast-stretching filter,
+         * subjected to the limits between IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MIN_VALUE and
+         * IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MAX_VALUE.
          */
         IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT: 'filtersChanged',
         /**
-         * Fired when the contrast slider's value has changed.
-         * @event contrastChanged
+         * Fired when the zoom slider's value has changed.
+         * @event zoomLevelChanged
          * @memberof sewi.ImageControls
-         * @param {number} contrast The current value of the contrast slider.
+         * @param {number} zoomLevel The current value of the zoom slider (which is a percentage of the original image's size).
          */
         IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT: 'zoomLevelChanged',
         /**
-         * Fired when the contrast slider's value has changed.
-         * @event contrastChanged
+         * Fired when the zoom-to-fit button is pressed.
+         * @event zoomToFitRequested
          * @memberof sewi.ImageControls
-         * @param {number} contrast The current value of the contrast slider.
          */
         IMAGE_CONTROLS_ZOOM_TO_FIT_REQUESTED_EVENT: 'zoomToFitRequested',
 
@@ -585,6 +612,9 @@ var sewi = sewi || {};
         CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE: 'An error has occured! Press the button to reload!',
         CONFIGURATOR_COMPONENT_ERROR_EVENT: 'errorOccured',
 
+        //Scroll Bar Constants
+        SCROLL_BAR_CONTAINER_DOM:'<div class="slider-container"></div>',
+        SCROLL_BAR_BAR_DOM:'<div class="slider-bar"></div>',
     };
 
 })();

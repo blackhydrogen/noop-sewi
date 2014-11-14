@@ -63,6 +63,10 @@ var sewi = sewi || {};
   }
 
   function retrieveResources(resourceGalleryData) {
+    if(resourceGalleryData.length > 0){
+      var resourceContainer = this.mainDOMElement;
+      resourceContainer.append(sewi.constants.RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_DOM);
+    }
     $.each(resourceGalleryData, appendResourceToDOM.bind(this));
     generateThumbnails.call(this, resourceGalleryData);
     this.isResourceDraggable = false;
@@ -73,11 +77,15 @@ var sewi = sewi || {};
 
   function appendResourceToDOM(index, value) {
     var resourceContainer = this.mainDOMElement;
+    var thumbnailContainer = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM);
+    var loadingImagePath = sewi.staticPath + sewi.constants.RESOURCE_GALLERY_LOADING_THUMBNAIL;
+    thumbnailContainer.children('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS)
+      .attr('src', loadingImagePath);
     var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
       .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value['id'])
       .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value['type'])
       .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value['date'])
-      .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
+      .append(thumbnailContainer)
       .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
 
     resource.on('dblclick', this, getResourceDOM);
@@ -107,18 +115,32 @@ var sewi = sewi || {};
 
   function thumbnailImageError() {
     // A default thumbnail image is shown for any resource without a thumbnail
-    $(this).find('img').attr('src', sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
+    $(this).find('img').attr('src', sewi.staticPath + sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
   }
  
   function addDraggblePropertyToResource(index, value){
+
     value.draggable({
         helper: 'clone',
         revert: 'invalid',
         appendTo: 'body',
         start: function(e, ui) {
-          ui.helper.addClass('resource-dragged');
+          ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_RESOURCE_DRAGGED_CLASS);
+          ui.helper.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CONTAINER_CLASS)
+          .addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CONTAINER_DRAGGED_CLASS);
+           ui.helper.find('.' + sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_CLASS)
+          .addClass(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DRAGGED_CLASS);
+
         }
       });
+  }
+
+  function showDoubleClickInstruction(){
+    this.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_CLASS).show();
+  }
+
+  function hideDoubleClickInstruction(){
+    this.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_CLASS).hide();
   }
 
   function removeDraggblePropertyFromResource(index, value){
@@ -155,12 +177,15 @@ var sewi = sewi || {};
         $.each(this.resources, addDraggblePropertyToResource);
         this.isResourceDraggable = true;
       }
+      hideDoubleClickInstruction.call(this);
+
     }
     else{
       if(this.isResourceDraggable){
          $.each(this.resources, removeDraggblePropertyFromResource);
          this.isResourceDraggable = false;
       }
+      showDoubleClickInstruction.call(this);
     }
   }
 
