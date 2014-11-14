@@ -369,6 +369,8 @@
         TEST_TRIGGER_MUTE_EVENT: 'testMuteVideo',
         TEST_TRIGGER_UNMUTE_EVENT: 'testUnmuteVideo',
         TEST_CONTROLS_UPDATED_EVENT: 'testControlsUpdated',
+        TEST_CONTROLS_TOOLTIPS_ENABLED_EVENT: 'testTooltipsEnabled',
+        TEST_CONTROLS_TOOLTIPS_DISABLED_EVENT: 'testTooltipsDisabled',
 
         TEST_WIDGET_RESIZED_EVENT: 'widgetResized',
         TEST_WIDGET_ZOOMED_EVENT: 'widgetZoomed',
@@ -405,6 +407,8 @@
         this.on(constants.TEST_TRIGGER_UNMUTE_EVENT, testUnmuteVideo.bind(this));
 
         this.mainDOMElement.data(constants.TEST_EXTRA_BUTTONS_KEY, options.extraButtons);
+        this.mainDOMElement.append(options.extraButtons.left);
+        this.mainDOMElement.append(options.extraButtons.right);
     }
     sewi.inherits(MediaControlsTestDriver, sewi.ConfiguratorElement);
 
@@ -413,11 +417,11 @@
     };
 
     MediaControlsTestDriver.prototype.showTooltips = function(options) {
-
+        this.trigger(constants.TEST_CONTROLS_TOOLTIPS_ENABLED_EVENT);
     };
 
     MediaControlsTestDriver.prototype.hideTooltips = function(options) {
-
+        this.trigger(constants.TEST_CONTROLS_TOOLTIPS_DISABLED_EVENT);
     };
 
     function testPlayingVideo() {
@@ -787,6 +791,81 @@
                 viewer.cleanUp();
             }, 4000);
         });
+
+        viewer.load();
+    });
+
+    QUnit.asyncTest('Displaying and Hiding Tooltips', function(assert) {
+        QUnit.stop(2);
+        var selfRef = this;
+        window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        this.fixture.append(viewerElement);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            selfRef.controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            var extraButtons = selfRef.controlsElement.data(constants.TEST_EXTRA_BUTTONS_KEY);
+            selfRef.zoomToFitButton = extraButtons.right[0];
+            var zoomControls = extraButtons.right[1];
+            selfRef.zoomSlider = zoomControls.find('.' + constants.ZOOM_SLIDER_CLASS);
+            selfRef.zoomButton = zoomControls.find('.' + constants.RESET_ZOOM_BUTTON_CLASS);
+
+            selfRef.controlsElement.on(constants.TEST_CONTROLS_TOOLTIPS_ENABLED_EVENT, controlsTooltipsEnabled);
+            selfRef.controlsElement.on(constants.TEST_CONTROLS_TOOLTIPS_DISABLED_EVENT, controlsTooltipsDisabled);
+
+            viewer.showTooltips();
+
+            selfRef.zoomSlider.mouseover();
+            assert.ok(selfRef.zoomSlider.attr('aria-describedby'), 'Zoom slider tooltip can be enabled.');
+            selfRef.zoomButton.mouseover();
+            assert.ok(selfRef.zoomButton.attr('aria-describedby'), 'Reset zoom button tooltip can be enabled.');
+            selfRef.zoomToFitButton.mouseover();
+            assert.ok(selfRef.zoomToFitButton.attr('aria-describedby'), 'Zoom to fit button tooltip can be enabled.');
+
+            selfRef.zoomSlider.mouseout();
+            selfRef.zoomButton.mouseout();
+            selfRef.zoomToFitButton.mouseout();
+
+            viewer.hideTooltips();
+
+            // Allow any shown tooltips time to hide themselves before disabling.
+            setTimeout(testDisablingTooltips, 2000);
+        });
+
+        function controlsTooltipsEnabled() {
+            assert.ok(true, 'Controls tooltips can be enabled.');
+
+            QUnit.start();
+        }
+
+        function controlsTooltipsDisabled() {
+            assert.ok(true, 'Controls tooltips can be disabled.');
+
+            QUnit.start();
+        }
+
+        function testDisablingTooltips() {
+
+            selfRef.zoomSlider.mouseover();
+            assert.ok(!selfRef.zoomSlider.attr('aria-describedby'), 'Zoom slider tooltip can be disabled.');
+            selfRef.zoomButton.mouseover();
+            assert.ok(!selfRef.zoomButton.attr('aria-describedby'), 'Reset zoom button tooltip can be disabled.');
+            selfRef.zoomToFitButton.mouseover();
+            assert.ok(!selfRef.zoomToFitButton.attr('aria-describedby'), 'Zoom to fit button tooltip can be disabled.');
+
+            setTimeout(cleanUpTest, 1000);
+        }
+
+        function cleanUpTest() {
+            QUnit.start();
+
+            viewer.cleanUp();
+        }
 
         viewer.load();
     });
