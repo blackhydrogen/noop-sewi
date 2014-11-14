@@ -21,7 +21,7 @@ var sewi = sewi || {};
         } else {
             throw new Error('Only class definitions can inherit other class definitions.');
         }
-    }
+    };
 
     /**
      * Generates the DOM elements necessary to produce a vertical slider.
@@ -44,7 +44,7 @@ var sewi = sewi || {};
                         .blur(verticalSliderUnfocused);
 
         return verticalSliderContainer;
-    }
+    };
 
     function verticalSliderFocused(event) {
         $(event.target).parent().addClass('active');
