@@ -41,7 +41,6 @@ QUnit.asyncTest('RG2: Loading resources into DOM', function(assert){
 
 	var options = {encounterId: constants.TEST_VALID_ENCOUNTER_ID};
 	var resourceGallery = new sewi.ResourceGallery(options);
-
 	resourceGallery.load();
 
 	setTimeout(function(){
@@ -58,7 +57,7 @@ QUnit.asyncTest('RG2: Loading resources into DOM', function(assert){
 
 });
 
-QUnit.asyncTest('RG:3 Triggering event when reosurce is double clicked', function(assert){
+QUnit.asyncTest('RG3: Triggering event when resource is double clicked', function(assert){
 	QUnit.stop(1);
 	var options = {encounterId: constants.TEST_VALID_ENCOUNTER_ID};
 	var resourceGallery = new sewi.ResourceGallery(options);
@@ -78,7 +77,7 @@ QUnit.asyncTest('RG:3 Triggering event when reosurce is double clicked', functio
 
 });
 
-QUnit.asyncTest('RG:4 Attaching/Detaching draggable properties to resources when gallery is minimized/maximized', function(assert){
+QUnit.asyncTest('RG4: Attaching/Detaching draggable properties to resources when gallery is minimized/maximized', function(assert){
 	var options = {encounterId: constants.TEST_VALID_ENCOUNTER_ID};
 	var resourceGallery = new sewi.ResourceGallery(options);
 	resourceGallery.load();
