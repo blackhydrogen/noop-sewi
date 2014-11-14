@@ -61,6 +61,11 @@
         return containerElement.find('.' + htmlClass).length > 0;
     }
 
+    // Returns true if a Bootstrap tooltip is currently being displayed by the element.
+    function isTooltipShown(element) {
+        return !!$(element).attr('aria-describedby');
+    }
+
     QUnit.module('Media Controls', {
         setup: function() {
             this.fixture = $('#qunit-fixture');
@@ -347,6 +352,45 @@
         });
         numOfBuffers = controlsElement.find('.' + constants.BUFFER_CLASS).length;
         assert.equal(numOfBuffers, 0, 'Buffers can be cleared.');
+    });
+
+    QUnit.asyncTest('Displaying and Hiding Tooltips', function(assert) {
+        var controls = new this.sewi.MediaControls();
+        var controlsElement = controls.getDOM();
+        this.fixture.append(controlsElement);
+
+        var playButton = this.fixture.find('.' + constants.PLAY_BUTTON_CLASS);
+        var volumeSlider = this.fixture.find('.' + constants.VOLUME_SLIDER_CLASS);
+        var muteButton = this.fixture.find('.' + constants.MUTE_BUTTON_CLASS);
+
+        controls.showTooltips();
+
+        playButton.mouseover();
+        volumeSlider.mouseover();
+        muteButton.mouseover();
+
+        assert.ok(isTooltipShown(playButton), 'Play button tooltip can be enabled.');
+        assert.ok(isTooltipShown(volumeSlider), 'Volume slider tooltip can be enabled.');
+        assert.ok(isTooltipShown(muteButton), 'Mute button tooltip can be enabled.');
+
+        playButton.mouseout();
+        volumeSlider.mouseout();
+        muteButton.mouseout();
+
+        controls.hideTooltips();
+
+        // delay to allow displayed tooltips to hide themselves first
+        setTimeout(function() {
+            playButton.mouseover();
+            volumeSlider.mouseover();
+            muteButton.mouseover();
+
+            assert.ok(!isTooltipShown(playButton), 'Play button tooltip can be disabled.');
+            assert.ok(!isTooltipShown(volumeSlider), 'Volume slider tooltip can be disabled.');
+            assert.ok(!isTooltipShown(muteButton), 'Mute button tooltip can be disabled.');
+
+            QUnit.start();
+        }, 2000);
     });
 })();
 
