@@ -6,12 +6,12 @@
         }
     });
 
-    QUnit.test('Class Initialization', function(assert){
+    QUnit.test('AR1: Class Initialization', function(assert){
         var audioResourceViewer = new sewi.AudioResourceViewer({id :'23e8e15f-a155-4f8c-b587-2f4855187279'});
         assert.ok(audioResourceViewer, 'Audio Resource Viewer initialized successfully'); 
     });
     
-    QUnit.asyncTest('Class Load Data', function(assert){
+    QUnit.asyncTest('AR2: Class Load Data', function(assert){
         expect(3);
         QUnit.stop(2);
 
@@ -42,7 +42,7 @@
 
     });
 
-    QUnit.asyncTest('Audio Play/Pause', function(assert){
+    QUnit.asyncTest('AR3: Audio Play/Pause', function(assert){
         QUnit.stop(1);
         var audioResourceViewer = new sewi.AudioResourceViewer({id :'23e8e15f-a155-4f8c-b587-2f4855187279'});
         var dom = audioResourceViewer.getDOM();
