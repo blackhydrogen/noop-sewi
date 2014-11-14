@@ -19,8 +19,7 @@ def test_page(request):
     return render(request, 'sewi/testRunner.html')
 
 def get_encounter(request, encounter_id):
-    #encounter = get_object_or_404(Encounter, uuid=encounter_id)
-    # TODO: Uncomment above line to enable encounter checking
+    encounter = get_object_or_404(Encounter, uuid=encounter_id)
     return render(request, 'sewi/index.html', {
         "encounter_id": encounter_id
     })
