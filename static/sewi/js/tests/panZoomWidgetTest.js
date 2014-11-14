@@ -28,7 +28,7 @@
 		}
 	});
 
-	QUnit.test("Fit/Fit", function(assert) {
+	QUnit.test("Fit/Fit (PZ1)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -48,7 +48,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Fit/Small", function(assert) {
+	QUnit.test("Fit/Small (PZ2)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -68,7 +68,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "-5px", "Top");
 	});
 
-	QUnit.test("Fit/Large", function(assert) {
+	QUnit.test("Fit/Large (PZ3)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -88,7 +88,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "5px", "Top");
 	});
 
-	QUnit.test("Small/Fit", function(assert) {
+	QUnit.test("Small/Fit (PZ4)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -108,7 +108,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Small/Small", function(assert) {
+	QUnit.test("Small/Small (PZ5)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -128,7 +128,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "-5px", "Top");
 	});
 
-	QUnit.test("Small/Large", function(assert) {
+	QUnit.test("Small/Large (PZ6)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -148,7 +148,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "5px", "Top");
 	});
 
-	QUnit.test("Large/Fit", function(assert) {
+	QUnit.test("Large/Fit (PZ7)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -168,7 +168,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Large/Small", function(assert) {
+	QUnit.test("Large/Small (PZ8)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -188,7 +188,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "-5px", "Top");
 	});
 
-	QUnit.test("Large/Large", function(assert) {
+	QUnit.test("Large/Large (PZ9)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -236,7 +236,7 @@
 		}
 	});
 
-	QUnit.test("Fit/Fit", function(assert) {
+	QUnit.test("Fit/Fit (PZ10)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -255,7 +255,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Fit/Small", function(assert) {
+	QUnit.test("Fit/Small (PZ11)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -274,7 +274,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Fit/Large", function(assert) {
+	QUnit.test("Fit/Large (PZ12)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -293,7 +293,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "5px", "Top");
 	});
 
-	QUnit.test("Small/Fit", function(assert) {
+	QUnit.test("Small/Fit (PZ13)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -312,7 +312,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "2.5px", "Top");
 	});
 
-	QUnit.test("Small/Small", function(assert) {
+	QUnit.test("Small/Small (PZ14)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -331,7 +331,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Small/Large", function(assert) {
+	QUnit.test("Small/Large (PZ15)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -350,7 +350,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "7.5px", "Top");
 	});
 
-	QUnit.test("Large/Fit", function(assert) {
+	QUnit.test("Large/Fit (PZ16)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -369,7 +369,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Large/Small", function(assert) {
+	QUnit.test("Large/Small (PZ17)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -388,7 +388,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "0px", "Top");
 	});
 
-	QUnit.test("Large/Large", function(assert) {
+	QUnit.test("Large/Large (PZ18)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -436,7 +436,7 @@
 		}
 	});
 
-	QUnit.test("Mousewheel (magnify, 1 step, cursor in image)", function(assert) {
+	QUnit.test("Mousewheel (magnify, 1 step, cursor in image) (PZ19)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -466,7 +466,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "-20px", "Top");	
 	});
 
-	QUnit.test("Mousewheel (de-magnify, 1 step, cursor in image)", function(assert) {
+	QUnit.test("Mousewheel (de-magnify, 1 step, cursor in image) (PZ20)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -496,7 +496,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "20px", "Top");	
 	});
 
-	QUnit.test("Mousewheel (magnify, 1 step, cursor outside of image)", function(assert) {
+	QUnit.test("Mousewheel (magnify, 1 step, cursor outside of image) (PZ21)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -526,7 +526,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "80px", "Top");	
 	});
 
-	QUnit.test("Mousewheel (magnify, 20 steps - beyond maximum limit)", function(assert) {
+	QUnit.test("Mousewheel (magnify, 20 steps - beyond maximum limit) (PZ22)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -556,7 +556,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "-100px", "Top");	
 	});
 
-	QUnit.test("Mousewheel (de-magnify, 20 steps - beyond minimum bounds)", function(assert) {
+	QUnit.test("Mousewheel (de-magnify, 20 steps - beyond minimum bounds) (PZ23)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -587,7 +587,7 @@
 	});
 
 
-	QUnit.test("Mousedown, Mousemove, Mouseup (move by 100 down, 100 right - within bounds)", function(assert) {
+	QUnit.test("Mousedown, Mousemove, Mouseup (move by 100 down, 100 right - within bounds) (PZ24)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -623,7 +623,7 @@
 		assert.equal(this.panZoomTarget.css("top"), "100px", "Top");	
 	});
 
-	QUnit.test("Mousedown, Mousemove, Mouseup (move by 900 down, 900 right - beyond bounds)", function(assert) {
+	QUnit.test("Mousedown, Mousemove, Mouseup (move by 900 down, 900 right - beyond bounds) (PZ25)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -660,7 +660,7 @@
 	});
 
 
-	QUnit.test("Mousedown, Mousemove, Mouseup (move by 900 up, 900 left - beyond bounds)", function(assert) {
+	QUnit.test("Mousedown, Mousemove, Mouseup (move by 900 up, 900 left - beyond bounds) (PZ26)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -724,7 +724,7 @@
 		}
 	});
 
-	QUnit.test("getMinimumZoomLevel, getMaximumZoomLevel (2 values)", function(assert) {
+	QUnit.test("getMinimumZoomLevel, getMaximumZoomLevel (2 values) (PZ27)", function(assert) {
 		expect(4);
 
 		// Set the container's respective width and height.
@@ -748,7 +748,7 @@
 		assert.equal(this.panZoomWidget.getMaximumZoomLevel(), 200, "getMaximumZoomLevel (container size: 400, 200)");
 	});
 
-	QUnit.test("fitSizeEqualsOriginalSize (Both possible values)", function(assert) {
+	QUnit.test("fitSizeEqualsOriginalSize (Both possible values) (PZ28)", function(assert) {
 		expect(2);
 
 		// Set the container's respective width and height.
