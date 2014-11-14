@@ -429,21 +429,41 @@ var sewi = sewi || {};
          * Fired when any of the custom filters' controls have changed value.
          * @event filtersChanged
          * @memberof sewi.ImageControls
-         * @param ...
+         * @param {Object} filterSettings The object representing the state of all custom filters
+         * (i.e. which filters are selected/not-selected).
+         * @param {String} filterSettings.colorize The colorize filter to selected. Current possible
+         * values are IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE and the keys of the 
+         * IMAGE_RESOURCE_FALSE_COLOR_PALETTE object (i.e. "flame", "rainbow", "spectrum").
+         * If no filters are selected, the value will be IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE.
+         * @param {Boolean} filterSettings.difference True if the difference filter is selected; false otherwise.
+         * @param {Boolean} filterSettings.invert True if the invert filter is selected; false otherwise.
+         * @param {Boolean} filterSettings.autoContrast True if the autoContrast filter is selected; false otherwise.
+         * If the auto-contrast filter is selected, the one of the colorize filter must be applied.
+         * If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+         * chosen automatically.
+         * @param {String} filterSettings.contrastStretchMode If a contrast-stretching filter is selected, this
+         * element will take one of three possible values: IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS,
+         * IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_MIDTONES, or IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_HIGHLIGHTS.
+         * If none is selected, the value will be IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE.
+         * Note that if the contrast-stretching filter is selected, the one of the colorize filter must be applied.
+         * If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+         * chosen automatically.
+         * @param {Number} filterSettings.contrastStretchValue The intensity of the contrast-stretching filter,
+         * subjected to the limits between IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MIN_VALUE and
+         * IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MAX_VALUE.
          */
         IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT: 'filtersChanged',
         /**
-         * Fired when the contrast slider's value has changed.
-         * @event contrastChanged
+         * Fired when the zoom slider's value has changed.
+         * @event zoomLevelChanged
          * @memberof sewi.ImageControls
-         * @param {number} contrast The current value of the contrast slider.
+         * @param {number} zoomLevel The current value of the zoom slider (which is a percentage of the original image's size).
          */
         IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT: 'zoomLevelChanged',
         /**
-         * Fired when the contrast slider's value has changed.
-         * @event contrastChanged
+         * Fired when the zoom-to-fit button is pressed.
+         * @event zoomToFitRequested
          * @memberof sewi.ImageControls
-         * @param {number} contrast The current value of the contrast slider.
          */
         IMAGE_CONTROLS_ZOOM_TO_FIT_REQUESTED_EVENT: 'zoomToFitRequested',
 
