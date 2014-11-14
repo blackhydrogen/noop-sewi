@@ -195,7 +195,7 @@ var sewi = sewi || {};
         RESOURCE_VIEWER_CLASS: 'resource-viewer',
         RESOURCE_VIEWER_CLOSE_BUTTON_DOM: '<button type="button" class="btn btn-danger close-button" title="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>',
         RESOURCE_VIEWER_FULLSCREEN_BUTTON_DOM: '<button type="button" class="btn btn-default fullscreen-button" title="Fullscreen"><span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span></button>',
-        RESOURCE_VIEWER_TOOLTIPS_BUTTON_DOM: '<label class="btn btn-default tooltips-button" data-toggle="buttons" title="Toggle Tooltips"><span aria-hidden="true" class="glyphicon glyphicon-info-sign"></span></label>',
+        RESOURCE_VIEWER_TOOLTIPS_BUTTON_DOM: '<label class="btn btn-default tooltips-button" data-toggle="buttons" title="Toggle Tooltips"><span aria-hidden="true" class="glyphicon glyphicon-question-sign"></span></label>',
         RESOURCE_VIEWER_TOOLTIPS_BUTTON_TRACKER_DOM: '<input type="checkbox" />',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_DOM: '<a class="btn btn-default download-button" download title="Download"><span aria-hidden="true" class="glyphicon glyphicon-download"></span></a>',
         RESOURCE_VIEWER_DOWNLOAD_BUTTON_CLASS: 'download-button',
