@@ -35,14 +35,14 @@ var sewi = sewi || {};
         this.previousCustomFiltersSettings = {};
 
         this.controls = null;
-        this.imagePanZoomWidget = null;
+        this.panZoomWidget = null;
     };
 
     sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
 
     sewi.ImageResourceViewer.prototype.resize = function() {
-        if(this.imagePanZoomWidget != null)
-            this.imagePanZoomWidget.recalculateTargetDimensions();
+        if(this.panZoomWidget != null)
+            this.panZoomWidget.recalculateTargetDimensions();
     };
 
     sewi.ImageResourceViewer.prototype.showTooltips = function() {
@@ -111,7 +111,7 @@ var sewi = sewi || {};
     // input from the user, the events are meant to update the corresponding component's
     // settings/views.
     function setupZoomControls() {
-        this.imagePanZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
+        this.panZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
 
         this.on(
             sewi.constants.PAN_ZOOM_WIDGET_TARGET_ZOOM_CHANGED_EVENT,
@@ -132,10 +132,10 @@ var sewi = sewi || {};
         // and the event not captured due to the event being registered after the construction)
         this.controls.updateZoomControlValue({
             zoomSettings: {
-                max: this.imagePanZoomWidget.getMaximumZoomLevel(),
-                min: this.imagePanZoomWidget.getMinimumZoomLevel()
+                max: this.panZoomWidget.getMaximumZoomLevel(),
+                min: this.panZoomWidget.getMinimumZoomLevel()
             },
-            zoomLevel: this.imagePanZoomWidget.getCurrentZoomLevel()
+            zoomLevel: this.panZoomWidget.getCurrentZoomLevel()
         });
     };
 
@@ -147,11 +147,11 @@ var sewi = sewi || {};
     }
 
     function setPanZoomWidgetCurrentZoomLevel(event, zoomLevel) {
-        this.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
+        this.panZoomWidget.setCurrentZoomLevel(zoomLevel);
     }
 
     function setPanZoomWidgetZoomLevelZoomToFit(event) {
-        this.imagePanZoomWidget.setZoomLevelToZoomToFit();
+        this.panZoomWidget.setZoomLevelToZoomToFit();
     }
 
 
@@ -471,9 +471,6 @@ var sewi = sewi || {};
      * Updates the values of the zoom controls. Used to update the ImageControl view when
      * the image is resized via other user inputs (e.g. via mousewheel events monitored by the
      * PanZoomWidget).
-     *
-     * @class sewi.ImageControls
-     * @constructor
      */
     sewi.ImageControls.prototype.updateZoomControlValue = function(options) {
         options = options || {};
@@ -849,7 +846,9 @@ var sewi = sewi || {};
             getImageUri: getImageUri
         };
         sewi.ImageControls.prototype.privates = {
-            filtersChanged: filtersChanged
+            filtersChanged: filtersChanged,
+            zoomLevelChanged: zoomLevelChanged,
+            zoomToFit: zoomToFit
         }
     }
 })();
