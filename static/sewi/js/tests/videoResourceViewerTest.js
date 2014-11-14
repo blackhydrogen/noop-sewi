@@ -73,7 +73,7 @@
         }
     });
 
-    QUnit.test('Basic Initialization', function(assert) {
+    QUnit.test('MC1: Basic Initialization', function(assert) {
         var controls = new this.sewi.MediaControls();
 
         this.fixture.append(controls.getDOM());
@@ -85,7 +85,7 @@
         assert.ok(isIn(this.fixture, constants.DURATION_CLASS), 'Media controls adds the duration display.');
     });
 
-    QUnit.test('Initialization Without Seek Bar', function(assert) {
+    QUnit.test('MC2: Initialization Without Seek Bar', function(assert) {
         var controls = new this.sewi.MediaControls({
             isSeekBarHidden: true
         });
@@ -99,7 +99,7 @@
         assert.ok(isIn(this.fixture, constants.DURATION_CLASS), 'Duration display not affected.');
     });
 
-    QUnit.test('Initialization Without Duration Display', function(assert) {
+    QUnit.test('MC3: Initialization Without Duration Display', function(assert) {
         var controls = new this.sewi.MediaControls({
             isDurationHidden: true
         });
@@ -113,7 +113,7 @@
         assert.ok(isIn(this.fixture, constants.PROGRESS_SLIDER_CLASS), 'Progress slider not affected.');
     });
 
-    QUnit.test('Initialization With Extra Buttons', function(assert) {
+    QUnit.test('MC4: Initialization With Extra Buttons', function(assert) {
         var leftExtraButton = $(constants.TEST_EXTRA_BUTTON_DOM);
         var rightExtraButton1 = $(constants.TEST_EXTRA_BUTTON_DOM);
         var rightExtraButton2 = $(constants.TEST_EXTRA_BUTTON_DOM);
@@ -131,7 +131,7 @@
         assert.equal(numOfExtraButtons, 3, 'All 3 extra buttons were added successfully.');
     });
 
-    QUnit.asyncTest('Playing and Pausing', function(assert) {
+    QUnit.asyncTest('MC5: Playing and Pausing', function(assert) {
         QUnit.stop(1);
         var controls = new this.sewi.MediaControls();
         var controlsElement = controls.getDOM();
@@ -154,7 +154,7 @@
         playButton.click();
     });
 
-    QUnit.asyncTest('Muting and Unmuting', function(assert) {
+    QUnit.asyncTest('MC6: Muting and Unmuting', function(assert) {
         QUnit.stop(1);
 
         var controls = new this.sewi.MediaControls();
@@ -178,7 +178,7 @@
         muteButton.click();
     });
 
-    QUnit.asyncTest('Adjusting Volume', function(assert) {
+    QUnit.asyncTest('MC7: Adjusting Volume', function(assert) {
         QUnit.stop(1);
 
         var controls = new this.sewi.MediaControls();
@@ -202,7 +202,7 @@
         volumeSlider.val(constants.TEST_VALID_VOLUME).trigger('input').trigger('change');
     });
 
-    QUnit.test('Updating Time and Duration', function(assert) {
+    QUnit.test('MC9: Updating Time and Duration', function(assert) {
         var controls = new this.sewi.MediaControls();
         this.fixture.append(controls.getDOM());
 
@@ -240,7 +240,7 @@
         assert.equal(durationDisplay.text(), constants.TEST_VALID_UPDATED_DURATION_TEXT, 'Current time updates when non-negative number is provided.');
     });
 
-    QUnit.test('Updating Volume', function(assert) {
+    QUnit.test('MC10: Updating Volume', function(assert) {
         var controls = new this.sewi.MediaControls();
         this.fixture.append(controls.getDOM());
         var controlsElement = controls.getDOM();
@@ -273,7 +273,7 @@
         assert.ok(!controlsElement.hasClass(constants.MUTED_CLASS), 'Controls are unmuted when volume is updated.');
     });
 
-    QUnit.test('Updating Playback Position', function(assert) {
+    QUnit.test('MC11: Updating Playback Position', function(assert) {
         var controls = new this.sewi.MediaControls();
         this.fixture.append(controls.getDOM());
         var controlsElement = controls.getDOM();
@@ -297,7 +297,7 @@
         assert.equal(progressSlider.val(), constants.TEST_VALID_UPDATED_POSITION, 'Position updates when number between 0 and 1 is provided.');
     });
 
-    QUnit.test('Updating Playback State', function(assert) {
+    QUnit.test('MC12: Updating Playback State', function(assert) {
         var controls = new this.sewi.MediaControls();
         this.fixture.append(controls.getDOM());
         var controlsElement = controls.getDOM();
@@ -313,7 +313,7 @@
         assert.ok(!controlsElement.hasClass(constants.PLAYING_CLASS), 'Controls can emulate paused mode.');
     });
 
-    QUnit.test('Updating Displayed Buffers', function(assert) {
+    QUnit.test('MC13: Updating Displayed Buffers', function(assert) {
         var controls = new this.sewi.MediaControls();
         this.fixture.append(controls.getDOM());
         var controlsElement = controls.getDOM();
@@ -354,7 +354,7 @@
         assert.equal(numOfBuffers, 0, 'Buffers can be cleared.');
     });
 
-    QUnit.asyncTest('Displaying and Hiding Tooltips', function(assert) {
+    QUnit.asyncTest('MC14: Displaying and Hiding Tooltips', function(assert) {
         var controls = new this.sewi.MediaControls();
         var controlsElement = controls.getDOM();
         this.fixture.append(controlsElement);
@@ -549,7 +549,7 @@
         }
     });
 
-    QUnit.asyncTest('Initialization', function(assert) {
+    QUnit.asyncTest('VR1: Initialization', function(assert) {
         QUnit.stop(2);
 
         assert.throws(function() {
@@ -599,7 +599,7 @@
         }, 1000);
     });
 
-    QUnit.asyncTest('Video Playback', function(assert) {
+    QUnit.asyncTest('VR2: Video Playback', function(assert) {
         QUnit.stop(1);
         var selfRef = this;
 
@@ -633,7 +633,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Adjusting Volume', function(assert) {
+    QUnit.asyncTest('VR3: Adjusting Volume', function(assert) {
         var selfRef = this;
 
         var viewer = new window.sewi.VideoResourceViewer({
@@ -659,7 +659,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Toggling Mute', function(assert) {
+    QUnit.asyncTest('VR4: Toggling Mute', function(assert) {
         QUnit.stop(1);
         var selfRef = this;
 
@@ -695,7 +695,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Zoom Support', function(assert) {
+    QUnit.asyncTest('VR5: Zoom Support', function(assert) {
         var selfRef = this;
         window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
 
@@ -723,7 +723,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Zooming Video', function(assert) {
+    QUnit.asyncTest('VR6: Zooming Video', function(assert) {
         QUnit.stop(2);
         var selfRef = this;
         window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
@@ -775,7 +775,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Video Responding to Resizing', function(assert) {
+    QUnit.asyncTest('VR7: Video Responding to Resizing', function(assert) {
         var selfRef = this;
         window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
 
@@ -804,7 +804,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Displaying Controls Only When Mouse Moves', function(assert) {
+    QUnit.asyncTest('VR8: Displaying Controls Only When Mouse Moves', function(assert) {
         assert.expect(5);
         var selfRef = this;
         window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
@@ -846,7 +846,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Displaying and Hiding Tooltips', function(assert) {
+    QUnit.asyncTest('VR9: Displaying and Hiding Tooltips', function(assert) {
         QUnit.stop(2);
         var selfRef = this;
         window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
@@ -921,7 +921,7 @@
         viewer.load();
     });
 
-    QUnit.asyncTest('Video Seeking', function(assert) {
+    QUnit.asyncTest('VR10: Video Seeking', function(assert) {
 
         var viewer = new window.sewi.VideoResourceViewer({
             id: constants.TEST_VALID_RESOURCE_ID
