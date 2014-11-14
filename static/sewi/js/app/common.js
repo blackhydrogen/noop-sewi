@@ -333,6 +333,9 @@ var sewi = sewi || {};
         CONFIGURATOR_ALERT_RELOAD_COMPONENT_ERROR_MESSAGE: 'An error has occured! Press the button to reload!',
         CONFIGURATOR_COMPONENT_ERROR_EVENT: 'errorOccured',
 
+        //Scroll Bar Constants
+        SCROLL_BAR_CONTAINER_DOM:'<div class="slider-container"></div>',
+        SCROLL_BAR_BAR_DOM:'<div class="slider-bar"></div>',
     };
 
 })();

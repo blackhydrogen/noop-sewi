@@ -1,13 +1,19 @@
 // Created by: Le Beier
 var sewi = sewi || {};
 (function(){
+    /**
+     * This creates a scroll bar object.
+     *
+     * @constructor
+     * @class  sewi.ScrollBar
+     */
     sewi.ScrollBar = function(){
         sewi.ConfiguratorElement.call(this);
         this.position = 0;
         this.widthScale = 0;
         this.minWidthScale = 0.1;
-        this.container = $('<div class="slider-container"></div>');
-        this.bar = $('<div class="slider-bar"></div>');
+        this.container = $(sewi.constants.SCROLL_BAR_CONTAINER_DOM);
+        this.bar = $(sewi.constants.SCROLL_BAR_BAR_DOM);
         this.container.append(this.bar);
         this.bar.draggable({ axis : 'x',
                         containment : 'parent',
@@ -25,12 +31,20 @@ var sewi = sewi || {};
         this.trigger('move');
     }
 
+    /**
+     * Sets the scale of scroll bar relative to the total length.
+     * @param {float} percent This value has to be between 0.0 to 1.0.
+     */
     sewi.ScrollBar.prototype.setWidthScale = function(percent){
         this.widthScale = percent;
         var width = (percent > this.minWidthScale ? percent : this.minWidthScale) * this.container.width();
         this.bar.width(width);
     }
    
+    /**
+     * Sets the relative position of the scroll bar.
+     * @param {float} position This value has to be between 0.0 to 1.0.  
+     */
     sewi.ScrollBar.prototype.setPosition = function(position){ 
         var pos = position * (this.container.width() - this.bar.width());
         var width = this.bar.width();
@@ -42,10 +56,15 @@ var sewi = sewi || {};
         }
     }
 
+    /**
+     * Returns the relative position of the scroll bar.
+     * @return {float} The position returned is between 0.0 to 1.0
+     */
     sewi.ScrollBar.prototype.getPosition = function(){
         return this.position;
     }
 
+    // This function is inherited from the parent class
     sewi.ScrollBar.prototype.resize = function(){
         var pos = this.position * this.container.width();
         var width = this.widthScale * this.container.width();
@@ -53,7 +72,9 @@ var sewi = sewi || {};
                       width: width});
     }
 
+    // This function is inherited from the parent class
     sewi.ScrollBar.prototype.getDOM = function(){
         return this.container;
     }
+    
 })();
