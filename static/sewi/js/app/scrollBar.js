@@ -6,6 +6,7 @@ var sewi = sewi || {};
      *
      * @constructor
      * @class  sewi.ScrollBar
+     * @extends sewi.ConfiguratorElement
      */
     sewi.ScrollBar = function(){
         sewi.ConfiguratorElement.call(this);
