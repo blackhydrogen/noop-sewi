@@ -68,7 +68,7 @@
   });
 
   QUnit.asyncTest('CR2: Loading graph into the DOM', function(assert) {
-  	QUnit.expect(3);
+    QUnit.expect(3);
     var validChartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
@@ -94,7 +94,7 @@
   });
 
   QUnit.asyncTest('CR3: Selecting/Deselecting a graph-point on clicking it', function(assert) {
-  	QUnit.expect(4);
+    QUnit.expect(4);
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
@@ -139,7 +139,7 @@
       var point3 = getPointInGraph.call(chartResourceViewer, constants.TEST_SAMPLE_POINT_3);
       chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, point3);
       assert.equal(chartResourceViewer.controls.getTiming(), constants.TEST_TIME_INTERVAL_FOR_3_SELECTED_POINTS, 'Interval correct for 3 points');
-      
+
       chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, point3);
       assert.equal(chartResourceViewer.controls.getTiming(), constants.TEST_TIME_INTERVAL_FOR_2_SELECTED_POINTS, 'Interval updated on deselecting point');
 
@@ -149,7 +149,7 @@
   });
 
   QUnit.asyncTest('CR5: Updating time interval when zooming into X axis', function(assert) {
- 
+
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
@@ -162,15 +162,15 @@
       var pointWithinNewRange = getPointInGraph.call(chartResourceViewer, constants.TEST_SAMPLE_POINT_2);
       chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, pointWithinNewRange);
       var pointOutsideNewRange = getPointInGraph.call(chartResourceViewer, constants.TEST_SAMPLE_POINT_1);
-      chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, pointOutsideNewRange);      
-      assert.equal(chartResourceViewer.controls.getTiming(),constants.TEST_TIME_INTERVAL_FOR_2_SELECTED_POINTS, 'Interval correct before zooming');
-      
+      chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, pointOutsideNewRange);
+      assert.equal(chartResourceViewer.controls.getTiming(), constants.TEST_TIME_INTERVAL_FOR_2_SELECTED_POINTS, 'Interval correct before zooming');
+
       chartResourceViewer.graph.updateOptions({
-       	 dateWindow: newXRange
+        dateWindow: newXRange
       });
       chartResourceViewer.privates.chartZoomed.call(chartResourceViewer);
       assert.equal(chartResourceViewer.controls.getTiming(), '', 'Interval updated when one point moves out of the currently visible range');
-      
+
       QUnit.start();
     }, 9000);
   });
@@ -224,26 +224,26 @@
 
   });
 
-QUnit.asyncTest('CR8: Handling control panel events: Zoom out graph', function(assert) {
+  QUnit.asyncTest('CR8: Handling control panel events: Zoom out graph', function(assert) {
     QUnit.stop(1);
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
     chartResourceViewer.load();
-   
+
     setTimeout(function() {
       chartResourceViewer.controlPanelElement.trigger(constants.ZOOM_OUT_GRAPH_EVENT);
       QUnit.start();
     }, 9000);
 
     setTimeout(function() {
-     	assert.ok(!chartResourceViewer.graph.isZoomed(), 'Chart zoomed out successfully');
+      assert.ok(!chartResourceViewer.graph.isZoomed(), 'Chart zoomed out successfully');
       QUnit.start();
     }, 9500);
 
   });
 
-QUnit.asyncTest('CR9: Handling control panel events: Reset visible points', function(assert) {
+  QUnit.asyncTest('CR9: Handling control panel events: Reset visible points', function(assert) {
     QUnit.expect(2);
     QUnit.stop(1);
     var chartResourceViewer = new sewi.ChartResourceViewer({
@@ -260,30 +260,30 @@ QUnit.asyncTest('CR9: Handling control panel events: Reset visible points', func
       chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, point2_WithinRange);
 
       chartResourceViewer.graph.updateOptions({
-       	 dateWindow: newXRange
+        dateWindow: newXRange
       });
 
       pointOutOfRange = getPointInGraph.call(chartResourceViewer, constants.TEST_SAMPLE_POINT_1);
       chartResourceViewer.privates.chartPointClicked.call(chartResourceViewer, e, pointOutOfRange);
-      
+
       chartResourceViewer.controlPanelElement.trigger(constants.RESET_VISIBLE_POINTS_EVENT);
       QUnit.start();
     }, 9000);
 
     setTimeout(function() {
-     	assert.ok(!_.contains(chartResourceViewer.selectedPoints, point1_WithinRange) && !_.contains(chartResourceViewer.selectedPoints, point2_WithinRange), 'Both points within range reset');
-     	assert.ok(_.contains(chartResourceViewer.selectedPoints, pointOutOfRange), 'Point outside the range is not reset');
+      assert.ok(!_.contains(chartResourceViewer.selectedPoints, point1_WithinRange) && !_.contains(chartResourceViewer.selectedPoints, point2_WithinRange), 'Both points within range reset');
+      assert.ok(_.contains(chartResourceViewer.selectedPoints, pointOutOfRange), 'Point outside the range is not reset');
       QUnit.start();
     }, 9500);
 
   });
 
-QUnit.asyncTest('CR10: Toogle tooltips', function(assert){
+  QUnit.asyncTest('CR10: Toogle tooltips', function(assert) {
 
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
-    
+
     var chartControls = chartResourceViewer.controls;
     var controlPanelElement = chartControls.getDOM();
     this.fixture.append(controlPanelElement);
@@ -297,21 +297,21 @@ QUnit.asyncTest('CR10: Toogle tooltips', function(assert){
     timingDisplay.trigger('mouseover');
     var tooltipId = $(timingDisplay).attr('aria-describedby');
     assert.ok(isIDInDOM($('body'), tooltipId), 'Tooltip for Timing display present');
-    
+
     zoomOutButton.trigger('mouseover');
     tooltipId = $(zoomOutButton).attr('aria-describedby');
     assert.ok(isIDInDOM($('body'), tooltipId), 'Tooltip for Zoom out button present');
-    
+
     resetAllButton.trigger('mouseover');
     tooltipId = $(resetAllButton).attr('aria-describedby');
     assert.ok(isIDInDOM($('body'), tooltipId), 'Tooltip for Reset all points button present');
-    
+
     resetVisibleButton.trigger('mouseover');
     tooltipId = $(resetVisibleButton).attr('aria-describedby');
     assert.ok(isIDInDOM($('body'), tooltipId), 'Tooltip for Reset visible points button present');
 
     chartResourceViewer.hideTooltips();
-    setTimeout(function(){
+    setTimeout(function() {
       assert.ok(!$(timingDisplay).attr('aria-describedby'), 'Tooltip for Timing display hidden');
       assert.ok(!$(zoomOutButton).attr('aria-describedby'), 'Tooltip for Zoom out button hidden');
       assert.ok(!$(resetAllButton).attr('aria-describedby'), 'Tooltip for Reset all points button hidden');
@@ -321,17 +321,17 @@ QUnit.asyncTest('CR10: Toogle tooltips', function(assert){
 
   });
 
-QUnit.test('CR11: Testing value formatters in the graph', function(assert){
-	var chartResourceViewer = new sewi.ChartResourceViewer({
+  QUnit.test('CR11: Testing value formatters in the graph', function(assert) {
+    var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
 
-    var yValue= chartResourceViewer.privates.formatLegendDisplayForYAxis(constants.TEST_SAMPLE_Y_VALUE);
+    var yValue = chartResourceViewer.privates.formatLegendDisplayForYAxis(constants.TEST_SAMPLE_Y_VALUE);
     assert.equal(yValue, constants.TEST_LEGEND_Y_VALUE_FORMATTED_OUTPUT, 'Y value formatted correctly');
 
-    var xValue= chartResourceViewer.privates.formatLegendDisplayForXAxis(constants.TEST_SAMPLE_X_VALUE);
+    var xValue = chartResourceViewer.privates.formatLegendDisplayForXAxis(constants.TEST_SAMPLE_X_VALUE);
     assert.equal(xValue, constants.TEST_LEGEND_X_VALUE_FORMATTED_OUTPUT, 'X value formatted correctly');
-});
+  });
 
 })();
 

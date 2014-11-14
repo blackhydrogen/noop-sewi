@@ -138,7 +138,7 @@ var sewi = sewi || {};
     return this;
   };
 
-  sewi.ChartControls.prototype.getTiming = function(){
+  sewi.ChartControls.prototype.getTiming = function() {
     return this.timingDisplay.val();
   };
 
@@ -535,12 +535,12 @@ var sewi = sewi || {};
 
   }
 
-  
+
   /* The average time interval Interval is calculated as follows :
      1.Sort all the selected points by  their increasing x-coordinate.
      2.Sum up the difference in x values of adjacent points.
      3.Return the average difference.
-  */ 
+  */
   function calculateAverageTimeInterval() {
     var sumOfAllIntervals = 0;
     visibleHighlightedPoints = [];
@@ -552,7 +552,7 @@ var sewi = sewi || {};
       if (index != visibleHighlightedPoints.length - 1)
         sumOfAllIntervals += visibleHighlightedPoints[index + 1] - value;
     });
-    if(visibleHighlightedPoints.length ==1 )
+    if (visibleHighlightedPoints.length == 1)
       return -1;
     return sumOfAllIntervals / (visibleHighlightedPoints.length - 1);
   }
@@ -627,18 +627,18 @@ var sewi = sewi || {};
     var chartResourceEndPoint = sewi.constants.CHART_RESOURCE_URL + this.id;
 
     $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            url: chartResourceEndPoint,
-        }).done(loadSuccessful.bind(this))
-          .fail(loadFailed.bind(this));
+        dataType: 'json',
+        type: 'GET',
+        url: chartResourceEndPoint,
+      }).done(loadSuccessful.bind(this))
+      .fail(loadFailed.bind(this));
   };
 
   /**
    * Resizes the graph if the Chart container has been resized
    */
   sewi.ChartResourceViewer.prototype.resize = function() {
-    if(this.graph)
+    if (this.graph)
       this.graph.resize();
   };
 
@@ -651,12 +651,12 @@ var sewi = sewi || {};
   };
 
   if (sewi.testMode) {
-      sewi.ChartResourceViewer.prototype.privates = {
-          chartZoomed: chartZoomed,
-          chartPointClicked: chartPointClicked,
-          canvasPointClicked: canvasPointClicked,
-          formatLegendDisplayForYAxis: formatLegendDisplayForYAxis,
-          formatLegendDisplayForXAxis: formatLegendDisplayForXAxis,
-      };
+    sewi.ChartResourceViewer.prototype.privates = {
+      chartZoomed: chartZoomed,
+      chartPointClicked: chartPointClicked,
+      canvasPointClicked: canvasPointClicked,
+      formatLegendDisplayForYAxis: formatLegendDisplayForYAxis,
+      formatLegendDisplayForXAxis: formatLegendDisplayForXAxis,
+    };
   }
 })();
