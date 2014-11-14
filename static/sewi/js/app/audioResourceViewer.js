@@ -3,7 +3,7 @@ var sewi = sewi || {};
 
 // Audio Resource Viewer Class
 (function(){
-    
+
     /**
      * This initialized a audio media resource viewer which loads the audio file from the server.
      * After the initial load, it will perform to draw the wave amplitude graph for visualization.
@@ -11,23 +11,23 @@ var sewi = sewi || {};
      * @class  sewi.AudioResourceViewer
      * @constructor
      * @extends sewi.ResourceViewer
-     * 
+     *
      * @param {Object} options The configuratin option for audio resource viewer
-     * @param {String} options.id The observation id associated with the resource. 
-     *                              Note: please do not use the encounter id.            
+     * @param {String} options.id The observation id associated with the resource.
+     *                              Note: please do not use the encounter id.
      */
     sewi.AudioResourceViewer = function(options){
         if(!(this instanceof sewi.AudioResourceViewer)){
             return new sewi.AudioResourceViewer();
         }
         sewi.ResourceViewer.call(this);
-        
+
         var defaults = {};
-       
+
         this.options = options || {};
         _.defaults(options, defaults);
         _.assign(this, _.pick(options, ['id']));
-        
+
         setupVariables.call(this);
     };
 
@@ -35,12 +35,12 @@ var sewi = sewi || {};
 
     // This overrides the load function of Resource Viewer
     sewi.AudioResourceViewer.prototype.load = function(){
-             
+
         loadAudioURL.call(this);
     };
 
     function setupVariables(){
-    
+
         this.offset = 0;
         this.gainValue = 0;
         this.beginTime = 0;
@@ -59,20 +59,20 @@ var sewi = sewi || {};
         this.offsetValueChanged = false;
         this.url = "";
         this.loadSuccess = false;
-        
+
         this.scriptProcessorBufferSize = 512;
         this.scriptProcessorInputChannels = 1;
         this.scriptProcessorOutputChannels = 1;
 
         this.scrollBar = null;
-        
+
         this.buffersReady = 0;
-        
+
         //Control Buttons
         this.zoomToFitBtn = $(sewi.constants.AUDIO_RESOURCE_ZOOM_TO_FIT_BUTTON);
         this.zoomToSelectionBtn = $(sewi.constants.AUDIO_RESOURCE_ZOOM_TO_SELECTION_BUTTON);
         this.clearSelectionBtn = $(sewi.constants.AUDIO_RESOURCE_CLEAR_SELECTION_BUTTON);
-        
+
         //Web audio API objects
         this.audioContext = null;
         this.scriptProcessor = null;
@@ -81,7 +81,7 @@ var sewi = sewi || {};
         //XHR Object for ajax call
         this.request = null;
     }
-    
+
     function loadAudioURL(){
         var audioResourceEndPoint = sewi.constants.AUDIO_RESOURCE_URL + this.id;
 
@@ -96,6 +96,9 @@ var sewi = sewi || {};
 
     function failToRetrieveAudio(){
         this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
+
+        //This event is used for Unit Testing
+        this.trigger('loadFailed');
     }
 
     function retrieveAudio(data){
@@ -103,24 +106,26 @@ var sewi = sewi || {};
         this.url = data.url;
         init.call(this);
         initControls.call(this);
+
+        // This event is fired for Unit Testing
         this.trigger("loaded");
     }
 
     function init(){
         this.mainDOMElement.addClass(sewi.constants.AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS);
-        
-        var contextClass = (window.AudioContext || 
-                            window.webkitAudioContext || 
-                            window.mozAudioContext || 
-                            window.oAudioContext || 
+
+        var contextClass = (window.AudioContext ||
+                            window.webkitAudioContext ||
+                            window.mozAudioContext ||
+                            window.oAudioContext ||
                             window.msAudioContext);
-  
+
         if(contextClass){
             this.audioContext =new contextClass();
             this.showProgressBar(sewi.constants.AUDIO_RESOURCE_MSG_FETCHING_AUDIO_CLIP);
             this.contentDOM = $(sewi.constants.AUDIO_RESOURCE_CONTENT_DOM);
             this.mainDOMElement.append(this.contentDOM);
-            
+
             this.scriptProcessor = this.audioContext.createScriptProcessor(this.scriptProcessorBufferSize,
                                                                             this.scriptProcessorInputChannels,
                                                                             this.scriptProcessorOutputChannels);
@@ -148,15 +153,15 @@ var sewi = sewi || {};
         }
 
     }
-    
+
     function onReadyStateChange(event){
-        event.preventDefault();        
+        event.preventDefault();
         if(this.request.readyState > 2 && this.request.status == 200){
         }
     }
 
     function onProgress(event){
-        event.preventDefault();        
+        event.preventDefault();
         if(event.lengthComputable){
             var percent = (event.loaded/event.total) * 100;
             this.updateProgressBar(percent);
@@ -167,7 +172,7 @@ var sewi = sewi || {};
         event.preventDefault();
         var audioData = this.request.response;
         this.updateProgressBar(50, sewi.constants.AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
-        this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this)); 
+        this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this));
     }
 
     function onAbort(event){
@@ -175,27 +180,27 @@ var sewi = sewi || {};
         this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FILE_REQUEST_OPERATION_ABORTED);
     }
 
-    function onError(event){ 
+    function onError(event){
         event.preventDefault();
         this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAIL_TO_RETRIEVE_FILE);
     }
 
     /**
-     * This function extracts the data buffer from the audio buffer object 
+     * This function extracts the data buffer from the audio buffer object
      * and create the graph objects which is used to render the amplitude wave graph.
-     * param  {AudioBuffer} buffer The audio buffer object from the audio context which contains information about the audio file. 
+     * param  {AudioBuffer} buffer The audio buffer object from the audio context which contains information about the audio file.
      */
     function onAudioDecodeFinish(buffer){
         this.audioBuffer = buffer;
-        var sampleRate = buffer.sampleRate; 
-        var duration = buffer.duration; 
+        var sampleRate = buffer.sampleRate;
+        var duration = buffer.duration;
         var numChannels = buffer.numberOfChannels;
 
         this.duration = duration;
         this.startTime = 0;
         this.endTime = duration;
         this.controls.update({duration : duration, currentTime : this.offset});
-        
+
         for(var i=0; i < numChannels; i++){
             var audioSequence = new sewi.AudioSequence(sampleRate, this);
             this.on(sewi.constants.AUDIO_RESOURCE_EVENT_BUFFER_COPIED, onAudioBufferCopied.bind(this, numChannels));
@@ -208,7 +213,7 @@ var sewi = sewi || {};
         event.preventDefault();
         this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAILED_TO_DECODE_AUDIO_FILE);
     }
-    
+
     function onAudioBufferCopied(numChannels, event){
         this.buffersReady++;
         if(this.buffersReady === numChannels){
@@ -227,14 +232,20 @@ var sewi = sewi || {};
             this.contentDOM.append(this.scrollBar.getDOM());
             this.scrollBar.setWidthScale(1);
             this.scrollBar.on('move', scrollBarMove.bind(this));
+
+            //This event is only fired for Unit Test
+            this.trigger("bufferReady");
         }
     }
 
     function createAmplitudeWaveGraph(channelName, audioSequence){
-        var graphDOM = $('<div class="wave-graph '+channelName+'" id="'+this.id+'" title="'+channelName+'"></div>');
+        var graphDOM = $(sewi.constants.AUDIO_RESOURCE_GRAPH_DOM);
+        graphDOM.addClass(channelName);
+        graphDOM.attr({'id' : this.id,
+                    'title' : channelName});
         this.contentDOM.append(graphDOM);
         this.hideProgressBar();
-        var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence, this); 
+        var graph =  new sewi.AudioAmplitudeGraph(graphDOM, audioSequence, this);
 
         return graph;
     }
@@ -242,51 +253,51 @@ var sewi = sewi || {};
     function updateGraphPlaybackPosition(positionInSec){
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++) {
             var graph = this.audioAmplitudeGraphs[i];
-            
+
             graph.playbackPos = positionInSec;
-            
+
             if(graph.playbackPos > graph.viewPos + graph.viewResolution){
                 graph.viewPos = graph.playbackPos;
-                
+
                 if(graph.viewPos + graph.viewResolution > this.duration){
                     graph.viewPos = this.duration - graph.viewResolution;
                 }
-                
+
                 graph.updateGraph();
             }
-            
+
             graph.draw();
         }
     }
 
     function createMediaButtons(){
         var buttons = [];
-        
+
         this.zoomToFitBtn.on('click', zoomToFitBtnClickEvent.bind(this));
         this.zoomToSelectionBtn.on('click', zoomToSelectionBtnClickEvent.bind(this));
         this.clearSelectionBtn.on('click', clearSelectionBtnClickEvent.bind(this));
-        
+
         buttons.push(this.zoomToFitBtn);
         buttons.push(this.zoomToSelectionBtn);
         buttons.push(this.clearSelectionBtn);
-        
+
         return buttons;
     }
 
-    
+
     function createToolTips(){
-       this.zoomToFitBtn.tooltip({  title : AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP,
+       this.zoomToFitBtn.tooltip({  title : sewi.constants.AUDIO_RESOURCE_ZOOM_TO_FIT_TOOLTIP,
                                     container: 'body'});
-       this.zoomToSelectionBtn.tooltip({title : AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP,
+       this.zoomToSelectionBtn.tooltip({title : sewi.constants.AUDIO_RESOURCE_ZOOM_TO_SELECTION_TOOLTIP,
                                         container: 'body'});
-       this.clearSelectionBtn.tooltip({ title : AUDIO_RESOURCE_CLEAR_SELECTION_TOOLTIP,
+       this.clearSelectionBtn.tooltip({ title : sewi.constants.AUDIO_RESOURCE_CLEAR_SELECTION_TOOLTIP,
                                         container: 'body'});
-    }               
+    }
 
     function destroyToolTips(){
        this.zoomToFitBtn.tooltip('destroy');
        this.zoomToSelectionBtn.tooltip('destroy');
-       this.clearSelectionBtn.tooltip('destroy'); 
+       this.clearSelectionBtn.tooltip('destroy');
     }
 
     function zoomToFitBtnClickEvent(event){
@@ -295,10 +306,10 @@ var sewi = sewi || {};
             this.audioAmplitudeGraphs[i].zoomToFit();
             this.audioAmplitudeGraphs[i].updateGraph();
         }
-        
+
         this.startTime = 0;
         this.endTime = this.duration;
-        
+
         this.scrollBar.setWidthScale(1);
         this.scrollBar.setPosition(0);
     }
@@ -307,12 +318,12 @@ var sewi = sewi || {};
         event.preventDefault();
         if(this.audioAmplitudeGraphs[0]){
             if(this.audioAmplitudeGraphs[0].hasSelectedRegion()){
-                
+
                 for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
                     this.audioAmplitudeGraphs[i].zoomToSelection();
                     this.audioAmplitudeGraphs[i].updateGraph();
                 }
-                
+
                 var playbackPos = this.audioAmplitudeGraphs[0].viewPos / (this.duration - this.audioAmplitudeGraphs[0].viewResolution);
                 var widthScale = this.audioAmplitudeGraphs[0].viewResolution / this.duration;
 
@@ -327,7 +338,7 @@ var sewi = sewi || {};
         for(var i=0; i < this.audioAmplitudeGraphs.length; i++){
             this.audioAmplitudeGraphs[i].clearSelection();
             this.audioAmplitudeGraphs[i].updateGraph();
-        } 
+        }
         this.startTime = 0;
         this.endTime = this.duration;
     }
@@ -345,20 +356,20 @@ var sewi = sewi || {};
         if(this.audioContext){
             this.addDownloadButton(this.url);
             var buttons = createMediaButtons.call(this);
-            this.controls = new sewi.MediaControls({ isSeekBarHidden : true, 
+            this.controls = new sewi.MediaControls({ isSeekBarHidden : true,
                                                     extraButtons : { left : buttons } });
-            
+
             this.controls.on(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT, this.playAudio.bind(this));
             this.controls.on(sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT, this.pauseAudio.bind(this));
             this.controls.on(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volumeSliderChanged.bind(this));
             this.controls.on(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT, volumeUnmuted.bind(this));
             this.controls.on(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT, volumeMuted.bind(this));
-            
+
             this.mainDOMElement.append(this.controls.getDOM());
         }
     }
 
-    function updateMediaControl(event){ 
+    function updateMediaControl(event){
         event.preventDefault();
         if(this.source && this.isPlaying){
             if(!this.offsetValueChanged){
@@ -366,8 +377,8 @@ var sewi = sewi || {};
                 var currentTime = ((Date.now() - this.beginTime) / 1000 + this.offset);
                 var percent = (currentTime / duration) * 100;
                 var length = this.duration - this.audioAmplitudeGraphs[0].viewResolution;
-                
-                this.controls.update({position : percent, 
+
+                this.controls.update({position : percent,
                                     currentTime : currentTime });
                 this.drawTimer += (currentTime - this.lastUpdated);
 
@@ -377,7 +388,7 @@ var sewi = sewi || {};
                     this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / length);
                     this.drawTimer = 0;
                 }
-                
+
                 this.lastUpdated = currentTime;
 
                 if(this.endTime - currentTime < 0.01){
@@ -389,7 +400,7 @@ var sewi = sewi || {};
                     this.drawTimer = 0;
                     updateGraphPlaybackPosition.call(this, this.offset);
                     this.scrollBar.setPosition(this.audioAmplitudeGraphs[0].viewPos / length);
-                } 
+                }
 
             } else {
                 this.pauseAudio();
@@ -399,7 +410,7 @@ var sewi = sewi || {};
             }
         }
     }
-    
+
     function volumeSliderChanged(event, volume){
         event.preventDefault();
         this.gainNode.gain.value = volume;
@@ -456,7 +467,7 @@ var sewi = sewi || {};
      */
     sewi.AudioResourceViewer.prototype.playAudio = function(){
         if(this.audioBuffer){
-            this.source = this.audioContext.createBufferSource();   
+            this.source = this.audioContext.createBufferSource();
             this.source.buffer = this.audioBuffer;
             this.source.connect(this.gainNode);
             this.source.connect(this.scriptProcessor);
@@ -464,7 +475,7 @@ var sewi = sewi || {};
             this.source.start(0, this.offset);
             this.isPlaying = true;
             this.controls.update({playing: this.isPlaying});
-            updateGraphPlaybackPosition.call(this, this.offset);        
+            updateGraphPlaybackPosition.call(this, this.offset);
         }
     };
 
@@ -472,13 +483,18 @@ var sewi = sewi || {};
      * This function pauses/stops the audio.
      */
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
+        console.log("pauseAudio");
         if(this.source){
+            console.log("Audio Paused");
             this.offset += (Date.now() - this.beginTime) / 1000;
             this.source.stop(0);
             this.source.disconnect(this.gainNode);
             this.source.disconnect(this.scriptProcessor);
             this.isPlaying = false;
             this.controls.update({playing: this.isPlaying});
+
+            //This event is used for Unit Test
+            this.trigger("audioPaused");
         }
     };
 
@@ -488,7 +504,7 @@ var sewi = sewi || {};
             this.audioAmplitudeGraphs[i].updateCanvasDimensions();
             this.audioAmplitudeGraphs[i].updateGraph();
         }
-    
+
         if(this.scrollBar){
             this.scrollBar.resize();
         }
@@ -515,10 +531,10 @@ var sewi = sewi || {};
      *
      * @class  sewi.AudioAmplitudeGraph
      * @constructor
-     * 
+     *
      * @param {jQuery} graphDOM This holds a reference to the jQuery object which is appended to the page.
-     * @param {[type]} audioSequence This holds a reference to the audio sequence object which holds the audio data buffer and sample rate
-     * @param {[type]} resourceViewer The audio resource viewer that this graph is associated with.
+     * @param {sewi.AudioSequence} audioSequence This holds a reference to the audio sequence object which holds the audio data buffer and sample rate
+     * @param {sewi.AudioResourceViewer} resourceViewer The audio resource viewer that this graph is associated with.
      */
     sewi.AudioAmplitudeGraph = function(graphDOM, audioSequence, resourceViewer){
         this.resourceViewer = resourceViewer;
@@ -540,13 +556,13 @@ var sewi = sewi || {};
         this.canvasWidth = this.graphDOM.width();
     }
 
-    function setupMouseVariables(){        
+    function setupMouseVariables(){
         // is the mouse inside of the editor (for background coloring)
         this.mouseInside = false;
-        
+
         // state of the mouse button
         this.mouseDown = false;
-        
+
         // is the mouse clicked inside of the selection
         this.mouseInsideOfSelection = false;
 
@@ -571,7 +587,7 @@ var sewi = sewi || {};
         // colors when the mouse is outside of the editor box
         this.colorInactiveTop = sewi.constants.AUDIO_RESOURCE_COLOR_INACTIVE_TOP;
         this.colorInactiveBottom = sewi.constants.AUDIO_RESOURCE_COLOR_INACTIVE_BOTTOM;
-        
+
         // colors when the mouse is inside of the editor box
         this.colorActiveTop = sewi.constants.AUDIO_RESOURCE_COLOR_ACTIVE_TOP;
         this.colorActiveBottom = sewi.constants.AUDIO_RESOURCE_COLOR_ACTIVE_BOTTOM;
@@ -579,7 +595,7 @@ var sewi = sewi || {};
         // color when the mouse is pressed during inside of the editor box
         this.colorMouseDownTop = sewi.constants.AUDIO_RESOURCE_COLOR_MOUSE_DOWN_TOP;
         this.colorMouseDownBottom = sewi.constants.AUDIO_RESOURCE_COLOR_MOUSE_DOWN_BOTTOM;
-        
+
         // color of the selection frame
         this.colorSelectionStroke = sewi.constants.AUDIO_RESOURCE_COLOR_SELECTION_STROKE;
         this.colorSelectionFill = sewi.constants.AUDIO_RESOURCE_COLOR_SELECTION_FILL;
@@ -588,26 +604,26 @@ var sewi = sewi || {};
     function setupMiscVariables(){
         this.plotTechnique = 0;
         this.canvasDOM = null;
-        
-        // temporary optimized visualization data    
+
+        // temporary optimized visualization data
         this.visualizationData = [];
-        
+
         // handle focus for copy, paste & cut
-        this.hasFocus = true;    
-        
+        this.hasFocus = true;
+
         // a list of editors which are linked to this one
         this.linkedGraph = null;
-        
+
         // zoom
         this.viewResolution = 10; // default 10 seconds
         this.viewPos = 0; // at 0 seconds
-        
+
         // playback
         this.playbackPos = 0;
 
         this.regionMoved = false;
     }
-    
+
     function createCanvas(){
         this.canvasDOM = $('<canvas></canvas>');
         this.canvasDOM.attr({
@@ -640,7 +656,7 @@ var sewi = sewi || {};
         event.preventDefault();
         var allowance = this.allowance;
         this.mouseDown = true;
-        
+
         var selectionStartPixel = getAbsoluteToPixel.call(this, this.selectionStart);
         var selectionEndPixel = getAbsoluteToPixel.call(this, this.selectionEnd);
 
@@ -661,7 +677,7 @@ var sewi = sewi || {};
             this.selectionStart = getPixelToAbsolute.call(this, this.mouseX);
             this.selectionEnd = this.selectionStart;
         }
-        
+
         this.draw.call(this);
         updateLinkedGraph.call(this);
     }
@@ -678,7 +694,7 @@ var sewi = sewi || {};
         var allowance = this.allowance;
         var selectionStartPixel = getAbsoluteToPixel.call(this, this.selectionStart);
         var selectionEndPixel = getAbsoluteToPixel.call(this, this.selectionEnd);
-        
+
         if (this.mouseDown){
             // if the mouse is inside of a selection, then move the whole selection
             if (this.mouseInsideOfSelection){
@@ -687,6 +703,20 @@ var sewi = sewi || {};
                 // move the selection with the delta
                 this.selectionStart += absDelta;
                 this.selectionEnd += absDelta;
+                var width = this.selectionEnd - this.selectionStart
+                var dataLen = this.audioSequence.channelData.length;
+
+                // This prevents the region from going out of bound
+                if(this.selectionStart < 0){
+                    this.selectionStart = 0;
+                    this.selectionEnd = this.selectionStart + width;
+                    absDelta = 0;
+                } else if(this.selectionEnd > dataLen) {
+                    this.selectionEnd = dataLen;
+                    this.selectionStart = this.selectionEnd - width;
+                    absDelta = 0;
+                }
+
                 if(absDelta != 0){
                     this.regionMoved = true;
                     updateResourceViewer.call(this);
@@ -702,11 +732,11 @@ var sewi = sewi || {};
                 this.selectionEnd = getPixelToAbsolute.call(this, this.mouseX);
                 updateResourceViewer.call(this);
             }
-        } 
-        
+        }
+
         if (this.mouseX > selectionStartPixel + allowance && this.mouseX <= selectionEndPixel - allowance){
             this.canvasDOM.css({'cursor' : '-webkit-grab'});
-        } else if ((this.mouseX > selectionStartPixel - allowance && this.mouseX < selectionStartPixel + allowance) || 
+        } else if ((this.mouseX > selectionStartPixel - allowance && this.mouseX < selectionStartPixel + allowance) ||
                     (this.mouseX < selectionEndPixel + allowance && this.mouseX > selectionEndPixel - allowance)){
             this.canvasDOM.css({'cursor' : 'ew-resize'});
         } else {
@@ -721,19 +751,18 @@ var sewi = sewi || {};
         var resourceViewer = this.resourceViewer;
         var start = this.selectionStart > this.selectionEnd ? this.selectionEnd : this.selectionStart;
         var end = this.selectionStart > this.selectionEnd ? this.selectionStart : this.selectionEnd;
-        
+
         if(this.regionMoved){
             resourceViewer.pauseAudio();
         }
 
-        if(start !== end){ 
+        if(start !== end){
             resourceViewer.startTime = start / this.audioSequence.sampleRate;
-            resourceViewer.endTime = end / this.audioSequence.sampleRate; 
+            resourceViewer.endTime = end / this.audioSequence.sampleRate;
             resourceViewer.offset = resourceViewer.startTime;
             resourceViewer.lastUpdated = resourceViewer.startTime;
             resourceViewer.drawTimer = 0;
-            resourceViewer.controls.update({currentTime : resourceViewer.offset, 
-                                            position : resourceViewer.offset / this.audioSequence.duration});
+            resourceViewer.controls.update({currentTime : resourceViewer.offset});
         }
 
     }
@@ -747,10 +776,10 @@ var sewi = sewi || {};
             this.selectionEnd = temp;
         }
 
-        if(this.mouseInsideOfSelection && !this.regionMoved){ 
+        if(this.mouseInsideOfSelection && !this.regionMoved){
             this.resourceViewer.offsetChanged(getPixelToAbsolute.call(this, this.mouseX) / this.audioSequence.sampleRate);
         }
-        else {    
+        else {
             this.resourceViewer.offsetChanged(this.selectionStart / this.audioSequence.sampleRate);
         }
 
@@ -760,7 +789,7 @@ var sewi = sewi || {};
         this.mouseSelectionOfEnd = false;
         this.mouseDown = false;
         this.regionMoved = false;
-       
+
         updateLinkedGraph.call(this);
     }
 
@@ -781,7 +810,7 @@ var sewi = sewi || {};
         this.mouseInside = false;
 
         this.draw.call(this);
-        updateLinkedGraph.call(this);    
+        updateLinkedGraph.call(this);
     }
 
     function canvasDoubleClickEvent(event){
@@ -791,7 +820,7 @@ var sewi = sewi || {};
         this.mouseSelectionOfStart = false;
         this.mouseSelectionOfEnd = false;
         this.mouseDown = false;
-        
+
         updateLinkedGraph.call(this);
     }
 
@@ -802,9 +831,9 @@ var sewi = sewi || {};
     function drawBackground(canvasContext){
         var colorStop1;
         var colorStop2;
-        
-        var gradient = canvasContext.createLinearGradient(0, 0, 0, this.canvasDOM.height());        
-        
+
+        var gradient = canvasContext.createLinearGradient(0, 0, 0, this.canvasDOM.height());
+
         if(this.mouseInside){
             if(this.mouseDown){
                 colorStop1 = this.colorMouseDownTop;
@@ -824,14 +853,14 @@ var sewi = sewi || {};
         canvasContext.fillStyle = gradient;
         canvasContext.fillRect(0, 0, this.canvasDOM.width(), this.canvasDOM.height());
     }
-   
+
     function drawWaveForm(canvasContext){
         var i = 0;
         var center = this.canvasDOM.height() / 2;
         var verticalMultiplier = 1.0;
         var canvasWidth = this.canvasDOM.width();
-        //canvasContext.setLineWidth(1);
-        canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_WAVE_STROKE_COLOR;                
+
+        canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_WAVE_STROKE_COLOR;
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
 
@@ -849,7 +878,7 @@ var sewi = sewi || {};
             var len = this.visualizationData.length;
             for(i = 0; i < len; ++i){
                 var x = this.visualizationData[i].x;
-                var y = center + this.visualizationData[i].y * verticalMultiplier * - center;                   
+                var y = center + this.visualizationData[i].y * verticalMultiplier * - center;
 
                 canvasContext.lineTo(x, y);
 
@@ -867,23 +896,22 @@ var sewi = sewi || {};
             }
         }
 
-        canvasContext.stroke(); 
+        canvasContext.stroke();
 
         // Draw the horizontal line at the center
-        //canvasContext.setLineWidth(1.0);
-        canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_HORIZONTAL_LINE_STROKE_COLOR;                
+        canvasContext.strokeStyle = sewi.constants.AUDIO_RESOURCE_HORIZONTAL_LINE_STROKE_COLOR;
         canvasContext.beginPath();
         canvasContext.moveTo(0, center);
         canvasContext.lineTo(this.canvasDOM.width(), center);
-        canvasContext.stroke(); 
+        canvasContext.stroke();
     }
 
     function drawSelector(canvasContext){
         var selectionStartPixel = getAbsoluteToPixel.call(this, this.selectionStart);
         var selectionEndPixel = getAbsoluteToPixel.call(this, this.selectionEnd);
-        
+
         if (this.selectionStart !== this.selectionEnd){
-            //Check if the selection is made from front to back or back to front. 
+            //Check if the selection is made from front to back or back to front.
             var start = (selectionStartPixel < selectionEndPixel) ? selectionStartPixel : selectionEndPixel;
             var width = (selectionStartPixel < selectionEndPixel) ? selectionEndPixel - selectionStartPixel : selectionStartPixel - selectionEndPixel;
 
@@ -894,11 +922,11 @@ var sewi = sewi || {};
             canvasContext.strokeRect(start, 0, width, this.canvasHeight);
 
         } else if(this.playbackPos === this.selectionStart){
-                canvasContext.strokeStyle = this.colorSelectionStroke;               
+                canvasContext.strokeStyle = this.colorSelectionStroke;
                 canvasContext.beginPath();
                 canvasContext.moveTo(selectionStartPixel, 0);
                 canvasContext.lineTo(selectionStartPixel, this.canvasHeight);
-                canvasContext.stroke(); 
+                canvasContext.stroke();
         }
 
     }
@@ -925,19 +953,19 @@ var sewi = sewi || {};
         canvasContext.fillStyle = style;
         canvasContext.fillText(text,x, y);
     }
-    
+
     function getDataInResolution(){
         var i = 0;
         //Reset the data
         this.visualizationData = [];
-        
+
         var offset = this.viewPos;
         var resolution = this.viewResolution;
 
         var sampleRate = this.audioSequence.sampleRate;
         var channelData = this.audioSequence.channelData;
         var offsetR = sampleRate * offset;
-    
+
         // get the offset and length in samples
         var from = Math.round(offset * sampleRate);
         var len = Math.round(resolution * sampleRate);
@@ -948,17 +976,17 @@ var sewi = sewi || {};
         // when the region width is larger than canvas width, apply data aggregation technique
         if (len > canvasWidth){
             var dataPerPixel = len / canvasWidth;
-            
+
             for (i = 0; i < canvasWidth; ++i){
                 var dataFrom = i * dataPerPixel + offsetR;
-                var dataTo = (i + 1) * dataPerPixel + offsetR + 1; 
+                var dataTo = (i + 1) * dataPerPixel + offsetR + 1;
 
                 if (dataFrom >= 0 && dataFrom < channelData.length &&
                         dataTo >= 0 && dataTo < channelData.length){
                     var peakAtFrame = getPeakInFrame.call(this, dataFrom, dataTo, channelData);
                     this.visualizationData.push(peakAtFrame);
                 } else {
-                    this.visualizationData.push({   min : 0.0, 
+                    this.visualizationData.push({   min : 0.0,
                                                     max : 0.0});
                 }
             }
@@ -970,10 +998,10 @@ var sewi = sewi || {};
             for (i = from; i <= from + len; ++i){
                 // if outside of the data range
                 if (i < 0 || i >= channelData.length){
-                    this.visualizationData.push({   y : 0.0, 
+                    this.visualizationData.push({   y : 0.0,
                                                     x : x });
                 } else {
-                    this.visualizationData.push({   y : channelData[i], 
+                    this.visualizationData.push({   y : channelData[i],
                                                     x : x});
                 }
                 x += pixelPerData;
@@ -996,12 +1024,12 @@ var sewi = sewi || {};
         }
         return { min : min, max : max };
     }
-    
+
     function getAbsoluteToPixel(absoluteValue){
         var totalSamplesInResolution = this.viewResolution * this.audioSequence.sampleRate;
         var totalSamplesOffset = this.viewPos * this.audioSequence.sampleRate;
 
-        return (absoluteValue - totalSamplesOffset) / totalSamplesInResolution * this.canvasDOM.width(); 
+        return (absoluteValue - totalSamplesOffset) / totalSamplesInResolution * this.canvasDOM.width();
     }
 
     function getPixelToAbsolute(pixelValue){
@@ -1020,10 +1048,10 @@ var sewi = sewi || {};
             linkedGraph.viewPos = this.viewPos;
             linkedGraph.viewResolution = this.viewResolution;
         }
-        
+
         linkedGraph.updateGraph();
     }
-    
+
     /**
      * This function resets the zoom level, making it zoom to fit the whole canvas.
      */
@@ -1053,7 +1081,7 @@ var sewi = sewi || {};
      */
     sewi.AudioAmplitudeGraph.prototype.draw = function(){
         var canvasContext = this.canvasDOM[0].getContext('2d');
-        
+
         // Clear the canvas
         clearCanvas.call(this, canvasContext);
         // Draw background
@@ -1082,27 +1110,27 @@ var sewi = sewi || {};
     };
 
     /**
-     * This function updates data points on the graph. 
+     * This function updates data points on the graph.
      * After the update, It will redraw the graph.
      */
     sewi.AudioAmplitudeGraph.prototype.updateGraph = function(){
-        getDataInResolution.call(this);                       
+        getDataInResolution.call(this);
         this.draw.call(this);
     };
 
     /**
-     * This function creates a link between 2 graphs. 
+     * This function creates a link between 2 graphs.
      * Usually linking the left and right channel graphs.
-     * @param  {AudioAmplitudeGraph} otherGraph The graph to be linked. 
+     * @param  {AudioAmplitudeGraph} otherGraph The graph to be linked.
      */
-    sewi.AudioAmplitudeGraph.prototype.link = function(otherGraph){ 
+    sewi.AudioAmplitudeGraph.prototype.link = function(otherGraph){
         this.linkedGraph = otherGraph;
         otherGraph.linkedGraph = this;
     };
 
     /**
      * This function checks if there is a selected region on the graph
-     * @return {Boolean} If a region is selected, return true. 
+     * @return {Boolean} If a region is selected, return true.
      *                   Otherwise return false.
      */
     sewi.AudioAmplitudeGraph.prototype.hasSelectedRegion = function(){
@@ -1127,27 +1155,27 @@ var sewi = sewi || {};
         this.audioResourceViewer = audioResourceViewer;
         // this.channelData = Array.prototype.slice.call(channelData);
     };
-   
+
     sewi.AudioSequence.prototype.startCopyingBuffer = function(channelData){
         window.requestAnimationFrame(copyBuffer.bind(this, 0, channelData, 0));
         this.audioResourceViewer.updateProgressBar(0);
     };
 
-    // Make a copy of the channel data. 
+    // Make a copy of the channel data.
     // This array is used for the drawing of the graph which is usef for visualization.
     // This is extremely important as the original data will be replaced once the audio starts to play, therefore a shallow copy will not work.
     function copyBuffer(index, channelData, steps){
         var len = channelData.length;
         var blockSize = 10000;
         var end = index+blockSize;
-    
+
         for(var i = index; i < len && i < end; i++){
             this.channelData.push(channelData[i]);
         }
-        
+
         var percent = 50 + (i/len) * 50;
         this.audioResourceViewer.updateProgressBar(percent);
-        
+
         if(i < len){
             window.requestAnimationFrame(copyBuffer.bind(this, i, channelData));
         } else {

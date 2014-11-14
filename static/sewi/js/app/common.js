@@ -120,7 +120,6 @@ var sewi = sewi || {};
                                                 RIGHT_TOP: 'panel-indicator-right-top',
                                                 LEFT_BOTTOM: 'panel-indicator-left-bottom',
                                                 RIGHT_BOTTOM: 'panel-indicator-right-bottom'},
-        TAB_NO_TAB_EVENT: 'noTab',
         TAB_REMOVE_BUTTON_DOM: '<span class="glyphicon glyphicon-remove"></span>',
         TAB_PANEL_STR: 'PANEL',
         TAB_PANEL_DOM: '<div class="animated panel"></div>',
@@ -137,6 +136,13 @@ var sewi = sewi || {};
         TAB_PANEL_DROP_AREA_LEFT_DOM: '<div class="panel-drop-area panel-drop-area-left"></div>',
         TAB_PANEL_DROP_AREA_TOP_DOM: '<div class="panel-drop-area panel-drop-area-top"></div>',
         TAB_PANEL_DROP_AREA_BOTTOM_DOM: '<div class="panel-drop-area panel-drop-area-bottom"></div>',
+        
+        /**
+         * Fires when there is no more opened tab
+         * @event noTab
+         * @memberOf sewi.Tab
+         */
+        TAB_NO_TAB_EVENT: 'noTab',
 
         //Error Screen Constants
         ERROR_SCREEN_CLASS: 'error-screen',
@@ -270,8 +276,15 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_TEXT_SHADOW_COLOR: 'rgba(0,0,0,0.25)',
         AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS: 'audio-resource-viewer',
         AUDIO_RESOURCE_CONTENT_DOM:'<div class="audio-content"></div>',
-        AUDIO_RESOURCE_EVENT_BUFFER_COPIED: 'bufferCopied',
         AUDIO_RESOURCE_CHANNEL_CSS_CLASS: {LEFT: 'left-channel', RIGHT: 'right-channel'},
+        AUDIO_RESOURCE_GRAPH_DOM : '<div class="wave-graph" id="" title=""></div>',
+        
+        /**
+         * Fires when the channel buffer has been copied.
+         * @event bufferCopied
+         * @memberOf sewi.AudioResourceViewer
+         */
+        AUDIO_RESOURCE_EVENT_BUFFER_COPIED: 'bufferCopied',
 
         //Chart Resource Constants
         CHART_RESOURCE_LEGEND_CONTAINER_DOM: '<div class="legend-container"> </div>',
