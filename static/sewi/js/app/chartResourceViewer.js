@@ -655,6 +655,8 @@ var sewi = sewi || {};
           chartZoomed: chartZoomed,
           chartPointClicked: chartPointClicked,
           canvasPointClicked: canvasPointClicked,
+          formatLegendDisplayForYAxis: formatLegendDisplayForYAxis,
+          formatLegendDisplayForXAxis: formatLegendDisplayForXAxis,
       };
   }
 })();

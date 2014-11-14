@@ -8,6 +8,10 @@
     TEST_SAMPLE_POINT_1: 800,
     TEST_SAMPLE_POINT_2: 1000,
     TEST_SAMPLE_POINT_3: 1800,
+    TEST_SAMPLE_X_VALUE: 2000,
+    TEST_SAMPLE_Y_VALUE: 1.87,
+    TEST_LEGEND_Y_VALUE_FORMATTED_OUTPUT: '<b style="color:#c61055"></b>1.87mV',
+    TEST_LEGEND_X_VALUE_FORMATTED_OUTPUT: '<b style="color:#c61055">Time</b>: 2000ms ',
     TEST_TIME_INTERVAL_FOR_2_SELECTED_POINTS: '0.20s',
     TEST_TIME_INTERVAL_FOR_3_SELECTED_POINTS: '0.50s',
     TEST_ZOOMED_Y_RANGE: [1.5, 2.2],
@@ -45,7 +49,7 @@
     teardown: function() {}
   });
 
-  QUnit.test('Initialization', function(assert) {
+  QUnit.test('CR1: Initialization', function(assert) {
 
     assert.throws(function() {
       var chartResourceViewer = new sewi.ChartResourceViewer();
@@ -63,7 +67,7 @@
     assert.ok(new sewi.ChartResourceViewer(options), 'Chart Resource Viewer initialized successfully');
   });
 
-  QUnit.asyncTest('Loading graph into the DOM', function(assert) {
+  QUnit.asyncTest('CR2: Loading graph into the DOM', function(assert) {
   	QUnit.expect(3);
     var validChartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
@@ -89,7 +93,7 @@
 
   });
 
-  QUnit.asyncTest('Selecting/Deselecting a graph-point on clicking it', function(assert) {
+  QUnit.asyncTest('CR3: Selecting/Deselecting a graph-point on clicking it', function(assert) {
   	QUnit.expect(4);
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
@@ -117,7 +121,7 @@
 
   });
 
-  QUnit.asyncTest('Updating time interval on selecting/deselecting points', function(assert) {
+  QUnit.asyncTest('CR4: Updating time interval on selecting/deselecting points', function(assert) {
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
     });
@@ -144,7 +148,7 @@
 
   });
 
-  QUnit.asyncTest('Updating time interval when zooming into X axis', function(assert) {
+  QUnit.asyncTest('CR5: Updating time interval when zooming into X axis', function(assert) {
  
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
@@ -171,7 +175,7 @@
     }, 2500);
   });
 
-  QUnit.asyncTest('Detecting peaks and updating time interval when zooming into Y axis', function(assert) {
+  QUnit.asyncTest('CR6: Detecting peaks and updating time interval when zooming into Y axis', function(assert) {
     QUnit.stop(1);
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
@@ -197,7 +201,7 @@
 
   });
 
-  QUnit.asyncTest('Handling control panel events: Reset all points', function(assert) {
+  QUnit.asyncTest('CR7: Handling control panel events: Reset all points', function(assert) {
     QUnit.expect(2);
     QUnit.stop(1);
     var chartResourceViewer = new sewi.ChartResourceViewer({
@@ -220,7 +224,7 @@
 
   });
 
-QUnit.asyncTest('Handling control panel events: Zoom out graph', function(assert) {
+QUnit.asyncTest('CR8: Handling control panel events: Zoom out graph', function(assert) {
     QUnit.stop(1);
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
@@ -239,7 +243,7 @@ QUnit.asyncTest('Handling control panel events: Zoom out graph', function(assert
 
   });
 
-QUnit.asyncTest('Handling control panel events: Reset visible points', function(assert) {
+QUnit.asyncTest('CR9: Handling control panel events: Reset visible points', function(assert) {
     QUnit.expect(2);
     QUnit.stop(1);
     var chartResourceViewer = new sewi.ChartResourceViewer({
@@ -274,23 +278,7 @@ QUnit.asyncTest('Handling control panel events: Reset visible points', function(
 
   });
 
-/*QUnit.asyncTest('Resizing the graph', function(assert){
-	QUnit.expect(1);
-	var chartResourceViewer = new sewi.ChartResourceViewer({
-      id: constants.TEST_VALID_RESOURCE_ID
-    });
-    chartResourceViewer.load();
-
-    setTimeout(function(){
-    	$(window).resize(function(){
-        assert.ok(chartResourceViewer.resize(), 'Chart dimensions changed successfully');
-      });
-      $(window).resize();
-    	QUnit.start();
-    }, 2500);
-});*/
-
-QUnit.asyncTest('Toogle tooltips', function(assert){
+QUnit.asyncTest('CR10: Toogle tooltips', function(assert){
 
     var chartResourceViewer = new sewi.ChartResourceViewer({
       id: constants.TEST_VALID_RESOURCE_ID
@@ -333,6 +321,18 @@ QUnit.asyncTest('Toogle tooltips', function(assert){
 
   });
 
+QUnit.test('CR11: Testing value formatters in the graph', function(assert){
+	var chartResourceViewer = new sewi.ChartResourceViewer({
+      id: constants.TEST_VALID_RESOURCE_ID
+    });
+
+    var yValue= chartResourceViewer.privates.formatLegendDisplayForYAxis(constants.TEST_SAMPLE_Y_VALUE);
+    assert.equal(yValue, constants.TEST_LEGEND_Y_VALUE_FORMATTED_OUTPUT, 'Y value formatted correctly');
+
+    var xValue= chartResourceViewer.privates.formatLegendDisplayForXAxis(constants.TEST_SAMPLE_X_VALUE);
+    assert.equal(xValue, constants.TEST_LEGEND_X_VALUE_FORMATTED_OUTPUT, 'X value formatted correctly');
+});
+
 })();
 
 (function() {
@@ -364,12 +364,12 @@ QUnit.asyncTest('Toogle tooltips', function(assert){
     teardown: function() {}
   });
 
-  QUnit.test('Initialization', function(assert) {
+  QUnit.test('CC1: Initialization', function(assert) {
     assert.ok(this.sewi.ChartControls(), 'Chart Controls called without the new keyword');
     assert.ok(new this.sewi.ChartControls(), 'Chart Controls initialized successfully');
   });
 
-  QUnit.test('Presence of options in the control panel', function(assert) {
+  QUnit.test('CC2: Presence of options in the control panel', function(assert) {
     var controls = new this.sewi.ChartControls();
     this.fixture.append(controls.getDOM());
     assert.ok(isClassInDOM(this.fixture, constants.TIMING_DISPLAY_LABEL_CLASS), 'Chart controls adds the interval input box');
@@ -378,7 +378,7 @@ QUnit.asyncTest('Toogle tooltips', function(assert){
     assert.ok(isClassInDOM(this.fixture, constants.RESET_VISIBLE_POINTS_BUTTON_CLASS), 'Chart controls adds the reset visible points button.');
   });
 
-  QUnit.asyncTest('Triggering events when any of the options change', function(assert) {
+  QUnit.asyncTest('CC3: Triggering events when any of the options change', function(assert) {
     QUnit.expect(3);
     QUnit.stop(2);
 
@@ -410,7 +410,7 @@ QUnit.asyncTest('Toogle tooltips', function(assert){
 
   });
 
-  QUnit.test('Updating the timing display', function(assert) {
+  QUnit.test('CC4: Updating the timing display', function(assert) {
 
     var chartControls = new this.sewi.ChartControls();
     var controlPanelElement = chartControls.getDOM();
