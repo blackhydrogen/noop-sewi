@@ -10,8 +10,8 @@
         TEST_PROGRESS_BAR_CHANGED_MESSAGE: 'Loading more...',
         TEST_ERROR_SCREEN_MESSAGE: 'Test has an error',
 
-        RESOURCE_VIEWER_FULLSCREEN_EVENT: 'FullscreenToggled',
-        RESOURCE_VIEWER_CLOSING_EVENT: 'Closing',
+        RESOURCE_VIEWER_FULLSCREEN_EVENT: sewi.constants.RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT,
+        RESOURCE_VIEWER_CLOSING_EVENT: sewi.constants.RESOURCE_VIEWER_CLOSING_EVENT,
         TOOLTIPS_BUTTON_CLASS: 'tooltips-button',
         FULLSCREEN_BUTTON_CLASS: 'fullscreen-button',
         CLOSE_BUTTON_CLASS: 'close-button',
