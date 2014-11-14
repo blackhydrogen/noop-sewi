@@ -57,45 +57,16 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.MediaControls, sewi.ConfiguratorElement);
 
-    /**
-     * Fired when the media is paused.
-     * @event Paused
-     * @memberof sewi.MediaControls
+    /*
+     * Helper function that formats the text for the duration
+     * Takes an object with the following parameters:
+     * {
+     *	    currentMins: The displayed number of minutes for the current time.
+     *	    currentSecs: The displayed number of seconds for the current time.
+     *	    durationMins: The displayed number of minutes for the duration.
+     *	    durationSecs: The displayed number of seconds for the duration.
+     * }
      */
-
-    /**
-     * Fired when the media is playing.
-     * @event Playing
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the media is muted.
-     * @event Muted
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the media is unmuted.
-     * @event Unmuted
-     * @memberof sewi.MediaControls
-     */
-
-    /**
-     * Fired when the volume of the media is changed.
-     * @event VolumeChanged
-     * @memberof sewi.MediaControls
-     * @param {number} volume The current volume of the media.
-     */
-
-    /**
-     * Fired when the current playback position of the media is changed.
-     * @event PositionChanged
-     * @memberof sewi.MediaControls
-     * @param {number} volume The current playback position of the media.
-     */
-
-    // Helper function that formats the text for the duration
     var generateDurationText = _.template('<%= currentMins %>:<%= currentSecs %>/<%= durationMins %>:<%= durationSecs %>');
 
     // MediaControls private methods begin
@@ -227,7 +198,8 @@ var sewi = sewi || {};
     }
 
     function volumeChanged() {
-        this.volume(this.volumeSlider[0].value);
+        var newVolume = parseFloat(this.volumeSlider[0].value);
+        this.volume(newVolume);
     }
 
     function progressSeeking() {
@@ -235,13 +207,22 @@ var sewi = sewi || {};
     }
 
     function progressChanged() {
+        var newPosition = parseFloat(this.progressSlider[0].value);
         this.isSeeking = false;
-        this.playbackPosition(this.progressSlider[0].value);
-        //this.setPlaybackProgress(??);
+        this.playbackPosition(newPosition);
     }
 
     function getTimeDigits(number) {
         return ('0' + number).slice(-2);
+    }
+
+    function limitToRange(value, min, max) {
+        if (value < min) {
+            value = min;
+        } else if (!_.isUndefined(max) && value > max) {
+            value = max;
+        }
+        return value;
     }
 
     // MediaControls public methods
@@ -255,72 +236,59 @@ var sewi = sewi || {};
         this.update({ playing: !this.isPlaying });
 
         if (isPlaying) {
-            this.mainDOMElement.trigger('Paused');
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT);
         } else {
-            this.mainDOMElement.trigger('Playing');
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT);
         }
-
-        return this;
-    }
+    };
 
     /**
      * Toggles the mute state of the MediaControls, and its target media.
-     *
-     * @return {MediaControls} The current instance of the MediaControls.
      */
     sewi.MediaControls.prototype.toggleMute = function() {
-        if (this.isMuted) {
-            this.mainDOMElement.trigger('Unmuted');
-        } else {
-            this.mainDOMElement.trigger('Muted');
-        }
-
         this.update({ muted: !this.isMuted });
 
-        return this;
-    }
+        if (this.isMuted) {
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT);
+        } else {
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
+        }
+    };
 
     /**
      * Gets or sets the volume of the MediaControls.
      *
      * @param  {number} [volume] The new volume.
-     * @return {MediaControls|Number} The current volume, or the current
-     * instance of MediaControls if the volume is set.
+     * @return {Number} The current volume.
      */
     sewi.MediaControls.prototype.volume = function(volume) {
-        if (_.isUndefined(volume)) {
-            return this.volumeSlider[0].value;
+        if (!_.isUndefined(volume)) {
+            if (this.isMuted) {
+                this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT);
+            }
+
+            this.update({ volume: volume });
+
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volume);
         }
 
-        if (this.isMuted) {
-            this.mainDOMElement.trigger('Unmuted');
-        }
-
-        this.update({ volume: volume });
-
-        this.mainDOMElement.trigger('VolumeChanged', volume);
-
-        return this;
-    }
+        return this.volumeSlider[0].value;
+    };
 
     /**
      * Gets or sets the playback position of the MediaControls.
      *
      * @param  {number} [volume] The new playback position.
-     * @return {MediaControls|Number} The current playback position, or the
-     * current instance of MediaControls if the playback position is set.
+     * @return {Number} The current playback position.
      */
     sewi.MediaControls.prototype.playbackPosition = function(position) {
-        if (_.isUndefined(position)) {
-            return this.progressSlider[0].value;
+        if (!_.isUndefined(position)) {
+            this.update({ position: position });
+
+            this.mainDOMElement.trigger(sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT, position);
         }
-
-        this.update({ position: position });
-
-        this.mainDOMElement.trigger('PositionChanged', position);
-
-        return this;
-    }
+        return this.progressSlider[0].value;
+    };
 
     /**
      * Updates the displayed values of the MediaControls instance.
@@ -329,14 +297,19 @@ var sewi = sewi || {};
      * be updated.
      * @param {boolean} [options.playing] Whether the media is currently
      * playing.
-     * @param {number} [options.duration] The new duration of the media.
+     * @param {number} [options.duration] The new duration of the media. If less
+     * than 0, it will default to 0.
      * @param {number} [options.currentTime] The new playback position of the
-     * media in seconds. Updates the duration display.
+     * media in seconds. Updates the duration display. If less than 0, it will
+     * default to 0. If it is greater than <code>duration</code>, it will round
+     * to the value of <code>duration</code>.
      * @param {number} [options.position] The new playback position of the media
-     * as a percentage. Updates the seeking bar. Ranges from 0.0 to 100.0.
+     * as a percentage. Updates the seeking bar. Ranges from 0.0 to 100.0. If
+     * outside the range, it will round to the nearest valid value.
      * @param {number} [options.volume] The new volume of the media. Ranges from
      * 0.0 to 1.0. If specified, <code>options.muted</code> will be set to
-     * <code>false</code>.
+     * <code>false</code>. If outside the range, it will round to the nearest
+     * valid value.
      * @param {number} [options.muted] Whether the media is current muted. Will
      * be overridden if <code>options.volume</code> is set.
      * @param {Array} [options.buffer] The locations of the streaming buffers
@@ -361,35 +334,42 @@ var sewi = sewi || {};
             }
         }
 
-        if (!_.isUndefined(options.duration)) {
+        if (_.isNumber(options.duration)) {
+            options.duration = limitToRange(options.duration, 0);
+
             this.duration = options.duration;
-            if (_.isUndefined(this.currentTime)) {
-                options.currentTime = options.currentTime || 0;
+            options.currentTime = options.currentTime || this.currentTime || 0;
+        }
+
+        if (_.isNumber(options.currentTime) && options.currentTime >= 0) {
+            options.currentTime = limitToRange(options.currentTime, 0);
+            this.currentTime = options.currentTime;
+
+            if (!_.isUndefined(this.duration)) {
+                this.currentTime = limitToRange(this.currentTime, 0, this.duration);
+
+                var currentMins = Math.floor(this.currentTime / 60);
+                var currentSecs = Math.floor(this.currentTime % 60);
+
+                var durationMins = Math.floor(this.duration / 60);
+                var durationSecs = Math.floor(this.duration % 60);
+
+                this.durationTextPanel.text(generateDurationText({
+                    currentMins: getTimeDigits(currentMins),
+                    currentSecs: getTimeDigits(currentSecs),
+                    durationMins: getTimeDigits(durationMins),
+                    durationSecs: getTimeDigits(durationSecs),
+                }));
             }
         }
 
-        if (!_.isUndefined(options.currentTime)) {
-            this.currentTime = options.currentTime;
-
-            var currentMins = Math.floor(options.currentTime / 60);
-            var currentSecs = Math.floor(options.currentTime % 60);
-
-            var durationMins = Math.floor(this.duration / 60);
-            var durationSecs = Math.floor(this.duration % 60);
-
-            this.durationTextPanel.text(generateDurationText({
-                currentMins: getTimeDigits(currentMins),
-                currentSecs: getTimeDigits(currentSecs),
-                durationMins: getTimeDigits(durationMins),
-                durationSecs: getTimeDigits(durationSecs),
-            }));
-        }
-
-        if (!_.isUndefined(options.position) && !this.isSeeking) {
+        if (_.isNumber(options.position) && !this.isSeeking) {
+            options.position = limitToRange(options.position, 0, 100);
             this.progressSlider[0].value = options.position;
         }
 
-        if (!_.isUndefined(options.volume)) {
+        if (_.isNumber(options.volume)) {
+            options.volume = limitToRange(options.volume, 0, 1);
             this.volumeSlider[0].value = options.volume;
             options.muted = false;
         }
@@ -397,32 +377,38 @@ var sewi = sewi || {};
         if (!_.isUndefined(options.muted)) {
             this.isMuted = !!options.muted;
 
-            if (!this.isMuted) {
-                this.mainDOMElement.removeClass('muted');
-            } else {
+            if (this.isMuted) {
                 this.mainDOMElement.addClass('muted');
+            } else {
+                this.mainDOMElement.removeClass('muted');
             }
         }
 
-        if (!_.isUndefined(options.buffers) && options.buffers.length > 0) {
+        if (_.isArray(options.buffers)) {
             var duration = this.duration;
             var numOfBuffers = options.buffers.length;
 
             var positions = [];
 
             for (var i = 0; i < numOfBuffers; i++) {
-                var position = {
-                    left:  ((options.buffers[i].start / duration) * 100) + '%',
-                    right: ((1 - options.buffers[i].end / duration) * 100) + '%'
+                var start = options.buffers[i].start / duration;
+                var end = options.buffers[i].end / duration;
+                if (_.isFinite(start) && _.isFinite(end)) {
+                    start = limitToRange(start, 0, 1);
+                    end = limitToRange(end, 0, 1);
+                    var position = {
+                        left:  ((start) * 100) + '%',
+                        right: ((1 - end) * 100) + '%'
+                    };
+                    positions.push(position);
                 }
-                positions.push(position);
             }
 
-            setNumberOfBufferBars.call(this, numOfBuffers);
+            setNumberOfBufferBars.call(this, positions.length);
             setBufferBarPositions.call(this, positions);
 
         }
-    }
+    };
 
     /**
      * Allows tooltips within the MediaControls to be displayed when the buttons
@@ -437,7 +423,7 @@ var sewi = sewi || {};
             });
             this.initializedTooltips = true;
         }
-    }
+    };
 
     /**
      * Hides tooltips previously made visible via
@@ -450,7 +436,7 @@ var sewi = sewi || {};
             elements.tooltip('destroy');
             this.initializedTooltips = false;
         }
-    }
+    };
 
 })();
 
@@ -485,8 +471,6 @@ var sewi = sewi || {};
         initDOM.call(this);
         attachVideoEventHandlers.call(this);
         setUpInactivityEventHandlers.call(this);
-
-        return this;
     }
 
     sewi.inherits(sewi.VideoResourceViewer, sewi.ResourceViewer);
@@ -499,8 +483,14 @@ var sewi = sewi || {};
      */
 
     // VideoResourceViewer private methods
-    function validateArguments() {        if (!_.isString(this.id)) {
-            throw new Error('options: Valid resource id must be provided.');
+    function validateArguments() {
+        try {
+            if (!_.isString(this.id)) {
+                throw new Error('options: Valid resource id must be provided.');
+            }
+        } catch (err) {
+            this.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_INVALID_ID_MESSAGE);
+            throw err;
         }
     }
 
@@ -553,7 +543,7 @@ var sewi = sewi || {};
     }
 
     function attachVideoEventHandlers() {
-        this.videoElement.on('canplay', this.hideProgressBar.bind(this));
+        this.videoElement.on('canplay', videoReady.bind(this));
         this.videoElement.on('loadedmetadata', updateDimensions.bind(this));
         this.videoElement.on('error', playbackFailed.bind(this));
     }
@@ -565,12 +555,12 @@ var sewi = sewi || {};
         this.videoElement.on('play pause', updatePlayingStatus.bind(this));
         this.videoElement.on('volumechange', updateVolume.bind(this));
 
-        this.controlPanelElement.on('Playing', playEvent.bind(this));
-        this.controlPanelElement.on('Paused', pauseEvent.bind(this));
-        this.controlPanelElement.on('Muted', muteEvent.bind(this));
-        this.controlPanelElement.on('Unmuted', unmuteEvent.bind(this));
-        this.controlPanelElement.on('PositionChanged', positionEvent.bind(this));
-        this.controlPanelElement.on('VolumeChanged', volumeEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_PLAYING_EVENT, playEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_PAUSED_EVENT, pauseEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_MUTED_EVENT, muteEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_UNMUTED_EVENT, unmuteEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT, positionEvent.bind(this));
+        this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volumeEvent.bind(this));
 
         this.zoomSlider.on('input change', zoomLevelChanged.bind(this));
         this.resetZoomButton.click(zoomLevelReset.bind(this));
@@ -767,10 +757,8 @@ var sewi = sewi || {};
     }
 
     function retrieveVideo(videoData) {
-        console.log('Video data retrieved.');
         this.videoData = videoData;
         this.isLoaded = true;
-        this.mainDOMElement.trigger('Loaded');
         var videoSourceElement = $(sewi.constants.VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM);
         videoSourceElement.attr({
             src: this.videoData.url,
@@ -788,20 +776,32 @@ var sewi = sewi || {};
         this.showError(sewi.constants.VIDEO_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE);
     }
 
+    function videoReady() {
+        this.hideProgressBar();
+        this.mainDOMElement.trigger(sewi.constants.VIDEO_RESOURCE_VIEWER_LOADED_EVENT);
+    }
+
     // VideoResourceViewer public methods
     sewi.VideoResourceViewer.prototype.load = function() {
         if (!this.isLoaded) {
             loadVideoData.call(this);
         }
+    };
 
-        return this;
-    }
+    sewi.VideoResourceViewer.prototype.cleanUp = function() {
+        // Strip the video element of all event handlers.
+        this.videoElement.off();
+        // Force the video element to unload its containing video.
+        var video = this.videoElement[0];
+        video.src = ' ';
+        video.load();
+    };
 
     sewi.VideoResourceViewer.prototype.resize = function() {
         if (this.panZoomWidget) {
-            this.panZoomWidget.centreTargetOnContainer();
+            this.panZoomWidget.recalculateTargetDimensions();
         }
-    }
+    };
 
     sewi.VideoResourceViewer.prototype.showTooltips = function() {
         this.controls.showTooltips();
@@ -810,13 +810,13 @@ var sewi = sewi || {};
         elements.tooltip({
             container: 'body'
         });
-    }
+    };
 
     sewi.VideoResourceViewer.prototype.hideTooltips = function() {
         this.controls.hideTooltips();
         var elements = getOwnElements.call(this);
 
         elements.tooltip('destroy');
-    }
+    };
 
 })();

@@ -11,7 +11,7 @@ var sewi = sewi || {};
 	 */
 	sewi.ConfiguratorElement = function() {
 		this.mainDOMElement = $("<div></div>");
-	}
+	};
 
 	/**
 	 * Retrieves the DOM element owned by this object.
@@ -20,7 +20,7 @@ var sewi = sewi || {};
 	 */
 	sewi.ConfiguratorElement.prototype.getDOM = function() {
 		return this.mainDOMElement;
-	}
+	};
 
 	/**
 	 * Helper function for triggering an event on the main DOM element.
@@ -29,7 +29,7 @@ var sewi = sewi || {};
 	 */
 	sewi.ConfiguratorElement.prototype.trigger = function() {
 		this.mainDOMElement.trigger.apply(this.mainDOMElement, arguments);
-	}
+	};
 
 	/**
 	* Helper function for triggering an event on the main DOM element.
@@ -38,7 +38,7 @@ var sewi = sewi || {};
 	*/
 	sewi.ConfiguratorElement.prototype.on = function() {
 		this.mainDOMElement.on.apply(this.mainDOMElement, arguments);
-	}
+	};
 
 	// Unimplemented methods, must be overridden by subclasses
 
@@ -86,7 +86,7 @@ var sewi = sewi || {};
 	 */
     sewi.ErrorScreen.prototype.setText = function(string){
         this.textElement.text(string);
-    }
+    };
 
 })();
 
@@ -117,6 +117,8 @@ var sewi = sewi || {};
         this.progressBarAmountElement = $(sewi.constants.PROGRESS_BAR_AMOUNT_DOM);
         this.textElement = $(sewi.constants.PROGRESS_BAR_TEXT_DOM);
 
+        this.hasTransitionEnded = true;
+
         if (animated) {
             this.progressBarAmountElement.addClass(sewi.constants.PROGRESS_BAR_ANIMATED_CLASS)
         }
@@ -124,8 +126,36 @@ var sewi = sewi || {};
         this.progressBarElement.append(this.progressBarAmountElement)
 							   .append(this.textElement);
 
-		this.mainDOMElement.append(this.progressBarElement)
+        this.progressBarAmountElement.on(getTransitionEvent(), onTransitionEnd.bind(this));
+
+        this.mainDOMElement.append(this.progressBarElement)
 						   .addClass(sewi.constants.PROGRESS_BAR_BACKDROP_CLASS)
+    }
+
+    function onTransitionEnd(event){
+        if(event.currentTarget === event.target){
+            var propertyName = event.originalEvent.propertyName;
+            if(propertyName == "width"){
+                this.hasTransitionEnded = true;
+            }
+        }
+    }
+
+    function getTransitionEvent(){
+        var el = document.createElement('fakeelement');
+        var transitions = {
+            'WebkitTransition' :'webkitTransitionEnd',
+            'MozTransition'    :'transitionend',
+            'MSTransition'     :'msTransitionEnd',
+            'OTransition'      :'oTransitionEnd',
+            'transition'       :'transitionEnd'
+        }
+
+        for(var t in transitions){
+            if( el.style[t] !== undefined ){
+                return transitions[t];
+            }
+        }
     }
 
 	/**
@@ -141,10 +171,14 @@ var sewi = sewi || {};
             console.error(methodName + ': parameter is not a number');
         } else if(percent > 100 || percent < 0){
             console.error(methodName + ': parameter is out of range');
-        } else {
+        } else if(this.hasTransitionEnded){
+            var currentWidth = parseInt(this.progressBarAmountElement.css('width'));
+            if (currentWidth != percent){
+                this.hasTransitionEnded = false;
+            }
             this.progressBarAmountElement.css('width', percent+'%');
         }
-    }
+    };
 
 	/**
 	 * Updates the text displayed in the progress bar.
@@ -153,7 +187,7 @@ var sewi = sewi || {};
 	 */
     sewi.ProgressBar.prototype.setText = function(progressText) {
         this.textElement.text(progressText);
-    }
+    };
 
 })();
 
@@ -173,7 +207,7 @@ var sewi = sewi || {};
 		addButtons.call(this);
 		addErrorScreen.call(this);
 		addProgressBar.call(this);
-	}
+	};
 	sewi.inherits(sewi.ResourceViewer, sewi.ConfiguratorElement);
 
 	// ResourceViewer private methods
@@ -215,11 +249,11 @@ var sewi = sewi || {};
 	}
 
 	function closeButtonClicked() {
-		this.trigger('Closing');
+		this.trigger(sewi.constants.RESOURCE_VIEWER_CLOSING_EVENT);
 	}
 
 	function fullscreenButtonClicked() {
-		this.trigger('FullscreenToggled');
+		this.trigger(sewi.constants.RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT);
 	}
 
 	function tooltipsButtonClicked(event) {
@@ -237,7 +271,7 @@ var sewi = sewi || {};
 	// Overrides getDOM of ConfiguratorElement
 	sewi.ResourceViewer.prototype.getDOM = function() {
 	    return this.mainDOMOuterContainer;
-	}
+	};
 
 	/**
 	 * Adds a download button that triggers the specified function or URL.
@@ -269,7 +303,7 @@ var sewi = sewi || {};
 			});
 
 		this.buttonGroup.prepend(downloadButton);
-	}
+	};
 
 	/**
 	 * Displays an error on the resource viewer.
@@ -282,7 +316,7 @@ var sewi = sewi || {};
 		this.errorScreen.setText(errorText);
 
 		errorScreenElement.insertBefore(this.panel);
-	}
+	};
 
 	/**
 	 * Hides the error shown, if any.
@@ -290,7 +324,7 @@ var sewi = sewi || {};
 	sewi.ResourceViewer.prototype.hideError = function() {
 		var errorScreenElement = this.errorScreen.getDOM();
 		errorScreenElement.detach();
-	}
+	};
 
 	/**
 	 * Displays a progress bar on the resource viewer.
@@ -308,7 +342,7 @@ var sewi = sewi || {};
 		this.progressBar.update(0);
 
 		progressBarElement.insertBefore(this.panel);
-	}
+	};
 
 	/**
 	 * Updates the progress bar.
@@ -323,7 +357,7 @@ var sewi = sewi || {};
 			this.progressBar.setText(progressText);
 		}
 		this.progressBar.update(percent);
-	}
+	};
 
 	/**
 	 * Hides the progress bar if it is being displayed.
@@ -332,7 +366,7 @@ var sewi = sewi || {};
 		var progressBarElement = this.progressBar.getDOM();
 
 		progressBarElement.detach();
-	}
+	};
 
 	// Unimplemented methods; these should be overridden by implemented ResourceViewers
 	// when necessary

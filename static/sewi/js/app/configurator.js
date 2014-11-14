@@ -157,25 +157,35 @@ var sewi = sewi || {};
     }
 
     function initResizeTracking() {
-        var windowElement = $(window);
-
-        // Basic information view only requires tracking of window resize.
         if (_.isFunction(sewi.BasicEncounterInfoViewer)) {
-            windowElement.resize(resizeBasicInfo.bind(this));
+            reportResizeToBasicInfo.call(this);
         }
         if (_.isFunction(sewi.TabContainer)) {
-            reportResize(this.resViewerView, this.tabs);
+            reportResizeToTabContainer.call(this);
         }
         if (_.isFunction(sewi.ResourceGallery)) {
-            reportResize(this.resGalleryView, this.resGallery);
+            reportResizeToGallery.call(this);
         }
     }
 
-    function reportResize(view, configuratorElement) {
+    function reportResizeToBasicInfo() {
         var windowElement = $(window);
 
-        view.on('transitionend', resizeIfSizeChangedInTransition.bind(configuratorElement));
-        windowElement.resize(configuratorElement.resize.bind(configuratorElement));
+        windowElement.resize(resizeBasicInfo.bind(this));
+    }
+
+    function reportResizeToTabContainer() {
+        var windowElement = $(window);
+
+        this.resViewerView.on('transitionend', resizeIfSizeChangedInTransition.bind(this.tabs));
+        windowElement.resize(this.tabs.resize.bind(this.tabs));
+    }
+
+    function reportResizeToGallery() {
+        var windowElement = $(window);
+
+        this.resGalleryView.on('transitionend', resizeGallery.bind(this));
+        windowElement.resize(resizeGallery.bind(this));
     }
 
     function resizeIfSizeChangedInTransition(event) {
@@ -196,6 +206,11 @@ var sewi = sewi || {};
         }
 
         this.basicInfo.resize(options);
+    }
+
+    function resizeGallery(event) {
+        var isGalleryMinimized = !this.isResourceViewerHidden;
+        this.resGallery.resize(isGalleryMinimized);
     }
 
     function openResource(galleryElement) {

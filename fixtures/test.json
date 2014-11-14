@@ -1,0 +1,2262 @@
+[
+{
+  "pk": 1, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "permission", 
+    "name": "permission", 
+    "app_label": "auth"
+  }
+},
+{
+  "pk": 2, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "group", 
+    "name": "group", 
+    "app_label": "auth"
+  }
+},
+{
+  "pk": 3, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "user", 
+    "name": "user", 
+    "app_label": "auth"
+  }
+},
+{
+  "pk": 4, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "contenttype", 
+    "name": "content type", 
+    "app_label": "contenttypes"
+  }
+},
+{
+  "pk": 5, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "session", 
+    "name": "session", 
+    "app_label": "sessions"
+  }
+},
+{
+  "pk": 6, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "site", 
+    "name": "site", 
+    "app_label": "sites"
+  }
+},
+{
+  "pk": 7, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "logentry", 
+    "name": "log entry", 
+    "app_label": "admin"
+  }
+},
+{
+  "pk": 8, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "client", 
+    "name": "client", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 9, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "clienteventlog", 
+    "name": "client event log", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 10, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "patient", 
+    "name": "patient", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 11, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "procedure", 
+    "name": "procedure", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 12, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "binaryresource", 
+    "name": "binary resource", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 13, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "savedprocedure", 
+    "name": "saved procedure", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 14, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "notification", 
+    "name": "notification", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 15, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "queueelement", 
+    "name": "queue element", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 16, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "requestlog", 
+    "name": "request log", 
+    "app_label": "mrs"
+  }
+},
+{
+  "pk": 17, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "concept", 
+    "name": "concept", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 18, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "relationshipcategory", 
+    "name": "relationship category", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 19, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "relationship", 
+    "name": "relationship", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 20, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "device", 
+    "name": "device", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 21, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "encounter", 
+    "name": "encounter", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 22, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "event", 
+    "name": "event", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 23, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "instruction", 
+    "name": "instruction", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 24, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "location", 
+    "name": "location", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 25, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "notification", 
+    "name": "notification", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 26, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "observation", 
+    "name": "observation", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 27, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "observer", 
+    "name": "observer", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 28, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "procedure", 
+    "name": "procedure", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 29, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "subject", 
+    "name": "subject", 
+    "app_label": "core"
+  }
+},
+{
+  "pk": 30, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "status", 
+    "name": "Task Status", 
+    "app_label": "tasks"
+  }
+},
+{
+  "pk": 31, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "task", 
+    "name": "task", 
+    "app_label": "tasks"
+  }
+},
+{
+  "pk": 32, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "encountertask", 
+    "name": "encounter task", 
+    "app_label": "tasks"
+  }
+},
+{
+  "pk": 33, 
+  "model": "contenttypes.contenttype", 
+  "fields": {
+    "model": "observationtask", 
+    "name": "observation task", 
+    "app_label": "tasks"
+  }
+},
+{
+  "pk": "02jqjtutx31w2vude17sgl5c77ar0exx", 
+  "model": "sessions.session", 
+  "fields": {
+    "expire_date": "2014-11-24T16:01:39", 
+    "session_data": "NWRhMGU2MDQ2ZDM0YmI2ZTEwOGZhYmE3MTFlMTc1MmYxYjFiNTk0Yjp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0="
+  }
+},
+{
+  "pk": "fggq6se5qalmy6dcbizp15ryijj8x4o3", 
+  "model": "sessions.session", 
+  "fields": {
+    "expire_date": "2014-09-23T12:53:40", 
+    "session_data": "NWRhMGU2MDQ2ZDM0YmI2ZTEwOGZhYmE3MTFlMTc1MmYxYjFiNTk0Yjp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0="
+  }
+},
+{
+  "pk": 1, 
+  "model": "sites.site", 
+  "fields": {
+    "domain": "example.com", 
+    "name": "example.com"
+  }
+},
+{
+  "pk": 1, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Text Obs", 
+    "name": "TEXT OBSERVATION", 
+    "created": "2013-04-26T17:12:11", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "dd9b0def-d64c-4a70-aaba-fb13c4187119", 
+    "modified": "2013-04-26T17:12:11", 
+    "voided": false, 
+    "description": "String data"
+  }
+},
+{
+  "pk": 2, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "image/jpg", 
+    "display_name": "Image Obs", 
+    "name": "IMAGE OBSERVATION", 
+    "created": "2013-04-26T17:13:16", 
+    "datatype": "complex", 
+    "constraint": "", 
+    "uuid": "dd3ad337-789d-4e30-bb86-0eca35a7c389", 
+    "modified": "2014-11-11T16:11:44", 
+    "voided": false, 
+    "description": "Data collected with a mobile phone camera"
+  }
+},
+{
+  "pk": 3, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Generic Encounter", 
+    "name": "ENCOUNTER", 
+    "created": "2013-04-26T17:14:12", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "521b0825-14c9-49e5-a95e-462a01e2ae05", 
+    "modified": "2013-04-26T17:14:12", 
+    "voided": false, 
+    "description": "A vanilla subject encounter."
+  }
+},
+{
+  "pk": 4, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Location at patient house", 
+    "name": "LOCATION PATIENT HOUSE", 
+    "created": "2013-10-16T13:27:34", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "dc0c74dc-272c-43b6-870a-1a8c0b5a4745", 
+    "modified": "2013-10-16T13:27:34", 
+    "voided": false, 
+    "description": "Whether the procedure is being executed at the patient's house."
+  }
+},
+{
+  "pk": 5, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Fever post surgical procedure", 
+    "name": "FEVER POST SX", 
+    "created": "2013-10-16T13:28:57", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "5f8d7872-4c6b-4b81-b2e9-3011a15f3348", 
+    "modified": "2013-10-16T13:28:57", 
+    "voided": false, 
+    "description": "Fever observed post surgical procedure"
+  }
+},
+{
+  "pk": 6, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Surgical Site pain", 
+    "name": "SX SITE PAIN", 
+    "created": "2013-10-16T13:29:48", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "f59b7891-787d-409f-9f0d-036865d1fb01", 
+    "modified": "2013-10-16T13:29:48", 
+    "voided": false, 
+    "description": "Pain at surgical site"
+  }
+},
+{
+  "pk": 7, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Redness at surgical site", 
+    "name": "SX SITE REDNESS", 
+    "created": "2013-10-16T13:30:39", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "6fbe383c-f595-4d65-b5ca-c321b4dd30aa", 
+    "modified": "2013-10-16T13:30:39", 
+    "voided": false, 
+    "description": "Redness observed at surgical site."
+  }
+},
+{
+  "pk": 8, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Swelling at surgical site", 
+    "name": "SX SITE SWELLING", 
+    "created": "2013-10-16T13:31:37", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "0a13beb5-7834-452a-9c97-5e993c10cf1e", 
+    "modified": "2013-10-16T13:31:37", 
+    "voided": false, 
+    "description": "Swelling observed at surgical site post procedure"
+  }
+},
+{
+  "pk": 9, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Firmness at surgical site", 
+    "name": "FIRMNESS SX SITE", 
+    "created": "2013-10-16T13:32:26", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "3baa7dd3-0113-4911-92e2-9345d2ddc3e1", 
+    "modified": "2013-10-16T13:32:26", 
+    "voided": false, 
+    "description": "Firmness observed at surgical site post procedure"
+  }
+},
+{
+  "pk": 10, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Drainage at surgical site", 
+    "name": "SX SITE DRAINAGE", 
+    "created": "2013-10-16T13:33:21", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "519da58e-aea9-4a55-b72c-61fb46247a5b", 
+    "modified": "2013-10-16T13:33:21", 
+    "voided": false, 
+    "description": "Drainage observed at surgical site post procedure."
+  }
+},
+{
+  "pk": 11, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Spontaneous opening of surgical site.", 
+    "name": "SX SITE OPEN SPONTANEOUS", 
+    "created": "2013-10-16T13:34:15", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "26f356f7-484f-4d1c-ae98-34fed96df149", 
+    "modified": "2013-10-16T13:34:15", 
+    "voided": false, 
+    "description": "Spontaneous opening of surgical site observed post surgical procedure."
+  }
+},
+{
+  "pk": 12, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "image/jpg", 
+    "display_name": "Image of surgical site", 
+    "name": "SX SITE IMAGE", 
+    "created": "2013-10-16T13:35:17", 
+    "datatype": "complex", 
+    "constraint": "", 
+    "uuid": "f8627cbe-6a50-4aea-b7c9-2baf29380ed4", 
+    "modified": "2013-10-16T13:35:17", 
+    "voided": false, 
+    "description": "Image taken of surgical site at approximately 30 days post procedure."
+  }
+},
+{
+  "pk": 13, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Infection suspected at surgical site.", 
+    "name": "SX SITE INFECTION SUSPECTED", 
+    "created": "2013-10-16T13:36:19", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "6c6ea272-83d4-4743-8db5-f3c707a838e3", 
+    "modified": "2013-10-16T13:36:19", 
+    "voided": false, 
+    "description": "Suspicion of infection at surgical site."
+  }
+},
+{
+  "pk": 14, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Surgical site drainage odor", 
+    "name": "SX SITE DRAINAGE ODOR", 
+    "created": "2013-10-16T13:37:41", 
+    "datatype": "boolean", 
+    "constraint": "", 
+    "uuid": "c2938bda-5a18-4bf2-bd87-2b9f40b493d8", 
+    "modified": "2013-10-16T13:37:41", 
+    "voided": false, 
+    "description": "Odor observed from drainage at surgical site."
+  }
+},
+{
+  "pk": 15, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Surgical site drainage viscosity", 
+    "name": "SX SITE DRAINAGE VISCOSITY", 
+    "created": "2013-10-16T13:38:30", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "7a96b0e9-3969-4489-be5f-00d08008ca78", 
+    "modified": "2013-10-16T13:38:30", 
+    "voided": false, 
+    "description": "Relative viscosity of surgical site drainage"
+  }
+},
+{
+  "pk": 16, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Color of surgical site drainage", 
+    "name": "SX SITE DRAINAGE COLOR", 
+    "created": "2013-10-16T13:39:28", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "e71c0dae-da28-4ff8-905d-1c33f374da45", 
+    "modified": "2013-10-16T13:39:28", 
+    "voided": false, 
+    "description": "Observed color of surgical site drainage."
+  }
+},
+{
+  "pk": 17, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Patient house gps coordinates", 
+    "name": "LOCATION GPS", 
+    "created": "2013-10-16T13:41:07", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "022f8c4f-ca4b-4d2f-b8c6-20a77bea9065", 
+    "modified": "2013-10-16T13:41:07", 
+    "voided": false, 
+    "description": "GPS coordinates of patient home."
+  }
+},
+{
+  "pk": 18, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Initial Intake", 
+    "name": "INTAKE ENCOUNTER", 
+    "created": "2014-02-09T21:11:22", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "266d8a8f-9178-4616-bcea-896194379059", 
+    "modified": "2014-02-09T21:11:22", 
+    "voided": false, 
+    "description": "Initial medical intake history and findings"
+  }
+},
+{
+  "pk": 19, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "DIagnosis", 
+    "name": "DIAGNOSIS", 
+    "created": "2014-02-24T19:51:10", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "104889a3-b6fa-4cdc-b232-d3b73e924cd1", 
+    "modified": "2014-02-24T19:51:10", 
+    "voided": false, 
+    "description": "Diagnosis"
+  }
+},
+{
+  "pk": 20, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Operation", 
+    "name": "OPERATION", 
+    "created": "2014-02-24T19:52:16", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "9b01ef00-9fac-4f3c-87e5-66b152a3159b", 
+    "modified": "2014-02-24T19:52:16", 
+    "voided": false, 
+    "description": "Surgical Procedure"
+  }
+},
+{
+  "pk": 21, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Operation Date", 
+    "name": "OPERATION DATE", 
+    "created": "2014-02-24T19:54:53", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "9082b5f8-74c6-4f54-a92b-04fa98e780d6", 
+    "modified": "2014-02-24T19:54:53", 
+    "voided": false, 
+    "description": "Date of surgical procedure"
+  }
+},
+{
+  "pk": 22, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Discharge Date", 
+    "name": "DISCHARGE DATE", 
+    "created": "2014-02-24T19:56:54", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "069ba5bb-a183-4d14-b485-9f93bca812c3", 
+    "modified": "2014-02-24T19:56:54", 
+    "voided": false, 
+    "description": "Date of discharge post surgical procedure"
+  }
+},
+{
+  "pk": 23, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/plain", 
+    "display_name": "Follow up date", 
+    "name": "FOLLOW UP DATE", 
+    "created": "2014-02-24T20:00:18", 
+    "datatype": "string", 
+    "constraint": "", 
+    "uuid": "d24cf683-4b51-46d8-a4c4-154c38e1dd38", 
+    "modified": "2014-02-24T20:00:18", 
+    "voided": false, 
+    "description": "Date of regular follow up post surgical procedure "
+  }
+},
+{
+  "pk": 24, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "video/mp4", 
+    "display_name": "Video Obs", 
+    "name": "VIDEO OBSERVATION", 
+    "created": "2014-10-10T11:59:59", 
+    "datatype": "complex", 
+    "constraint": "", 
+    "uuid": "592fac11-6df2-4c30-8f63-fbe4c9698e59", 
+    "modified": "2014-11-11T16:04:50", 
+    "voided": false, 
+    "description": "Video data collected"
+  }
+},
+{
+  "pk": 25, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "audio/3gp", 
+    "display_name": "", 
+    "name": "AUDIO OBSERVATION", 
+    "created": "2014-11-01T15:46:24", 
+    "datatype": "complex", 
+    "constraint": "", 
+    "uuid": "d49e192a-46d1-4e79-8bd1-84535320a8d0", 
+    "modified": "2014-11-11T16:04:57", 
+    "voided": false, 
+    "description": ""
+  }
+},
+{
+  "pk": 26, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "text/chart", 
+    "display_name": "Electrocardiography", 
+    "name": "GRAPH OBSERVATION", 
+    "created": "2014-11-10T16:18:41", 
+    "datatype": "complex", 
+    "constraint": "", 
+    "uuid": "0b2cd845-02ce-497c-8692-835eafbeaa5f", 
+    "modified": "2014-11-11T16:06:55", 
+    "voided": false, 
+    "description": ""
+  }
+},
+{
+  "pk": 27, 
+  "model": "core.concept", 
+  "fields": {
+    "conceptclass": "", 
+    "mimetype": "image/jpg", 
+    "display_name": "X-ray", 
+    "name": "X-RAY", 
+    "created": "2014-11-11T16:13:35", 
+    "datatype": "complex", 
+    "constraint": "", 
+    "uuid": "9d768b4e-aae2-4e57-916c-139753b401f1", 
+    "modified": "2014-11-11T16:13:35", 
+    "voided": false, 
+    "description": ""
+  }
+},
+{
+  "pk": 3, 
+  "model": "core.device", 
+  "fields": {
+    "name": "1110001008", 
+    "voided": false, 
+    "uuid": "b63eeefd-e217-40e7-a30a-68db4a930467", 
+    "modified": "2014-09-09T13:19:01", 
+    "created": "2013-12-24T14:46:39"
+  }
+},
+{
+  "pk": 12, 
+  "model": "core.encounter", 
+  "fields": {
+    "concept": "521b0825-14c9-49e5-a95e-462a01e2ae05", 
+    "uuid": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3", 
+    "observer": "2197a870-3dda-4220-8d87-bcc5a4ec9c0b", 
+    "created": "2014-04-29T14:12:53", 
+    "modified": "2014-04-29T14:12:53", 
+    "voided": false, 
+    "device": "b63eeefd-e217-40e7-a30a-68db4a930467", 
+    "procedure": "5299055a-c5e6-47e7-b649-dc17dac6019b", 
+    "subject": "e67ee4a9-87ef-4f83-85a4-42e9aab7f8f9"
+  }
+},
+{
+  "pk": 3, 
+  "model": "core.location", 
+  "fields": {
+    "uuid": "d4b7efb4-7ade-4700-936c-7bf34b0feef1", 
+    "name": "Unknown Location"
+  }
+},
+{
+  "pk": 121, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "10", 
+    "value_text": "non", 
+    "concept": "6c6ea272-83d4-4743-8db5-f3c707a838e3", 
+    "uuid": "762d5e6f-d4aa-439d-af63-1fa39714f440", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:53", 
+    "modified": "2014-04-29T14:12:58", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 122, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "7c", 
+    "value_text": "no response", 
+    "concept": "c2938bda-5a18-4bf2-bd87-2b9f40b493d8", 
+    "uuid": "ef7776c0-9460-4eb1-9ee8-ca32d1e49730", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:53", 
+    "modified": "2014-04-29T14:12:58", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 123, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "7b", 
+    "value_text": "no response", 
+    "concept": "e71c0dae-da28-4ff8-905d-1c33f374da45", 
+    "uuid": "fcd1aada-4d5c-49bd-b352-3f24d4c630fa", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:53", 
+    "modified": "2014-04-29T14:12:58", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 124, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "7a", 
+    "value_text": "no response", 
+    "concept": "7a96b0e9-3969-4489-be5f-00d08008ca78", 
+    "uuid": "efb7d704-84da-451f-a729-100747d27d45", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:54", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 125, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "9_1", 
+    "value_text": "1", 
+    "concept": "f8627cbe-6a50-4aea-b7c9-2baf29380ed4", 
+    "uuid": "b102a5e7-c845-4099-9449-3bfa246a83be", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:54", 
+    "modified": "2014-11-10T16:15:33", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "core/observation/bruise.jpg", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 126, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "1", 
+    "value_text": "non", 
+    "concept": "dc0c74dc-272c-43b6-870a-1a8c0b5a4745", 
+    "uuid": "e639eef8-0467-430c-a5e6-32542dcdbf18", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:54", 
+    "modified": "2014-04-29T14:13:00", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 127, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "3", 
+    "value_text": "wi", 
+    "concept": "f59b7891-787d-409f-9f0d-036865d1fb01", 
+    "uuid": "29494d50-e917-4e5f-af4d-2df64994e7c6", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:54", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 128, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "2", 
+    "value_text": "wi", 
+    "concept": "5f8d7872-4c6b-4b81-b2e9-3011a15f3348", 
+    "uuid": "0fa8c578-cc9f-42e2-8705-1608c2d91e83", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:55", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 129, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "5", 
+    "value_text": "non", 
+    "concept": "0a13beb5-7834-452a-9c97-5e993c10cf1e", 
+    "uuid": "9a6526da-40e8-49ad-852b-b31f444945fd", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:55", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 130, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "4", 
+    "value_text": "non", 
+    "concept": "6fbe383c-f595-4d65-b5ca-c321b4dd30aa", 
+    "uuid": "2ebd31d8-026e-407a-b1b2-19abc11bf1be", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:55", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 131, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "7", 
+    "value_text": "non", 
+    "concept": "519da58e-aea9-4a55-b72c-61fb46247a5b", 
+    "uuid": "46614af7-a5a6-4b51-95e0-d2392545a355", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:55", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 132, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "6", 
+    "value_text": "wi", 
+    "concept": "3baa7dd3-0113-4911-92e2-9345d2ddc3e1", 
+    "uuid": "dac75e02-0cbc-4d26-acdd-94b433c01557", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:56", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 133, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "8", 
+    "value_text": "non", 
+    "concept": "26f356f7-484f-4d1c-ae98-34fed96df149", 
+    "uuid": "59b146c1-3726-4642-9dec-a875018e01cf", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:56", 
+    "modified": "2014-04-29T14:12:58", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 134, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "1a", 
+    "value_text": "( -37.3262665, -59.1444416, 21.353 )", 
+    "concept": "022f8c4f-ca4b-4d2f-b8c6-20a77bea9065", 
+    "uuid": "a160866b-b5e5-4da6-b004-524a9f8a4a09", 
+    "_complex_size": 0, 
+    "created": "2014-04-29T14:12:56", 
+    "modified": "2014-04-29T14:12:59", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 137, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "9_2", 
+    "value_text": "complex", 
+    "concept": "592fac11-6df2-4c30-8f63-fbe4c9698e59", 
+    "uuid": "c1dee25d-fe89-49c3-b837-0e328adb7cb5", 
+    "_complex_size": 0, 
+    "created": "2014-11-04T17:48:51", 
+    "modified": "2014-11-04T17:48:51", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "core/observation/MedicalCheckUp_1.mp4", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 138, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "9_3", 
+    "value_text": "complex", 
+    "concept": "d49e192a-46d1-4e79-8bd1-84535320a8d0", 
+    "uuid": "23e8e15f-a155-4f8c-b587-2f4855187279", 
+    "_complex_size": 0, 
+    "created": "2014-11-04T17:50:49", 
+    "modified": "2014-11-04T17:50:49", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "core/observation/02_UNICORN_1.mp3", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 139, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "9_4", 
+    "value_text": "complex", 
+    "concept": "dd3ad337-789d-4e30-bb86-0eca35a7c389", 
+    "uuid": "8f26c97d-50eb-478a-ba3c-a86bdb794493", 
+    "_complex_size": 0, 
+    "created": "2014-11-04T17:55:46", 
+    "modified": "2014-11-10T19:50:40", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "core/observation/sfl.jpg", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 141, 
+  "model": "core.observation", 
+  "fields": {
+    "node": "9_5", 
+    "value_text": "complex", 
+    "concept": "0b2cd845-02ce-497c-8692-835eafbeaa5f", 
+    "uuid": "fd28bb9f-b9b4-4449-a914-0525237df1ce", 
+    "_complex_size": 0, 
+    "created": "2014-11-10T16:19:06", 
+    "modified": "2014-11-11T16:15:15", 
+    "voided": false, 
+    "_complex_progress": 0, 
+    "value_complex": "core/observation/data.csv", 
+    "encounter": "77d09b28-abed-4a6a-b48b-6b368bd2fdb3"
+  }
+},
+{
+  "pk": 2, 
+  "model": "core.procedure", 
+  "fields": {
+    "src": "core/procedure/ssi.xml", 
+    "description": "Surgical site infection follow up.", 
+    "author": "Alexi Matousek", 
+    "title": "Swivi Operasyon", 
+    "modified": "2014-03-16T14:22:30", 
+    "created": "2013-12-24T14:31:02", 
+    "version": "1.2", 
+    "voided": false, 
+    "uuid": "5299055a-c5e6-47e7-b649-dc17dac6019b"
+  }
+},
+{
+  "pk": 3, 
+  "model": "core.procedure", 
+  "fields": {
+    "src": "", 
+    "description": "Initial surgical patient encounter.", 
+    "author": "Alexi Matousek", 
+    "title": "Intake Procedure", 
+    "modified": "2014-02-26T18:14:03", 
+    "created": "2014-02-09T21:17:14", 
+    "version": "1.0", 
+    "voided": false, 
+    "uuid": "303a113c-6345-413f-88cb-aa6c4be3a07d"
+  }
+},
+{
+  "pk": 4, 
+  "model": "core.procedure", 
+  "fields": {
+    "src": "", 
+    "description": "Surgical site infection follow up.", 
+    "author": "Alexi Matousek", 
+    "title": "Swivi Operasyon - De Sit", 
+    "modified": "2014-09-09T13:20:21", 
+    "created": "2014-03-16T14:23:11", 
+    "version": "1.0", 
+    "voided": false, 
+    "uuid": "a8d18201-07b3-437d-bf8b-db510e4a7ce8"
+  }
+},
+{
+  "pk": 5, 
+  "model": "core.procedure", 
+  "fields": {
+    "src": "", 
+    "description": "Simple procedure which includes all of the elements from the V1 procedure schema.", 
+    "author": "Sana", 
+    "title": "API Test", 
+    "modified": "2014-09-09T13:20:07", 
+    "created": "2014-04-09T14:38:20", 
+    "version": "1.0", 
+    "voided": false, 
+    "uuid": "2bae218f-9c07-40ac-88fb-c7c60aa1d89d"
+  }
+},
+{
+  "pk": 73, 
+  "model": "core.subject", 
+  "fields": {
+    "family_name": "Smith", 
+    "uuid": "e67ee4a9-87ef-4f83-85a4-42e9aab7f8f9", 
+    "created": "2014-03-25T19:10:53", 
+    "dob": "1994-03-02T00:00:00", 
+    "gender": "M", 
+    "image": "", 
+    "modified": "2014-11-10T16:05:32", 
+    "voided": false, 
+    "system_id": "20190007", 
+    "given_name": "John", 
+    "location": "d4b7efb4-7ade-4700-936c-7bf34b0feef1"
+  }
+},
+{
+  "pk": 1, 
+  "model": "tasks.status", 
+  "fields": {
+    "current": "Assigned"
+  }
+},
+{
+  "pk": 2, 
+  "model": "tasks.status", 
+  "fields": {
+    "current": "Completed"
+  }
+},
+{
+  "pk": 3, 
+  "model": "tasks.status", 
+  "fields": {
+    "current": "Rejected"
+  }
+},
+{
+  "pk": 4, 
+  "model": "tasks.status", 
+  "fields": {
+    "current": "In Progress"
+  }
+},
+{
+  "pk": 5, 
+  "model": "tasks.status", 
+  "fields": {
+    "current": "Reviewed"
+  }
+},
+{
+  "pk": 14, 
+  "model": "tasks.task", 
+  "fields": {
+    "status": 1, 
+    "concept": "521b0825-14c9-49e5-a95e-462a01e2ae05", 
+    "uuid": "0651801e-95bc-4d40-87c1-5b93125c1976", 
+    "created": "2014-03-25T19:11:57", 
+    "started": null, 
+    "completed": null, 
+    "modified": "2014-03-25T19:11:57", 
+    "voided": false, 
+    "assigned_to": "2197a870-3dda-4220-8d87-bcc5a4ec9c0b", 
+    "due_on": "2014-06-20T00:00:00"
+  }
+},
+{
+  "pk": 15, 
+  "model": "tasks.task", 
+  "fields": {
+    "status": 1, 
+    "concept": "521b0825-14c9-49e5-a95e-462a01e2ae05", 
+    "uuid": "eddec2a4-6ba8-4870-a667-6b7cb55ed84d", 
+    "created": "2014-03-25T19:11:57", 
+    "started": null, 
+    "completed": null, 
+    "modified": "2014-03-25T19:11:57", 
+    "voided": false, 
+    "assigned_to": "2197a870-3dda-4220-8d87-bcc5a4ec9c0b", 
+    "due_on": "2014-03-06T00:00:00"
+  }
+},
+{
+  "pk": 14, 
+  "model": "tasks.encountertask", 
+  "fields": {
+    "encounter": null, 
+    "procedure": "a8d18201-07b3-437d-bf8b-db510e4a7ce8", 
+    "subject": "e67ee4a9-87ef-4f83-85a4-42e9aab7f8f9"
+  }
+},
+{
+  "pk": 15, 
+  "model": "tasks.encountertask", 
+  "fields": {
+    "encounter": null, 
+    "procedure": "a8d18201-07b3-437d-bf8b-db510e4a7ce8", 
+    "subject": "e67ee4a9-87ef-4f83-85a4-42e9aab7f8f9"
+  }
+},
+{
+  "pk": 1, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_permission", 
+    "name": "Can add permission", 
+    "content_type": 1
+  }
+},
+{
+  "pk": 2, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_permission", 
+    "name": "Can change permission", 
+    "content_type": 1
+  }
+},
+{
+  "pk": 3, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_permission", 
+    "name": "Can delete permission", 
+    "content_type": 1
+  }
+},
+{
+  "pk": 4, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_group", 
+    "name": "Can add group", 
+    "content_type": 2
+  }
+},
+{
+  "pk": 5, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_group", 
+    "name": "Can change group", 
+    "content_type": 2
+  }
+},
+{
+  "pk": 6, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_group", 
+    "name": "Can delete group", 
+    "content_type": 2
+  }
+},
+{
+  "pk": 7, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_user", 
+    "name": "Can add user", 
+    "content_type": 3
+  }
+},
+{
+  "pk": 8, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_user", 
+    "name": "Can change user", 
+    "content_type": 3
+  }
+},
+{
+  "pk": 9, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_user", 
+    "name": "Can delete user", 
+    "content_type": 3
+  }
+},
+{
+  "pk": 10, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_contenttype", 
+    "name": "Can add content type", 
+    "content_type": 4
+  }
+},
+{
+  "pk": 11, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_contenttype", 
+    "name": "Can change content type", 
+    "content_type": 4
+  }
+},
+{
+  "pk": 12, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_contenttype", 
+    "name": "Can delete content type", 
+    "content_type": 4
+  }
+},
+{
+  "pk": 13, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_session", 
+    "name": "Can add session", 
+    "content_type": 5
+  }
+},
+{
+  "pk": 14, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_session", 
+    "name": "Can change session", 
+    "content_type": 5
+  }
+},
+{
+  "pk": 15, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_session", 
+    "name": "Can delete session", 
+    "content_type": 5
+  }
+},
+{
+  "pk": 16, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_site", 
+    "name": "Can add site", 
+    "content_type": 6
+  }
+},
+{
+  "pk": 17, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_site", 
+    "name": "Can change site", 
+    "content_type": 6
+  }
+},
+{
+  "pk": 18, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_site", 
+    "name": "Can delete site", 
+    "content_type": 6
+  }
+},
+{
+  "pk": 19, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_logentry", 
+    "name": "Can add log entry", 
+    "content_type": 7
+  }
+},
+{
+  "pk": 20, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_logentry", 
+    "name": "Can change log entry", 
+    "content_type": 7
+  }
+},
+{
+  "pk": 21, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_logentry", 
+    "name": "Can delete log entry", 
+    "content_type": 7
+  }
+},
+{
+  "pk": 22, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_client", 
+    "name": "Can add client", 
+    "content_type": 8
+  }
+},
+{
+  "pk": 23, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_client", 
+    "name": "Can change client", 
+    "content_type": 8
+  }
+},
+{
+  "pk": 24, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_client", 
+    "name": "Can delete client", 
+    "content_type": 8
+  }
+},
+{
+  "pk": 25, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_clienteventlog", 
+    "name": "Can add client event log", 
+    "content_type": 9
+  }
+},
+{
+  "pk": 26, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_clienteventlog", 
+    "name": "Can change client event log", 
+    "content_type": 9
+  }
+},
+{
+  "pk": 27, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_clienteventlog", 
+    "name": "Can delete client event log", 
+    "content_type": 9
+  }
+},
+{
+  "pk": 28, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_patient", 
+    "name": "Can add patient", 
+    "content_type": 10
+  }
+},
+{
+  "pk": 29, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_patient", 
+    "name": "Can change patient", 
+    "content_type": 10
+  }
+},
+{
+  "pk": 30, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_patient", 
+    "name": "Can delete patient", 
+    "content_type": 10
+  }
+},
+{
+  "pk": 31, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_procedure", 
+    "name": "Can add procedure", 
+    "content_type": 11
+  }
+},
+{
+  "pk": 32, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_procedure", 
+    "name": "Can change procedure", 
+    "content_type": 11
+  }
+},
+{
+  "pk": 33, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_procedure", 
+    "name": "Can delete procedure", 
+    "content_type": 11
+  }
+},
+{
+  "pk": 34, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_binaryresource", 
+    "name": "Can add binary resource", 
+    "content_type": 12
+  }
+},
+{
+  "pk": 35, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_binaryresource", 
+    "name": "Can change binary resource", 
+    "content_type": 12
+  }
+},
+{
+  "pk": 36, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_binaryresource", 
+    "name": "Can delete binary resource", 
+    "content_type": 12
+  }
+},
+{
+  "pk": 37, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_savedprocedure", 
+    "name": "Can add saved procedure", 
+    "content_type": 13
+  }
+},
+{
+  "pk": 38, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_savedprocedure", 
+    "name": "Can change saved procedure", 
+    "content_type": 13
+  }
+},
+{
+  "pk": 39, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_savedprocedure", 
+    "name": "Can delete saved procedure", 
+    "content_type": 13
+  }
+},
+{
+  "pk": 40, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_notification", 
+    "name": "Can add notification", 
+    "content_type": 14
+  }
+},
+{
+  "pk": 41, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_notification", 
+    "name": "Can change notification", 
+    "content_type": 14
+  }
+},
+{
+  "pk": 42, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_notification", 
+    "name": "Can delete notification", 
+    "content_type": 14
+  }
+},
+{
+  "pk": 43, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_queueelement", 
+    "name": "Can add queue element", 
+    "content_type": 15
+  }
+},
+{
+  "pk": 44, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_queueelement", 
+    "name": "Can change queue element", 
+    "content_type": 15
+  }
+},
+{
+  "pk": 45, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_queueelement", 
+    "name": "Can delete queue element", 
+    "content_type": 15
+  }
+},
+{
+  "pk": 46, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_requestlog", 
+    "name": "Can add request log", 
+    "content_type": 16
+  }
+},
+{
+  "pk": 47, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_requestlog", 
+    "name": "Can change request log", 
+    "content_type": 16
+  }
+},
+{
+  "pk": 48, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_requestlog", 
+    "name": "Can delete request log", 
+    "content_type": 16
+  }
+},
+{
+  "pk": 49, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_concept", 
+    "name": "Can add concept", 
+    "content_type": 17
+  }
+},
+{
+  "pk": 50, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_concept", 
+    "name": "Can change concept", 
+    "content_type": 17
+  }
+},
+{
+  "pk": 51, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_concept", 
+    "name": "Can delete concept", 
+    "content_type": 17
+  }
+},
+{
+  "pk": 52, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_relationshipcategory", 
+    "name": "Can add relationship category", 
+    "content_type": 18
+  }
+},
+{
+  "pk": 53, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_relationshipcategory", 
+    "name": "Can change relationship category", 
+    "content_type": 18
+  }
+},
+{
+  "pk": 54, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_relationshipcategory", 
+    "name": "Can delete relationship category", 
+    "content_type": 18
+  }
+},
+{
+  "pk": 55, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_relationship", 
+    "name": "Can add relationship", 
+    "content_type": 19
+  }
+},
+{
+  "pk": 56, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_relationship", 
+    "name": "Can change relationship", 
+    "content_type": 19
+  }
+},
+{
+  "pk": 57, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_relationship", 
+    "name": "Can delete relationship", 
+    "content_type": 19
+  }
+},
+{
+  "pk": 58, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_device", 
+    "name": "Can add device", 
+    "content_type": 20
+  }
+},
+{
+  "pk": 59, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_device", 
+    "name": "Can change device", 
+    "content_type": 20
+  }
+},
+{
+  "pk": 60, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_device", 
+    "name": "Can delete device", 
+    "content_type": 20
+  }
+},
+{
+  "pk": 61, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_encounter", 
+    "name": "Can add encounter", 
+    "content_type": 21
+  }
+},
+{
+  "pk": 62, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_encounter", 
+    "name": "Can change encounter", 
+    "content_type": 21
+  }
+},
+{
+  "pk": 63, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_encounter", 
+    "name": "Can delete encounter", 
+    "content_type": 21
+  }
+},
+{
+  "pk": 64, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_event", 
+    "name": "Can add event", 
+    "content_type": 22
+  }
+},
+{
+  "pk": 65, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_event", 
+    "name": "Can change event", 
+    "content_type": 22
+  }
+},
+{
+  "pk": 66, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_event", 
+    "name": "Can delete event", 
+    "content_type": 22
+  }
+},
+{
+  "pk": 67, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_instruction", 
+    "name": "Can add instruction", 
+    "content_type": 23
+  }
+},
+{
+  "pk": 68, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_instruction", 
+    "name": "Can change instruction", 
+    "content_type": 23
+  }
+},
+{
+  "pk": 69, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_instruction", 
+    "name": "Can delete instruction", 
+    "content_type": 23
+  }
+},
+{
+  "pk": 70, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_location", 
+    "name": "Can add location", 
+    "content_type": 24
+  }
+},
+{
+  "pk": 71, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_location", 
+    "name": "Can change location", 
+    "content_type": 24
+  }
+},
+{
+  "pk": 72, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_location", 
+    "name": "Can delete location", 
+    "content_type": 24
+  }
+},
+{
+  "pk": 73, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_notification", 
+    "name": "Can add notification", 
+    "content_type": 25
+  }
+},
+{
+  "pk": 74, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_notification", 
+    "name": "Can change notification", 
+    "content_type": 25
+  }
+},
+{
+  "pk": 75, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_notification", 
+    "name": "Can delete notification", 
+    "content_type": 25
+  }
+},
+{
+  "pk": 76, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_observation", 
+    "name": "Can add observation", 
+    "content_type": 26
+  }
+},
+{
+  "pk": 77, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_observation", 
+    "name": "Can change observation", 
+    "content_type": 26
+  }
+},
+{
+  "pk": 78, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_observation", 
+    "name": "Can delete observation", 
+    "content_type": 26
+  }
+},
+{
+  "pk": 79, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_observer", 
+    "name": "Can add observer", 
+    "content_type": 27
+  }
+},
+{
+  "pk": 80, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_observer", 
+    "name": "Can change observer", 
+    "content_type": 27
+  }
+},
+{
+  "pk": 81, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_observer", 
+    "name": "Can delete observer", 
+    "content_type": 27
+  }
+},
+{
+  "pk": 82, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_procedure", 
+    "name": "Can add procedure", 
+    "content_type": 28
+  }
+},
+{
+  "pk": 83, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_procedure", 
+    "name": "Can change procedure", 
+    "content_type": 28
+  }
+},
+{
+  "pk": 84, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_procedure", 
+    "name": "Can delete procedure", 
+    "content_type": 28
+  }
+},
+{
+  "pk": 85, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_subject", 
+    "name": "Can add subject", 
+    "content_type": 29
+  }
+},
+{
+  "pk": 86, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_subject", 
+    "name": "Can change subject", 
+    "content_type": 29
+  }
+},
+{
+  "pk": 87, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_subject", 
+    "name": "Can delete subject", 
+    "content_type": 29
+  }
+},
+{
+  "pk": 88, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_status", 
+    "name": "Can add Task Status", 
+    "content_type": 30
+  }
+},
+{
+  "pk": 89, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_status", 
+    "name": "Can change Task Status", 
+    "content_type": 30
+  }
+},
+{
+  "pk": 90, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_status", 
+    "name": "Can delete Task Status", 
+    "content_type": 30
+  }
+},
+{
+  "pk": 91, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_task", 
+    "name": "Can add task", 
+    "content_type": 31
+  }
+},
+{
+  "pk": 92, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_task", 
+    "name": "Can change task", 
+    "content_type": 31
+  }
+},
+{
+  "pk": 93, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_task", 
+    "name": "Can delete task", 
+    "content_type": 31
+  }
+},
+{
+  "pk": 94, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_encountertask", 
+    "name": "Can add encounter task", 
+    "content_type": 32
+  }
+},
+{
+  "pk": 95, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_encountertask", 
+    "name": "Can change encounter task", 
+    "content_type": 32
+  }
+},
+{
+  "pk": 96, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_encountertask", 
+    "name": "Can delete encounter task", 
+    "content_type": 32
+  }
+},
+{
+  "pk": 97, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "add_observationtask", 
+    "name": "Can add observation task", 
+    "content_type": 33
+  }
+},
+{
+  "pk": 98, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "change_observationtask", 
+    "name": "Can change observation task", 
+    "content_type": 33
+  }
+},
+{
+  "pk": 99, 
+  "model": "auth.permission", 
+  "fields": {
+    "codename": "delete_observationtask", 
+    "name": "Can delete observation task", 
+    "content_type": 33
+  }
+},
+{
+  "pk": 2, 
+  "model": "auth.user", 
+  "fields": {
+    "username": "test", 
+    "first_name": "Test", 
+    "last_name": "Worker0", 
+    "is_active": true, 
+    "is_superuser": false, 
+    "is_staff": false, 
+    "last_login": "2013-07-01T12:22:05", 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "pbkdf2_sha256$12000$R4kYeW9kfVFX$FKId56pSzEA12a1Xml8S4IWtcWTaiOF3wk/WF8fBRpc=", 
+    "email": "", 
+    "date_joined": "2013-07-01T12:22:05"
+  }
+},
+{
+  "pk": 3, 
+  "model": "auth.user", 
+  "fields": {
+    "username": "test1", 
+    "first_name": "Test", 
+    "last_name": "Worker1", 
+    "is_active": true, 
+    "is_superuser": false, 
+    "is_staff": false, 
+    "last_login": "2014-02-09T21:47:49", 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "pbkdf2_sha256$12000$WOcDStN8j7AC$BUrrzjfceG1C2kHvu9tdgVqzLF+/9kby50eNEBLBNoM=", 
+    "email": "", 
+    "date_joined": "2014-02-09T21:47:49"
+  }
+},
+{
+  "pk": 4, 
+  "model": "auth.user", 
+  "fields": {
+    "username": "test2", 
+    "first_name": "Test", 
+    "last_name": "Worker2", 
+    "is_active": true, 
+    "is_superuser": false, 
+    "is_staff": false, 
+    "last_login": "2013-04-26T17:11:05", 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "pbkdf2_sha256$12000$tsq6znG6NNnv$zXgjwqFewdheD95rdhf2KfjZj5Ky+QcjByRvGHx8R5k=", 
+    "email": "", 
+    "date_joined": "2013-04-26T17:11:05"
+  }
+},
+{
+  "pk": 2, 
+  "model": "core.observer", 
+  "fields": {
+    "user": 2, 
+    "voided": false, 
+    "uuid": "ba3d192e-aee9-4cee-9750-5f39445cc767", 
+    "modified": "2013-04-26T17:11:08", 
+    "created": "2013-04-26T17:11:08"
+  }
+},
+{
+  "pk": 3, 
+  "model": "core.observer", 
+  "fields": {
+    "user": 3, 
+    "voided": false, 
+    "uuid": "1085a5ad-c5ab-4085-806b-f586539e7b82", 
+    "modified": "2013-07-01T12:45:04", 
+    "created": "2013-07-01T12:45:04"
+  }
+},
+{
+  "pk": 4, 
+  "model": "core.observer", 
+  "fields": {
+    "user": 4, 
+    "voided": false, 
+    "uuid": "2197a870-3dda-4220-8d87-bcc5a4ec9c0b", 
+    "modified": "2014-03-04T10:49:59", 
+    "created": "2014-02-09T21:48:01"
+  }
+}
+]
