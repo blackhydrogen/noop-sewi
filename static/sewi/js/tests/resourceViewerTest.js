@@ -52,7 +52,7 @@
         }
     });
 
-    QUnit.asyncTest('Resource Viewer Events', function(assert) {
+    QUnit.asyncTest('RV1: Resource Viewer Events', function(assert) {
         QUnit.stop(2);
 
         var testResViewer = this.testResViewer;
@@ -79,7 +79,7 @@
     });
 
     // Blanket.js incorrectly reports less coverage done by this test.
-    QUnit.asyncTest('Resource Viewer Top Panel', function(assert) {
+    QUnit.asyncTest('RV2: Resource Viewer Top Panel', function(assert) {
         QUnit.stop(4);
 
         var testResViewer = this.testResViewer;
@@ -130,7 +130,7 @@
     });
 
     // Blanket.js incorrectly reports less coverage done by this test.
-    QUnit.asyncTest('Resource Viewer Progress Bar', function(assert) {
+    QUnit.asyncTest('RV3: Resource Viewer Progress Bar', function(assert) {
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();
         this.fixture.append(testResViewContainer);
@@ -183,7 +183,7 @@
         }, 4000);
     });
 
-    QUnit.test('Resource Viewer Error Screen', function(assert) {
+    QUnit.test('RV4: Resource Viewer Error Screen', function(assert) {
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();
         this.fixture.append(testResViewContainer);

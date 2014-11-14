@@ -21,7 +21,7 @@
         },
     });
 
-    QUnit.test('Class Inheritance', function(assert) {
+    QUnit.test('CF1: Class Inheritance', function(assert) {
         function ClassOne() {
             this.value = constants.CLASS_ONE_VALUE;
         }
@@ -54,7 +54,7 @@
         assert.equal(objectOne.value, objectTwo.value, 'Subclass inherits the properties of the superclass.');
     });
 
-    QUnit.test('Vertical Slider Creation', function(assert) {
+    QUnit.test('CF2: Vertical Slider Creation', function(assert) {
         var slider = this.slider.clone();
         var triggerButton = this.triggerButton.clone();
 
@@ -68,7 +68,7 @@
         assert.equal(this.fixture.find(triggerButton).length, 1, 'Trigger button is added to the DOM.');
     });
 
-    QUnit.asyncTest('Vertical Slider Events', function(assert) {
+    QUnit.asyncTest('CF3: Vertical Slider Events', function(assert) {
         QUnit.stop();
 
         var slider = this.slider.clone();
