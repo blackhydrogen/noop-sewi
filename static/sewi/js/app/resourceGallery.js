@@ -110,7 +110,7 @@ var sewi = sewi || {};
 
   function thumbnailImageError() {
     // A default thumbnail image is shown for any resource without a thumbnail
-    $(this).find('img').attr('src', sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
+    $(this).find('img').attr('src', sewi.staticPath + sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
   }
 
   function addDraggblePropertyToResource(index, value) {
