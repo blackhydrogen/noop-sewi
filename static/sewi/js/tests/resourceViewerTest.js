@@ -1,3 +1,6 @@
+// Resource viewer unit tests
+// Note that Blanket.js currently reports this module's coverage as being much
+// lower than it actually is.
 (function(){
     var constants = {
         TEST_RESOURCE_VIEWER_TEST_EVENT: 'testEvent',
@@ -10,8 +13,8 @@
         TEST_PROGRESS_BAR_CHANGED_MESSAGE: 'Loading more...',
         TEST_ERROR_SCREEN_MESSAGE: 'Test has an error',
 
-        RESOURCE_VIEWER_FULLSCREEN_EVENT: 'FullscreenToggled',
-        RESOURCE_VIEWER_CLOSING_EVENT: 'Closing',
+        RESOURCE_VIEWER_FULLSCREEN_EVENT: sewi.constants.RESOURCE_VIEWER_FULLSCREEN_TOGGLED_EVENT,
+        RESOURCE_VIEWER_CLOSING_EVENT: sewi.constants.RESOURCE_VIEWER_CLOSING_EVENT,
         TOOLTIPS_BUTTON_CLASS: 'tooltips-button',
         FULLSCREEN_BUTTON_CLASS: 'fullscreen-button',
         CLOSE_BUTTON_CLASS: 'close-button',
@@ -49,8 +52,7 @@
         }
     });
 
-    QUnit.asyncTest('Resource Viewer Events', function(assert) {
-        expect(3);
+    QUnit.asyncTest('RV1: Resource Viewer Events', function(assert) {
         QUnit.stop(2);
 
         var testResViewer = this.testResViewer;
@@ -76,8 +78,8 @@
         testResViewer.trigger(constants.TEST_RESOURCE_VIEWER_TEST_EVENT_3);
     });
 
-    QUnit.asyncTest('Resource Viewer Top Panel', function(assert) {
-        expect(5);
+    // Blanket.js incorrectly reports less coverage done by this test.
+    QUnit.asyncTest('RV2: Resource Viewer Top Panel', function(assert) {
         QUnit.stop(4);
 
         var testResViewer = this.testResViewer;
@@ -127,8 +129,8 @@
 
     });
 
-    QUnit.asyncTest('Resource Viewer Progress Bar', function(assert) {
-        QUnit.start();
+    // Blanket.js incorrectly reports less coverage done by this test.
+    QUnit.asyncTest('RV3: Resource Viewer Progress Bar', function(assert) {
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();
         this.fixture.append(testResViewContainer);
@@ -150,32 +152,38 @@
         assert.equal(progressBarText.text(), constants.TEST_PROGRESS_BAR_MESSAGE, 'Progress bar can be initialised with a custom message.');
 
         testResViewer.updateProgressBar(25);
-        var currentWidth = progressBar.width() / progressWidth;
-        assert.strictEqual(currentWidth, 0.25, 'Progress bar width can be altered.');
 
-        testResViewer.updateProgressBar('a');
-        currentWidth = progressBar.width() / progressWidth;
-        assert.strictEqual(currentWidth, 0.25, 'Progress bar width can only be set using a number.');
+        // Use timeouts to allow the DOM time to update the progress bar width.
 
-        testResViewer.updateProgressBar(101);
-        currentWidth = progressBar.width() / progressWidth;
-        assert.strictEqual(currentWidth, 0.25, 'Progress bar width will not change if the value is outside the valid range.');
-
-        testResViewer.updateProgressBar(50, constants.TEST_PROGRESS_BAR_CHANGED_MESSAGE);
-
-        // Allow the DOM time to update the progress bar width.
-        QUnit.stop();
         setTimeout(function() {
-            currentWidth = progressBar.width() / progressWidth;
+            var currentWidth = progressBar.width() / progressWidth;
+            assert.strictEqual(currentWidth, 0.25, 'Progress bar width can be altered.');
+            testResViewer.updateProgressBar('a');
+        }, 1000);
+
+        setTimeout(function() {
+            var currentWidth = progressBar.width() / progressWidth;
+            assert.strictEqual(currentWidth, 0.25, 'Progress bar width can only be set using a number.');
+            testResViewer.updateProgressBar(101);
+        }, 2000);
+
+        setTimeout(function() {
+            var currentWidth = progressBar.width() / progressWidth;
+            assert.strictEqual(currentWidth, 0.25, 'Progress bar width will not change if the value is outside the valid range.');
+            testResViewer.updateProgressBar(50, constants.TEST_PROGRESS_BAR_CHANGED_MESSAGE);
+        }, 3000);
+
+        setTimeout(function() {
+            var currentWidth = progressBar.width() / progressWidth;
             assert.strictEqual(currentWidth, 0.5, 'Progress bar width can be updated with its text.');
             assert.strictEqual(progressBarText.text(), constants.TEST_PROGRESS_BAR_CHANGED_MESSAGE, 'Progress bar text can be updated with its width.');
             testResViewer.hideProgressBar();
             assert.strictEqual(testResViewContainer.has('.' + constants.PROGRESS_BAR_CLASS).length, 0, 'Progress bar can be hidden after showing.');
             QUnit.start();
-        }, 500);
+        }, 4000);
     });
 
-    QUnit.test('Resource Viewer Error Screen', function(assert) {
+    QUnit.test('RV4: Resource Viewer Error Screen', function(assert) {
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();
         this.fixture.append(testResViewContainer);

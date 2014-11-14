@@ -195,12 +195,13 @@ label.btn input {
 }
 
 .resource-viewer .top-panel {
-    position: absolute;
-    top: -30px;
-    right: 0;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.2);
-    opacity: 0.2;
+	position: absolute;
+	top: -30px;
+	right: 0;
+	height: 30px;
+	background: transparent;
+	opacity: 0.7;
+	z-index: 4000;
 }
 
 .resource-viewer:hover .top-panel {
@@ -228,6 +229,7 @@ label.btn input {
     left: 0px;
     width: 100%;
     height: 100%;
+	z-index: 3000;
 }
 .error-screen>.retry {
     position: absolute;
@@ -251,6 +253,7 @@ label.btn input {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
+	z-index: 2000;
 }
 
 .resource-viewer .progress {

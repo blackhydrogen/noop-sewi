@@ -1,3 +1,5 @@
+// Unit tests for Configurator
+// Author: Muhammad Fazli Bin Rosli
 (function() {
 
     var constants = {
@@ -181,7 +183,7 @@
         }
     });
 
-    QUnit.test('Initialization', function(assert) {
+    QUnit.test('CN1: Initialization', function(assert) {
 
         assert.throws(function() {
             var configurator = new sewi.Configurator();
@@ -222,7 +224,7 @@
         assert.ok(configurator, 'Configurator can init successfully with selectors/DIVs provided.');
     });
 
-    QUnit.test('Basic DOM Elements', function(assert) {
+    QUnit.test('CN2: Basic DOM Elements', function(assert) {
         var configurator = new sewi.Configurator({
             titleView: constants.TITLE_VIEW_ID,
             basicInfoView: constants.BASIC_INFO_VIEW_ID,
@@ -242,7 +244,7 @@
         assert.equal(this.resGalleryView.children('.' + constants.RES_GALLERY_CLASS).length, 1, 'Configurator adds the resource gallery container to the encounter resource gallery DIV.');
     });
 
-    QUnit.test('Title and Subtitle', function(assert) {
+    QUnit.test('CN3: Title and Subtitle', function(assert) {
         var configurator = new sewi.Configurator({
             titleView: constants.TITLE_VIEW_ID,
             basicInfoView: constants.BASIC_INFO_VIEW_ID,
@@ -266,7 +268,7 @@
         assert.equal(subtitleDiv.text(), constants.TEST_CHANGED_SUBTITLE, 'Subtitle text is changed correctly.');
     });
 
-    QUnit.test('Loading title from sub-component', function(assert) {
+    QUnit.test('CN4: Loading title from sub-component', function(assert) {
         // Override with another test driver
         window.sewi.BasicEncounterInfoViewer = BasicEncounterInfoWithTitleTestDriver;
 
@@ -291,8 +293,7 @@
         assert.strictEqual(subtitleText, constants.TEST_DISPLAYED_PATIENT_ID, 'Subtitle text from constructor is displayed correctly.');
     });
 
-    QUnit.asyncTest('Window resize propogation', function(assert) {
-        QUnit.expect(3);
+    QUnit.asyncTest('CN5: Window resize propogation', function(assert) {
         QUnit.stop(2);
 
         var configurator = new sewi.Configurator({
@@ -326,9 +327,7 @@
         $(window).resize();
     });
 
-    QUnit.asyncTest('View resize propogation in default mode', function(assert) {
-        QUnit.expect(1);
-
+    QUnit.asyncTest('CN6: View resize propogation in default mode', function(assert) {
         var configurator = new sewi.Configurator({
             titleView: constants.TITLE_VIEW_ID,
             basicInfoView: constants.BASIC_INFO_VIEW_ID,
@@ -356,9 +355,7 @@
         setTimeout(minimizeButton.click.bind(minimizeButton), 500);
     });
 
-    QUnit.asyncTest('View resize propogation when resource already opened', function(assert) {
-        QUnit.expect(1);
-
+    QUnit.asyncTest('CN7: View resize propogation when resource already opened', function(assert) {
         this.resViewerView.removeClass().addClass(constants.RES_VIEWER_VIEW_SHOWN_CLASS);
         this.resGalleryView.removeClass().addClass(constants.RES_GALLERY_VIEW_MINIMIZED_CLASS);
 
@@ -389,9 +386,7 @@
         setTimeout(minimizeButton.click.bind(minimizeButton), 500);
     });
 
-    QUnit.asyncTest('Opening resource', function(assert) {
-        QUnit.expect(3);
-
+    QUnit.asyncTest('CN8: Opening resource', function(assert) {
         var configurator = new sewi.Configurator({
             titleView: constants.TITLE_VIEW_ID,
             basicInfoView: constants.BASIC_INFO_VIEW_ID,
@@ -415,9 +410,7 @@
         configurator.privates.openResource.call(configurator, resourceDOM);
     });
 
-    QUnit.asyncTest('Tranferring resource from gallery to viewer', function(assert) {
-        QUnit.expect(1);
-
+    QUnit.asyncTest('CN9: Tranferring resource from gallery to viewer', function(assert) {
         var configurator = new sewi.Configurator({
             titleView: constants.TITLE_VIEW_ID,
             basicInfoView: constants.BASIC_INFO_VIEW_ID,
@@ -438,8 +431,7 @@
         resGalleryElement.trigger(constants.TEST_OPEN_RESOURCE_EVENT);
     });
 
-    QUnit.asyncTest('Configurator responding to sub-components opening and closing resources', function(assert) {
-        QUnit.expect(4);
+    QUnit.asyncTest('CN10: Configurator responding to sub-components opening and closing resources', function(assert) {
         QUnit.stop(3);
 
         var configurator = new sewi.Configurator({
@@ -487,7 +479,7 @@
         }, 500);
     });
 
-    QUnit.asyncTest('Configurator responding to crashing sub-components', function(assert) {
+    QUnit.asyncTest('CN11: Configurator responding to crashing sub-components', function(assert) {
 
         // Ensure all views are visible.
         this.resViewerView.removeClass().addClass(constants.RES_VIEWER_VIEW_SHOWN_CLASS);
