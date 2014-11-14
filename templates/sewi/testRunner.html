@@ -8,7 +8,7 @@
     {# CSS #}
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/bootstrap.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/jquery-ui-1.10.3.custom.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "sewi/js/tests/vendor/qunit-1.12.0.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "sewi/js/tests/vendor/qunit-1.15.0.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "sewi/css/style.css" %}" />
     <style>
         html, body {
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="{% static "sewi/js/lib/dygraph-combined.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/lib/jquery.slimscroll.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/lib/bootstrap-select.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "sewi/js/tests/vendor/qunit-1.12.0.js" %}"></script>
+    <script type="text/javascript" src="{% static "sewi/js/tests/vendor/qunit-1.15.0.js" %}"></script>
     <script type="text/javascript" src="{% static "sewi/js/tests/vendor/blanket.min.js" %}"></script>
     {# SEWI JavaScript files #}
     <script type="text/javascript">
@@ -49,15 +49,14 @@
   <body>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
-    <script src="{% static "sewi/js/tests/tests.js" %}"></script>
+    <script src="{% static "sewi/js/tests/commonTest.js" %}"></script>
+    <script src="{% static "sewi/js/tests/resourceViewerTest.js" %}"></script>
     <script src="{% static "sewi/js/tests/configuratorTest.js" %}"></script>
     <script src="{% static "sewi/js/tests/tabtest.js" %}"></script>
+    <script src="{% static "sewi/js/tests/panZoomWidgetTest.js" %}"></script>
     <script src="{% static "sewi/js/tests/chartResourceViewerTest.js" %}"></script>
-    <script src="{% static "sewi/js/tests/common.js" %}"></script>
-    <script src="{% static "sewi/js/tests/resourceViewer.js" %}"></script>
     <script src="{% static "sewi/js/tests/videoResourceViewerTest.js" %}"></script>
     <script src="{% static "sewi/js/tests/audioResourceViewerTest.js" %}"></script>
     <script src="{% static "sewi/js/tests/imageResourceViewerTest.js" %}"></script>
-    <script src="{% static "sewi/js/tests/panZoomWidgetTest.js" %}"></script>
   </body>
 </html>
