@@ -77,11 +77,15 @@ var sewi = sewi || {};
 
   function appendResourceToDOM(index, value) {
     var resourceContainer = this.mainDOMElement;
+    var thumbNailContainer = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM);
+    var loadingImagePath = sewi.staticPath + sewi.constants.RESOURCE_GALLERY_LOADING_THUMBNAIL;
+    thumbNailContainer.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).
+      attr('src', loadingImagePath);
     var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
       .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value.id)
       .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value.type)
       .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value.date)
-      .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
+      .append(thumbNailContainer)
       .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value.name));
 
     resource.on('dblclick', this, getResourceDOM);
@@ -110,7 +114,7 @@ var sewi = sewi || {};
 
   function thumbnailImageError() {
     // A default thumbnail image is shown for any resource without a thumbnail
-    $(this).find('img').attr('src', sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
+    $(this).find('img').attr('src', sewi.staticPath + sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
   }
 
   function addDraggblePropertyToResource(index, value) {
