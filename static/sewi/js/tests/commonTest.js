@@ -22,8 +22,6 @@
     });
 
     QUnit.test('Class Inheritance', function(assert) {
-        expect(6);
-
         function ClassOne() {
             this.value = constants.CLASS_ONE_VALUE;
         }
@@ -57,8 +55,6 @@
     });
 
     QUnit.test('Vertical Slider Creation', function(assert) {
-        expect(3);
-
         var slider = this.slider.clone();
         var triggerButton = this.triggerButton.clone();
 
@@ -73,7 +69,6 @@
     });
 
     QUnit.asyncTest('Vertical Slider Events', function(assert) {
-        expect(2);
         QUnit.stop();
 
         var slider = this.slider.clone();

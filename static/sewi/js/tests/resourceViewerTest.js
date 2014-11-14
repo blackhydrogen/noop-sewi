@@ -53,7 +53,6 @@
     });
 
     QUnit.asyncTest('Resource Viewer Events', function(assert) {
-        expect(3);
         QUnit.stop(2);
 
         var testResViewer = this.testResViewer;
@@ -81,7 +80,6 @@
 
     // Blanket.js incorrectly reports less coverage done by this test.
     QUnit.asyncTest('Resource Viewer Top Panel', function(assert) {
-        expect(5);
         QUnit.stop(4);
 
         var testResViewer = this.testResViewer;
