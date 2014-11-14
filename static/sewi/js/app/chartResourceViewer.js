@@ -140,7 +140,7 @@ var sewi = sewi || {};
 
   sewi.ChartControls.prototype.getTiming = function(){
     return this.timingDisplay.val();
-  }
+  };
 
   /**
    * Hides tooltips previously made visible via
@@ -568,7 +568,7 @@ var sewi = sewi || {};
   }
 
   function formatLegendDisplayForYAxis(y) {
-    return sewi.constants.CHART_RESOURCE_LEGEND_Y_DOM + y.toFixed(2) + sewi.constants.CHART_RESOURCE_Y_AXIS_UNIT
+    return sewi.constants.CHART_RESOURCE_LEGEND_Y_DOM + y.toFixed(2) + sewi.constants.CHART_RESOURCE_Y_AXIS_UNIT;
   }
 
   function sorter(a, b) {

@@ -89,7 +89,7 @@
       assert.equal(errorScreen.length, 1, 'Viewer displays an error if the resource does not exist.');
 
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
   });
 
@@ -117,7 +117,7 @@
       assert.ok(!_.contains(chartResourceViewer.selectedPoints, pointOnGraph), 'Point deselected when canvas is clicked again');
 
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
   });
 
@@ -144,7 +144,7 @@
       assert.equal(chartResourceViewer.controls.getTiming(), constants.TEST_TIME_INTERVAL_FOR_2_SELECTED_POINTS, 'Interval updated on deselecting point');
 
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
   });
 
@@ -172,7 +172,7 @@
       assert.equal(chartResourceViewer.controls.getTiming(), '', 'Interval updated when one point moves out of the currently visible range');
       
       QUnit.start();
-    }, 2500);
+    }, 9000);
   });
 
   QUnit.asyncTest('CR6: Detecting peaks and updating time interval when zooming into Y axis', function(assert) {
@@ -191,13 +191,13 @@
       chartResourceViewer.yMin = newYRange[0];
       chartResourceViewer.privates.chartZoomed.call(chartResourceViewer);
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
     setTimeout(function() {
       assert.equal(chartResourceViewer.selectedPoints.length, constants.TEST_NUM_SELECED_POINTS_IN_ZOOMED_Y_RANGE, 'All peaks selected successfully');
       assert.equal(chartResourceViewer.controls.getTiming(), constants.TEST_TIME_INTERVAL_IN_ZOOMED_Y_RANGE, 'Interval between selected points updated successfully');
       QUnit.start();
-    }, 3000);
+    }, 9500);
 
   });
 
@@ -214,13 +214,13 @@
     setTimeout(function() {
       chartResourceViewer.controlPanelElement.trigger(constants.RESET_ALL_POINTS_EVENT);
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
     setTimeout(function() {
       assert.equal(chartResourceViewer.selectedPoints.length, 0, "All highlighted points reset successfully");
       assert.equal(chartResourceViewer.XValueOfSelectedPoints.length, 0, "X values of highlighted points reset successfully");
       QUnit.start();
-    }, 3000);
+    }, 9500);
 
   });
 
@@ -234,12 +234,12 @@ QUnit.asyncTest('CR8: Handling control panel events: Zoom out graph', function(a
     setTimeout(function() {
       chartResourceViewer.controlPanelElement.trigger(constants.ZOOM_OUT_GRAPH_EVENT);
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
     setTimeout(function() {
      	assert.ok(!chartResourceViewer.graph.isZoomed(), 'Chart zoomed out successfully');
       QUnit.start();
-    }, 3000);
+    }, 9500);
 
   });
 
@@ -268,13 +268,13 @@ QUnit.asyncTest('CR9: Handling control panel events: Reset visible points', func
       
       chartResourceViewer.controlPanelElement.trigger(constants.RESET_VISIBLE_POINTS_EVENT);
       QUnit.start();
-    }, 2500);
+    }, 9000);
 
     setTimeout(function() {
      	assert.ok(!_.contains(chartResourceViewer.selectedPoints, point1_WithinRange) && !_.contains(chartResourceViewer.selectedPoints, point2_WithinRange), 'Both points within range reset');
      	assert.ok(_.contains(chartResourceViewer.selectedPoints, pointOutOfRange), 'Point outside the range is not reset');
       QUnit.start();
-    }, 3000);
+    }, 9500);
 
   });
 
@@ -317,7 +317,7 @@ QUnit.asyncTest('CR10: Toogle tooltips', function(assert){
       assert.ok(!$(resetAllButton).attr('aria-describedby'), 'Tooltip for Reset all points button hidden');
       assert.ok(!$(resetVisibleButton).attr('aria-describedby'), 'Tooltip for Reset visible points button hidden');
       QUnit.start();
-    }, 200);
+    }, 1000);
 
   });
 
