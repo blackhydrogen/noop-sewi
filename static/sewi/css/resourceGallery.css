@@ -25,7 +25,6 @@
 .resource-thumbnail {
     max-width: 100%;
     min-height: 100%;
-    /*zoom: 150%;*/
 }
 
 .resource-thumbnail-container{
@@ -35,6 +34,13 @@
     overflow: hidden;
     margin-left: auto;
     margin-right: auto;
+}
+
+.double-click-instruction{
+    background-color: #adb9c4;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 .col-xs-1 .resource-thumbnail-container{
@@ -62,9 +68,17 @@
 }
 
 .resource-dragged{
-    max-width: 150px;
-}
-
-.col-xs-1 .resource-dragged{
     max-width: 90px;
 }
+
+.resource-thumbnail-container-dragged{
+    width: 80px;
+    height: 80px;
+}
+
+.resource-title-dragged{
+    max-width: 80px;
+    font-size: 0.75em;
+}
+
+
