@@ -129,7 +129,7 @@
 
     });
 
-    // Blanket.js incorrectly reports no coverage done by this test.
+    // Blanket.js incorrectly reports less coverage done by this test.
     QUnit.asyncTest('Resource Viewer Progress Bar', function(assert) {
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();
