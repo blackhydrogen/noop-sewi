@@ -476,6 +476,8 @@
     };
 
     // Generic helper functions
+
+    // Simulates mouse movement within the element
     function moveMouseIn(element, x, y) {
         element = $(element);
         var eventData = {
@@ -484,6 +486,11 @@
         };
         var event = $.Event('mousemove', eventData);
         element.trigger(event);
+    }
+
+    // Returns true if a Bootstrap tooltip is currently being displayed by the element.
+    function isTooltipShown(element) {
+        return !!$(element).attr('aria-describedby');
     }
 
     QUnit.module('Video Resource Viewer', {
@@ -821,11 +828,11 @@
             viewer.showTooltips();
 
             selfRef.zoomSlider.mouseover();
-            assert.ok(selfRef.zoomSlider.attr('aria-describedby'), 'Zoom slider tooltip can be enabled.');
+            assert.ok(isTooltipShown(selfRef.zoomSlider), 'Zoom slider tooltip can be enabled.');
             selfRef.zoomButton.mouseover();
-            assert.ok(selfRef.zoomButton.attr('aria-describedby'), 'Reset zoom button tooltip can be enabled.');
+            assert.ok(isTooltipShown(selfRef.zoomButton), 'Reset zoom button tooltip can be enabled.');
             selfRef.zoomToFitButton.mouseover();
-            assert.ok(selfRef.zoomToFitButton.attr('aria-describedby'), 'Zoom to fit button tooltip can be enabled.');
+            assert.ok(isTooltipShown(selfRef.zoomToFitButton), 'Zoom to fit button tooltip can be enabled.');
 
             selfRef.zoomSlider.mouseout();
             selfRef.zoomButton.mouseout();
@@ -852,11 +859,11 @@
         function testDisablingTooltips() {
 
             selfRef.zoomSlider.mouseover();
-            assert.ok(!selfRef.zoomSlider.attr('aria-describedby'), 'Zoom slider tooltip can be disabled.');
+            assert.ok(!isTooltipShown(selfRef.zoomSlider), 'Zoom slider tooltip can be disabled.');
             selfRef.zoomButton.mouseover();
-            assert.ok(!selfRef.zoomButton.attr('aria-describedby'), 'Reset zoom button tooltip can be disabled.');
+            assert.ok(!isTooltipShown(selfRef.zoomButton), 'Reset zoom button tooltip can be disabled.');
             selfRef.zoomToFitButton.mouseover();
-            assert.ok(!selfRef.zoomToFitButton.attr('aria-describedby'), 'Zoom to fit button tooltip can be disabled.');
+            assert.ok(!isTooltipShown(selfRef.zoomToFitButton), 'Zoom to fit button tooltip can be disabled.');
 
             setTimeout(cleanUpTest, 1000);
         }
