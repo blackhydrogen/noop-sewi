@@ -1,6 +1,7 @@
 from django.test import TestCase, LiveServerTestCase
 from splinter import Browser
 from time import sleep
+from selenium import webdriver
 
 class TabUITest(LiveServerTestCase):
     fixtures = ['test.json'];
@@ -15,7 +16,7 @@ class TabUITest(LiveServerTestCase):
         super(TabUITest, self).tearDownClass()
         self.browser.quit()
 
-    def test_drag_and_drop_full(self):
+    def test_TUI1_drag_and_drop_full(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -32,7 +33,7 @@ class TabUITest(LiveServerTestCase):
         panelFull = self.browser.find_by_css('.panel-full');
         self.assertNotEqual(len(panelFull), 0, 'panel full does not exist');
     
-    def test_drag_and_drop_left_right(self):
+    def test_TUI2_drag_and_drop_left_right(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -49,7 +50,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelLeft), 0, "left panel does not exist");
 
 
-    def test_drag_and_drop_top_bottom(self):
+    def test_TUI3_drag_and_drop_top_bottom(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -66,7 +67,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelBottom), 0, "bottom panel does not exist");
 
 
-    def test_drag_and_drop_Left_1_right_2(self):
+    def test_TUI4_drag_and_drop_Left_1_right_2(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -88,7 +89,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelTopRight), 0, "top right panel does not exist")
         self.assertNotEqual(len(panelBottomRight), 0, "bottom right panel does not exist")
 
-    def test_drag_and_drop_left_2_right_1(self):
+    def test_TUI5_drag_and_drop_left_2_right_1(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -111,7 +112,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelBottomLeft), 0, "bottom left panel does not exist")
 
 
-    def test_drag_and_drop_top_1_bottom_2(self):
+    def test_TUI6_drag_and_drop_top_1_bottom_2(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -133,7 +134,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelBottomRight), 0, "bottom right panel does not exist")
         self.assertNotEqual(len(panelBottomLeft), 0, "bottom left panel does not exist")
 
-    def test_drag_and_drop_top_2_bottom_1(self):
+    def test_TUI7_drag_and_drop_top_2_bottom_1(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -155,7 +156,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelTopRight), 0, "top right panel does not exist")
         self.assertNotEqual(len(panelTopLeft), 0, "top left panel does not exist")
 
-    def test_drag_and_drop_4_panels_1(self):
+    def test_TUI8_drag_and_drop_4_panels_1(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -179,7 +180,7 @@ class TabUITest(LiveServerTestCase):
         bottomLeftPanel = self.browser.find_by_css('.panel-bottom-left')
         self.assertNotEqual(len(bottomLeftPanel), 0, "bottom left panel does not exist")
 
-    def test_drag_and_drop_4_panels_2(self):
+    def test_TUI9_drag_and_drop_4_panels_2(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -207,7 +208,7 @@ class TabUITest(LiveServerTestCase):
         topLeftPanel = self.browser.find_by_css('.panel-top-left')
         self.assertNotEqual(len(topLeftPanel), 0, "top left panel does not exist")
 
-    def test_open_close_tab(self):
+    def test_TUI10_open_close_tab(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -240,7 +241,7 @@ class TabUITest(LiveServerTestCase):
         tabs = self.browser.find_by_css('.tab-pane')
         self.assertEqual(len(tabs), 2, "Number of tabs doesn't match")
 
-    def test_close_resources_1(self):        
+    def test_TUI11_close_resources_1(self):        
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
@@ -275,7 +276,7 @@ class TabUITest(LiveServerTestCase):
         self.assertNotEqual(len(panelTop), 0, "top panel doesn't exist")
         self.assertNotEqual(len(panelBottom), 0, "bottom panel doesn't exist")
 
-    def test_close_resources_2(self):
+    def test_TUI12_close_resources_2(self):
         self.browser.visit('%s/sewi/encounter/77d09b28-abed-4a6a-b48b-6b368bd2fdb3' % self.live_server_url)
         sleep(3)
         
