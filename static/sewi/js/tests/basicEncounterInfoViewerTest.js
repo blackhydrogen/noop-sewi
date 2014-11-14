@@ -16,7 +16,7 @@
 		}
 	});
 
-	QUnit.test("Process Info", function(assert) {
+	QUnit.test("Process Info (BE1)", function(assert) {
 		expect(1);
 
 		var sampleEncounterData = [
