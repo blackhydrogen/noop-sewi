@@ -471,9 +471,6 @@ var sewi = sewi || {};
      * Updates the values of the zoom controls. Used to update the ImageControl view when
      * the image is resized via other user inputs (e.g. via mousewheel events monitored by the
      * PanZoomWidget).
-     *
-     * @class sewi.ImageControls
-     * @constructor
      */
     sewi.ImageControls.prototype.updateZoomControlValue = function(options) {
         options = options || {};
