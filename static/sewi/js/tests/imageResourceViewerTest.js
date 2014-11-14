@@ -550,8 +550,8 @@
 
             this.fixture.append(
                 this.imageResourceViewer.getDOM()
-                    .width(constants.ORIGNAL_IMAGE_WIDTH)
-                    .height(constants.ORIGINAL_IMAGE_HEIGHT)
+                    .width(constants.ORIGNAL_IMAGE_WIDTH - 100) // We subtract 100px to test the zoom-to-fit
+                    .height(constants.ORIGINAL_IMAGE_HEIGHT - 100)
             );
 
             this.imagesPendingLoad = 1; // for the original image.
@@ -623,7 +623,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Flame", function(assert) {
+    QUnit.asyncTest("Flame", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -663,7 +663,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Rainbow", function(assert) {
+    QUnit.asyncTest("Rainbow", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -703,7 +703,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Spectrum", function(assert) {
+    QUnit.asyncTest("Spectrum", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -743,7 +743,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Invert", function(assert) {
+    QUnit.asyncTest("Invert", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -783,7 +783,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Difference", function(assert) {
+    QUnit.asyncTest("Difference", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -823,7 +823,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Auto-contrast", function(assert) {
+    QUnit.asyncTest("Auto-contrast", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -850,8 +850,6 @@
                 this.imageResourceViewer.controls.on(
                     sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT,
                     function(event, filterSettings) {
-                    	console.log(filterSettings);
-                    	console.log(expectedFilterSettings);
                         assert.ok(_.isEqual(expectedFilterSettings, filterSettings), "Filter Settings");
                         QUnit.start();
                     }
@@ -865,7 +863,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Contrast Stretching, Shadows", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Shadows", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -892,8 +890,6 @@
                 this.imageResourceViewer.controls.on(
                     sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT,
                     function(event, filterSettings) {
-                    	console.log(filterSettings);
-                    	console.log(expectedFilterSettings);
                         assert.ok(_.isEqual(expectedFilterSettings, filterSettings), "Filter Settings");
                         QUnit.start();
                     }
@@ -907,7 +903,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Contrast Stretching, Midtones", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Midtones", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -934,8 +930,6 @@
                 this.imageResourceViewer.controls.on(
                     sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT,
                     function(event, filterSettings) {
-                    	console.log(filterSettings);
-                    	console.log(expectedFilterSettings);
                         assert.ok(_.isEqual(expectedFilterSettings, filterSettings), "Filter Settings");
                         QUnit.start();
                     }
@@ -949,7 +943,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-	QUnit.asyncTest("Contrast Stretching, Highlights", function(assert) {
+    QUnit.asyncTest("Contrast Stretching, Highlights", function(assert) {
         expect(1);
 
         function checkForImageReadyBeforeTest() {
@@ -976,8 +970,6 @@
                 this.imageResourceViewer.controls.on(
                     sewi.constants.IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT,
                     function(event, filterSettings) {
-                    	console.log(filterSettings);
-                    	console.log(expectedFilterSettings);
                         assert.ok(_.isEqual(expectedFilterSettings, filterSettings), "Filter Settings");
                         QUnit.start();
                     }
@@ -985,6 +977,41 @@
 
                 // Call applyCustomImageFilters
                 this.imageResourceViewer.controls.privates.filtersChanged.call(this.imageResourceViewer.controls);
+            }
+        }
+
+        checkForImageReadyBeforeTest.call(this);
+    });
+
+    QUnit.asyncTest("Zoom Slider", function(assert) {
+        expect(1);
+
+        function checkForImageReadyBeforeTest() {
+            if(this.imagesPendingLoad != 0) {
+                setTimeout(checkForImageReadyBeforeTest.bind(this), 100);
+                return;
+            }
+            else { // Test here.
+
+                // Set up the zoom slider value
+                this.imageResourceViewer.controls.zoomSlider.val(110);
+
+                // Set up the listener to handle the zoomLevelChanged event
+                this.imageResourceViewer.controls.on(
+                    sewi.constants.IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT,
+                    (function() {
+                        QUnit.equal(
+                            this.imageResourceViewer.panZoomWidget.getCurrentZoomLevel.call(
+                                this.imageResourceViewer.panZoomWidget
+                            ),
+                            110,
+                            "Zoom Level Value"
+                        );
+                        QUnit.start();
+                    }).bind(this)
+                );
+
+                this.imageResourceViewer.controls.privates.zoomLevelChanged.call(this.imageResourceViewer.controls);
             }
         }
 
