@@ -79,8 +79,8 @@ var sewi = sewi || {};
     var resourceContainer = this.mainDOMElement;
     var thumbNailContainer = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM);
     var loadingImagePath = sewi.staticPath + sewi.constants.RESOURCE_GALLERY_LOADING_THUMBNAIL;
-    thumbNailContainer.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS).
-      attr('src', loadingImagePath);
+    thumbNailContainer.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS)
+      .attr('src', loadingImagePath);
     var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
       .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value.id)
       .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value.type)
