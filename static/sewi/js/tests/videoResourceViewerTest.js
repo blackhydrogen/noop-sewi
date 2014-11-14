@@ -373,6 +373,7 @@
         TEST_WIDGET_ZOOMED_EVENT: 'widgetZoomed',
         TEST_WIDGET_FIT_EVENT: 'widgetZoomToFit',
 
+        VIEWER_CLASS: sewi.constants.VIDEO_RESOURCE_VIEWER_DOM_CLASS,
         ERROR_SCREEN_CLASS: 'error-screen',
         ZOOM_SLIDER_CLASS: 'zoom-slider',
         RESET_ZOOM_BUTTON_CLASS: 'zoom-button',
@@ -468,6 +469,17 @@
     PanZoomWidgetTestDriver.prototype.setZoomLevelToZoomToFit = function() {
         this.panZoomTarget.trigger(constants.TEST_WIDGET_FIT_EVENT);
     };
+
+    // Generic helper functions
+    function moveMouseIn(element, x, y) {
+        element = $(element);
+        var eventData = {
+            clientX: element.offset().left + x,
+            clientY: element.offset().top + y,
+        };
+        var event = $.Event('mousemove', eventData);
+        element.trigger(event);
+    }
 
     QUnit.module('Video Resource Viewer', {
         setup: function() {
@@ -729,6 +741,42 @@
 
             viewer.cleanUp();
         }
+
+        viewer.load();
+    });
+
+    QUnit.asyncTest('Displaying Controls Only When Mouse Moves', function(assert) {
+        assert.expect(4);
+        var selfRef = this;
+        window.sewi.PanZoomWidget = PanZoomWidgetTestDriver;
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        this.fixture.append(viewerElement);
+        var innerElement = viewerElement.find('.' + constants.VIEWER_CLASS);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            assert.ok(!innerElement.hasClass('active'), 'Viewer is not initially active.');
+            moveMouseIn(innerElement, 10, 10);
+            setTimeout(function() {
+                assert.ok(innerElement.hasClass('active'), 'Viewer becomes active when mouse moves within it.');
+            }, 500);
+
+            setTimeout(function() {
+                assert.ok(!innerElement.hasClass('active'), 'Viewer becomes inactive after a period of time.');
+                moveMouseIn(innerElement, 10, 10);
+            }, 3000);
+
+            setTimeout(function() {
+                assert.ok(!innerElement.hasClass('active'), 'Viewer does not become active if event is detected but mouse did not actually move.');
+                QUnit.start();
+
+                viewer.cleanUp();
+            }, 3500);
+        });
 
         viewer.load();
     });
