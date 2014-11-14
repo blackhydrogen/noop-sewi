@@ -22,6 +22,12 @@ var sewi = sewi || {};
                     });
     }
     
+    /**
+     * Fires when the scroll bar is moved
+     * @event move
+     * @memberOf  sewi.ScrollBar
+     */
+
     sewi.inherits(sewi.ScrollBar, sewi.ConfiguratorElement);
 
     function onDrag(event, ui){
