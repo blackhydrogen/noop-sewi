@@ -1,3 +1,6 @@
+// Resource viewer unit tests
+// Note that Blanket.js currently reports this module's coverage as being much
+// lower than it actually is.
 (function(){
     var constants = {
         TEST_RESOURCE_VIEWER_TEST_EVENT: 'testEvent',
@@ -76,6 +79,7 @@
         testResViewer.trigger(constants.TEST_RESOURCE_VIEWER_TEST_EVENT_3);
     });
 
+    // Blanket.js incorrectly reports less coverage done by this test.
     QUnit.asyncTest('Resource Viewer Top Panel', function(assert) {
         expect(5);
         QUnit.stop(4);
@@ -127,6 +131,7 @@
 
     });
 
+    // Blanket.js incorrectly reports no coverage done by this test.
     QUnit.asyncTest('Resource Viewer Progress Bar', function(assert) {
         var testResViewer = this.testResViewer;
         var testResViewContainer = testResViewer.getDOM();

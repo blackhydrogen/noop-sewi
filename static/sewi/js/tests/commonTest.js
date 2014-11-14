@@ -1,3 +1,4 @@
+// Unit tests for common functions
 (function() {
     var constants = {
         CLASS_ONE_MESSAGE: 'I am class one!',
