@@ -134,7 +134,7 @@ var sewi = sewi || {};
             zoomSettings: {
                 max: this.imagePanZoomWidget.getMaximumZoomLevel(),
                 min: this.imagePanZoomWidget.getMinimumZoomLevel()
-            }
+            },
             zoomLevel: this.imagePanZoomWidget.getCurrentZoomLevel()
         });
     };
