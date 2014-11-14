@@ -604,14 +604,14 @@
             var errorScreen = nonExistentViewerElement.find('.' + constants.ERROR_SCREEN_CLASS);
             assert.equal(errorScreen.length, 1, 'Viewer displays an error if the resource does not exist.');
             QUnit.start();
-        }, 1000);
+        }, 5000);
 
         setTimeout(function() {
             var errorScreen = validViewerElement.find('.' + constants.ERROR_SCREEN_CLASS);
             assert.equal(errorScreen.length, 0, 'Viewer does not display an error if the resource exists.');
             QUnit.start();
             validViewer.cleanUp();
-        }, 1000);
+        }, 5000);
     });
 
     QUnit.asyncTest('VR2: Video Playback', function(assert) {
