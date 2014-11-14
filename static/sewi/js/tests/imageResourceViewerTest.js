@@ -540,7 +540,7 @@
         checkForImageReadyBeforeTest.call(this);
     });
 
-    QUnit.module("ImageControls, Custom Filters", {
+    QUnit.module("ImageControls", {
         setup: function() {
             this.fixture = $('#qunit-fixture');
 
