@@ -53,7 +53,7 @@ var sewi = sewi || {};
 
     this.optionsMenu = $(sewi.constants.CHART_CONTROLS_OPTIONS_DROPDOWN_DOM)
       .append(sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_DOM)
-      .append(sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_DOM)
+      .append(sewi.constants.CHART_CONTROLS_RESET_VISIBLE_POINTS_BUTTON_DOM)
       .append(sewi.constants.CHART_CONTROLS_ZOOM_OUT_BUTTON_DOM);
 
     this.timingDisplayLabel = $(sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_DOM);
@@ -79,7 +79,6 @@ var sewi = sewi || {};
 
   function initEvents() {
     this.optionsMenu.change(selectionChanged.bind(this));
-    this.timingDisplay.focus(timingDisplayFocused.bind(this));
   }
 
   function selectionChanged() {
@@ -91,7 +90,7 @@ var sewi = sewi || {};
     if (!_.isEmpty(selectionOptions)) {
       isZoomOut = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_ZOOM_OUT_VALUE);
       isResetAllPoints = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_VALUE);
-      isResetShownPoints = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_VALUE);
+      isResetShownPoints = _.contains(selectionOptions, sewi.constants.CHART_CONTROLS_RESET_VISIBLE_POINTS_VALUE);
     }
 
     // Ensure that none of the options have the tick mark.
@@ -111,10 +110,6 @@ var sewi = sewi || {};
     }
   }
 
-  function timingDisplayFocused() {
-    this.timingDisplay.select();
-  }
-
   function roundOffToNearestSeconds(value) {
     return (value / 1000).toFixed(2);
   }
@@ -132,7 +127,7 @@ var sewi = sewi || {};
   sewi.ChartControls.prototype.update = function(options) {
     options = options || {};
 
-    if (!_.isUndefined(options.timing)) {
+    if (!_.isUndefined(options.timing) && $.isNumeric(options.timing)) {
       if (options.timing > 0) {
         var timingInSec = roundOffToNearestSeconds(options.timing);
         this.timingDisplay.val(timingInSec + 's');
@@ -143,6 +138,10 @@ var sewi = sewi || {};
     return this;
   };
 
+  sewi.ChartControls.prototype.getTiming = function(){
+    return this.timingDisplay.val();
+  }
+
   /**
    * Hides tooltips previously made visible via
    * {@link sewi.ChartControls#showTooltips}.
@@ -151,7 +150,7 @@ var sewi = sewi || {};
     if (this.initializedTooltips) {
       var element = this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_ALL_POINTS_BUTTON_CLASS);
       element.tooltip('destroy');
-      this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_CLASS).tooltip('destroy');
+      this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_VISIBLE_POINTS_BUTTON_CLASS).tooltip('destroy');
       this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_ZOOM_OUT_BUTTON_CLASS).tooltip('destroy');
       this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_TIMING_DISPLAY_LABEL_CLASS).tooltip('destroy');
       this.initializedTooltips = false;
@@ -171,9 +170,9 @@ var sewi = sewi || {};
         placement: 'right'
       });
 
-      this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_BUTTON_CLASS).tooltip({
+      this.mainDOMElement.find('.' + sewi.constants.CHART_CONTROLS_RESET_VISIBLE_POINTS_BUTTON_CLASS).tooltip({
         html: true,
-        title: sewi.constants.CHART_CONTROLS_RESET_SHOWN_POINTS_TOOLTIP_TEXT,
+        title: sewi.constants.CHART_CONTROLS_RESET_VISIBLE_POINTS_TOOLTIP_TEXT,
         container: 'body',
         placement: 'right'
       });
@@ -212,7 +211,7 @@ var sewi = sewi || {};
   sewi.ChartResourceViewer = function(options) {
     // Safeguard if function is called without `new` keyword
     if (!(this instanceof sewi.ChartResourceViewer))
-      return new sewi.ChartResourceViewer();
+      return new sewi.ChartResourceViewer(options);
 
     sewi.ResourceViewer.call(this);
 
@@ -262,7 +261,7 @@ var sewi = sewi || {};
 
   function initEventHandlers() {
 
-    this.controlPanelElement.on(sewi.constants.CHART_RESOURCE_RESET_ALL_POINTS_EVENT, resetAllSelectedPointsPoints.bind(this));
+    this.controlPanelElement.on(sewi.constants.CHART_RESOURCE_RESET_ALL_POINTS_EVENT, resetAllSelectedPoints.bind(this));
     this.controlPanelElement.on(sewi.constants.CHART_RESOURCE_RESET_VISIBLE_POINTS_EVENT, resetVisibleSelectedPoints.bind(this));
     this.controlPanelElement.on(sewi.constants.CHART_RESOURCE_ZOOM_OUT_GRAPH_EVENT, zoomOutGraph.bind(this));
     this.chartContainer.on(sewi.constants.CHART_RESOURCE_Y_AXIS_ZOOMED_EVENT, highlightDistinctPeaksAboveMinY.bind(this));
@@ -271,25 +270,24 @@ var sewi = sewi || {};
 
   function initChartComponents() {
 
-    this.highlightedPoints = [];
-    this.peaks = [];
-    this.initialXRange = [0, 2000];
+    this.selectedPoints = [];
+    this.XValueOfSelectedPoints = [];
     this.isZoomed = true;
   }
 
   // Event handlers for the 4 control panel events
 
   // Resets all the points that have been selected by the user
-  function resetAllSelectedPointsPoints() {
+  function resetAllSelectedPoints() {
 
-    this.highlightedPoints = [];
-    this.peaks = [];
+    this.selectedPoints = [];
+    this.XValueOfSelectedPoints = [];
     redrawGraph.call(this);
   }
 
   // Resets points within the current range of the graph that is visible to the user 
   function resetVisibleSelectedPoints() {
-    var clone = this.highlightedPoints.slice(0);
+    var clone = this.selectedPoints.slice(0);
     $.each(clone, resetPoint.bind(this));
     redrawGraph.call(this);
   }
@@ -316,9 +314,9 @@ var sewi = sewi || {};
 
       if (point != -1) {
         if (parseFloat(point.yval) > yMin && parseFloat(point.yval) < yMax) {
-          if (!isHighlightedPoint(point, this.peaks)) {
-            this.highlightedPoints.push(point);
-            this.peaks.push(point.xval);
+          if (!isHighlightedPoint(point, this.XValueOfSelectedPoints)) {
+            this.selectedPoints.push(point);
+            this.XValueOfSelectedPoints.push(point.xval);
             highlightPointOnCanvas.call(this, point);
           }
         }
@@ -355,7 +353,6 @@ var sewi = sewi || {};
         ylabel: sewi.constants.CHART_RESOURCE_Y_AXIS_LABEL,
         labels: [sewi.constants.CHART_RESOURCE_X_AXIS_LABEL, sewi.constants.CHART_RESOURCE_Y_AXIS_LABEL],
         labelsDiv: this.legendContainer[0],
-        dateWindow: this.initialXRange,
         axes: {
           x: {
             valueFormatter: formatLegendDisplayForXAxis
@@ -380,7 +377,7 @@ var sewi = sewi || {};
     );
   }
 
-  // Event handlers for the 6 graph events
+  // Event handlers for the 6 graph callbacks
 
   function graphUnderlay() {
     this.canvasContext = this.chartContainer.find('canvas')[1].getContext('2d');
@@ -388,7 +385,7 @@ var sewi = sewi || {};
   }
 
   function chartZoomed() {
-    if ((this.yMin != this.prevYMin || this.yMax != this.prevYMax) && this.graph.isZoomed())
+    if ((this.xMin == this.prevXMin && this.xMax == this.prevXMax) && this.graph.isZoomed())
       this.chartContainer.trigger(sewi.constants.CHART_RESOURCE_Y_AXIS_ZOOMED_EVENT);
 
     setCurrAxisRanges.call(this, this.graph);
@@ -405,7 +402,7 @@ var sewi = sewi || {};
   }
 
   function highlightAllPoints() {
-    $.each(this.highlightedPoints, highlightPoint.bind(this));
+    $.each(this.selectedPoints, highlightPoint.bind(this));
   }
 
   function graphReadyToBeDrawn(g, is_initial) {
@@ -427,10 +424,10 @@ var sewi = sewi || {};
   function setCurrAxisRanges(graph) {
     var xRange = graph.xAxisRange();
     var yRange = graph.yAxisRange();
+    this.prevXMin = this.xMin;
+    this.prevXMax = this.xMax;
     this.xMin = xRange[0];
     this.xMax = xRange[1];
-    this.prevYMin = this.yMin;
-    this.prevYMax = this.yMax;
     this.yMin = yRange[0];
     this.yMax = yRange[1];
 
@@ -443,20 +440,20 @@ var sewi = sewi || {};
   }
 
   function processClickedPoint(p) {
-    if (isHighlightedPoint(p, this.peaks)) {
+    if (isHighlightedPoint(p, this.XValueOfSelectedPoints)) {
       unHighlightPoint.call(this, p);
 
     } else {
-      this.highlightedPoints.push(p);
-      this.peaks.push(p.xval);
+      this.selectedPoints.push(p);
+      this.XValueOfSelectedPoints.push(p.xval);
       highlightPointOnCanvas.call(this, p);
     }
     redrawGraph.call(this);
     updateTimeInterval.call(this);
   }
 
-  function isHighlightedPoint(p, peaks) {
-    var index = peaks.indexOf(p.xval);
+  function isHighlightedPoint(p, XValueOfSelectedPoints) {
+    var index = XValueOfSelectedPoints.indexOf(p.xval);
     return (index >= 0);
   }
 
@@ -477,18 +474,18 @@ var sewi = sewi || {};
 
   function unHighlightPoint(p) {
 
-    for (var index = 0; index < this.highlightedPoints.length; index++) {
-      if (this.highlightedPoints[index].xval == p.xval) {
-        this.highlightedPoints.splice(index, 1);
+    for (var index = 0; index < this.selectedPoints.length; index++) {
+      if (this.selectedPoints[index].xval == p.xval) {
+        this.selectedPoints.splice(index, 1);
         break;
       }
     }
-    this.peaks.splice(this.peaks.indexOf(p.xval), 1);
+    this.XValueOfSelectedPoints.splice(this.XValueOfSelectedPoints.indexOf(p.xval), 1);
   }
 
 
   function updateTimeInterval() {
-    if (this.peaks.length > 1) {
+    if (this.XValueOfSelectedPoints.length > 1) {
       var timeInterval = calculateAverageTimeInterval.call(this);
       this.controls.update({
         'timing': timeInterval
@@ -503,7 +500,7 @@ var sewi = sewi || {};
 
   /* Finds the distinct peak in the given region identified by [start, end]. 
      A distinct peak is a point having the highest Y value in [start, end] and atleast 
-     sewi.constants.MINIMUM_DIFFERENCE_FOR_PEAK_IDENTIFICATION higher than the 
+     sewi.constants.CHART_RESOURCE_MINIMUM_DIFFERENCE_FOR_PEAK_IDENTIFICATION higher than the 
      second maximum value in the same interval
   */
   function findPeakInRegion(start, end) {
@@ -529,7 +526,7 @@ var sewi = sewi || {};
       }
       index++;
     }
-    if (ymax - ySecondMax > sewi.constants.MINIMUM_DIFFERENCE_FOR_PEAK_IDENTIFICATION)
+    if (ymax - ySecondMax > sewi.constants.CHART_RESOURCE_MINIMUM_DIFFERENCE_FOR_PEAK_IDENTIFICATION)
       return {
         'xval': xmax,
         'yval': ymax
@@ -538,16 +535,16 @@ var sewi = sewi || {};
 
   }
 
-  /*
-   * The average time interval Interval is calculated as follows :
-   * 1.Sort all the points selected by increasing x-coordinate.
-   * 2.Sum up the difference between adjacent points.
-   * 3.Return the average difference.
-   */
+  
+  /* The average time interval Interval is calculated as follows :
+     1.Sort all the selected points by  their increasing x-coordinate.
+     2.Sum up the difference in x values of adjacent points.
+     3.Return the average difference.
+  */ 
   function calculateAverageTimeInterval() {
     var sumOfAllIntervals = 0;
     visibleHighlightedPoints = [];
-    $.each(this.highlightedPoints, storeVisiblePoints.bind(this, visibleHighlightedPoints));
+    $.each(this.selectedPoints, getVisiblePoints.bind(this, visibleHighlightedPoints));
 
     visibleHighlightedPoints.sort(sorter);
 
@@ -555,11 +552,12 @@ var sewi = sewi || {};
       if (index != visibleHighlightedPoints.length - 1)
         sumOfAllIntervals += visibleHighlightedPoints[index + 1] - value;
     });
-
+    if(visibleHighlightedPoints.length ==1 )
+      return -1;
     return sumOfAllIntervals / (visibleHighlightedPoints.length - 1);
   }
 
-  function storeVisiblePoints(visibleHighlightedPoints, index, value) {
+  function getVisiblePoints(visibleHighlightedPoints, index, value) {
     if (isVisiblePoint(value, this.xMin, this.xMax, this.yMin, this.yMax)) {
       visibleHighlightedPoints.push(value.xval);
     }
@@ -590,16 +588,16 @@ var sewi = sewi || {};
   }
 
 
-  function parseChartData(data) {
-    $.get(data.url, loadCSV.bind(this));
+  function loadCSV(data) {
+    $.get(data.url, parseChartData.bind(this));
+    this.addDownloadButton(data.url);
   }
 
-  function loadCSV(csvText) {
+  function parseChartData(csvText) {
     var allTextLines = csvText.split(/\r\n|\n/);
     this.graphData = [];
     this.parsedCSV = "";
     $.each(allTextLines, convertCSVToArray.bind(this, allTextLines));
-
     createChart.call(this, this.parsedCSV);
   }
 
@@ -616,34 +614,32 @@ var sewi = sewi || {};
   }
 
   function loadSuccessful(data) {
-    parseChartData.call(this, data);
+    loadCSV.call(this, data);
   }
 
-  // Public functions for ChartResourceViewer
+  // ChartResourceViewer public methods
   /**
    * Loads the chart from its end point
    */
   sewi.ChartResourceViewer.prototype.load = function() {
     this.showProgressBar('Generating chart');
     this.updateProgressBar(100);
-    /*var chartResourceEndPoint = sewi.constants.CHART_RESOURCE_URL + this.id;
+    var chartResourceEndPoint = sewi.constants.CHART_RESOURCE_URL + this.id;
 
     $.ajax({
             dataType: 'json',
             type: 'GET',
             url: chartResourceEndPoint,
         }).done(loadSuccessful.bind(this))
-          .fail(loadFailed.bind(this));*/
-    parseChartData.call(this, {
-      'url': "/static/sewi/js/app/Sample Resources/data.csv"
-    });
+          .fail(loadFailed.bind(this));
   };
 
   /**
    * Resizes the graph if the Chart container has been resized
    */
   sewi.ChartResourceViewer.prototype.resize = function() {
-    this.graph.resize();
+    if(this.graph)
+      this.graph.resize();
   };
 
   sewi.ChartResourceViewer.prototype.hideTooltips = function() {
@@ -653,4 +649,12 @@ var sewi = sewi || {};
   sewi.ChartResourceViewer.prototype.showTooltips = function() {
     this.controls.showTooltips();
   };
+
+  if (sewi.testMode) {
+      sewi.ChartResourceViewer.prototype.privates = {
+          chartZoomed: chartZoomed,
+          chartPointClicked: chartPointClicked,
+          canvasPointClicked: canvasPointClicked,
+      };
+  }
 })();
