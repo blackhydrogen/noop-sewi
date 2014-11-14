@@ -195,12 +195,12 @@ label.btn input {
 }
 
 .resource-viewer .top-panel {
-    position: absolute;
-    top: -30px;
-    right: 0;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.2);
-    opacity: 0.2;
+	position: absolute;
+	top: -30px;
+	right: 0;
+	height: 30px;
+	background: transparent;
+	opacity: 0.7;
 	z-index: 4000;
 }
 
