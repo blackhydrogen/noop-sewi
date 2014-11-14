@@ -160,6 +160,18 @@ var sewi = sewi || {};
         BEI_ENTRY_DOM: '<div class="basic-encounter-info-entry"></div>',
         BEI_ENTRY_KEY_DOM: '<span class="basic-encounter-info-entry-key"></span>',
         BEI_ENTRY_VALUE_DOM: '<span class="basic-encounter-info-entry-value"></span>',
+        /**
+         * Fired when the basic encounter information has been loaded and the patient's
+         * name and ID is known. This is fired to pass the name and ID along to the Configurator
+         * for display as a header.
+         * @event BEILoaded
+         * @memberof sewi.BasicEncounterInfoViewer
+         * @param {Object} patientDetails An object holding the patient's name and details.
+         * @param {String} patientDetails.id The patient's ID.
+         * @param {String} patientDetails.name The patient's name, in the format of
+         * "LastName, FirstName".
+         */
+        BEI_BEI_LOADED_EVENT: 'BEILoaded',
 
         //Resource Gallery Constants
         RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
