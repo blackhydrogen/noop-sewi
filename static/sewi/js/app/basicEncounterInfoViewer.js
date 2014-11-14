@@ -102,7 +102,7 @@ var sewi = sewi || {};
             height: "100%"
         });
 
-        fixMainDomElementWidth(false);
+        fixMainDomElementWidth.call(this, false);
     };
 
     // Fixes the width (in pixels) the width of the BEI's main DOM element
