@@ -202,6 +202,21 @@
         volumeSlider.val(constants.TEST_VALID_VOLUME).trigger('input').trigger('change');
     });
 
+    QUnit.asyncTest('MC8: Seeking', function(assert) {
+        var controls = new this.sewi.MediaControls();
+        this.fixture.append(controls.getDOM());
+        var controlsElement = controls.getDOM();
+
+        var progressSlider = this.fixture.find('.' + constants.PROGRESS_SLIDER_CLASS);
+
+        controlsElement.on(constants.POSITION_CHANGED_EVENT, function() {
+            assert.ok(true, 'Interacting with the seek bar seeks the media.');
+            QUnit.start();
+        });
+
+        progressSlider.val(constants.TEST_VALID_POSITION).trigger('change');
+    });
+
     QUnit.test('MC9: Updating Time and Duration', function(assert) {
         var controls = new this.sewi.MediaControls();
         this.fixture.append(controls.getDOM());
