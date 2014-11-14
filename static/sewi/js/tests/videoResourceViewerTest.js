@@ -920,4 +920,39 @@
 
         viewer.load();
     });
+
+    QUnit.asyncTest('Video Seeking', function(assert) {
+
+        var viewer = new window.sewi.VideoResourceViewer({
+            id: constants.TEST_VALID_RESOURCE_ID
+        });
+
+        var viewerElement = viewer.getDOM();
+        var videoElement = viewerElement.find(constants.VIDEO_ELEMENT);
+        this.fixture.append(viewerElement);
+
+        var cancelTestTimeout = setTimeout(cancelTest, 10000);
+
+        viewerElement.on(constants.LOADED_EVENT, function() {
+            var controlsElement = viewerElement.find('.' + constants.TEST_CONTROLS_CLASS);
+            controlsElement.trigger(constants.TEST_TRIGGER_SEEK_EVENT);
+        });
+
+        videoElement.on('seeked', function() {
+            assert.ok(true, 'Video can be seeked.');
+
+            QUnit.start();
+            clearTimeout(cancelTestTimeout);
+            viewer.cleanUp();
+
+        });
+
+        function cancelTest() {
+            assert.ok(false, 'Test failed to complete');
+            QUnit.start();
+            viewer.cleanUp();
+        }
+
+        viewer.load();
+    });
 })();
