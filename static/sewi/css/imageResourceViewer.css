@@ -57,16 +57,11 @@
 	width: 100px;
 }
 
-.image-control-panel button.contrast-plus-button {
-	border-left: none;
-	border-radius: 0 4px 4px 0;
-}
-
-.image-control-panel .btn.contrast-menu-button.option-selected {
+.image-control-panel .btn.contrast-stretching-menu-button.option-selected {
 	border-radius: 4px 0 0 4px;
 }
 
-.image-control-panel button.contrast-plus-button {
+.image-control-panel button.contrast-stretching-settings-button {
 	border-left: none;
 	border-radius: 0 4px 4px 0;
 }
