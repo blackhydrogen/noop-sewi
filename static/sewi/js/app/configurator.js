@@ -210,7 +210,6 @@ var sewi = sewi || {};
 
     function resizeGallery(event) {
         var isGalleryMinimized = !this.isResourceViewerHidden;
-        console.log('Resizing gallery, minimized:', isGalleryMinimized);
         this.resGallery.resize(isGalleryMinimized);
     }
 
