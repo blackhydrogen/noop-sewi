@@ -33,6 +33,22 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.AudioResourceViewer, sewi.ResourceViewer);
 
+    sewi.AudioResourceViewer.AudioContext = null;
+    
+    sewi.AudioResourceViewer.getAudioContext = function(){
+        if(sewi.AudioResourceViewer.AudioContext == null){
+            var contextClass =  (window.AudioContext ||
+                                window.webkitAudioContext ||
+                                window.mozAudioContext ||
+                                window.oAudioContext ||
+                                window.msAudioContext);
+            if(contextClass){
+                sewi.AudioResourceViewer.AudioContext = new contextClass();
+            }
+        }
+        
+        return sewi.AudioResourceViewer.AudioContext;
+    };
     // This overrides the load function of Resource Viewer
     sewi.AudioResourceViewer.prototype.load = function(){
 
@@ -114,14 +130,10 @@ var sewi = sewi || {};
     function init(){
         this.mainDOMElement.addClass(sewi.constants.AUDIO_RESOURCE_AUDIO_RESOURCE_VIEWER_CSS);
 
-        var contextClass = (window.AudioContext ||
-                            window.webkitAudioContext ||
-                            window.mozAudioContext ||
-                            window.oAudioContext ||
-                            window.msAudioContext);
+        this.audioContext = sewi.AudioResourceViewer.getAudioContext();
 
-        if(contextClass){
-            this.audioContext =new contextClass();
+        if(this.audioContext){
+            
             this.showProgressBar(sewi.constants.AUDIO_RESOURCE_MSG_FETCHING_AUDIO_CLIP);
             this.contentDOM = $(sewi.constants.AUDIO_RESOURCE_CONTENT_DOM);
             this.mainDOMElement.append(this.contentDOM);
@@ -483,9 +495,7 @@ var sewi = sewi || {};
      * This function pauses/stops the audio.
      */
     sewi.AudioResourceViewer.prototype.pauseAudio = function(){
-        console.log("pauseAudio");
         if(this.source){
-            console.log("Audio Paused");
             this.offset += (Date.now() - this.beginTime) / 1000;
             this.source.stop(0);
             this.source.disconnect(this.gainNode);
