@@ -72,7 +72,7 @@ body {
 	width: 61px;
 }
 .barsmall {
-	background-image:url(https://demo.sana.csail.mit.edu/openmrs/images/openmrs_green_bar_repeat.gif);
+	background-image:url(//demo.sana.csail.mit.edu/openmrs/images/openmrs_green_bar_repeat.gif);
 	background-repeat:repeat-x;
 	height:27px;
 	margin-left: 5px;
