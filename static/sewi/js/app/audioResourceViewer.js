@@ -536,6 +536,15 @@ var sewi = sewi || {};
             this.audioSequences[i].channelData = [];
             delete this.audioSequences[i].channelData;
         }
+
+        this.audioBuffer = null;
+        delete this.audioBuffer;
+
+        this.scriptProcessor.disconnect(this.audioContext.destination);
+        this.scriptProcessor.onaudioprocess = null;
+        delete this.scriptProcessor;
+        delete this.gainNode;
+        delete this.source;
     };
 
 })();
