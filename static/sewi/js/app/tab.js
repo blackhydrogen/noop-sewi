@@ -1290,6 +1290,7 @@ var sewi = sewi || {};
         for(var panel in panelList){
             if(panelList.hasOwnProperty(panel)){
                 panelList[panel].resourceViewer.cleanUp();
+                delete panelList[panel].resourceViewer;
             }
         }
     }

@@ -1,7 +1,7 @@
 var sewi = sewi || {};
 
 (function() {
-     /**
+    /**
      * Displays an image resource for an encounter.
      *
      * @class sewi.ImageResourceViewer
@@ -35,14 +35,14 @@ var sewi = sewi || {};
         this.previousCustomFiltersSettings = {};
 
         this.controls = null;
-        this.imagePanZoomWidget = null;
+        this.panZoomWidget = null;
     };
 
     sewi.inherits(sewi.ImageResourceViewer, sewi.ResourceViewer);
 
     sewi.ImageResourceViewer.prototype.resize = function() {
-        if(this.imagePanZoomWidget != null)
-            this.imagePanZoomWidget.recalculateTargetDimensions();
+        if(this.panZoomWidget != null)
+            this.panZoomWidget.recalculateTargetDimensions();
     };
 
     sewi.ImageResourceViewer.prototype.showTooltips = function() {
@@ -81,6 +81,7 @@ var sewi = sewi || {};
         this.showError(sewi.constants.IMAGE_RESOURCE_LOAD_RESOURCE_ERROR_MESSAGE);
     };
 
+    // Records the original image's information & setups controls after the image has been loaded.
     function afterImageLoadSetup() {
         this.originalImageInfo.width = this.imageElement.prop("naturalWidth");
         this.originalImageInfo.height = this.imageElement.prop("naturalHeight");
@@ -105,12 +106,16 @@ var sewi = sewi || {};
         return this.imageElement.attr("src");
     }
 
+    // This setups the zoom controls and events. Note that zoom events from both the
+    // PanZoomWidget and the ImageControls can be triggered. As both accepts zoom-related
+    // input from the user, the events are meant to update the corresponding component's
+    // settings/views.
     function setupZoomControls() {
-        this.imagePanZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
+        this.panZoomWidget = new sewi.PanZoomWidget(this.imageElement, this.imageContainer);
 
         this.on(
             sewi.constants.PAN_ZOOM_WIDGET_TARGET_ZOOM_CHANGED_EVENT,
-            updateControlsZoomControlValue.bind(this)
+            updateControlsZoomLevelControlValue.bind(this)
         );
 
         this.controls.on(
@@ -123,30 +128,71 @@ var sewi = sewi || {};
             setPanZoomWidgetZoomLevelZoomToFit.bind(this)
         );
 
-        // TODO set the correct min and max values.
-
         // Update controls to the correct values (the value may have changed during construction,
         // and the event not captured due to the event being registered after the construction)
         this.controls.updateZoomControlValue({
-            zoomLevel: this.imagePanZoomWidget.getCurrentZoomLevel()
+            zoomSettings: {
+                max: this.panZoomWidget.getMaximumZoomLevel(),
+                min: this.panZoomWidget.getMinimumZoomLevel()
+            },
+            zoomLevel: this.panZoomWidget.getCurrentZoomLevel()
         });
     };
 
-    function updateControlsZoomControlValue(event, newZoomPercentage) {
+    // Set the zoom's slider to the respective value.
+    function updateControlsZoomLevelControlValue(event, newZoomPercentage) {
         this.controls.updateZoomControlValue({
             zoomLevel: newZoomPercentage
         });
     }
 
     function setPanZoomWidgetCurrentZoomLevel(event, zoomLevel) {
-        this.imagePanZoomWidget.setCurrentZoomLevel(zoomLevel);
+        this.panZoomWidget.setCurrentZoomLevel(zoomLevel);
     }
 
     function setPanZoomWidgetZoomLevelZoomToFit(event) {
-        this.imagePanZoomWidget.setZoomLevelToZoomToFit();
+        this.panZoomWidget.setZoomLevelToZoomToFit();
     }
 
+
+    // The parameter settings is an object representing the state of all custom filters
+    // (i.e. which filters are selected/not-selected), with the following form:
+
+    // settings.colorize: (String)
+    //      The colorize filter to selected. Current possible
+    //      values are IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE and the keys of the 
+    //      IMAGE_RESOURCE_FALSE_COLOR_PALETTE object (i.e. "flame", "rainbow", "spectrum").
+    //      If no filters are selected, the value will be IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE.
+
+    // settings.difference: (Boolean)
+    //      True if the difference filter is selected; false otherwise.
+
+    // settings.invert: (Boolean)
+    //      True if the invert filter is selected; false otherwise.
+
+    // settings.autoContrast: (Boolean)
+    //      True if the autoContrast (histogram equalization) filter is selected; false otherwise.
+    //      Note that if the auto-contrast filter is selected, the one of the colorize filter must be applied.
+    //      If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+    //      chosen automatically; however, it is not recommneded to rely on this check as no feedback will be provided
+    //      to the user.
+
+    // settings.contrastStretchMode: (String)
+    //      If a contrast-stretching filter is selected, this
+    //      element will take one of three possible values: IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS,
+    //      IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_MIDTONES, or IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_HIGHLIGHTS.
+    //      If none is selected, the value will be IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE.
+    //      Note that if the contrast-stretching filter is selected, the one of the colorize filter must be applied.
+    //      If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+    //      chosen automatically; however, it is not recommneded to rely on this check as no feedback will be provided
+    //      to the user.
+
+    // settings.contrastStretchValue: (Number)
+    //      The intensity of the contrast-stretching filter,
+    //      subjected to the limits between IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MIN_VALUE and
+    //      IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MAX_VALUE.
     function applyCustomImageFilters(event, settings) {
+        // Set up the filter flags based on settings.
         var filterFlags = {
             toApplyGrayscaleFilter: settings.colorize !== sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE,
             toApplyDifferenceFilter: settings.difference,
@@ -155,12 +201,21 @@ var sewi = sewi || {};
             toApplyFalseColorFilter:
                 settings.colorize !== sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE &&
                 settings.colorize !== sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE,
-            toApplySelectiveStretchingFilter: settings.contrastStretchMode !== sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE
+            toApplyContrastStretchingFilter: settings.contrastStretchMode !== sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE
+        }
+
+        // Check: Choose grayscale if constrast-stretching or histogram equalization is selected, but
+        // neither grayscale or colorize is selected.
+        if((filterFlags.toApplyHistogramEqualizationFilter || filterFlags.toApplyContrastStretchingFilter) && 
+            !(filterFlags.toApplyGrayscaleFilter || filterFlags.toApplyFalseColorFilter)) {
+            settings.colorize = sewi.constants.IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE;
+            filterFlags.toApplyGrayscaleFilter = true;
         }
 
         if(_.isEqual(this.previousCustomFiltersSettings, settings)) {
             // Do nothing, as the filters are the same.
         }
+        // Elseif there is at least 1 filter selected
         else if(_.reduce(filterFlags, OrReduce, false)) { // OR every element inside filterFlags (i.e. filterFlags.a || filterFlags.b || etc...)
             this.showProgressBar("Applying Filters");
             this.updateProgressBar(100);
@@ -178,25 +233,19 @@ var sewi = sewi || {};
         this.previousCustomFiltersSettings = settings;
     };
 
+    // Function to allow an OR reduction on the collection of values.
     function OrReduce(accumulator, value) {
         return accumulator || value;
     }
 
     function applyCustomImageFiltersOnOriginalImageLoad(settings, filterFlags, originalImage) {
-        // var t1 = new Date().getTime();
-        // var t2;
-
         var canvasElement = $(sewi.constants.IMAGE_RESOURCE_IN_MEMORY_CANVAS_ELEMENT)
                 .prop("width", this.originalImageInfo.width)
                 .prop("height", this.originalImageInfo.height);
 
         canvasElement[0].getContext("2d").drawImage(originalImage[0], 0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
 
-        // t2 = new Date().getTime(); console.log("WRITE IMG TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
-
         var canvasData = canvasElement[0].getContext("2d").getImageData(0, 0, this.originalImageInfo.width, this.originalImageInfo.height);
-
-        // t2 = new Date().getTime(); console.log("GET CANVAS DATA TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
         if(filterFlags.toApplyGrayscaleFilter) {
             applyGrayscaleFilterToPixelData(canvasData.data);
@@ -210,7 +259,7 @@ var sewi = sewi || {};
         if(filterFlags.toApplyHistogramEqualizationFilter) {
             applyHistogramEqualizationFilterToPixelData(canvasData.data);
         }
-        if(filterFlags.toApplySelectiveStretchingFilter) {
+        if(filterFlags.toApplyContrastStretchingFilter) {
             switch(settings.contrastStretchMode) {
                 case sewi.constants.IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS:
                     var selectedRangeStart = 0;
@@ -226,7 +275,7 @@ var sewi = sewi || {};
                     break;
             }
 
-            applySelectiveStretchingFilterToPixelData(
+            applyContrastStretchingFilterToPixelData(
                 canvasData.data,
                 selectedRangeStart,
                 selectedRangeEnd, 
@@ -237,11 +286,7 @@ var sewi = sewi || {};
             applyFalseColorFilterToPixelData(canvasData.data, settings.colorize);
         }
 
-        // t2 = new Date().getTime(); console.log("APPLY FILTER TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
-
         canvasElement[0].getContext("2d").putImageData(canvasData, 0, 0);
-
-        // t2 = new Date().getTime(); console.log("WRITE-BACK DATA TO CANVAS TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
 
         this.imageElement.prop("src", canvasElement[0].toDataURL(//"image/png"));
             sewi.constants.IMAGE_RESOURCE_GENERATED_IMAGE_TYPE_JPEG,
@@ -249,11 +294,6 @@ var sewi = sewi || {};
         ));
 
         this.hideProgressBar();
-
-        // t2 = new Date().getTime(); console.log("CANVAS TO IMG CONVERSION TIMING: " + (t2 - t1) + " ms"); t1 = t2; // DEBUG
-
-        // console.log("=== END OF REPORT ==="); // DEBUG
-        // console.log(""); // DEBUG
     }
 
     function applyGrayscaleFilterToPixelData(pixelData) {
@@ -269,6 +309,7 @@ var sewi = sewi || {};
     function applyDifferenceFilterToPixelData(pixelData) {
         var newValuesMapping = new Array(256);
         for(var i = 0; i < 256; i++) {
+            // The formula is the reduced form of Abs(Invert(pixel_color) - Original(pixel_color))
             newValuesMapping[i] = Math.abs(255 - 2 * i);
         }
 
@@ -290,6 +331,8 @@ var sewi = sewi || {};
 
     function applyHistogramEqualizationFilterToPixelData(pixelData) {
         // Assumption: image is in grayscale.
+
+        // We get the frequency (count) of each color
         var colorCount = new Array(256);
         for(var i = 0; i < 256; i++) {
             colorCount[i] = 0;
@@ -299,6 +342,7 @@ var sewi = sewi || {};
             colorCount[pixelData[i]]++;
         }
 
+        // We find the origianl cumulative distribution function (CDF) of the color count of the original image
         var cdfMin = 0;
         var cdfOriginal = new Array(256);
         cdfOriginal[0] = colorCount[0];
@@ -309,6 +353,7 @@ var sewi = sewi || {};
                 cdfMin = cdfOriginal[i];
         }
 
+        // We now scale the original CDF to make use of the entire 0-255 range.
         var cdfScaled = new Array(256);
         var totalNumberOfPixelsSubtractCdfMin = pixelData.length / 4 - cdfMin;
         for(i = 0; i < 256; i++) {
@@ -322,9 +367,14 @@ var sewi = sewi || {};
         }
     };
 
-    function applySelectiveStretchingFilterToPixelData(pixelData, startOfRange, endOfRange, intensity) {
+    function applyContrastStretchingFilterToPixelData(pixelData, startOfRange, endOfRange, intensity) {
         // Assumption: image is in grayscale.
 
+        // Find the default outer ranges
+        // Outer range = the ranges outside of [startOfRange, endOfRange] that will be compressed
+        // the give the [startOfRange, endOfRange] more values.
+        // Pre(outer) range = the range before [startOfRange, endOfRange]
+        // Post(outer) range = the range after [startOfRange, endOfRange]
         var defaultRangeLength = endOfRange - startOfRange + 1;
         var expandedRangeLength = Math.round(defaultRangeLength * intensity);
 
@@ -334,6 +384,7 @@ var sewi = sewi || {};
         var defaultPreRangeLength = startOfRange - 0;
         var defaultPostRangeLength = 255 - endOfRange;
 
+        // Calculate the compressed outer ranges.
         var compressedPreRangeLength = Math.ceil(defaultPreRangeLength * compressedOuterRangeLength / defaultOuterRangeLength);
         var compressedPostRangeLength = Math.ceil(defaultPostRangeLength * compressedOuterRangeLength / defaultOuterRangeLength);
 
@@ -349,9 +400,7 @@ var sewi = sewi || {};
             newValuesMapping[255 - i] = Math.round(255 - i * compressedPostRangeLength / defaultPostRangeLength);
         }
 
-        var testValuesMapping = new Array(256);
         for(i = 0; i < defaultRangeLength; i++) {
-            testValuesMapping[defaultPreRangeLength + i] = Math.round(compressedPreRangeLength + i * expandedRangeLength / defaultRangeLength);
             newValuesMapping[defaultPreRangeLength + i] = Math.round(compressedPreRangeLength + i * expandedRangeLength / defaultRangeLength);
         }
 
@@ -399,6 +448,12 @@ var sewi = sewi || {};
 
     // ========== ImageControls Class Definition ==========
 
+    /**
+     * The controls for the ImageResourceViewer.
+     *
+     * @class sewi.ImageControls
+     * @constructor
+     */
     sewi.ImageControls = function(options) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.ImageControls))
@@ -412,6 +467,11 @@ var sewi = sewi || {};
 
     sewi.inherits(sewi.ImageControls, sewi.ConfiguratorElement);
 
+    /**
+     * Updates the values of the zoom controls. Used to update the ImageControl view when
+     * the image is resized via other user inputs (e.g. via mousewheel events monitored by the
+     * PanZoomWidget).
+     */
     sewi.ImageControls.prototype.updateZoomControlValue = function(options) {
         options = options || {};
 
@@ -785,5 +845,10 @@ var sewi = sewi || {};
             applyCustomImageFilters: applyCustomImageFilters,
             getImageUri: getImageUri
         };
+        sewi.ImageControls.prototype.privates = {
+            filtersChanged: filtersChanged,
+            zoomLevelChanged: zoomLevelChanged,
+            zoomToFit: zoomToFit
+        }
     }
 })();

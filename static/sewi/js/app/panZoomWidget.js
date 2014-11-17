@@ -1,6 +1,16 @@
 var sewi = sewi || {};
 
 (function() {
+    /**
+     * A widget that allows panning and zooming of a target inside a container.
+     *
+     * @class sewi.PanZoomWidget
+     * @constructor
+     * @param {JQuery} panZoomTarget The target element that panning and zooming is enabled on.
+     * @param {JQuery} panZoomContainer The container containing the target; it is required that the target is the child of the container.
+     * @param {Number} [targetOriginalWidth] The original width of the target. If omitted, the target's naturalWidth is used.
+     * @param {Number} [targetOriginalHeight]  The original height of the target. If omitted, the target's naturalHeight is used.
+     */
     sewi.PanZoomWidget = function(panZoomTarget, panZoomContainer, targetOriginalWidth, targetOriginalHeight) {
         // Safeguard if function is called without `new` keyword
         if (!(this instanceof sewi.PanZoomWidget))
@@ -39,7 +49,13 @@ var sewi = sewi || {};
         this.setZoomLevelToZoomToFit();
     }
 
-    // Recalculate the targetDimensions of the target - used when the container and/or the target is resized.
+    /**
+     * Recalculates the dimensions of the target (such as the maximum width, zoom-to-fit sizes)
+     * - used when the container and/or the target is resized.
+     *
+     * @param {Number} [originalWidth] The new original width of the target. If omitted, the target's naturalWidth is used.
+     * @param {Number} [originalHeight]  The new original height of the target. If omitted, the target's naturalHeight is used.
+     */
     sewi.PanZoomWidget.prototype.recalculateTargetDimensions = function(originalWidth, originalHeight) {
         if(originalWidth == undefined)
             calculateTargetDimensions.call(this, this.targetDimensions.original.width, this.targetDimensions.original.height);
@@ -50,33 +66,67 @@ var sewi = sewi || {};
             this.setZoomLevelToZoomToFit();
     }
 
+    /**
+     * Returns the current zoom level of the target.
+     *
+     * @returns {Number} Current zoom level of the target as a percentage of its original size, rounded to the nearest integer.
+     */
     sewi.PanZoomWidget.prototype.getCurrentZoomLevel = function() {
         return Math.round(100 * this.target.width() / this.targetDimensions.original.width);
     }
 
+    /**
+     * Returns the minimum zoom level of the target - the smallest size the Widget will allow the image to be zoomed.
+     *
+     * @returns {Number} Minimum zoom level of the target as a percentage of its original size, rounded to the nearest integer.
+     */
     sewi.PanZoomWidget.prototype.getMinimumZoomLevel = function() {
         return Math.round(100 * this.targetDimensions.minimumZoom.width / this.targetDimensions.original.width);
     }
 
+    /**
+     * Returns the maximum zoom level of the target - the largest size the Widget will allow the image to be zoomed.
+     *
+     * @returns {Number} Maximum zoom level of the target as a percentage of its original size, rounded to the nearest integer.
+     */
     sewi.PanZoomWidget.prototype.getMaximumZoomLevel = function() {
         return Math.round(100 * this.targetDimensions.maximumZoom.width / this.targetDimensions.original.width);
     }
 
+    /**
+     * Returns if the zoom-to-fit size is the same as the original size. Useful to avoid situations where
+     * 2 buttons, one providing zoom-to-fit and the other zoom-to-original, produce the same results.
+     * (Perhaps one of the buttons can be hidden.)
+     *
+     * @returns {Boolean} True if the zoom-to-fit size is the same as the original size; false otherwise.
+     */
     sewi.PanZoomWidget.prototype.fitSizeEqualsOriginalSize = function() {
         return this.targetDimensions.fitToContainer.width == this.targetDimensions.original.width;
     }
 
+    /**
+     * Sets the target's current zoom level, subjected to the minimum and maximum zoom limits.
+     * The function will scale-up and -down respectively if the value given is outside limits.
+     *
+     * @param {Number} zoomPercentage The target zoom level desired, as a percentage of the original size.
+     */
     sewi.PanZoomWidget.prototype.setCurrentZoomLevel = function(zoomPercentage) {
         var newTargetWidth = this.targetDimensions.original.width * zoomPercentage / 100;
 
         updateTargetWidth.call(this, newTargetWidth, this.container.width() / 2, this.container.height() / 2);
     }
 
+    /**
+     * Sets the target's current zoom level to the zoom-to-fit size.
+     */
     sewi.PanZoomWidget.prototype.setZoomLevelToZoomToFit = function() {
         updateTargetWidth.call(this, this.targetDimensions.fitToContainer.width, 0, 0);
         this.centreTargetOnContainer();
     }
 
+    /**
+     * Centres the target on its container.
+     */
     sewi.PanZoomWidget.prototype.centreTargetOnContainer = function() {
         this.target.css({
             top: (this.container.height() - this.target.height()) / 2,

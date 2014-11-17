@@ -13,16 +13,32 @@ var sewi = sewi || {};
    * @param {string} options.encounterId The encounterId of the encounter
    */
   sewi.ResourceGallery = function(options) {
+    // Safeguard if function is called without `new` keyword
+    if (!(this instanceof sewi.ResourceGallery))
+      return new sewi.ResourceGallery(options);
 
     sewi.ConfiguratorElement.call(this);
+
+    var defaults = {};
+    options = options || {};
+    _.defaults(options, defaults);
+    _.assign(this, _.pick(options, [
+      'encounterId',
+    ]));
+
+    validateArguments.call(this);
     initDOM.call(this);
-    this.encounterID = options['encounterId'];
     this.resources = [];
 
-  }
+  };
 
   sewi.inherits(sewi.ResourceGallery, sewi.ConfiguratorElement);
 
+  function validateArguments() {
+    if (!_.isString(this.encounterId)) {
+      throw new Error('options: Valid encounter id must be provided.');
+    }
+  }
 
   function initDOM() {
     this.mainDOMElement
@@ -31,15 +47,14 @@ var sewi = sewi || {};
   }
 
   function loadResourceGallery() {
-    var resourceGalleryURL = sewi.constants.ENCOUNTER_BASE_URL + this.encounterID + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
+    var resourceGalleryURL = sewi.constants.ENCOUNTER_BASE_URL + this.encounterId + sewi.constants.RESOURCE_GALLERY_URL_SUFFIX;
 
     $.ajax({
-        dataType: 'json',
-        type: 'GET',
-        async: true,
-        url: resourceGalleryURL
-      }).done(loadSuccessful.bind(this))
-      .fail(loadFailed.bind(this));
+      dataType: 'json',
+      type: 'GET',
+      async: true,
+      url: resourceGalleryURL
+    }).done(loadSuccessful.bind(this));
   }
 
   function loadSuccessful(data) {
@@ -47,23 +62,50 @@ var sewi = sewi || {};
 
   }
 
-  function loadFailed() {
-    this.mainDOMElement.trigger('Error');
+  function retrieveResources(resourceGalleryData) {
+    if (resourceGalleryData.length > 0) {
+      var resourceContainer = this.mainDOMElement;
+      resourceContainer.append(sewi.constants.RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_DOM);
+    }
+    $.each(resourceGalleryData, appendResourceToDOM.bind(this));
+    generateThumbnails.call(this, resourceGalleryData);
+    this.isResourceDraggable = false;
+    this.addScrollbar();
+    this.addTooltips();
+
+  }
+
+  function appendResourceToDOM(index, value) {
+    var resourceContainer = this.mainDOMElement;
+    var thumbNailContainer = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM);
+    var loadingImagePath = sewi.staticPath + sewi.constants.RESOURCE_GALLERY_LOADING_THUMBNAIL;
+    thumbNailContainer.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CLASS)
+      .attr('src', loadingImagePath);
+    var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
+      .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value.id)
+      .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value.type)
+      .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value.date)
+      .append(thumbNailContainer)
+      .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value.name));
+
+    resource.on('dblclick', this, getResourceDOM);
+    this.resources.push(resource);
+    resourceContainer.append(resource);
   }
 
   function generateThumbnails(resourceGalleryData) {
-    var selfRef = this;
-    $.each(resourceGalleryData, function(index, value) {
-      var thumbnailURL = sewi.constants.RESOURCE_GALLERY_THUMBNAIL_URL_BASE + value['type'] + '/' + value['id'] + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX;
-      $.ajax({
-          dataType: '',
-          type: 'GET',
-          url: thumbnailURL
+    $.each(resourceGalleryData, addThumbnailImageToResource.bind(this));
+  }
 
-        }).done(addThumbnail.bind(selfRef.resources[index]))
-        .fail(thumbnailImageError.bind(selfRef.resources[index]));
-    });
+  function addThumbnailImageToResource(index, value) {
+    var thumbnailURL = sewi.constants.RESOURCE_GALLERY_THUMBNAIL_URL_BASE + value.type + '/' + value.id + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX;
+    $.ajax({
+        dataType: '',
+        type: 'GET',
+        url: thumbnailURL
 
+      }).done(addThumbnail.bind(this.resources[index]))
+      .fail(thumbnailImageError.bind(this.resources[index]));
   }
 
   function addThumbnail(data) {
@@ -72,37 +114,36 @@ var sewi = sewi || {};
 
   function thumbnailImageError() {
     // A default thumbnail image is shown for any resource without a thumbnail
-    $(this).find('img').attr('src', sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
+    $(this).find('img').attr('src', sewi.staticPath + sewi.constants.RESOURCE_GALLERY_DEFAULT_THUMBNAIL);
   }
 
+  function addDraggblePropertyToResource(index, value) {
 
-  function retrieveResources(resourceGalleryData) {
-    $.each(resourceGalleryData, appendResourceToDOM.bind(this));
-    this.addScrollbar();
-    this.addTooltips();
-    generateThumbnails.call(this, resourceGalleryData);
+    value.draggable({
+      helper: 'clone',
+      revert: 'invalid',
+      appendTo: 'body',
+      start: function(e, ui) {
+        ui.helper.addClass(sewi.constants.RESOURCE_GALLERY_RESOURCE_DRAGGED_CLASS);
+        ui.helper.find('.' + sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CONTAINER_CLASS)
+          .addClass(sewi.constants.RESOURCE_GALLERY_THUMBNAIL_CONTAINER_DRAGGED_CLASS);
+        ui.helper.find('.' + sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_CLASS)
+          .addClass(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DRAGGED_CLASS);
+
+      }
+    });
   }
 
-  function appendResourceToDOM(index, value) {
-    var resourceContainer = this.mainDOMElement;
+  function showDoubleClickInstruction() {
+    this.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_CLASS).show();
+  }
 
-    var resource = $(sewi.constants.RESOURCE_GALLERY_RESOURCE_DOM)
-      .attr(sewi.constants.RESOURCE_INFO_RESOURCE_ID, value['id'])
-      .attr(sewi.constants.RESOURCE_INFO_RESOURCE_TYPE, value['type'])
-      .attr('title', sewi.constants.RESOURCE_GALLERY_TOOLTIP_HEADER + value['date'])
-      .draggable({
-        helper: 'clone',
-        revert: 'invalid',
-        appendTo: 'body',
-        start: function(e, ui) {
-          ui.helper.addClass('resource-dragged');
-        }
-      }).append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM))
-      .append($(sewi.constants.RESOURCE_GALLERY_RESOURCE_HEADER_DOM).text(value['name']));
+  function hideDoubleClickInstruction() {
+    this.mainDOMElement.find('.' + sewi.constants.RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_CLASS).hide();
+  }
 
-    resource.on('dblclick', this, getResourceDOM);
-    this.resources.push(resource);
-    resourceContainer.append(resource);
+  function removeDraggblePropertyFromResource(index, value) {
+    value.draggable('destroy');
   }
 
   /**
@@ -115,6 +156,7 @@ var sewi = sewi || {};
     event.data.mainDOMElement.trigger('resourceClick', $(this));
   }
 
+  // Resource gallery public methods
   /**
    * Loads the resource gallery
    */
@@ -122,7 +164,28 @@ var sewi = sewi || {};
 
     loadResourceGallery.call(this);
     return this;
-  }
+  };
+
+  /**
+   * Called when the resource gallery is maximized or minimized.
+   * @param {boolean} isMinimized Tells whether the resource gallery is in the minimized or maximized state
+   */
+  sewi.ResourceGallery.prototype.resize = function(isMinimized) {
+    if (isMinimized) {
+      if (!this.isResourceDraggable) {
+        $.each(this.resources, addDraggblePropertyToResource);
+        this.isResourceDraggable = true;
+      }
+      hideDoubleClickInstruction.call(this);
+
+    } else {
+      if (this.isResourceDraggable) {
+        $.each(this.resources, removeDraggblePropertyFromResource);
+        this.isResourceDraggable = false;
+      }
+      showDoubleClickInstruction.call(this);
+    }
+  };
 
   /**
    * Adds a semi-transparent scroll bar to the resource gallery.
@@ -134,7 +197,7 @@ var sewi = sewi || {};
       size: '4px',
       height: '100%'
     });
-  }
+  };
 
   /**
    * Adds tooltips to every resource that displays meta-data about the data.
@@ -145,5 +208,5 @@ var sewi = sewi || {};
       placement: 'left',
       appendTo: 'body'
     });
-  }
+  };
 })();

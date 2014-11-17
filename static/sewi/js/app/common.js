@@ -62,7 +62,7 @@ var sewi = sewi || {};
     sewi.constants = {
 
         //Encounter URL Constants
-        ENCOUNTER_BASE_URL: '/sewi/encounter/',
+        ENCOUNTER_BASE_URL: './',
 
         //Resource Types
         RESOURCE_TYPE:{IMAGE: 'image', VIDEO: 'video', AUDIO: 'audio', CHART: 'chart'},
@@ -136,7 +136,7 @@ var sewi = sewi || {};
         TAB_PANEL_DROP_AREA_LEFT_DOM: '<div class="panel-drop-area panel-drop-area-left"></div>',
         TAB_PANEL_DROP_AREA_TOP_DOM: '<div class="panel-drop-area panel-drop-area-top"></div>',
         TAB_PANEL_DROP_AREA_BOTTOM_DOM: '<div class="panel-drop-area panel-drop-area-bottom"></div>',
-        
+
         /**
          * Fires when there is no more opened tab
          * @event noTab
@@ -181,19 +181,26 @@ var sewi = sewi || {};
 
         //Resource Gallery Constants
         RESOURCE_GALLERY_URL_SUFFIX: '/resourceList',
-        RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '/sewi/resources/',
+        RESOURCE_GALLERY_THUMBNAIL_URL_BASE: '../resources/',
         RESOURCE_GALLERY_THUMBNAIL_URL_SUFFIX: '/thumb',
         RESOURCE_GALLERY_RESOURCE_DOM: '<div class="resource">',
-        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail" src="/static/sewi/images/loading.gif"></div>',
+        RESOURCE_GALLERY_RESOURCE_THUMBNAIL_DOM: '<div class="resource-thumbnail-container"><img class="resource-thumbnail"></div>',
         RESOURCE_GALLERY_RESOURCE_HEADER_DOM: '<p class="resource-title">',
+        RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_DOM: '<div class="double-click-instruction"> Double click to open a resource</div>',
         RESOURCE_GALLERY_DOM_CLASS: 'resource-explorer-container',
+        RESOURCE_GALLERY_DOUBLE_CLICK_INSTRUCTION_CLASS: 'double-click-instruction',
         RESOURCE_GALLERY_RESOURCE_CLASS: 'resource',
+        RESOURCE_GALLERY_RESOURCE_DRAGGED_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_MINIMIZED_CLASS: 'gallery-minimized',
+        RESOURCE_GALLERY_THUMBNAIL_CONTAINER_CLASS: 'resource-thumbnail-container',
         RESOURCE_GALLERY_THUMBNAIL_CLASS: 'resource-thumbnail',
+        RESOURCE_GALLERY_THUMBNAIL_CONTAINER_DRAGGED_CLASS: 'resource-thumbnail-container-dragged',
         RESOURCE_GALLERY_RESOURCE_HEADER_CLASS: 'resource-title',
-        RESOURCE_GALLERY_DRAGGED_RESOURCE_CLASS: 'resource-dragged',
+        RESOURCE_GALLERY_RESOURCE_HEADER_DRAGGED_CLASS: 'resource-title-dragged',
         RESOURCE_GALLERY_TOOLTIP_HEADER: 'Last modified: ',
         RESOURCE_GALLERY_LOAD_ERROR_MESSAGE: 'Failed to load resource gallery, please close and re-open browser window',
-        RESOURCE_GALLERY_DEFAULT_THUMBNAIL: '/static/sewi/images/default_thumbnail.png',
+        RESOURCE_GALLERY_DEFAULT_THUMBNAIL: 'images/default_thumbnail.png',
+        RESOURCE_GALLERY_LOADING_THUMBNAIL: 'images/loading.gif',
 
         //Resource Viewer Constants
         RESOURCE_VIEWER_BASIC_DOM: '<div></div>',
@@ -224,7 +231,7 @@ var sewi = sewi || {};
         RESOURCE_VIEWER_CLOSING_EVENT: 'closing',
 
         //Video Resource Constants
-        VIDEO_RESOURCE_URL: '/sewi/resources/video/',
+        VIDEO_RESOURCE_URL: '../resources/video/',
         VIDEO_RESOURCE_THUMBNAIL_URL: '/thumb',
         VIDEO_RESOURCE_VIEWER_VIDEO_SOURCE_DOM: '<source />',
         VIDEO_RESOURCE_VIEWER_VIDEO_DOM: '<video preload="auto"></video>',
@@ -248,7 +255,7 @@ var sewi = sewi || {};
         VIDEO_RESOURCE_VIEWER_LOADED_EVENT: 'loaded',
 
         //Audio Resource Constants
-        AUDIO_RESOURCE_URL: '/sewi/resources/audio/',
+        AUDIO_RESOURCE_URL: '../resources/audio/',
         AUDIO_RESOURCE_ZOOM_TO_FIT_BUTTON: '<button type="button" class="btn btn-default sewi-icon-graph-select-all" id="zoomToFit"></button>',
         AUDIO_RESOURCE_ZOOM_TO_SELECTION_BUTTON: '<button type="button" class="btn btn-default sewi-icon-graph-select-part" id="zoomToSelection"></button>',
         AUDIO_RESOURCE_CLEAR_SELECTION_BUTTON: '<button type="button" class="btn btn-default sewi-icon-graph-select-none" id="clearSelection"></button>',
@@ -278,7 +285,7 @@ var sewi = sewi || {};
         AUDIO_RESOURCE_CONTENT_DOM:'<div class="audio-content"></div>',
         AUDIO_RESOURCE_CHANNEL_CSS_CLASS: {LEFT: 'left-channel', RIGHT: 'right-channel'},
         AUDIO_RESOURCE_GRAPH_DOM : '<div class="wave-graph" id="" title=""></div>',
-        
+
         /**
          * Fires when the channel buffer has been copied.
          * @event bufferCopied
@@ -290,7 +297,7 @@ var sewi = sewi || {};
         CHART_RESOURCE_LEGEND_CONTAINER_DOM: '<div class="legend-container"> </div>',
         CHART_RESOURCE_CHART_CONTAINER_DOM: '<div class="main-graph-container"> </div>',
         CHART_RESOURCE_MAIN_DOM_CLASS: 'time-series-graph-container',
-        CHART_RESOURCE_URL: '/sewi/resources/chart/',
+        CHART_RESOURCE_URL: '../resources/chart/',
         CHART_RESOURCE_VIEWER_LOAD_ERROR_MESSAGE: 'Failed to load chart, please close and re-open chart',
         CHART_RESOURCE_INVALID_RESOURCEID_ERROR: 'options: Valid resource id must be provided.',
         CHART_RESOURCE_PEAK_SEARCH_INTERVAL: 200, // the time interval(in ms) within which the peakDetection algorithm searches for a peak
@@ -401,7 +408,7 @@ var sewi = sewi || {};
         IMAGE_RESOURCE_MAIN_DOM_ELEMENT_CLASS: 'image-resource-main-container',
         IMAGE_RESOURCE_CONTAINER_ELEMENT: '<div class="image-resource-image-container"></div>',
         IMAGE_RESOURCE_IMAGE_ELEMENT: '<img class="image-resource-image">',
-        IMAGE_RESOURCE_RESOURCE_URL_PREFIX: '/sewi/resources/image/',
+        IMAGE_RESOURCE_RESOURCE_URL_PREFIX: '../resources/image/',
         IMAGE_RESOURCE_LOAD_RESOURCE_ERROR_MESSAGE: 'An error occurred while trying to load the image resource.',
         IMAGE_RESOURCE_IN_MEMORY_IMAGE_ELEMENT: '<img>',
         IMAGE_RESOURCE_IN_MEMORY_CANVAS_ELEMENT: '<canvas></canvas>',
@@ -454,21 +461,41 @@ var sewi = sewi || {};
          * Fired when any of the custom filters' controls have changed value.
          * @event filtersChanged
          * @memberof sewi.ImageControls
-         * @param ...
+         * @param {Object} filterSettings The object representing the state of all custom filters
+         * (i.e. which filters are selected/not-selected).
+         * @param {String} filterSettings.colorize The colorize filter to selected. Current possible
+         * values are IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE and the keys of the
+         * IMAGE_RESOURCE_FALSE_COLOR_PALETTE object (i.e. "flame", "rainbow", "spectrum").
+         * If no filters are selected, the value will be IMAGE_RESOURCE_COLORIZE_FILTER_NAME_NONE.
+         * @param {Boolean} filterSettings.difference True if the difference filter is selected; false otherwise.
+         * @param {Boolean} filterSettings.invert True if the invert filter is selected; false otherwise.
+         * @param {Boolean} filterSettings.autoContrast True if the autoContrast filter is selected; false otherwise.
+         * If the auto-contrast filter is selected, the one of the colorize filter must be applied.
+         * If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+         * chosen automatically.
+         * @param {String} filterSettings.contrastStretchMode If a contrast-stretching filter is selected, this
+         * element will take one of three possible values: IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_SHADOWS,
+         * IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_MIDTONES, or IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_HIGHLIGHTS.
+         * If none is selected, the value will be IMAGE_RESOURCE_CONTRAST_STRETCHING_RANGE_NONE.
+         * Note that if the contrast-stretching filter is selected, the one of the colorize filter must be applied.
+         * If the no colorize filter is selected, the IMAGE_RESOURCE_COLORIZE_FILTER_NAME_GRAYSCALE filter will be
+         * chosen automatically.
+         * @param {Number} filterSettings.contrastStretchValue The intensity of the contrast-stretching filter,
+         * subjected to the limits between IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MIN_VALUE and
+         * IMAGE_CONTROLS_CONTRAST_STRETCHING_SETTINGS_SLIDER_MAX_VALUE.
          */
         IMAGE_CONTROLS_CUSTOM_FILTERS_CHANGED_EVENT: 'filtersChanged',
         /**
-         * Fired when the contrast slider's value has changed.
-         * @event contrastChanged
+         * Fired when the zoom slider's value has changed.
+         * @event zoomLevelChanged
          * @memberof sewi.ImageControls
-         * @param {number} contrast The current value of the contrast slider.
+         * @param {number} zoomLevel The current value of the zoom slider (which is a percentage of the original image's size).
          */
         IMAGE_CONTROLS_ZOOM_LEVEL_CHANGED_EVENT: 'zoomLevelChanged',
         /**
-         * Fired when the contrast slider's value has changed.
-         * @event contrastChanged
+         * Fired when the zoom-to-fit button is pressed.
+         * @event zoomToFitRequested
          * @memberof sewi.ImageControls
-         * @param {number} contrast The current value of the contrast slider.
          */
         IMAGE_CONTROLS_ZOOM_TO_FIT_REQUESTED_EVENT: 'zoomToFitRequested',
 

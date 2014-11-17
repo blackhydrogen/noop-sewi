@@ -21,11 +21,13 @@ var sewi = sewi || {};
         this.encounterId = options.encounterId;
 
         this.mainDOMElement.addClass(sewi.constants.BEI_MAIN_DOM_CLASS);
-        
-        loadInfo.call(this);
     };
 
     sewi.inherits(sewi.BasicEncounterInfoViewer, sewi.ConfiguratorElement);
+
+    sewi.BasicEncounterInfoViewer.prototype.load = function() {
+        loadInfo.call(this);
+    }
 
     /**
      * Called when the BEI component is resized. The options allow BEI to decide if
@@ -47,7 +49,9 @@ var sewi = sewi || {};
             type: 'GET',
             async: true,
             url: sewi.constants.ENCOUNTER_BASE_URL + this.encounterId + sewi.constants.BEI_BASIC_INFO_URL_SUFFIX,
-        }).done(processInfo.bind(this));
+        })
+        .done(processInfo.bind(this))
+        .error(loadInfoErrorHandler.bind(this));
     };
 
     // We process the information obtained from the AJAX call and render it on screen.
@@ -105,6 +109,10 @@ var sewi = sewi || {};
         fixMainDomElementWidth.call(this, false);
     };
 
+    function loadInfoErrorHandler() {
+        this.trigger(sewi.constants.CONFIGURATOR_COMPONENT_ERROR_EVENT);
+    }
+
     // Fixes the width (in pixels) the width of the BEI's main DOM element
     // The element width should be 100% of its un-minimized state.
     function fixMainDomElementWidth(elementIsMinimized) {
@@ -122,4 +130,11 @@ var sewi = sewi || {};
         // so the element is paritially hidden, it won't resize
         this.mainDOMElement.width(widthInPixels + "px");
     };
+
+    if(sewi.testMode) {
+        sewi.BasicEncounterInfoViewer.prototype.privates = {
+            processInfo: processInfo
+        };
+    }
+    
 })();
