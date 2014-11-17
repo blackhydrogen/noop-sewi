@@ -47,6 +47,44 @@
     <script type="text/javascript" src="{% static "sewi/js/app/main.js" %}"></script>
   </head>
   <body>
+    {# OpenMRS Banner #}
+    <div id="banner">
+        <a href="http://openmrs.org">
+            <div id="logosmall">
+                <img src="https://demo.sana.csail.mit.edu/openmrs/images/openmrs_logo_text_small.gif" alt="OpenMRS Logo" border="0">
+            </div>
+        </a>
+        <table id="bannerbar">
+            <tbody><tr>
+                <td id="logocell">
+                    <img src="https://demo.sana.csail.mit.edu/openmrs/images/openmrs_logo_white.gif" alt="" class="logo-reduced61">
+                </td>
+                <td id="barcell">
+                    <div class="barsmall">
+                        <img align="left" src="https://demo.sana.csail.mit.edu/openmrs/images/openmrs_green_bar.gif" alt="" class="bar-round-reduced50">
+                        <ul class="navList">
+                            <li id="homeNavLink" class="firstChild">
+                                <a href="#">Home</a>
+                            </li>
+                            <li id="findPatientNavLink">
+                                <a href="#">Find/Create Patient</a>
+                            </li>
+                            <li id="dictionaryNavLink">
+                                <a href="#">Dictionary</a>
+                            </li>
+                            <li>
+                                <a href="#">Encounter Queue</a>
+                            </li>
+                            <li id="administrationNavLink">
+                                <a href="#">Administration</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr></tbody>
+        </table>
+    </div>
+    {# Main body #}
     <div class="container">
       <div id="titleView" class="row">
 
