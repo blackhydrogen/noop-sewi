@@ -57,6 +57,7 @@ var sewi = sewi || {};
 
     function setupVariables(){
 
+        this.totalDownloadPercent = 50;
         this.offset = 0;
         this.gainValue = 0;
         this.beginTime = 0;
@@ -175,7 +176,7 @@ var sewi = sewi || {};
     function onProgress(event){
         event.preventDefault();
         if(event.lengthComputable){
-            var percent = (event.loaded/event.total) * 100;
+            var percent = (event.loaded/event.total) * this.totalDownloadPercent;
             this.updateProgressBar(percent);
         }
     }
@@ -183,7 +184,7 @@ var sewi = sewi || {};
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.updateProgressBar(50, sewi.constants.AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
+        this.updateProgressBar(this.totalDownloadPercent, sewi.constants.AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this));
     }
 
@@ -528,6 +529,12 @@ var sewi = sewi || {};
             this.source.stop(0);
             this.source.disconnect(this.gainNode);
             this.source.disconnect(this.scriptProcessor);
+        }
+        
+        var len = this.audioSequences.length;
+        for(var i = 0; i < len; i++){
+            this.audioSequences[i].channelData = [];
+            delete this.audioSequences[i].channelData;
         }
     };
 
@@ -1168,7 +1175,7 @@ var sewi = sewi || {};
 
     sewi.AudioSequence.prototype.startCopyingBuffer = function(channelData){
         window.requestAnimationFrame(copyBuffer.bind(this, 0, channelData, 0));
-        this.audioResourceViewer.updateProgressBar(0);
+        this.audioResourceViewer.updateProgressBar(this.audioResourceViewer.totalDownloadPercent);
     };
 
     // Make a copy of the channel data.
@@ -1183,7 +1190,7 @@ var sewi = sewi || {};
             this.channelData.push(channelData[i]);
         }
 
-        var percent = 50 + (i/len) * 50;
+        var percent = (1 + (i/len)) * this.audioResourceViewer.totalDownloadPercent;
         this.audioResourceViewer.updateProgressBar(percent);
 
         if(i < len){
