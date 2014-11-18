@@ -184,7 +184,7 @@ var sewi = sewi || {};
     function onComplete(event){
         event.preventDefault();
         var audioData = this.request.response;
-        this.updateProgressBar(this.totalDownloadPercent, sewi.constants.AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
+        this.updateProgressBar(this.totalDownloadPercent);
         this.audioContext.decodeAudioData(audioData, onAudioDecodeFinish.bind(this), onAudioDecodeFail.bind(this));
     }
 
@@ -1184,7 +1184,7 @@ var sewi = sewi || {};
 
     sewi.AudioSequence.prototype.startCopyingBuffer = function(channelData){
         window.requestAnimationFrame(copyBuffer.bind(this, 0, channelData, 0));
-        this.audioResourceViewer.updateProgressBar(this.audioResourceViewer.totalDownloadPercent);
+        this.audioResourceViewer.updateProgressBar(this.audioResourceViewer.totalDownloadPercent, sewi.constants.AUDIO_RESOURCE_MSG_GENERATING_AMPLITUDE_WAVE_GRAPH);
     };
 
     // Make a copy of the channel data.
