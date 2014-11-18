@@ -562,6 +562,8 @@ var sewi = sewi || {};
         this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_POSITION_CHANGED_EVENT, positionEvent.bind(this));
         this.controlPanelElement.on(sewi.constants.MEDIA_CONTROLS_VOLUME_CHANGED_EVENT, volumeEvent.bind(this));
 
+        this.videoContainerElement.on(sewi.constants.PAN_ZOOM_WIDGET_TARGET_ZOOM_CHANGED_EVENT, updateZoomLevel.bind(this));
+
         this.zoomSlider.on('input change', zoomLevelChanged.bind(this));
         this.resetZoomButton.click(zoomLevelReset.bind(this));
         this.zoomToFitButton.click(zoomToFitRequested.bind(this));
@@ -631,6 +633,9 @@ var sewi = sewi || {};
             width: videoWidth
         });
 
+        // Unhide the video container if it's hidden
+        this.videoContainerElement.addClass('ready');
+
         //setBoundarySize.call(this, { width: videoWidth, height: videoHeight });
 
         if (_.isUndefined(this.panZoomWidget)) {
@@ -663,6 +668,10 @@ var sewi = sewi || {};
         }
 
         this.controls.update(options);
+    }
+
+    function updateZoomLevel(event, zoomLevel) {
+        this.zoomSlider.val(zoomLevel);
     }
 
     function playbackFailed(event) {

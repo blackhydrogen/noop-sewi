@@ -9,7 +9,7 @@
 /* Video Resource Styles */
 
 .video-resource-container video {
-    background: black;
+    display: block;
 }
 
 .video-resource-container {
@@ -28,6 +28,11 @@
 
 .video-container {
     position: absolute;
+    visibility: hidden;
+}
+
+.video-container.ready {
+    visibility: visible;
 }
 
 .video-resource-container .media-control-panel {
