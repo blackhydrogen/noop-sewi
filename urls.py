@@ -5,7 +5,7 @@ urlpatterns = patterns(
   'sewi.views',
   # Test endpoints
   #url(r'^$', views.main_page, name='main_page'),
-  url(r'^test$', views.test_page, name='test_page'),
+  url(r'^test/$', views.test_page, name='test_page'),
   # Encounter
   # TODO: Uncomment the following to retrieve the encounter with the ID
   url(r'^encounter/(?P<encounter_id>[\w-]+)$', views.get_encounter, name='get_encounter'),
