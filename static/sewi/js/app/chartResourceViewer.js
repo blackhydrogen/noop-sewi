@@ -135,6 +135,9 @@ var sewi = sewi || {};
         this.timingDisplay.val('');
       }
     }
+    else if(options.timing == ''){
+      this.timingDisplay.val('');
+    }
     return this;
   };
 
