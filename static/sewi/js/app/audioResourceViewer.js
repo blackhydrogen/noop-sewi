@@ -222,8 +222,7 @@ var sewi = sewi || {};
         }
     }
 
-    function onAudioDecodeFail(event){
-        event.preventDefault();
+    function onAudioDecodeFail(){
         this.showError(sewi.constants.AUDIO_RESOURCE_ERROR_MSG_FAILED_TO_DECODE_AUDIO_FILE);
     }
 
@@ -758,9 +757,7 @@ var sewi = sewi || {};
                 this.selectionEnd = getPixelToAbsolute.call(this, this.mouseX);
                 updateResourceViewer.call(this);
             }
-        }
-
-        if (this.mouseX > selectionStartPixel + allowance && this.mouseX <= selectionEndPixel - allowance){
+        } else if (this.mouseX > selectionStartPixel + allowance && this.mouseX <= selectionEndPixel - allowance){
             this.canvasDOM.css({'cursor' : '-webkit-grab'});
         } else if ((this.mouseX > selectionStartPixel - allowance && this.mouseX < selectionStartPixel + allowance) ||
                     (this.mouseX < selectionEndPixel + allowance && this.mouseX > selectionEndPixel - allowance)){
